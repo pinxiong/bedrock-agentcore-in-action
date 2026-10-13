@@ -37,15 +37,15 @@ checkable, and the last one runs in CI.
 
 | | Condition | How you can verify it |
 |---|---|---|
-| **I1** | Deploys alone | `make up UC=05` succeeds in a clean account where UC01 to UC04 were never deployed |
-| **I2** | Cleans up alone | `make down UC=05` zeroes its cost and touches no other use case |
+| **I1** | Deploys alone | `python aia.py up 05` succeeds in a clean account where UC01 to UC04 were never deployed |
+| **I2** | Cleans up alone | `python aia.py down 05` zeroes its cost and touches no other use case |
 | **I3** | Own IaC stack | No cross-stack references, no shared state, no reading another use case's outputs |
 | **I4** | Own source tree | `usecases/NN-*/src/` never imports another use case |
 | **I5** | Own documentation | The README starts from zero and lists only *knowledge* prerequisites, never "you must deploy UC0X first" |
 
 ```bash
 # The independence test, for any use case
-make up   UC=05 && make test UC=05 && make down UC=05
+python aia.py up 05 && python aia.py test 05 && python aia.py down 05
 
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=01,02,03,04,06,07
@@ -61,7 +61,7 @@ Independent use cases must each carry a runnable baseline agent, which means som
 duplication. Every use case README has a section called *What you repeated* that lists
 exactly what it re-embeds, so you always know whether you are looking at a
 self-contained example or a shared service. The baseline is generated from
-`shared/templates/baseline-agent/` by `shared/scripts/new-usecase.sh`, so the duplicate
+`shared/templates/baseline-agent/` by `python aia.py new`, so the duplicate
 is authored once. What this repo deliberately does **not** do is factor the baseline into
 a shared library that use cases import: that would recouple I3 and I4 and take us straight
 back to chained stages.
@@ -181,10 +181,10 @@ Full comparison in [`docs/00-overview.md`](docs/00-overview.md).
 ```bash
 git clone https://github.com/<you>/bedrock-agentcore-in-action.git
 cd bedrock-agentcore-in-action
-./shared/scripts/bootstrap.sh          # checks CLI, Node, Python, region, model access, command shadowing
+pip install pyyaml                     # or: uv pip install pyyaml
+python aia.py doctor                   # checks CLI, Node, Python, region, model access, command shadowing
 
-cd usecases/01-first-agent
-make up && make test && make down
+python aia.py up 01 && python aia.py test 01 && python aia.py down 01
 ```
 
 Then pick any other use case. Order is suggested, not required.
@@ -207,11 +207,13 @@ PLAN.md         how the series was designed
 - **Boundaries**: no cross-use-case imports, no cross-stack references.
 - **Framework**: Python 3.11 with Strands Agents; UC03 and UC07 also ship a LangGraph variant.
 - **No secrets in the repo**: `.env.example` holds placeholders only; `gitleaks` runs in CI.
+- **Cross-platform**: every command goes through `python aia.py`, plain Python with no Make,
+  no bash and no WSL. macOS, Linux and Windows behave identically.
 
 ## Adding a use case
 
 ```bash
-./shared/scripts/new-usecase.sh 08-your-idea --difficulty 5
+python aia.py new 08-your-idea --difficulty 5
 ```
 
 This scaffolds a working baseline, a README from the twelve-section template, and a smoke

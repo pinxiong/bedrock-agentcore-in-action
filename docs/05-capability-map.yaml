@@ -18,7 +18,7 @@ meta:
     Registry 仅 5 区（us-east-1 / us-west-2 / ap-northeast-1 / ap-southeast-2 /
     eu-west-1），Web Search 需 us-east-1，故全系列锁定 us-east-1。
     注意：本机 aws CLI 的默认区域是 ap-southeast-1，所有命令必须显式带
-    --region us-east-1，bootstrap.sh 会校验这一点。
+    --region us-east-1，aia doctor 会校验这一点。
   structure: independent-usecases        # 非 git-tag 阶段；每例自带 agent 与 IaC 栈
   default_build_type: CodeZip            # 不需要 Docker；250MB 压缩 / 750MB 解压；Python 3.10-3.13 与 Node/TS
   resource_prefix: aia-                  # 命名空间隔离，支撑多例并存
@@ -47,8 +47,8 @@ difficulty_scale:
 
 # ── 独立性契约（每个 usecase 必须满足；见 README「The independence contract」）──
 independence_contract:
-  I1_deploys_alone: "make up UC=0X succeeds with no other use case ever deployed"
-  I2_cleans_up_alone: "make down UC=0X zeroes its cost and touches no other use case"
+  I1_deploys_alone: "python aia.py up 0X succeeds with no other use case ever deployed"
+  I2_cleans_up_alone: "python aia.py down 0X zeroes its cost and touches no other use case"
   I3_own_iac_stack: "no cross-stack references, no shared state, no reading another use case's outputs"
   I4_own_source_tree: "usecases/NN-*/src never imports another use case"
   I5_own_documentation: "README starts from zero; prerequisites are knowledge, never deployed resources"

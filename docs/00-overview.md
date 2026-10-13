@@ -85,12 +85,12 @@ usually the honest part rather than the part AgentCore should have absorbed.
   legacy `bedrock-agentcore` registry namespace shut down on 2026-09-17. Guides
   written before that date will lead you into an error.
 - If you ever installed the `bedrock-agentcore-starter-toolkit` Python package,
-  its `agentcore` command shadows the npm CLI. `shared/scripts/bootstrap.sh`
+  its `agentcore` command shadows the npm CLI. `python aia.py doctor`
   checks for this.
 
 ## Next steps
 
-1. Run `./shared/scripts/bootstrap.sh` once.
+1. Run `python aia.py doctor` once.
 2. Open [`usecases/01-first-agent/`](../usecases/01-first-agent/) and deploy it.
 3. Read [`docs/06-difficulty-ladder.md`](06-difficulty-ladder.md) to see where the
    series is heading, and [`PLAN.md`](../PLAN.md) for how it was designed.

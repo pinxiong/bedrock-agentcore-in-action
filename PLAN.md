@@ -86,7 +86,7 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 1. **Registry 换过命名空间**：已迁到独立的 `agent-registry`（ARN 前缀 `arn:aws:agent-registry`、服务主体 `agent-registry.amazonaws.com`、托管策略 `AgentRegistryFullAccess`）。旧 `bedrock-agentcore` 命名空间 2026-09-17 已关闭。
 2. **区域割裂**：Registry 仅 5 区，Web Search 需 us-east-1，**全系列锁 `us-east-1`**。
 3. **`agentcore` 命令名冲突**：若曾 `pip install bedrock-agentcore-starter-toolkit`，旧的 Python `agentcore` 会遮蔽 npm 的。前置检查要包含 `pip uninstall bedrock-agentcore-starter-toolkit`。官方文档把这个坑单独列了一条提示。
-4. **本机 CLI 默认区域不是 us-east-1**（2026-10-14 实测：`~/.aws/config` 里是 `ap-southeast-1`）。任何没带 `--region us-east-1` 的命令都会落到错误的区域，读者会以为服务不可用。`bootstrap.sh` 因此校验区域而不是信任环境变量。
+4. **本机 CLI 默认区域不是 us-east-1**（2026-10-14 实测：`~/.aws/config` 里是 `ap-southeast-1`）。任何没带 `--region us-east-1` 的命令都会落到错误的区域，读者会以为服务不可用。`aia doctor` 因此校验区域而不是信任环境变量。
 
 ---
 
@@ -100,8 +100,8 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 
 | # | 条件 | 判据 |
 |---|---|---|
-| **I1** | **部署独立** | 在干净账号里 `make up UC=05` 成功，此时 UC01–04 **从未部署过** |
-| **I2** | **清理独立** | `make down UC=05` 后，该用例资源与账单归零，且**不影响**其他用例 |
+| **I1** | **部署独立** | 在干净账号里 `python aia.py up 05` 成功，此时 UC01–04 **从未部署过** |
+| **I2** | **清理独立** | `python aia.py down 05` 后，该用例资源与账单归零，且**不影响**其他用例 |
 | **I3** | **IaC 独立** | 每例一个独立栈、独立资源命名空间；**无跨栈 export/import**，不读别的用例的参数 |
 | **I4** | **代码独立** | `usecases/NN-*/src/` **不 import** 其他用例的模块；共享代码只能以"生成器模板"形式**复制**进来后各自演进 |
 | **I5** | **文档独立** | README 从零讲起；前置条件只写**知识**，绝不写"你必须先跑完 UC0X" |
@@ -110,7 +110,7 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 
 ```bash
 # 前置：账号里没有任何 Project=agentcore-in-action 的资源
-make up   UC=05 && make test UC=05 && make down UC=05
+python aia.py up 05 && python aia.py test 05 && python aia.py down 05
 
 # 断言：本次操作没有创建过其他用例的资源
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
@@ -140,7 +140,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 
 | 重复项 | 规模 | 对策 |
 |---|---|---|
-| 最小 agent 骨架（≈ 1 个文件、20 行） | 7 份 | `shared/scripts/new-usecase.sh` 从 `shared/templates/baseline-agent/` **生成**出来，只写一次 |
+| 最小 agent 骨架（≈ 1 个文件、20 行） | 7 份 | `aia.py new` 从 `shared/templates/baseline-agent/` **生成**出来，只写一次 |
 | IaC 栈骨架（CDK app 入口 + 标签） | 7 份 | 同上，由生成器生成；各例只改自己的资源声明 |
 | 冒烟测试骨架 | 7 份 | 同上，生成骨架后各例填自己的断言 |
 
@@ -371,7 +371,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 bedrock-agentcore-in-action/
 ├── README.md                    # 系列导读 + 难度阶梯 + 14 项能力表 + 覆盖矩阵 + 独立性契约
 ├── PLAN.md                      # 本文件
-├── Makefile                     # make up/down/test UC=05
+├── aia.py                       # ★ 唯一调度器：python aia.py up|test|down|verify <NN>（纯 Python，无 Make/bash/WSL）
 ├── LICENSE  CONTRIBUTING.md  .gitignore
 │
 ├── usecases/                    # ★ 每例一个自包含目录，互不 import
@@ -407,10 +407,8 @@ bedrock-agentcore-in-action/
 │
 ├── shared/
 │   ├── scripts/
-│   │   ├── bootstrap.sh         #   环境自检（版本 / 区域 / 模型访问 / 命令冲突）
-│   │   ├── new-usecase.sh       # ★ 生成器：生成出一个新用例骨架
-│   │   ├── verify-coverage.py   # ★ 覆盖 + 实证 + 独立性三类校验
-│   │   └── cost-report.sh
+│   │   └── verify-coverage.py   # ★ 覆盖 + 实证 + 独立性三类校验
+│   │                            #   （调度 / 自检 / 生成器 / 成本清单都收敛在根目录 aia.py）
 │   └── templates/
 │       ├── usecase-doc.template.md
 │       ├── article.template.md
@@ -434,7 +432,7 @@ bedrock-agentcore-in-action/
 | 代码位置 | `app/Emma/` 一个 agent 逐阶段长大 | `usecases/NN-*/src/` 每例自带 agent |
 | IaC | `agentcore/agentcore.json` 一份配置叠加 | 每例一个独立 `iac/` 栈 |
 | 独立性载体 | git tag | **目录 + 独立栈** |
-| 从中间切入 | `git checkout stage-04` 后拿到的仍是那一个项目的状态 | 直接进目录 `make up UC=04` |
+| 从中间切入 | `git checkout stage-04` 后拿到的仍是那一个项目的状态 | 直接 `python aia.py up 04` |
 | 并行部署 | 不可能（同一个栈） | **可能**（任意子集、任意顺序） |
 | 共享代码 | 天然共享 | **不允许**（生成器复制，之后各自演进） |
 | 文章位置 | `stages/*.md` + `articles/*.md` 两处 | `usecases/NN-*/README.md`（操作）+ `article.md`（叙事）同目录 |
@@ -461,7 +459,7 @@ bedrock-agentcore-in-action/
 | **2. 独立性与难度定位** | 难度 D{x}（对照刻度尺说明为什么）+ 前置**知识** + 本用例覆盖能力 + **独立性声明** + **本用例内嵌的基线** | v3 新增，是独立用例的核心一节 |
 | **3. 为什么需要这一层** | 不加会怎样（用真实痛点开头） | 这一段决定文章有没有张力 |
 | **4. Architecture** | 架构图 + 组件职责 + 数据流 | 标出哪些是 AgentCore 托管、哪些是读者自己负责 |
-| **5. Prerequisites** | 区域、模型访问、CLI 版本、IAM；**独立性前提一栏写"无（本用例自包含）"** | 给 `bootstrap.sh` 一键自检 |
+| **5. Prerequisites** | 区域、模型访问、CLI 版本、IAM；**独立性前提一栏写"无（本用例自包含）"** | 给 `aia doctor` 一键自检 |
 | **6. Cost & time** | 本用例总成本与耗时（独立用例不谈"累计"） | 必须给数字 |
 | **7. Step-by-step** | ★ 每步四要素：**命令 / 预期输出 / 如何验证 / 失败修复** | 每步可复制粘贴，无省略号占位 |
 | **8. Verify** | `tests/smoke.py --usecase 0X` + 期望输出 + **独立性断言** | 输出贴真实的 |
@@ -489,8 +487,9 @@ bedrock-agentcore-in-action/
 | **框架** | 主力 **Strands Agents**；UC03 / UC07 各留一个 **LangGraph** 变体证明框架无关 |
 | **Python** | 3.10–3.13（CodeZip 支持范围），本系列用 3.11 + `uv` |
 | **Node** | 20+（AgentCore CLI 要求） |
-| **清理** | `agentcore remove all && agentcore deploy`（官方路径）+ `make down UC=0X` 封装；手动核对 S3 / 日志组 / Secrets Manager / token vault |
-| **幂等** | `make up` / `make down` 可重复执行 |
+| **清理** | `agentcore remove all && agentcore deploy`（官方路径）+ `python aia.py down 0X` 封装；手动核对 S3 / 日志组 / Secrets Manager / token vault |
+| **幂等** | `aia up` / `aia down` 可重复执行 |
+| **跨平台** | 仓库内全部命令只依赖 Python 与已装 CLI；`aia.py` 无 Make / bash / WSL 依赖，Windows 原生可跑 |
 | **用例边界** | 禁止跨用例 import；禁止跨栈引用；共享代码只能经生成器复制 |
 | **CI** | 路径过滤 + 独立性检查 + 文档链接检查；UC06 额外跑 eval 门禁 |
 | **敏感信息** | 仓库内禁明文凭证；`.env.example` 只放占位符；`gitleaks` 进 CI |
@@ -546,18 +545,18 @@ bedrock-agentcore-in-action/
 
 | 阶段 | 内容 | 完成标志 |
 |---|---|---|
-| **P0 地基** | 建仓库、`docs/`、生成器 `new-usecase.sh`、`baseline-agent/` 模板、`verify-coverage.py`、`bootstrap.sh` | 生成器能生成出一个能通过 CI 的空用例；三类校验全绿 |
+| **P0 地基** | 建仓库、`docs/`、生成器 `aia.py new`、`baseline-agent/` 模板、`verify-coverage.py`、`aia doctor` | 生成器能生成出一个能通过 CI 的空用例；三类校验全绿 |
 | **P1 打底两档** | UC01（D1）+ UC02（D2）（+ 2 篇） | DoD 八条全绿；两例都能在干净账号单独部署 |
 | **P2 跨过认证与裁决** | UC03（D3）+ UC04（D3） | 同上；UC04 的 Log-only → Enforce 可复现 |
 | **P3 难度爬升** | UC05（D4）+ UC06（D4） | 同上；UC05 给 Harness 与 export 两条路径；UC06 A/B 有显著性截图 |
 | **P4 封顶与分支** | UC07（D5）+ 番外 Payments | 同上；Registry 用新命名空间 |
-| **P5 收口** | 概览文章 + 难度阶梯文档 + `make verify-all` 全绿 | 14 项覆盖矩阵全部有实证；难度序列单调 |
+| **P5 收口** | 概览文章 + 难度阶梯文档 + `python aia.py verify-all` 全绿 | 14 项覆盖矩阵全部有实证；难度序列单调 |
 
 **每个用例 Definition of Done（八条，缺一不可）**
 
-1. 干净账号里 `make up UC=0X` 成功（其他用例从未部署过）
+1. 干净账号里 `python aia.py up 0X` 成功（其他用例从未部署过）
 2. `tests/smoke.py --usecase 0X` 全部断言通过，含独立性断言
-3. `make down UC=0X` 后 Cost Explorer 归零，且 `UseCase` 标签断言为空
+3. `python aia.py down 0X` 后 Cost Explorer 归零，且 `UseCase` 标签断言为空
 4. 十二节文档齐全，每步有预期输出与失败修复
 5. 至少一张真实运行截图
 6. `article.md` 初稿完成
@@ -600,10 +599,10 @@ bedrock-agentcore-in-action/
 | 服务演进快（14 项里 8 项是 2026 年才 GA 的） | 文章 6 个月后过时 | 每篇顶部标注"验证于 YYYY-MM-DD"；成熟度写进正文 |
 | **区域割裂** | 读者在你没写的区域跑不通 | 全系列锁 `us-east-1`，前置条件显式说明 |
 | **Registry 命名空间迁移** | 照旧资料做必踩 | UC07 单列"避坑"小节；README 故障排查表置顶 |
-| **`agentcore` 命令冲突** | `agentcore --version` 报错，读者卡第一步 | `bootstrap.sh` 自动检测并提示 `pip uninstall bedrock-agentcore-starter-toolkit` |
+| **`agentcore` 命令冲突** | `agentcore --version` 报错，读者卡第一步 | `aia doctor` 自动检测并提示 `pip uninstall bedrock-agentcore-starter-toolkit` |
 | **独立性的重复成本** | 维护 7 套骨架容易漂移 | 生成器统一生成；CI 校验 I3/I4；文档第 11 节如实列出重复项 |
 | **用例难度声明失真** | 阶梯名不副实，读者预期落空 | 难度只按 §2.2 的可量化刻度声明；CI 校验单调性与刻度区间 |
 | **Harness vs Runtime 定位混淆** | 读者选错路径 | UC05 用同一场景两种实现做正面对比 |
 | **Payments 前置门槛** | 读者卡在第一步 | 番外给 sandbox / 测试网路径 + 无钱包账号降级演示 |
-| **成本失控** | 读者被账单吓到 | 每例给数字；`AutoDelete` 标签；`cost-report.sh` |
+| **成本失控** | 读者被账单吓到 | 每例给数字；`AutoDelete` 标签；`python aia.py cost` |
 | **配额**（并发 session、Bedrock TPM） | UC07 压测失败 | 文档给配额申请指引；压测默认降到 10 并发 |

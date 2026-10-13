@@ -41,8 +41,7 @@ full version rather than pasting everything.}}
 ## 8. Try it yourself
 
 ```bash
-cd usecases/{{UC_NUM}}-{{rest}}
-make up && make test && make down
+python aia.py up {{UC_NUM}} && python aia.py test {{UC_NUM}} && python aia.py down {{UC_NUM}}
 ```
 
 This use case is self-contained: you do not need any other use case deployed first.

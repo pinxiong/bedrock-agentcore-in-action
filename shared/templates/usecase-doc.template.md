@@ -60,8 +60,8 @@
 
 | # | 条件 | 本用例如何成立 |
 |---|---|---|
-| I1 | 部署独立 | `make up` 在本例目录内即可完成，不读取任何其他用例的 stack 输出 |
-| I2 | 清理独立 | 所有资源带 `UseCase=0X` 标签，`make down` 只销毁本用例 |
+| I1 | 部署独立 | `python aia.py up 0X`（仓库根执行）即可完成，不读取任何其他用例的 stack 输出 |
+| I2 | 清理独立 | 所有资源带 `UseCase=0X` 标签，`python aia.py down 0X` 只销毁本用例 |
 | I3 | IaC 独立 | `iac/` 是独立栈，无跨栈引用 |
 | I4 | 代码独立 | `src/` 不 import 任何其他用例 |
 | I5 | 文档独立 | 本节以上即为全部前置 |
@@ -109,7 +109,7 @@
 一键自检：
 
 ```bash
-../../shared/scripts/bootstrap.sh --usecase 0X
+python aia.py doctor --usecase 0X
 ```
 
 ### 5.1 最小权限（生产用法）
@@ -131,7 +131,7 @@
 ⚠️ 常见超支点：{{例：忘记删 CloudWatch 日志组 / Browser 会话空转 / Memory 事件量}}
 
 ```bash
-make down      # 在本用例目录内执行
+python aia.py down 0X      # 在仓库根执行
 ```
 
 ---
@@ -185,7 +185,7 @@ make down      # 在本用例目录内执行
 ## 8. Verify
 
 ```bash
-make test          # 等价于 python tests/smoke.py --usecase 0X
+python aia.py test 0X       # 等价于 python tests/smoke.py --usecase 0X
 ```
 
 **期望输出**
@@ -229,7 +229,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 **销毁本用例**：
 
 ```bash
-make down
+python aia.py down 0X
 # 或
 agentcore remove all && agentcore deploy
 ```
@@ -263,7 +263,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 | {{IaC 栈骨架}} | {{CDK app 入口 + 标签}} | 共享即会破坏 I3（栈独立） |
 | {{其他}} | {{…}} | {{…}} |
 
-> 这些骨架由 `shared/scripts/new-usecase.sh` 从 `shared/templates/baseline-agent/`
+> 这些骨架由 `python aia.py new` 从 `shared/templates/baseline-agent/`
 > 生成而来，只写一次，然后各自演进。
 
 ---
