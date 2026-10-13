@@ -1,0 +1,15 @@
+[project]
+name = "{{UC_SLUG}}"
+version = "0.1.0"
+description = "{{UC_TITLE}}: use case {{UC_NUM}} of bedrock-agentcore-in-action"
+requires-python = ">=3.10,<3.14"   # CodeZip supports 3.10 to 3.13
+dependencies = [
+    "strands-agents",
+    "bedrock-agentcore",
+]
+
+[project.optional-dependencies]
+test = ["boto3", "pytest"]
+
+[tool.uv]
+package = false

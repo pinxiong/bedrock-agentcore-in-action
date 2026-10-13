@@ -1,0 +1,277 @@
+# docs/05-capability-map.yaml
+# 机器可读的覆盖与独立性清单。shared/scripts/verify-coverage.py 读这份文件做 CI 校验。
+#
+# 三类校验规则：
+#   [覆盖] 14 项 capability 每项至少在一个 usecase 里 depth: deep
+#   [实证] usecase 声明 deep 的能力，必须在 usecases/<dir>/tests/smoke.py 里有对应断言
+#   [独立] (a) difficulty 序列在阶梯顺序上单调不减
+#          (b) usecases/<dir>/iac 存在且不含对其他 usecase 的引用
+#          (c) usecases/<dir>/src 不 import 其他 usecase
+#
+# 结构：7 个相互独立的用例 + 1 个番外分支（bonus 不参与难度阶梯）。
+
+meta:
+  name: bedrock-agentcore-in-action
+  verified_on: "2026-10-14"
+  lab_region: us-east-1
+  model_region_note: >
+    Registry 仅 5 区（us-east-1 / us-west-2 / ap-northeast-1 / ap-southeast-2 /
+    eu-west-1），Web Search 需 us-east-1，故全系列锁定 us-east-1。
+    注意：本机 aws CLI 的默认区域是 ap-southeast-1，所有命令必须显式带
+    --region us-east-1，bootstrap.sh 会校验这一点。
+  structure: independent-usecases        # 非 git-tag 阶段；每例自带 agent 与 IaC 栈
+  default_build_type: CodeZip            # 不需要 Docker；250MB 压缩 / 750MB 解压；Python 3.10-3.13 与 Node/TS
+  resource_prefix: aia-                  # 命名空间隔离，支撑多例并存
+  tags:
+    Project: agentcore-in-action
+    UseCase: "0X"                        # 支撑独立性与清理断言
+    AutoDelete: "true"
+
+# ── 2026-10-14 已拍板 ────────────────────────────────────────────────
+decisions:
+  A_use_case_count: "7 用例 + 1 番外，难度 D1-D5"
+  B_split_uc07: false                    # 先不拆；拆开后依然独立，代价低
+  C_accept_baseline_duplication: true     # 真独立的必要条件，用生成器压低成本
+  D_repo_language: en                     # 仓库英文为主；README.zh-CN.md 可选、不逐字同步
+  E_article_order: ladder                 # 按 D1→D5 顺序发；独立结构使乱序发布无损
+  F_live_verify_first: true               # 先在真实账号跑通 UC01 再写文档
+
+# ── 难度刻度尺（同 docs/06-difficulty-ladder.md）─────────────────────
+# difficulty 的合法取值与判定条件；CI 校验每个 usecase 的声明落在区间内。
+difficulty_scale:
+  D1: { new_capabilities: "1-2",  external_deps: none,                 mechanisms: "deployment & session model",       minutes_max: 30 }
+  D2: { new_capabilities: "1-2",  external_deps: "1 stateful AWS resource", mechanisms: "state, retrieval, isolation axis",  minutes_max: 60 }
+  D3: { new_capabilities: "2-3",  external_deps: "identity system or third-party API", mechanisms: "authn, authz, network boundary, adjudication", minutes_max: 150 }
+  D4: { new_capabilities: "3-5",  external_deps: "multi-service + async/streaming",   mechanisms: "orchestration, evaluation, significance",      minutes_max: 240 }
+  D5: { new_capabilities: "5+",   external_deps: "multi-agent + org governance",      mechanisms: "protocols, isolation, concurrency, catalog",   minutes_max: 240 }
+
+# ── 独立性契约（每个 usecase 必须满足；见 README「The independence contract」）──
+independence_contract:
+  I1_deploys_alone: "make up UC=0X succeeds with no other use case ever deployed"
+  I2_cleans_up_alone: "make down UC=0X zeroes its cost and touches no other use case"
+  I3_own_iac_stack: "no cross-stack references, no shared state, no reading another use case's outputs"
+  I4_own_source_tree: "usecases/NN-*/src never imports another use case"
+  I5_own_documentation: "README starts from zero; prerequisites are knowledge, never deployed resources"
+
+# ── 14 项 AgentCore 能力 ─────────────────────────────────────────────
+capabilities:
+  - { id: harness,          name: AgentCore Harness,     ga: "2026-06-17" }
+  - { id: runtime,          name: AgentCore Runtime,     ga: "2025-10-13" }
+  - { id: memory,           name: AgentCore Memory,      ga: "2025-10-13" }
+  - { id: gateway,          name: AgentCore Gateway,     ga: "2025-10-13" }
+  - { id: identity,         name: AgentCore Identity,    ga: "2025-10-13" }
+  - { id: policy,           name: Policy in AgentCore,   ga: "2026-03-03" }
+  - { id: code-interpreter, name: AgentCore Code Interpreter, ga: "2025-10-13" }
+  - { id: browser,          name: AgentCore Browser,     ga: "2025-10-13" }
+  - { id: web-search,       name: Web Search on AgentCore, ga: "2026-06-16" }
+  - { id: observability,    name: AgentCore Observability, ga: "2025-10-13" }
+  - { id: evaluations,      name: AgentCore Evaluations, ga: "2026-03-31" }
+  - { id: optimization,     name: AgentCore Optimization, ga: "2026-06-17" }
+  - { id: payments,         name: AgentCore Payments,    ga: "2026-08-18" }
+  - { id: registry,         name: AWS Agent Registry,    ga: "2026-08-31" }
+
+# ── 横切能力 ─────────────────────────────────────────────────────────
+cross_cutting:
+  - { id: a2a-protocol,              deep_in: [uc07] }
+  - { id: mcp-server-hosting,        deep_in: [uc07] }
+  - { id: bidirectional-streaming,   deep_in: [uc07] }
+  - { id: ag-ui-protocol,            deep_in: [uc07] }
+  - { id: long-running-async,        deep_in: [uc07] }
+  - { id: session-isolation,         deep_in: [uc07] }
+  - { id: versioning-and-endpoints,  deep_in: [uc01, uc06] }
+  - { id: skills,                    deep_in: [uc05] }
+  - { id: codezip-vs-container,      deep_in: [uc01] }
+  - { id: harness-vs-runtime,        deep_in: [uc05] }
+  - { id: vpc-privatelink,           deep_in: [uc03] }
+  - { id: custom-ec2-instance-types, deep_in: [uc07] }
+  - { id: inline-function-hitl,      deep_in: [uc04] }
+  - { id: step-functions-integration, deep_in: [] }
+  - { id: third-party-idp,           deep_in: [] }
+  - { id: third-party-observability, deep_in: [] }
+  - { id: ram-cross-account,         deep_in: [uc07] }
+
+# ── 用例（阶梯顺序 = 数组顺序；difficulty 必须单调不减）────────────────
+# assertions 必须与 usecases/<dir>/tests/smoke.py 里的断言一一对应。
+usecases:
+  - id: uc01
+    dir: usecases/01-first-agent
+    title: First Agent
+    difficulty: 1
+    story: A support team's first agent answers from a system prompt only. The goal is a working deploy loop, not a capable agent.
+    baseline_embedded: minimal Strands agent (one file) with CodeZip packaging
+    baseline_reason: smallest runnable unit of the whole series
+    standalone: true
+    knowledge_prereqs: [AWS account, passing familiarity with Bedrock models]
+    cli: agentcore create --framework Strands --model-provider Bedrock --build CodeZip
+    deep: [runtime, observability]
+    incidental: [harness, memory, identity, code-interpreter, codezip-vs-container, versioning-and-endpoints]
+    assertions:
+      - two concurrent runtimeSessionIds do not leak context
+      - the inspector and CloudWatch both show a complete trace
+      - a named endpoint pinned to an earlier version behaves differently
+      - no resource from any other use case exists in the account
+    cost_usd: 1
+    minutes: 30
+
+  - id: uc02
+    dir: usecases/02-memory
+    title: Memory
+    difficulty: 2
+    story: A reorder assistant forgot that you only care about the North China region.
+    baseline_embedded: the minimal agent again, plus its own memory resource
+    baseline_reason: nothing beyond UC01's floor is required, which is what makes D2 a small step
+    standalone: true
+    knowledge_prereqs: [how an AgentCore session is identified]
+    cli: agentcore add memory
+    deep: [memory]
+    incidental: [runtime, identity, evaluations]
+    assertions:
+      - a second session retrieves a preference written in the first
+      - actor A cannot retrieve actor B memories
+      - episodic strategy recalls a previously failed approach
+      - no resource from any other use case exists in the account
+    cost_usd: 2
+    minutes: 60
+
+  - id: uc03
+    dir: usecases/03-gateway-identity
+    title: Gateway and Identity
+    difficulty: 3
+    story: An operations assistant must reach an order database, a ticketing API and a CRM without holding credentials.
+    baseline_embedded: minimal agent, one minimal gateway, a Cognito user pool, one Lambda backend, one OpenAPI descriptor, one self-hosted MCP server
+    baseline_reason: first use case that requires the reader to stand up real AWS resources, so the floor rises
+    standalone: true
+    knowledge_prereqs: [OAuth2 and JWT basics, what an MCP server is]
+    cli: agentcore add gateway && agentcore add credential
+    deep: [gateway, identity]
+    incidental: [vpc-privatelink, third-party-idp, mcp-server-hosting]
+    assertions:
+      - all three target types appear in tools/list
+      - a call without a JWT is rejected
+      - 3LO outbound triggers consent then auto-refreshes
+      - no plaintext credential exists in agent source
+      - no resource from any other use case exists in the account
+    cost_usd: 5
+    minutes: 150
+
+  - id: uc04
+    dir: usecases/04-policy
+    title: Policy
+    difficulty: 3
+    story: Someone asks the refund assistant to refund a CNY 3000 order. Business rules say no.
+    baseline_embedded: a one-tool gateway that exists only to be intercepted, plus the minimal agent
+    baseline_reason: >
+      Deliberate duplication. UC03 covers how to connect, UC04 covers how to restrict;
+      merging them makes a single muddy use case. So UC04 ships the smallest possible
+      gateway and says so out loud in its README section "What you repeated".
+    standalone: true
+    knowledge_prereqs: [what a gateway target is, from UC03 or elsewhere]
+    cli: agentcore add policy
+    deep: [policy]
+    incidental: [gateway, inline-function-hitl, observability]
+    assertions:
+      - the same over-reach passes in log-only mode and is denied in enforce mode
+      - the decision log names the matched policy
+      - a CNY 200 refund routes to human approval without a code change
+      - no resource from any other use case exists in the account
+    cost_usd: 3
+    minutes: 120
+
+  - id: uc05
+    dir: usecases/05-research-agent
+    title: Research Agent
+    difficulty: 4
+    story: A market research agent searches, browses, computes and delivers an xlsx.
+    baseline_embedded: a Harness configuration (no agent loop required) plus three tool resources
+    baseline_reason: this is the use case where the managed harness replaces the hand-written loop
+    standalone: true
+    knowledge_prereqs: [prompt design, what a sandbox is]
+    cli: agentcore create --harness
+    deep: [harness, web-search, browser, code-interpreter]
+    incidental: [observability, evaluations, skills, harness-vs-runtime]
+    assertions:
+      - one prompt produces search, browse and code spans
+      - a real xlsx or png artifact is produced
+      - the conversation survives a mid-session model switch
+      - the exported harness deploys to Runtime and behaves the same
+      - no resource from any other use case exists in the account
+    cost_usd: 8
+    minutes: 180
+
+  - id: uc06
+    dir: usecases/06-quality-loop
+    title: Quality Loop
+    difficulty: 4
+    story: An agent has been live for two months and users are complaining. Nobody can say which step broke.
+    baseline_embedded: an agent carrying two to three tools, because there must be enough behaviour to evaluate
+    baseline_reason: the subject of this use case is quality, so the baseline must have something worth measuring
+    standalone: true
+    knowledge_prereqs: [sampling and confidence intervals, at a working level]
+    cli: agentcore add evaluator
+    deep: [observability, evaluations, optimization, versioning-and-endpoints]
+    incidental: [gateway, third-party-observability]
+    assertions:
+      - all four evaluation modes execute
+      - the recommendation cites an observed failure pattern
+      - the A/B report reports a confidence interval and a p-value
+      - CI blocks a PR when batch evaluation regresses
+      - no resource from any other use case exists in the account
+    cost_usd: 15
+    minutes: 240
+
+  - id: uc07
+    dir: usecases/07-multi-agent-registry
+    title: Multi-Agent and Registry
+    difficulty: 5
+    story: A contract review orchestrator calls two specialist agents over A2A, and the org needs a catalog.
+    baseline_embedded: an orchestrator plus two specialist agents, plus two self-contained registrable records
+    baseline_reason: >
+      Registry needs subjects. Rather than depending on UC01 to UC06 having run, this use
+      case ships its own registrable objects, so it stays independent.
+    standalone: true
+    knowledge_prereqs: [A2A and MCP at a conceptual level, async request handling]
+    cli: agentcore add agent
+    deep: [runtime, registry, a2a-protocol, mcp-server-hosting, bidirectional-streaming,
+           ag-ui-protocol, long-running-async, session-isolation, custom-ec2-instance-types,
+           ram-cross-account]
+    incidental: [harness, code-interpreter, step-functions-integration]
+    assertions:
+      - the orchestrator reaches both sub-agents over A2A
+      - 10 concurrent sessions do not contaminate each other
+      - an async task completes beyond the synchronous timeout
+      - barge-in works under bidirectional streaming
+      - list-registries succeeds via the agent-registry namespace
+      - semantic search for "payment processing" hits a record named "billing"
+      - no resource from any other use case exists in the account
+    cost_usd: 12
+    minutes: 240
+    iac_extra: terraform
+    pitfalls:
+      - Registry namespace is agent-registry (NOT bedrock-agentcore)
+      - Registry ARN prefix is arn:aws:agent-registry
+      - Registry managed policy is AgentRegistryFullAccess (NOT BedrockAgentCoreFullAccess)
+      - the legacy bedrock-agentcore registry namespace shut down on 2026-09-17
+      - Registry is available in only 5 regions
+
+# ── 番外分支（不参与难度阶梯；有外部门槛）─────────────────────────────
+bonus:
+  - id: bonus-payments
+    dir: bonus/payments
+    title: Agent Payments
+    difficulty: 3
+    outside_ladder: true
+    story: An agent buys a paid market data feed within a hard spending limit.
+    why_bonus: Needs a Coinbase CDP or Stripe (Privy) wallet account plus a small real spend. Requiring a wallet mid-ladder would break the reader's run of consecutive steps, so it is a branch, not a rung.
+    baseline_embedded: minimal agent, a payment manager, one paid endpoint
+    standalone: true
+    knowledge_prereqs: [HTTP 402 and the x402 idea]
+    cli: agentcore add payment-manager && agentcore add payment-connector
+    deep: [payments]
+    incidental: [gateway, identity, policy]
+    assertions:
+      - a small payment succeeds and returns the paid payload
+      - a payment above the spending limit is rejected with a clear reason
+      - every payment is traceable to a session in CloudWatch
+    cost_usd: 2
+    minutes: 120
+    iac_extra: terraform

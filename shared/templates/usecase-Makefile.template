@@ -1,0 +1,50 @@
+# UC{{UC_NUM}} · {{UC_TITLE}}: per-use-case targets
+#
+# This use case is a self-contained AgentCore project: its own agent source, its
+# own IaC stack, its own resources. Nothing here reads another use case's output.
+# See README.md section 2.3 for what that means in practice.
+#
+# The top-level Makefile dispatches here: `make up UC={{UC_NUM}}`.
+
+SHELL := /bin/bash
+REGION := us-east-1
+UC_NUM := {{UC_NUM}}
+TAGS := Project=agentcore-in-action UseCase=$(UC_NUM) AutoDelete=true
+
+.PHONY: help up test down verify-independence status clean
+
+help:
+	@sed -n '1,20p' Makefile
+
+## up: deploy this use case on its own. Requires no other use case.
+up:
+	@echo ">> deploying use case $(UC_NUM) in $(REGION), this must work standalone"
+	agentcore deploy --region $(REGION)
+	agentcore status --region $(REGION)
+
+## test: run the assertion suite (fails until every capability is asserted)
+test:
+	python3 tests/smoke.py --usecase $(UC_NUM)
+
+## verify-independence: prove this run created nothing belonging to another use case
+verify-independence:
+	@echo ">> checking that no other use case's resources exist because of this run"
+	aws resourcegroupstaggingapi get-resources --region $(REGION) \
+	  --tag-filters Key=Project,Values=agentcore-in-action \
+	                Key=UseCase,Values=01,02,03,04,05,06,07 \
+	  --query "ResourceTagMappingList[?contains(to_string(@), 'UseCase=$(UC_NUM)') == \`false\`].ResourceARN" \
+	  --output text
+
+## down: destroy only this use case
+down:
+	agentcore remove all --region $(REGION)
+	agentcore deploy --region $(REGION) || true
+	@echo ">> now check the cleanup list in README.md section 10 by hand"
+
+## status: what is deployed for this use case
+status:
+	agentcore status --region $(REGION)
+
+## clean: remove local build artefacts
+clean:
+	rm -rf .venv .pytest_cache __pycache__ tests/__pycache__ src/__pycache__

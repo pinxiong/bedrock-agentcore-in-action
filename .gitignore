@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node / CDK
+node_modules/
+cdk.out/
+
+# Env & secrets
+.env
+.env.local
+
+# macOS
+.DS_Store
