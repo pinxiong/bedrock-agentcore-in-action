@@ -106,9 +106,9 @@ usecases:
     deep: [runtime, observability]
     incidental: [harness, memory, identity, code-interpreter, codezip-vs-container, versioning-and-endpoints]
     assertions:
-      - two concurrent runtimeSessionIds do not leak context
-      - the inspector and CloudWatch both show a complete trace
-      - a named endpoint pinned to an earlier version behaves differently
+      - the runtime is deployed in the target region and reports READY
+      - one invoke answers through the add_numbers tool, with the right result and no model scaffolding
+      - that same invoke leaves a trace whose span tree contains an execute_tool span
       - no resource from any other use case exists in the account
     cost_usd: 1
     minutes: 30

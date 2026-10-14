@@ -1,3 +1,17 @@
 {
-  "targets": {}
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "aia_uc01": {
+            "runtimeId": "aiauc01_aia_uc01-LH8zQV86C2",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-LH8zQV86C2",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc01-default-ApplicationAgentAiaUc01Ru-VBQl4vDYO2mJ"
+          }
+        },
+        "stackName": "AgentCore-aiauc01-default",
+        "deployHash": "7b0fd5d5199a4be9"
+      }
+    }
+  }
 }

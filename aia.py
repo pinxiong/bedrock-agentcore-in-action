@@ -142,6 +142,20 @@ def uc_number(uc_dir: Path) -> str:
     die(f"cannot determine the use case number for {uc_dir}")
 
 
+def agentcore_project(uc_dir: Path) -> Path | None:
+    """Return the CLI project spec (agentcore/agentcore.json), or None.
+
+    Two facts the wrappers below depend on:
+
+      * the spec lives in an agentcore/ directory next to the project root, so
+        the path to test is uc_dir/agentcore/agentcore.json, not uc_dir/agentcore.json;
+      * the deployment region comes from agentcore/aws-targets.json, so the CLI
+        takes no --region flag. Commands run from uc_dir, not from uc_dir/agentcore.
+    """
+    spec = uc_dir / "agentcore" / "agentcore.json"
+    return spec if spec.exists() else None
+
+
 # --------------------------------------------------------------------------- #
 # aia doctor  (was bootstrap.sh)                                              #
 # --------------------------------------------------------------------------- #
@@ -267,12 +281,12 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 def cmd_up(args: argparse.Namespace) -> int:
     uc_dir = find_uc_dir(args.usecase)
     num = uc_number(uc_dir)
-    print(f">> deploying use case {num} in {REGION}; this must work standalone")
-    iac = uc_dir / "iac"
-    if (iac / "app.py").exists() or (iac / "cdk.json").exists():
-        run(["cdk", "deploy", "--app", "python iac/app.py", "--region", REGION], cwd=uc_dir)
-    if (uc_dir / "agentcore.json").exists():
-        run(["agentcore", "deploy", "--region", REGION], cwd=uc_dir)
+    print(f">> deploying use case {num}; this must work standalone")
+    if not agentcore_project(uc_dir):
+        die(f"{uc_dir} has no agentcore/agentcore.json; nothing to deploy")
+    # No --region here: the CLI reads the target region from agentcore/aws-targets.json.
+    # -y / --target default keeps it non-interactive, so the same command works in CI.
+    run(["agentcore", "deploy", "-y", "--target", "default"], cwd=uc_dir)
     return cmd_status(args)
 
 
@@ -280,12 +294,14 @@ def cmd_down(args: argparse.Namespace) -> int:
     uc_dir = find_uc_dir(args.usecase)
     num = uc_number(uc_dir)
     print(f">> destroying use case {num} only")
-    iac = uc_dir / "iac"
-    if (iac / "app.py").exists() or (iac / "cdk.json").exists():
-        run(["cdk", "destroy", "--app", "python iac/app.py", "--region", REGION, "--force"], cwd=uc_dir, check=False)
-    if (uc_dir / "agentcore.json").exists():
-        run(["agentcore", "remove", "all", "--region", REGION], cwd=uc_dir, check=False)
-        run(["agentcore", "deploy", "--region", REGION], cwd=uc_dir, check=False)
+    if not agentcore_project(uc_dir):
+        print(f"  nothing agentcore-managed in {uc_dir} (no agentcore/agentcore.json)")
+        return 0
+    # `remove all` empties the local spec, then `deploy` reconciles the stack down.
+    # It rewrites agentcore/agentcore.json, so restore it from git afterwards if you
+    # intend to deploy the use case again.
+    run(["agentcore", "remove", "all"], cwd=uc_dir, check=False)
+    run(["agentcore", "deploy", "-y", "--target", "default"], cwd=uc_dir, check=False)
     print(">> now check the cleanup list in the use case README (Cleanup section) by hand")
     return 0
 
@@ -296,16 +312,18 @@ def cmd_test(args: argparse.Namespace) -> int:
     smoke = uc_dir / "tests" / "smoke.py"
     if not smoke.exists():
         die(f"{smoke} does not exist")
-    run([sys.executable, "tests/smoke.py", "--usecase", num], cwd=uc_dir)
-    return 0
+    # check=False: a failing assertion is a normal outcome, reported by the exit
+    # code, not a Python traceback.
+    proc = run([sys.executable, "tests/smoke.py", "--usecase", num], cwd=uc_dir, check=False)
+    return proc.returncode
 
 
 def cmd_status(args: argparse.Namespace) -> int:
     uc_dir = find_uc_dir(args.usecase)
-    if (uc_dir / "agentcore.json").exists():
-        run(["agentcore", "status", "--region", REGION], cwd=uc_dir)
+    if agentcore_project(uc_dir):
+        run(["agentcore", "status"], cwd=uc_dir, check=False)
     else:
-        print(f"  nothing agentcore-managed in {uc_dir} (no agentcore.json)")
+        print(f"  nothing agentcore-managed in {uc_dir} (no agentcore/agentcore.json)")
     return 0
 
 
@@ -314,11 +332,11 @@ def cmd_verify(args: argparse.Namespace) -> int:
     if rc != 0:
         return rc
     uc_dir = find_uc_dir(args.usecase)
-    run(
+    return run(
         [sys.executable, "shared/scripts/verify-coverage.py", "--usecase", f"uc{uc_number(uc_dir)}"],
         cwd=REPO_ROOT,
-    )
-    return 0
+        check=False,
+    ).returncode
 
 
 def cmd_verify_all(_args: argparse.Namespace) -> int:
@@ -449,7 +467,8 @@ def cmd_new(args: argparse.Namespace) -> int:
         (target / sub).mkdir(parents=True, exist_ok=True)
 
     # agent code + its IaC source of truth
-    for name in ("src/main.py", "src/model/load.py", "pyproject.toml",
+    for name in ("src/main.py", "src/model/__init__.py", "src/model/load.py",
+                 "src/model/sanitize.py", "pyproject.toml",
                  "agentcore/agentcore.json", "agentcore/aws-targets.json"):
         src = BASELINE / name
         (target / name).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
