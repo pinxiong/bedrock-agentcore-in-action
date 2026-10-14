@@ -54,6 +54,48 @@ IMPORT_PATTERNS = [
     r"^\s*from\s+\.\.\.",
 ]
 
+# Vendored trees must never be scanned: a use case ships its own .venv for local
+# development and its own node_modules for the generated CDK app, and the
+# third-party code inside them is full of relative imports that look exactly
+# like the thing I4 forbids.
+SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", "cdk.out", ".cache"}
+SKIP_SUFFIXES = {".png", ".svg", ".pdf", ".zip", ".lock", ".whl", ".so", ".pyc"}
+
+
+def walk_files(root: Path, suffix: str | None = None) -> list[Path]:
+    """Every file under root, minus vendor trees and binary artefacts."""
+    found: list[Path] = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        if any(part in SKIP_DIRS for part in path.relative_to(root).parts[:-1]):
+            continue
+        if path.suffix in SKIP_SUFFIXES:
+            continue
+        if suffix and path.suffix != suffix:
+            continue
+        found.append(path)
+    return found
+
+
+def other_use_case_tokens(other_dir: str) -> list[str]:
+    """Strings that would prove one use case is wired to another one.
+
+    Only distinctive tokens count. A bare directory name is not enough: the
+    AgentCore config schema has a top level `payments` array, so matching the
+    word "payments" would flag every project in this repository for the bonus
+    use case. Numbered directory names and generated resource names are the
+    only things that are unambiguous.
+    """
+    name = Path(other_dir).name
+    tokens: list[str] = []
+    match = re.match(r"^(\d{2})-", name)
+    if not match:
+        return tokens
+    num = match.group(1)
+    tokens += [name, f"aia_uc{num}", f"aiauc{num}"]
+    return tokens
+
 
 class Report:
     def __init__(self) -> None:
@@ -213,14 +255,12 @@ def check_independence(root: Path, spec: dict, only: str | None, allow_missing: 
             rep.warn(msg + " (allowed during bootstrap)") if allow_missing else rep.fail(msg)
             continue
 
-        iac = uc_dir / "iac"
+        iac = uc_dir / "agentcore"
         if not iac.exists():
-            rep.fail(f"{uc['id']}: no iac/ directory (violates I3)")
+            rep.fail(f"{uc['id']}: no agentcore/ directory (violates I3)")
         else:
             hits = []
-            for f in list(iac.rglob("*")):
-                if not f.is_file() or f.suffix in {".png", ".svg", ".pdf", ".zip"}:
-                    continue
+            for f in walk_files(iac):
                 text = f.read_text(encoding="utf-8", errors="ignore")
                 for pattern, label in CROSS_STACK_PATTERNS:
                     if re.search(pattern, text):
@@ -228,19 +268,21 @@ def check_independence(root: Path, spec: dict, only: str | None, allow_missing: 
                 for other in all_dirs:
                     if other == uc["dir"]:
                         continue
-                    if Path(other).name in text:
-                        hits.append(f"{f.name}: references {other}")
+                    for token in other_use_case_tokens(other):
+                        if token in text:
+                            hits.append(f"{f.name}: references {token}")
+                            break
             if hits:
                 rep.fail(f"{uc['id']}: cross-stack reference -> {'; '.join(hits)}")
             else:
-                rep.ok(f"{uc['id']}: iac/ is self-contained")
+                rep.ok(f"{uc['id']}: agentcore/ is self-contained")
 
         src = uc_dir / "src"
         if not src.exists():
             rep.fail(f"{uc['id']}: no src/ directory (violates I4)")
         else:
             hits = []
-            for f in list(src.rglob("*.py")):
+            for f in walk_files(src, suffix=".py"):
                 text = f.read_text(encoding="utf-8", errors="ignore")
                 for pattern in IMPORT_PATTERNS:
                     if re.search(pattern, text, re.M):

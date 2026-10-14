@@ -81,12 +81,61 @@ agentcore add payment-connector  # 支付渠道
 agentcore remove all             # 清空配置，再 deploy 即销毁资源
 ```
 
-### 1.4 必须写进文档的四个坑
+### 1.4 必须写进文档的六个坑
 
 1. **Registry 换过命名空间**：已迁到独立的 `agent-registry`（ARN 前缀 `arn:aws:agent-registry`、服务主体 `agent-registry.amazonaws.com`、托管策略 `AgentRegistryFullAccess`）。旧 `bedrock-agentcore` 命名空间 2026-09-17 已关闭。
 2. **区域割裂**：Registry 仅 5 区，Web Search 需 us-east-1，**全系列锁 `us-east-1`**。
 3. **`agentcore` 命令名冲突**：若曾 `pip install bedrock-agentcore-starter-toolkit`，旧的 Python `agentcore` 会遮蔽 npm 的。前置检查要包含 `pip uninstall bedrock-agentcore-starter-toolkit`。官方文档把这个坑单独列了一条提示。
 4. **本机 CLI 默认区域不是 us-east-1**（2026-10-14 实测：`~/.aws/config` 里是 `ap-southeast-1`）。任何没带 `--region us-east-1` 的命令都会落到错误的区域，读者会以为服务不可用。`aia doctor` 因此校验区域而不是信任环境变量。
+5. **美国模型厂商有地理封锁**（2026-10-14 实测）：从受限地区调用 Bedrock 上的 Anthropic 与 OpenAI 模型，一律返回 `ValidationException: Access to Anthropic/OpenAI models is not allowed from unsupported countries, regions, or territories`。**这与 Model access 权限无关**，是厂商国别政策，控制台里开通也没用。→ 系列默认模型因此选 DeepSeek（见 §1.5）。
+6. **`agentcore create` 会装 Python 依赖**：PyPI 官方源在部分网络下不可达，命令会**静默卡死**在 "Set up Python environment"（venv 停在 68K，无报错）。必须先设镜像：`UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple`。实测加上后 3 分 31 秒成功。
+
+### 1.5 CLI 的项目形态与模型选型（2026-10-14 实测，UC01 本地闭环已跑通）
+
+**项目是 schema-first 的，IaC 就是一份 JSON。** 实测的产出结构：
+
+```
+<project>/
+├── AGENTS.md                      # 官方约定：JSON 是唯一真相源
+├── agentcore/agentcore.json       # ★ 所有资源在这里声明
+├── agentcore/aws-targets.json     # 部署目标（account + region）
+├── agentcore/.llm-context/*.ts    # 权威 schema，字段级约束写在这里
+├── agentcore/cdk/                 # CLI 生成的 CDK 应用（明令不可手改）
+└── src/                           # agent 代码，agentcore.json 的 codeLocation 指向它
+```
+
+三条官方不变量，直接影响我们的文档写法：
+
+- **JSON 是唯一真相源**，改行为要改 JSON，不要改 `cdk/` 里生成的代码
+- **`name` 决定 CloudFormation Logical ID**：改名 = 销毁重建，改其他字段 = 原地更新
+- **删资源用 `agentcore remove` 再 `agentcore deploy`**，不是手工删
+
+`agentcore.json` 的顶层字段**就是能力清单本身**：
+`runtimes / memories / knowledgeBases / credentials / evaluators / onlineEvalConfigs / agentCoreGateways / policyEngines / configBundles / abTests / harnesses / datasets / capacityProviders / payments`。
+
+本仓库的取舍：**`codeLocation: "src/"`**，不采用 CLI 默认的 `app/<agent_name>/`，让七个用例的目录命名保持一致（已 `agentcore validate` 通过）。
+
+**模型选型（全部实测，2026-10-14）**
+
+| model id | 可用性 | 备注 |
+|---|---|---|
+| `deepseek.v3.2` | ✅ Converse + Strands 双通 | **系列默认**；OpenAI 兼容响应；流式原文可能带 `<｜DSML｜function_calls` 标记 |
+| `amazon.nova-pro-v1:0` | ✅ | 输出干净，字符串里会带 `<thinking>` |
+| `amazon.nova-lite-v1:0` | ✅ | 同上 |
+| `anthropic.*` | ❌ | 地理封锁 |
+| `openai.*` | ❌ | 地理封锁 |
+| `deepseek.r1-v1:0` | ❌ | 不支持 on-demand，需 inference profile |
+| `amazon.nova-2-lite-v1:0` | ❌ | 同上 |
+
+切换方式：`MODEL_ID` 环境变量（`src/model/load.py`，默认 `deepseek.v3.2`）。
+
+**其余实测约束**
+
+- `runtimeVersion` 默认 `PYTHON_3_14`（预发布）→ 本系列**钉 `PYTHON_3_13`**
+- agent 名与项目名只能 `^[a-zA-Z][a-zA-Z0-9_]{0,47}$`，**不能有连字符**
+- 本地开发：`agentcore dev` 起的 server **端口是动态的**（本次 8082，Chat UI 在 8081），日志在 `agentcore/.cli/logs/dev/`
+- **0.31.1 的 `agentcore invoke` 没有 `--dev` 参数**（CLI 模板 README 里的 `agentcore invoke --dev "..."` 是旧语法）。本地验证直接 POST `http://127.0.0.1:<port>/invocations`
+- 本地闭环实测通过：真实工具调用（`toolUse: add_numbers {"a": 17, "b": 25}`）→ 第二轮答 `The sum of 17 plus 25 is 42.`（454 + 490 tokens，2.5s + 1.2s）
 
 ---
 
@@ -379,9 +428,8 @@ bedrock-agentcore-in-action/
 │   │   ├── README.md            #   十二节可操作文档
 │   │   ├── ARCHITECTURE.md
 │   │   ├── diagrams/
-│   │   ├── src/                 #   自带 agent（生成器生成后自行演进）
-│   │   ├── iac/                 #   独立栈，无跨栈引用
-│   │   ├── scripts/
+│   │   ├── src/                 #   自带 agent（生成器生成后自行演进）；agentcore.json 的 codeLocation 指向这里
+│   │   ├── agentcore/           #   ★ 本用例的 IaC：agentcore.json 是唯一真相源 + CLI 生成的 CDK 应用
 │   │   ├── tests/smoke.py       #   本例断言，与 capability-map 一一对应
 │   │   └── article.md           #   发表稿（英文）
 │   ├── 02-memory/
@@ -414,9 +462,10 @@ bedrock-agentcore-in-action/
 │       ├── article.template.md
 │       └── baseline-agent/      # ★ 最小独立 agent 骨架（被生成器复制）
 │           ├── src/main.py
+│           ├── src/model/load.py
 │           ├── pyproject.toml
 │           ├── tests/smoke.py
-│           └── iac/
+│           └── agentcore/agentcore.json
 │
 └── .github/workflows/
     ├── usecase-ci.yml           #   改动哪个用例就只测哪个
@@ -430,7 +479,7 @@ bedrock-agentcore-in-action/
 | | v2（阶段 / git tag） | v3（独立用例） |
 |---|---|---|
 | 代码位置 | `app/Emma/` 一个 agent 逐阶段长大 | `usecases/NN-*/src/` 每例自带 agent |
-| IaC | `agentcore/agentcore.json` 一份配置叠加 | 每例一个独立 `iac/` 栈 |
+| IaC | `agentcore/agentcore.json` 一份配置叠加 | 每例一个独立 `agentcore/agentcore.json`（各自合成独立栈） |
 | 独立性载体 | git tag | **目录 + 独立栈** |
 | 从中间切入 | `git checkout stage-04` 后拿到的仍是那一个项目的状态 | 直接 `python aia.py up 04` |
 | 并行部署 | 不可能（同一个栈） | **可能**（任意子集、任意顺序） |
@@ -441,7 +490,7 @@ bedrock-agentcore-in-action/
 
 | 项 | 约定 |
 |---|---|
-| AWS 资源前缀 | `aia-`（如 `aia-uc03-gw-*`） |
+| AWS 资源前缀 | `aia_uc0X_`（如 `aia_uc03_orders`）。**不能用连字符**：CLI 对 `name` 的校验是 `^[a-zA-Z][a-zA-Z0-9_]{0,47}$`，连字符会被拒 |
 | 标签 | `Project=agentcore-in-action`、**`UseCase=0X`**、`AutoDelete=true` |
 | `UseCase` 标签的用途 | 支撑 §2.1 的独立性与清理断言 |
 | 分支 | `uc-0X-<name>`；合并后不保留长期分支 |

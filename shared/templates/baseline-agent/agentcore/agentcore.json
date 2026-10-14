@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "{{PROJECT_NAME}}",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "agentcore-in-action",
+    "UseCase": "{{UC_NUM}}",
+    "AutoDelete": "true"
+  },
+  "runtimes": [
+    {
+      "name": "{{AGENT_NAME}}",
+      "description": "{{UC_ID}} {{UC_TITLE}}",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "src/",
+      "runtimeVersion": "PYTHON_3_13",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "{{MODEL_ID}}"
+        }
+      ],
+      "tags": {
+        "UseCase": "{{UC_NUM}}"
+      }
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [],
+  "payments": []
+}

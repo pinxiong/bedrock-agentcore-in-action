@@ -47,9 +47,9 @@ usecases/08-your-idea/
 ├── README.md      from the twelve-section template
 ├── article.md     from the article template
 ├── .env.example   placeholders only
-├── src/main.py    a ~20 line baseline agent
+├── src/main.py    the baseline agent, verified entrypoint contract
 ├── tests/         smoke.py plus the independence helper
-├── iac/           empty, yours to fill
+├── agentcore/     agentcore.json is yours to fill; cdk/ is generated
 ├── diagrams/
 └── scripts/
 ```
@@ -65,7 +65,7 @@ Three rules while you work, matching the contract:
 
 | Rule | Means |
 |---|---|
-| **I3** own stack | `iac/` must not reference another use case's stack. No `Fn.import_value`, no `terraform_remote_state`, no `Outputs` from a sibling. The verifier greps for all of these. |
+| **I3** own stack | `agentcore/agentcore.json` must not reference another use case's stack. No `Fn.import_value`, no `terraform_remote_state`, no `Outputs` from a sibling. The verifier greps for all of these. |
 | **I4** own source | `src/` must not import another use case. If you need a helper, copy it in. |
 | **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `python aia.py down`. |
 

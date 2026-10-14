@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "aiauc01",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "agentcore-in-action",
+    "UseCase": "01",
+    "AutoDelete": "true"
+  },
+  "runtimes": [
+    {
+      "name": "aia_uc01",
+      "description": "UC01 First Agent: the deploy loop end to end",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "src/",
+      "runtimeVersion": "PYTHON_3_13",
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "deepseek.v3.2"
+        }
+      ],
+      "tags": {
+        "UseCase": "01"
+      }
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [],
+  "payments": []
+}

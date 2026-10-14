@@ -1,46 +1,91 @@
 """{{UC_ID}} · {{UC_SLUG}}: baseline agent.
 
-SCAFFOLD. The shape below follows the AgentCore Runtime entrypoint contract as
-documented on 2026-10-13. Before you write the use case documentation, run
-`agentcore dev` once and confirm the import path and decorator name against the
-CLI version you actually installed, then correct this file if needed.
+The entrypoint contract below was verified against agentcore CLI 0.31.1 on
+2026-10-14, together with `bedrock-agentcore` and `strands-agents`:
 
-This file is deliberately about 20 lines. Its job is to make the use case
-deployable on its own; the capability under test lives in the rest of src/.
-See the "What you repeated" section of this use case's README.
+    from bedrock_agentcore.runtime import BedrockAgentCoreApp
+    app = BedrockAgentCoreApp()
+    @app.entrypoint
+    async def invoke(payload, context):   # async, yields streamed events
+
+It is deliberately small. Its job is to make this use case deployable on its
+own; the capability under test lives in the rest of src/. See the
+"What you repeated" section of this use case's README.
 """
 
 from __future__ import annotations
 
-import os
+from collections import OrderedDict
+from typing import Any
 
-MODEL_ID = os.environ.get("MODEL_ID", "{{MODEL_ID}}")
+from bedrock_agentcore.runtime import BedrockAgentCoreApp
+from strands import Agent, tool
+from strands.agent.conversation_manager.null_conversation_manager import NullConversationManager
 
-SYSTEM_PROMPT = """{{SYSTEM_PROMPT}}"""
+from model.load import load_model
+
+app = BedrockAgentCoreApp()
+log = app.logger
+
+SYSTEM_PROMPT = """{{UC_ID}}: replace this with the system prompt this use case needs."""
 
 
-def build_agent():
-    """Return an agent object exposing .stream(prompt, session_id=...)."""
-    from bedrock_agentcore.runtime import BedrockAgentCoreApp  # type: ignore
-    from strands import Agent  # type: ignore
-    from strands.models import BedrockModel  # type: ignore
+@tool
+def add_numbers(a: int, b: int) -> int:
+    """Return the sum of two numbers."""
+    return a + b
 
-    app = BedrockAgentCoreApp()
-    agent = Agent(
-        model=BedrockModel(model_id=MODEL_ID, region_name="us-east-1"),
+
+# {{UC_ID}}: replace with the tools this use case is actually about. One tool is
+# kept here so the Observability trace has a span to show.
+TOOLS = [add_numbers]
+
+# One Agent per session id, so a session keeps its own conversation history.
+# Bounded, because one process serves many sessions. History is in-process, so a
+# cold start loses it.
+MAX_SESSIONS = 128
+_agents: "OrderedDict[str, Agent]" = OrderedDict()
+
+
+def get_or_create_agent(session_id: str) -> Agent:
+    if session_id in _agents:
+        _agents.move_to_end(session_id)
+        return _agents[session_id]
+    if len(_agents) >= MAX_SESSIONS:
+        _agents.popitem(last=False)
+    _agents[session_id] = Agent(
+        model=load_model(),
         system_prompt=SYSTEM_PROMPT,
-        tools=[],  # {{UC_ID}}: add this use case's tools here
+        tools=list(TOOLS),
+        conversation_manager=NullConversationManager(),
     )
+    return _agents[session_id]
 
-    @app.entrypoint
-    def invoke(payload: dict) -> dict:
-        session_id = payload.get("runtimeSessionId") or "local"
-        prompt = payload.get("prompt", "")
-        result = agent(prompt)
-        return {"output": str(result), "sessionId": session_id}
 
-    return app
+def extract_prompt(payload: Any) -> str:
+    """Accept a bare string or {"prompt": "..."}; reject anything else."""
+    if isinstance(payload, str):
+        return payload
+    if isinstance(payload, dict):
+        for key in ("prompt", "message", "input"):
+            value = payload.get(key)
+            if isinstance(value, str):
+                return value
+    raise ValueError('payload must be a string or contain a "prompt" string')
+
+
+@app.entrypoint
+async def invoke(payload: Any, context: Any):
+    session_id = getattr(context, "session_id", "default-session")
+    prompt = extract_prompt(payload)
+    log.info("{{UC_ID}} invoke: model_id=%s session_id=%s", load_model().config.get("model_id"), session_id)
+
+    agent = get_or_create_agent(session_id)
+    async for event in agent.stream_async(prompt):
+        if not isinstance(event, dict) or "event" not in event:
+            continue
+        yield event
 
 
 if __name__ == "__main__":
-    build_agent().run()
+    app.run()

@@ -62,7 +62,7 @@
 |---|---|---|
 | I1 | 部署独立 | `python aia.py up 0X`（仓库根执行）即可完成，不读取任何其他用例的 stack 输出 |
 | I2 | 清理独立 | 所有资源带 `UseCase=0X` 标签，`python aia.py down 0X` 只销毁本用例 |
-| I3 | IaC 独立 | `iac/` 是独立栈，无跨栈引用 |
+| I3 | IaC 独立 | `agentcore/agentcore.json` 是本例唯一的资源声明，各例独立合成栈，无跨栈引用 |
 | I4 | 代码独立 | `src/` 不 import 任何其他用例 |
 | I5 | 文档独立 | 本节以上即为全部前置 |
 
