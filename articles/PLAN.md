@@ -24,7 +24,7 @@
 
 1. **结构卡**：逐节大纲（本规划第 4 节的粒度），先确认再写正文
 2. **英文稿**：`articles/<slug>.md`，Hugo front matter（draft: true），单一真相源
-3. **中文稿**：`articles/zh/<slug>.md`，公众号版式（改写而非逐段对译），发布时指向英文 canonical
+3. **中文稿**：`articles/<slug>.zh.md`（与英文稿同目录，图片相对路径与英文稿完全一致；不用 `../`，部分预览器不解析父目录），公众号版式（改写而非逐段对译），发布时指向英文 canonical
 4. **图**：`articles/images/<slug>/`，全英文，SVG 源 + PNG 成品同目录
 5. **PPT**：`articles/decks/<slug>.pptx`，16:9，逐页大纲从结构卡直接映射
 6. **体检记录**：英文稿过 `en_metrics` + `final_check`；图注/图内/正文三方数字一致
@@ -40,7 +40,7 @@
 | 2 | 收集实测素材 | 用例 README 的真实输出、trace、代码、踩坑 | 数字必须来自本仓库实测 |
 | 3 | 写英文稿 | `<slug>.md` | `en_metrics` 六项达标 + `final_check` 0 项 |
 | 4 | 画图（全英文 SVG，resvg-py 转 PNG） | `images/<slug>/` | 图注 = 图内 = 正文 |
-| 5 | 出中文稿（公众号改写版） | `zh/<slug>.md` | 术语中英对照与英文稿一致 |
+| 5 | 出中文稿（公众号改写版） | `<slug>.zh.md` | 术语中英对照与英文稿一致 |
 | 6 | 生成 PPT | `decks/<slug>.pptx` | 每页一个论点，图复用第 4 步 PNG |
 | 7 | 发布检查 | 清单回填 | front matter 无泄漏、og:image、canonical |
 | 8 | commit（不 push，push 走发布流程） | git | 单篇一个 commit |
@@ -76,9 +76,9 @@
 | 9. 原理深挖 I：入口契约 | `/ping` + `/invocations`；entrypoint 异步生成器；session/microVM/模型即参数 | main.py 精简版 | 无 | S18 HTTP 契约 |
 | 10. 原理深挖 II：trace | span 树原文 + agent loop 机制；两个坑（异步延迟、本地无 tool span） | X-Ray batch-get-traces 实测 | F6 span 树图 | S19 trace |
 | 11. 四个真实故障 | 陈旧 cdk.out / 改名即销毁 / DSML 泄漏 / 区域不是 flag | Troubleshooting 实测 | 无 | S20 故障四连 |
-| 12. Takeaways + 系列预告 | 4 条要点 + 金句 + 7 篇路线图 + 截图清单（发布前删） | 现有稿 + 规划第 1 节 | F7 系列路线图（7 格难度阶梯） | S21 takeaways / S22 预告 / S23 收尾 |
+| 12. Takeaways | 4 条要点 + 金句 + 截图清单（发布前删）。**文章以 takeaways 收尾，不写后续用例预告**（2026-10-15 用户裁定） | 现有稿 | 无 | S21 takeaways / S22 收尾 |
 
-PPT 共 23 页（含 3 个深色章节分隔页）；F0..F7 共 8 张图，全部英文、三处复用。
+PPT 共 22 页（含 3 个深色章节分隔页）；F0..F6 共 7 张图，全部英文、三处复用。
 
 ### 现有英文稿到新结构的映射
 
@@ -109,7 +109,7 @@ PPT 共 23 页（含 3 个深色章节分隔页）；F0..F7 共 8 张图，全�
 
 - 图内文字全英文；中文稿直接复用同一批 PNG（文章 / PPT / 中文稿三处共用一套图）
 - **设计系统**：白底（发布平台白底黑字）+ 鲜艳配色（blue #2563EB / purple #7C3AED / orange #EA580C / green #059669 / red #E11D48 / teal #0D9488）；每图统一 header（kicker 胶囊 + 粗标题 + 灰副标题）；卡片带投影（feDropShadow）与渐变填充
-- **每图构图必须不同**，A0 的 8 张分别是：F0 命令旅程带（新）/ F1 彩色分组网格 / F2 渐变层叠 / F3 树卡+图例 / F4 管线+耗时条形图 / F5 VS 对比卡 / F6 span 树+侧注 / F7 难度阶梯
+- **每图构图必须不同**，A0 的 7 张分别是：F0 命令旅程带（新）/ F1 彩色分组网格 / F2 渐变层叠 / F3 树卡+图例 / F4 管线+耗时条形图 / F5 VS 对比卡 / F6 span 树+侧注
 - SVG 源与 PNG 同存 `articles/images/<slug>/`；渲染用 `resvg-py`（1440px 导出）
 - 图注、图内数字、正文口径三方一致（硬门）
 - 等宽字体在 resvg 里比预期宽：chip 宽度系数 ≥ 8.6×字号，渲染后必须逐图目检

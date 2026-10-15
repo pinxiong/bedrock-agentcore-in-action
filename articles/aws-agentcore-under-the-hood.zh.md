@@ -1,18 +1,18 @@
 # 一个 JSON 文件进去，四个云资源出来：拆解 AWS Bedrock AgentCore 的底层机制
 
-> 本文是 AgentCore 系列第 0 篇。英文原版（canonical）：*How AWS Bedrock AgentCore Actually Works*，发布于 xiongpin.dev。后续 7 篇每篇拆一个实战用例，从第一个 Agent 一路做到多 Agent 系统。
+> 本文是 AgentCore 系列第 0 篇。英文原版（canonical）：*How AWS Bedrock AgentCore Actually Works*，发布于 xiongpin.dev。
 
 多数 Agent 部署故事的结局都一样：写 Dockerfile、选实例规格、手工搓 IAM 角色，然后祈祷 YAML 没写错。AWS Bedrock AgentCore 走了另一条路：**整个部署契约就是一个 JSON 文件，一条命令把它变成一个可运行、可观测的线上服务。**
 
 我按这条路部署了一个 Agent，中途搞挂过几次，也把从 JSON 文件到线上 endpoint 之间的每一步都翻了一遍。这篇文章按真实操作顺序走完全程：先备环境，再一步步部署、调用、看 trace，每一步都附上我实测的命令和输出。文中所有数据都来自 us-east-1 的真实部署，不是抄文档。
 
-![AgentCore CLI 全生命周期：六条命令](../images/aws-agentcore-under-the-hood/F0-command-map.png)
+![AgentCore CLI 全生命周期：六条命令](images/aws-agentcore-under-the-hood/F0-command-map.png)
 
 ## 一、AgentCore 是什么，不是什么
 
-AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能力：Runtime、Memory、Gateway、Identity、Policy、Web Search、Browser、Code Interpreter、Observability、Evaluations、Optimization、Payments、Registry 等。本文只点亮其中两格：Runtime 和 Observability，剩下的留给系列后续 7 篇。
+AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能力：Runtime、Memory、Gateway、Identity、Policy、Web Search、Browser、Code Interpreter、Observability、Evaluations、Optimization、Payments、Registry 等。本文只点亮其中两格：Runtime 和 Observability。
 
-![AgentCore：14 项能力，本文点亮 2 项](../images/aws-agentcore-under-the-hood/F1-capability-map.png)
+![AgentCore：14 项能力，本文点亮 2 项](images/aws-agentcore-under-the-hood/F1-capability-map.png)
 
 **不是什么，比是什么更重要：**
 
@@ -26,7 +26,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能�
 
 **你写 Agent 代码，写两个 JSON 文件，CLI 生成其余一切，AWS 跑一个你永远不用看的 CloudFormation 栈。**
 
-![三层模型：你的代码、契约、管道](../images/aws-agentcore-under-the-hood/F2-three-layers.png)
+![三层模型：你的代码、契约、管道](images/aws-agentcore-under-the-hood/F2-three-layers.png)
 
 | 层 | 放什么 | 谁维护 |
 |---|---|---|
@@ -101,7 +101,7 @@ agentcore create --name demo_proj --project-name demoproj --no-agent --build Cod
 
 真正值得看的是磁盘上多了什么：一层放你未来的代码，一层属于 CLI：
 
-![项目解剖：你写的 vs CLI 生成的](../images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
+![项目解剖：你写的 vs CLI 生成的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
 关于这个布局，两个事实值得记住：
 
@@ -167,7 +167,7 @@ agentcore deploy -y --target default
 
 从命令到最后的 checkmark，一共发生六件事：
 
-![部署六步流水线，附实测耗时](../images/aws-agentcore-under-the-hood/F4-deploy-pipeline.png)
+![部署六步流水线，附实测耗时](images/aws-agentcore-under-the-hood/F4-deploy-pipeline.png)
 
 1. **打包代码**：`src/` 加平台依赖压成一个资产包，我的 Hello World 是 41 MB，本地 `.venv` 被排除，全程没有镜像构建；
 2. **合成**：CLI 跑内置的 CDK app，读两个 JSON，产出 CloudFormation 模板到 `cdk.out/`；
@@ -241,7 +241,9 @@ data: {"event": {"messageStop": {"stopReason": "end_turn"}}}
 data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, "metrics": {"latencyMs": 820}}}}
 ```
 
-![同一张 HTTP 面孔，两种宿主](../images/aws-agentcore-under-the-hood/F5-one-surface.png)
+![同一张 HTTP 面孔，两种宿主](images/aws-agentcore-under-the-hood/F5-one-surface.png)
+
+先把这张图的标题说清楚。「同一张面孔」指的是你必须实现的两个路由：`GET /ping` 做健康检查，`POST /invocations` 干活。「两种宿主」指的是同时提供这两个路由的两套环境：本地那套是 `agentcore dev` 起的 Uvicorn 进程，地址 `localhost:8080`；线上那套是 AgentCore 托管的一台 microVM，同一组路由挂在 `https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<runtime-arn>/invocations` 上。路由、扩缩容、TLS 全在平台侧，你的代码不知道自己跑在哪一套里。而 `agentcore invoke` 不是第三种接法，它只是线上这个 `/invocations` 入口的 CLI 客户端，和 boto3 是同一层的东西。
 
 **AgentCore 没有发明新的工具协议，本地和云端用的都是 Bedrock 原生 `toolUse` 协议块。**
 
@@ -275,7 +277,7 @@ async def invoke(payload, context):
 
 一次线上 invoke 在 X-Ray 里长这样（`agentcore traces list` 在调用后约 2–3 分钟能看到）：
 
-![一次工具调用的 X-Ray span 树](../images/aws-agentcore-under-the-hood/F6-span-tree.png)
+![一次工具调用的 X-Ray span 树](images/aws-agentcore-under-the-hood/F6-span-tree.png)
 
 ```text
 invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tokens=934
@@ -313,24 +315,6 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 4. **可观测是真的，但异步的**，写测试时给 span 留几分钟。
 
 一句话总结：**在 AgentCore 里，你的基础设施不是你维护的代码，而是编译的代码。**
-
-## 系列预告
-
-本篇覆盖 Runtime 和 Observability。后续 7 篇逐个点亮剩余能力，难度递增：
-
-![系列路线图：7 个用例，难度阶梯](../images/aws-agentcore-under-the-hood/F7-series-roadmap.png)
-
-| # | 文章 | 用例 | 新增能力 |
-|---|---|---|---|
-| A1 | 你的第一个 AgentCore Agent | 首个 Agent（D1） | runtime, observability |
-| A2 | 给 Agent 一个记得住事的脑子 | Memory（D2） | memory |
-| A3 | 一个 MCP 网关接所有工具 | Gateway + Identity（D3） | gateway, identity |
-| A4 | 给 Agent 上最小权限 | Policy（D3） | policy |
-| A5 | 一个研究型 Agent | Web Search + Browser + Code Interpreter（D4） | harness 三件套 |
-| A6 | 会给自己打分的 Agent | Evaluations + Optimization（D4） | evaluations, optimization |
-| A7 | 带 Registry 的多 Agent 系统 | 多 Agent（D5） | coordination, registry |
-
-每篇同一配方：真实部署、实测输出、你可以照着复现的截图位、以及所有教会我东西的故障。
 
 ---
 

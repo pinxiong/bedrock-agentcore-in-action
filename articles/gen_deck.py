@@ -244,7 +244,7 @@ s = add_slide(); dark_bg(s)
 grad_rect(s, 0.9, 2.02, 1.7, 0.1, ORANGE_O, ORANGE, angle=0)
 txt(s, 0.9, 2.3, 11.5, 2.0, "How AWS Bedrock AgentCore\nActually Works", size=44, color=WHITE, bold=True, spacing=1.02)
 txt(s, 0.9, 4.35, 11.5, 0.6, "One JSON File In, Four CloudFormation Resources Out", size=21, color=CODE_BLU, bold=True)
-txt(s, 0.9, 5.55, 11.5, 0.5, "AgentCore Series · Article 0 of 8 · measured on a real deployment in us-east-1", size=14, color=CODE_GR)
+txt(s, 0.9, 5.55, 11.5, 0.5, "AgentCore in Action · measured on a real deployment in us-east-1", size=14, color=CODE_GR)
 txt(s, 0.9, 6.15, 11.5, 0.4, "xiongpin.dev", size=13, color=CODE_GR)
 
 # =====================================================================
@@ -456,7 +456,8 @@ s = add_slide()
 title_block(s, "step 5 · invoke", "The deployed runtime answers through the data plane", GREEN)
 num_badge(s, 11.85, 0.55, 0.75, 5, GREEN, GREEN_D)
 live_chip(s, 9.15, 1.62)
-pic(s, "F5-one-surface.png", 3.75, 2.15, w=6.4)
+pic(s, "F5-one-surface.png", 3.72, 2.05, w=5.9)
+txt(s, 0.6, 6.5, 12.1, 0.45, "agentcore invoke = a CLI client for the hosted /invocations endpoint, not a third interface.", size=13, color=MUTED, align=PP_ALIGN.CENTER)
 footer(s)
 
 # S · cost
@@ -548,21 +549,12 @@ card(s, 1.65, 6.25, 10.6, 0.65, fill=PURPLE_B, line_color=None, radius=0.12)
 txt(s, 1.95, 6.36, 10.0, 0.45, "Your infrastructure is not code you maintain. It is code that compiles.", size=16, color=PURPLE_D, bold=True, italic=True)
 footer(s)
 
-# S · roadmap (F7)
-n += 1
-s = add_slide()
-title_block(s, "the series", "Next: 7 use cases, rising difficulty, one pattern", ORANGE)
-pic(s, "F7-series-roadmap.png", 3.35, 2.05, w=7.0)
-txt(s, 0.6, 6.55, 12.1, 0.45, "Each use case deploys standalone. Same pattern: real deployment, measured outputs, honest failures.", size=13, color=MUTED, align=PP_ALIGN.CENTER)
-footer(s)
-
 # S · closing
 n += 1
 s = add_slide(); dark_bg(s)
 txt(s, 0.9, 2.35, 11.5, 1.8, "Your infrastructure is not code\nyou maintain. It is code that compiles.", size=34, color=WHITE, bold=True, spacing=1.05)
 grad_rect(s, 0.95, 4.55, 1.7, 0.09, ORANGE_O, ORANGE, angle=0)
-txt(s, 0.9, 4.95, 11.5, 0.5, "Next article: Your First Bedrock AgentCore Agent (A1)", size=17, color=CODE_BLU, bold=True)
-txt(s, 0.9, 5.65, 11.5, 0.5, "AgentCore Series · Article 0 of 8 · xiongpin.dev", size=14, color=CODE_GR)
+txt(s, 0.9, 4.95, 11.5, 0.5, "AgentCore in Action · Article 0 · xiongpin.dev", size=17, color=CODE_BLU, bold=True)
 
 # ---- save ----
 out_path = os.path.abspath(os.path.join(OUT, "aws-agentcore-under-the-hood.pptx"))

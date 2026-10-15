@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 478" width="680">
-<rect width="680" height="478" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 496" width="680">
+<rect width="680" height="496" fill="white"/>
 
 <defs>
   <filter id="ds" x="-30%" y="-30%" width="160%" height="160%">
@@ -68,10 +68,10 @@
 <text x="395" y="300" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">serverless microVM per session</text>
 <circle cx="379" cy="326" r="7" fill="#FFEDD5"/>
 <path d="M 375.5 326 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-<text x="395" y="330" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">IAM role + HTTPS endpoint</text>
+<text x="395" y="330" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">https://.../runtimes/&lt;arn&gt;/invocations</text>
 <circle cx="379" cy="356" r="7" fill="#FFEDD5"/>
 <path d="M 375.5 356 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-<text x="395" y="360" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">traces: X-Ray + CloudWatch</text>
+<text x="395" y="360" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">IAM role + trace pipeline included</text>
 <circle cx="379" cy="386" r="7" fill="#FFEDD5"/>
 <path d="M 375.5 386 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
 <text x="395" y="390" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">scaling handled by the platform</text>
@@ -79,5 +79,6 @@
 <text x="340.0" y="335.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="800" fill="white">=</text>
 <text x="340.0" y="226" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" fill="#047857">same code, same routes</text>
 <path d="M 333 329.0 L 347 329.0" stroke="#10B981" stroke-width="2" stroke-dasharray="5,4"/>
-<text x="340.0" y="450" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" font-style="italic" fill="#64748B">No shim, no adapter, no second interface to drift. What passed locally deploys unchanged.</text>
+<text x="340.0" y="448" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" font-style="italic" fill="#64748B">No shim, no adapter, no second interface to drift. What passed locally deploys unchanged.</text>
+<text x="340.0" y="467" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" font-style="italic" fill="#64748B">agentcore invoke and boto3 are clients of the hosted surface, not a third interface.</text>
 </svg>

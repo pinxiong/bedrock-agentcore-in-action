@@ -8,13 +8,13 @@ tags: ["aws", "bedrock", "agentcore", "cdk", "ai-agents"]
 
 Most agent deployment stories end the same way: write a Dockerfile, pick an instance size, hand-roll an IAM role and hope the YAML is right. AWS Bedrock AgentCore takes a different path. The whole deployment contract is one JSON file, and a single command turns it into a running, observable endpoint.
 
-I deployed an agent this way, broke it a few times and traced every step between the JSON file and the live endpoint. This article is the first in a series of eight. It walks the full path once, step by step and explains what happens under the hood at each step. The next seven articles each tackle one use case, from a first agent to a multi-agent system with a registry. Every command and every output below comes from a real deployment in us-east-1, not from the docs.
+I deployed an agent this way, broke it a few times and traced every step between the JSON file and the live endpoint. This article walks the full path once, step by step and explains what happens under the hood at each step. Every command and every output below comes from a real deployment in us-east-1, not from the docs.
 
 ![The whole AgentCore CLI lifecycle in six commands](images/aws-agentcore-under-the-hood/F0-command-map.png)
 
 ## What AgentCore is and what it is not
 
-AgentCore is a family of managed runtimes for AI agents. The family covers 14 capabilities, from the runtime that hosts your code to memory, gateway, identity, policy, web search, browser, code interpreter, observability, evaluations, optimization, payments and a registry. This article lights up only two of those 14: the runtime and observability. The rest come in the later articles.
+AgentCore is a family of managed runtimes for AI agents. The family covers 14 capabilities, from the runtime that hosts your code to memory, gateway, identity, policy, web search, browser, code interpreter, observability, evaluations, optimization, payments and a registry. This article lights up only two of those 14: the runtime and observability.
 
 ![AgentCore: 14 managed capabilities, 2 lit up in this article](images/aws-agentcore-under-the-hood/F1-capability-map.png)
 
@@ -263,6 +263,8 @@ data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9, "
 
 ![One HTTP surface, two hosts: agentcore dev and agentcore deploy](images/aws-agentcore-under-the-hood/F5-one-surface.png)
 
+"One surface" means the two routes your code has to implement: `GET /ping` for health checks and `POST /invocations` for work. "Two hosts" means the two environments that serve those same routes. Locally, `agentcore dev` runs your app under Uvicorn on `localhost:8080`. In the cloud, a managed microVM serves them behind `https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<runtime-arn>/invocations`. Routing, scaling and TLS sit on the platform side, so your code never learns which host it is on. And `agentcore invoke` is not a third interface: it is a CLI client for the hosted `/invocations` endpoint, the same way boto3 is.
+
 Tool calls ride on native Bedrock `toolUse` protocol blocks, both locally and in the cloud. Nothing in AgentCore invents a new tool protocol for you to learn.
 
 What did that cost? DeepSeek V3.2 in us-east-1 costs $0.62 per million input tokens and $1.85 per million output. A two-cycle invoke used 846 input and 82 output tokens: about $0.0007 of model calls plus roughly $0.0002 of runtime compute. The infrastructure bill for a tutorial-grade agent rounds to zero.
@@ -337,7 +339,7 @@ Four failures are worth passing on:
 - **The model leaks scaffolding into the text channel.** `deepseek.v3.2` emitted fragments of its internal chat-template markers as ordinary text, and the Nova models emitted `<thinking>` blocks. I proved this was model behavior rather than a framework bug by calling Bedrock's `converse_stream` directly with Strands removed from the picture. All four models I tried leaked something. The fix lives in the entrypoint: a stream-safe filter that holds back marker prefixes and resets once per assistant message, because one tool-using turn is several messages and a cut in one must not silence the next.
 - **The region is not a flag.** Every guess at `--region` fails with `unknown option`. The targets file decides, and it fills itself in on first deploy.
 
-## Takeaways and what comes next
+## Takeaways
 
 1. **The JSON file is the interface.** Everything else (the CDK project, the template, the stack) is regenerable plumbing driven by it.
 2. **CDK appears here as a vendored compiler.** You never write constructs and you never edit the generated project. Change the schema and the same code compiles a different stack.
@@ -345,22 +347,6 @@ Four failures are worth passing on:
 4. **Observability is real but asynchronous.** The tool call gets its own span in the cloud. Spans need minutes to become queryable, so write your tests accordingly.
 
 One sentence to take away: in AgentCore your infrastructure is not code you maintain. It is code that compiles.
-
-This article covered the runtime and observability. The rest of the series lights up the remaining 12 capabilities, one use case at a time:
-
-![Series roadmap: seven use cases on a rising difficulty ladder](images/aws-agentcore-under-the-hood/F7-series-roadmap.png)
-
-| # | Article | Use case | New capabilities |
-|---|---|---|---|
-| A1 | Your First Bedrock AgentCore Agent | First agent (D1) | runtime, observability |
-| A2 | Giving Your Agent a Memory | Memory (D2) | memory |
-| A3 | One MCP Gateway for Every Tool | Gateway + Identity (D3) | gateway, identity |
-| A4 | Least Privilege for Agents | Policy (D3) | policy |
-| A5 | A Research Agent | Research agent (D4) | web search, browser, code interpreter, harness |
-| A6 | Agents That Grade Themselves | Quality loop (D4) | evaluations, optimization |
-| A7 | Multi-Agent with a Registry | Multi-agent (D5) | multi-agent coordination, registry |
-
-Each article follows the same pattern as this one: a real deployment, measured outputs, screenshot spots you can reproduce, and every failure that taught something. The difficulty rises from one use case to the next, but each one stands alone.
 
 ## The setup behind the numbers
 

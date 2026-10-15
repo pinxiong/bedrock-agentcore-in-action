@@ -372,7 +372,7 @@ def fig4():
 # F5: one surface, two hosts (vs comparison)
 # =====================================================================
 def fig5():
-    W, H = 680, 478
+    W, H = 680, 496
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
              f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
     hp, y = header("run it", "One HTTP Surface, Two Hosts",
@@ -393,7 +393,7 @@ def fig5():
         (lx, "agentcore dev", "LOCAL", "g-teal", TEAL, TEAL_B,
          ["Uvicorn on localhost:8080", "hot reload on file save", "model calls still go to Bedrock", "no deployment, no stack"]),
         (rx_, "agentcore deploy", "CLOUD", "g-orange", ORANGE, ORANGE_B,
-         ["serverless microVM per session", "IAM role + HTTPS endpoint", "traces: X-Ray + CloudWatch", "scaling handled by the platform"]),
+         ["serverless microVM per session", "https://.../runtimes/<arn>/invocations", "IAM role + trace pipeline included", "scaling handled by the platform"]),
     ]
     for x, title, tag, grad, color, light, items in hosts:
         parts.append(card(x, hy, hw, hh, fill="white", stroke=color, sw=2, rx=14))
@@ -415,8 +415,9 @@ def fig5():
     parts.append(f'<text x="{mbx}" y="{hy-8}" text-anchor="middle" font-family="{SANS}" font-size="10" font-weight="700" fill="#047857">same code, same routes</text>')
     parts.append(f'<path d="M {lx+hw+8} {mby} L {rx_-8} {mby}" stroke="#10B981" stroke-width="2" stroke-dasharray="5,4"/>')
     # bottom note
-    ny = hy + hh + 26
+    ny = hy + hh + 24
     parts.append(f'<text x="{W/2}" y="{ny}" text-anchor="middle" font-family="{SANS}" font-size="11" font-style="italic" fill="{MUTED}">No shim, no adapter, no second interface to drift. What passed locally deploys unchanged.</text>')
+    parts.append(f'<text x="{W/2}" y="{ny+19}" text-anchor="middle" font-family="{SANS}" font-size="11" font-style="italic" fill="{MUTED}">agentcore invoke and boto3 are clients of the hosted surface, not a third interface.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F5-one-surface"), "F5-one-surface"
@@ -478,53 +479,9 @@ def fig6():
     svg = "\n".join(parts)
     return save_svg(svg, "F6-span-tree"), "F6-span-tree"
 
-# =====================================================================
-# F7: series roadmap (difficulty staircase)
-# =====================================================================
-def fig7():
-    W, H = 680, 430
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
-             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
-    hp, y = header("the series", "Seven Use Cases, Rising Difficulty",
-                   "Each deploys standalone. Same pattern every time: real deployment, measured outputs.", RED)
-    parts += hp
-    arts = [
-        ("A1", "First Agent",       "D1", "runtime", "observability", "g-green", GREEN),
-        ("A2", "Memory",            "D2", "memory", "", "g-green", GREEN),
-        ("A3", "Gateway+Identity",  "D3", "gateway", "identity", "g-teal", TEAL),
-        ("A4", "Policy",            "D3", "policy", "", "g-teal", TEAL),
-        ("A5", "Research Agent",    "D4", "search, browser,", "code interp, harness", "g-orange", ORANGE),
-        ("A6", "Quality Loop",      "D4", "evaluations,", "optimization", "g-orange", ORANGE),
-        ("A7", "Multi-Agent",       "D5", "coordination,", "registry", "g-red", RED),
-    ]
-    bw, gap = 82, 10
-    total = 7 * bw + 6 * gap
-    ox = (W - total) // 2
-    base = y + 218
-    max_h = 190
-    for i, (aid, title, diff, l1, l2, grad, color) in enumerate(arts):
-        x = ox + i * (bw + gap)
-        bh = 66 + i * (max_h - 66) / 6
-        ty = base - bh
-        parts.append(f'<rect x="{x}" y="{ty}" width="{bw}" height="{bh}" rx="10" fill="url(#{grad})" opacity="0.92" filter="url(#ds)"/>')
-        parts.append(f'<text x="{x+bw/2}" y="{ty+26}" text-anchor="middle" font-family="{SANS}" font-size="15" font-weight="800" fill="white">{aid}</text>')
-        c, _ = chip(x + bw/2 - 15, ty + 36, diff, "white", bg=None, size=8.5, pad=6, h=14)
-        parts.append(f'<rect x="{x+bw/2-15}" y="{ty+36}" width="30" height="14" rx="7" fill="white" opacity="0.3"/>')
-        parts.append(f'<text x="{x+bw/2}" y="{ty+46.5}" text-anchor="middle" font-family="{SANS}" font-size="8.5" font-weight="800" fill="white">{diff}</text>')
-        parts.append(f'<text x="{x+bw/2}" y="{base+18}" text-anchor="middle" font-family="{SANS}" font-size="9.5" font-weight="700" fill="{INK}">{esc(title)}</text>')
-        parts.append(f'<text x="{x+bw/2}" y="{base+33}" text-anchor="middle" font-family="{SANS}" font-size="8" fill="{MUTED}">{esc(l1)}</text>')
-        if l2:
-            parts.append(f'<text x="{x+bw/2}" y="{base+44}" text-anchor="middle" font-family="{SANS}" font-size="8" fill="{MUTED}">{esc(l2)}</text>')
-    # difficulty arrow
-    parts.append(f'<path d="M {ox-6} {base-70} L {ox+total+6} {base-max_h-24}" stroke="{RED}" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>')
-    parts.append(f'<text x="{W/2}" y="{base+72}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-style="italic" fill="{MUTED}">This article (A0) covered runtime + observability with a hello-world agent. Everything else builds on the same contract.</text>')
-    parts.append('</svg>')
-    svg = "\n".join(parts)
-    return save_svg(svg, "F7-series-roadmap"), "F7-series-roadmap"
-
 # ---- generate all ----
 if __name__ == "__main__":
-    figs = [fig0(), fig1(), fig2(), fig3(), fig4(), fig5(), fig6(), fig7()]
+    figs = [fig0(), fig1(), fig2(), fig3(), fig4(), fig5(), fig6()]
     for svg_path, name in figs:
         png_path = to_png(svg_path, name, w=1440)
         print(f"  {name}: {os.path.basename(svg_path)} + {os.path.basename(png_path)}")
