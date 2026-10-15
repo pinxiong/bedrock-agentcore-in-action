@@ -1,14 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" width="680">
-<rect width="680" height="380" fill="#FFFFFF"/>
-<text x="340" y="38" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="700" fill="#1A1A2E">Three Layers: One Direction</text>
-<rect x="80" y="80" width="520" height="70" rx="10" fill="#D6EAF8" stroke="#2E86DE" stroke-width="2"/>
-<text x="100" y="108" font-family="sans-serif" font-size="15" font-weight="700" fill="#2E86DE">Layer 1: Your code</text>
-<text x="100" y="130" font-family="sans-serif" font-size="12" fill="#555555">src/ - agent entrypoint, tools, model loading</text>
-<rect x="80" y="170" width="520" height="70" rx="10" fill="#F4ECF7" stroke="#8E44AD" stroke-width="2"/>
-<text x="100" y="198" font-family="sans-serif" font-size="15" font-weight="700" fill="#8E44AD">Layer 2: The contract</text>
-<text x="100" y="220" font-family="sans-serif" font-size="12" fill="#555555">agentcore.json + aws-targets.json - you write by hand</text>
-<rect x="80" y="260" width="520" height="70" rx="10" fill="#ECF0F1" stroke="#95A5A6" stroke-width="2"/>
-<text x="100" y="288" font-family="sans-serif" font-size="15" font-weight="700" fill="#95A5A6">Layer 3: The plumbing</text>
-<text x="100" y="310" font-family="sans-serif" font-size="12" fill="#555555">agentcore/cdk/ - CLI generates on every deploy</text>
-<text x="340" y="360" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#555555">Rule: declare in JSON. Everything generated is regenerable.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 496" width="680">
+<rect width="680" height="496" fill="white"/>
+
+<defs>
+  <filter id="ds" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="2.5" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.15"/>
+  </filter>
+  <linearGradient id="g-blue" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#1D4ED8"/>
+  </linearGradient>
+  <linearGradient id="g-purple" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#6D28D9"/>
+  </linearGradient>
+  <linearGradient id="g-orange" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FF9900"/><stop offset="1" stop-color="#EA580C"/>
+  </linearGradient>
+  <linearGradient id="g-green" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#10B981"/><stop offset="1" stop-color="#047857"/>
+  </linearGradient>
+  <linearGradient id="g-red" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F43F5E"/><stop offset="1" stop-color="#BE123C"/>
+  </linearGradient>
+  <linearGradient id="g-teal" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#14B8A6"/><stop offset="1" stop-color="#0F766E"/>
+  </linearGradient>
+  <linearGradient id="g-ink" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#0F172A"/><stop offset="1" stop-color="#1E3A8A"/>
+  </linearGradient>
+  <linearGradient id="g-ribbon" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2563EB"/><stop offset="0.35" stop-color="#0D9488"/>
+    <stop offset="0.65" stop-color="#EA580C"/><stop offset="1" stop-color="#E11D48"/>
+  </linearGradient>
+</defs>
+
+<rect x="40" y="24" width="114" height="21" rx="10.5" fill="#7C3AED"/>
+<text x="97" y="38.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">MENTAL MODEL</text>
+<text x="40" y="80" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Three Layers, One Direction</text>
+<text x="40" y="102" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12.5" fill="#475569">You write code and JSON. The CLI generates everything else. AWS runs the stack.</text>
+<rect x="60" y="126" width="470" height="74" rx="12" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" filter="url(#ds)"/>
+<circle cx="94" cy="163.0" r="18" fill="url(#g-blue)"/>
+<text x="94" y="168.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">1</text>
+<text x="126" y="156" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14.5" font-weight="800" fill="#2563EB">YOUR CODE</text>
+<text x="126" y="178" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#475569">src/ - agent entrypoint, tools, model loading</text>
+<rect x="442" y="138" width="76" height="16" rx="8" fill="white" stroke="#2563EB" stroke-width="1.2"/>
+<text x="480" y="149.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8" font-weight="700" letter-spacing="0.5" fill="#2563EB">YOU MAINTAIN</text>
+<rect x="60" y="220" width="470" height="74" rx="12" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2" filter="url(#ds)"/>
+<circle cx="94" cy="257.0" r="18" fill="url(#g-purple)"/>
+<text x="94" y="262.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">2</text>
+<text x="126" y="250" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14.5" font-weight="800" fill="#7C3AED">THE CONTRACT</text>
+<text x="126" y="272" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#475569">agentcore.json + aws-targets.json - written by hand</text>
+<rect x="442" y="232" width="76" height="16" rx="8" fill="white" stroke="#7C3AED" stroke-width="1.2"/>
+<text x="480" y="243.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8" font-weight="700" letter-spacing="0.5" fill="#7C3AED">YOU MAINTAIN</text>
+<rect x="60" y="314" width="470" height="74" rx="12" fill="#FFEDD5" stroke="#EA580C" stroke-width="2" filter="url(#ds)"/>
+<circle cx="94" cy="351.0" r="18" fill="url(#g-orange)"/>
+<text x="94" y="356.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">3</text>
+<text x="126" y="344" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14.5" font-weight="800" fill="#EA580C">THE PLUMBING</text>
+<text x="126" y="366" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#475569">agentcore/cdk/ - a CDK project regenerated on every deploy</text>
+<rect x="428" y="326" width="90" height="16" rx="8" fill="white" stroke="#EA580C" stroke-width="1.2"/>
+<text x="473" y="337.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8" font-weight="700" letter-spacing="0.5" fill="#EA580C">CLI REGENERATES</text>
+<line x1="570" y1="134" x2="570" y2="374" stroke="#EA580C" stroke-width="3"/>
+<path d="M 563 362 L 570 374 L 577 362 Z" fill="#EA580C"/>
+<text x="582" y="251" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="700" fill="#EA580C">agentcore</text>
+<text x="582" y="265" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="700" fill="#EA580C">deploy</text>
+<rect x="60" y="414" width="560" height="52" rx="12" fill="url(#g-ink)" filter="url(#ds)"/>
+<text x="340" y="436" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">Declare in JSON. Everything generated is regenerable.</text>
+<text x="340" y="455" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#93C5FD">The rest of this article is that one rule, traced end to end.</text>
 </svg>

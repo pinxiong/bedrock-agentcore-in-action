@@ -1,27 +1,76 @@
 #!/usr/bin/env python3
-"""Generate all 7 figures for the AgentCore intro article as SVG, then convert to PNG."""
+"""Generate all 8 figures for the AgentCore intro article (A0).
+
+Design system (v2, 2026-10-15):
+- white background (publishing platforms are white-bg), vivid accents
+- every figure: kicker pill + bold title + subtitle header
+- shadowed rounded cards, gradient fills, colored chips, number badges
+- 8 figures with 8 DIFFERENT layout styles so the set never feels monotone:
+  F0 command journey ribbon | F1 color-grouped grid | F2 stacked gradient layers
+  F3 tree card + legend chips | F4 pipeline + timing bars | F5 vs-comparison
+  F6 span tree + side annotations | F7 difficulty staircase
+- PNGs are reused verbatim in the English article, the Chinese article and the PPT.
+"""
 import os
 import resvg_py
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
-# ---- shared palette (light theme, dark text) ----
-C_BG       = "#FFFFFF"
-C_TEXT     = "#1A1A2E"
-C_TEXT_LT  = "#555555"
-C_BLUE     = "#2E86DE"   # your code / you write
-C_BLUE_BG  = "#D6EAF8"
-C_GRAY     = "#95A5A6"   # CLI generates
-C_GRAY_BG  = "#ECF0F1"
-C_ORANGE   = "#FF8C00"   # AWS
-C_ORANGE_BG= "#FFF3E0"
-C_GREEN    = "#27AE60"   # success / live
-C_GREEN_BG = "#D5F5E3"
-C_RED      = "#E74C3C"   # failure / pitfall
-C_RED_BG   = "#FADBD8"
-C_PURPLE   = "#8E44AD"
-C_PURPLE_BG= "#F4ECF7"
-C_LINE     = "#BDC3C7"
+# ---- palette (white bg, vivid accents) ----
+INK    = "#0F172A"
+SLATE  = "#475569"
+MUTED  = "#64748B"
+LINE   = "#CBD5E1"
+
+BLUE    = "#2563EB"; BLUE_D  = "#1D4ED8"; BLUE_B  = "#DBEAFE"
+PURPLE  = "#7C3AED"; PURPLE_B = "#EDE9FE"
+ORANGE  = "#EA580C"; ORANGE_O = "#FF9900"; ORANGE_B = "#FFEDD5"
+GREEN   = "#059669"; GREEN_B  = "#D1FAE5"
+RED     = "#E11D48"; RED_B    = "#FFE4E6"
+TEAL    = "#0D9488"; TEAL_B   = "#CCFBF1"
+YELLOW  = "#D97706"; YELLOW_B = "#FEF3C7"
+PINK    = "#DB2777"; PINK_B   = "#FCE7F3"
+INDIGO  = "#4F46E5"; INDIGO_B = "#E0E7FF"
+SLATE_B = "#F1F5F9"
+
+SANS = "'Helvetica Neue', 'PingFang SC', Arial, sans-serif"
+MONO = "'SF Mono', Menlo, Consolas, monospace"
+
+DEFS = f'''
+<defs>
+  <filter id="ds" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="2.5" stdDeviation="4" flood-color="{INK}" flood-opacity="0.15"/>
+  </filter>
+  <linearGradient id="g-blue" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="{BLUE_D}"/>
+  </linearGradient>
+  <linearGradient id="g-purple" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#6D28D9"/>
+  </linearGradient>
+  <linearGradient id="g-orange" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FF9900"/><stop offset="1" stop-color="{ORANGE}"/>
+  </linearGradient>
+  <linearGradient id="g-green" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#10B981"/><stop offset="1" stop-color="#047857"/>
+  </linearGradient>
+  <linearGradient id="g-red" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F43F5E"/><stop offset="1" stop-color="#BE123C"/>
+  </linearGradient>
+  <linearGradient id="g-teal" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#14B8A6"/><stop offset="1" stop-color="#0F766E"/>
+  </linearGradient>
+  <linearGradient id="g-ink" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#0F172A"/><stop offset="1" stop-color="#1E3A8A"/>
+  </linearGradient>
+  <linearGradient id="g-ribbon" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="{BLUE}"/><stop offset="0.35" stop-color="{TEAL}"/>
+    <stop offset="0.65" stop-color="{ORANGE}"/><stop offset="1" stop-color="{RED}"/>
+  </linearGradient>
+</defs>
+'''
+
+def esc(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 def save_svg(svg: str, name: str) -> str:
     path = os.path.join(OUT, f"{name}.svg")
@@ -29,291 +78,454 @@ def save_svg(svg: str, name: str) -> str:
         f.write(svg)
     return path
 
-def to_png(svg_path: str, name: str, w: int = 1400):
+def to_png(svg_path: str, name: str, w: int = 1440):
     png_path = os.path.join(OUT, f"{name}.png")
-    png_bytes = resvg_py.svg_to_bytes(
-        svg_path=svg_path,
-        width=w,
-        background=C_BG,
-    )
+    png_bytes = resvg_py.svg_to_bytes(svg_path=svg_path, width=w, background="#FFFFFF")
     with open(png_path, "wb") as f:
         f.write(png_bytes)
     return png_path
 
-# ---- F1: Capability map (14 cells, only Runtime + Observability lit) ----
-def fig1():
-    caps = [
-        ("Runtime", True), ("Memory", False), ("Gateway", False), ("Identity", False),
-        ("Policy", False), ("Harness", False), ("Web Search", False),
-        ("Browser", False), ("Code Interpreter", False), ("Observability", True),
-        ("Evaluations", False), ("Optimization", False), ("Payments", False), ("Registry", False),
+def header(kicker, title, sub, accent, W=680):
+    """Standard header: kicker pill + bold title + subtitle. Returns (parts, content_y)."""
+    pill_w = 20 + 7.8 * len(kicker)
+    p = [
+        f'<rect x="40" y="24" width="{pill_w:.0f}" height="21" rx="10.5" fill="{accent}"/>',
+        f'<text x="{40 + pill_w/2:.0f}" y="38.5" text-anchor="middle" font-family="{SANS}" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">{esc(kicker.upper())}</text>',
+        f'<text x="40" y="80" font-family="{SANS}" font-size="23" font-weight="800" fill="{INK}">{esc(title)}</text>',
     ]
-    cell_w, cell_h = 124, 100
-    cols, rows = 5, 3
-    grid_w = cols * cell_w + (cols - 1) * 10
-    grid_h = rows * cell_h + (rows - 1) * 10
-    ox = (680 - grid_w) // 2
-    oy = 120
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {oy + grid_h + 80}" width="680">']
-    parts.append(f'<rect width="680" height="{oy + grid_h + 80}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="55" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="700" fill="{C_TEXT}">AgentCore: 14 Capabilities</text>')
-    parts.append(f'<text x="340" y="82" text-anchor="middle" font-family="sans-serif" font-size="13" fill="{C_TEXT_LT}">This article lights up 2 of 14 (shaded). The rest come in A1-A7.</text>')
-    for i, (name, lit) in enumerate(caps):
+    if sub:
+        p.append(f'<text x="40" y="102" font-family="{SANS}" font-size="12.5" fill="{SLATE}">{esc(sub)}</text>')
+    return p, 126
+
+def card(x, y, w, h, fill="white", stroke=LINE, sw=1.5, rx=12, shadow=True):
+    sh = ' filter="url(#ds)"' if shadow else ""
+    return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{sh}/>'
+
+def chip(x, y, text, color, bg=None, size=9.5, pad=8, h=17, bold=True, text_color=None):
+    w = pad * 2 + size * 0.62 * len(text)
+    tc = text_color or color
+    return (f'<rect x="{x}" y="{y}" width="{w:.0f}" height="{h}" rx="{h/2}" fill="{bg or color}" opacity="{1 if bg else 1}"/>'
+            f'<text x="{x + w/2:.0f}" y="{y + h/2 + size*0.36:.1f}" text-anchor="middle" font-family="{SANS}" font-size="{size}" font-weight="{700 if bold else 500}" fill="{tc}">{esc(text)}</text>', w)
+
+# =====================================================================
+# F0: command journey (NEW - the whole lifecycle in six commands)
+# =====================================================================
+def fig0():
+    W, H = 680, 372
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">']
+    parts.append(f'<rect width="{W}" height="{H}" fill="white"/>')
+    parts.append(DEFS)
+    hp, y = header("command map", "The Whole Lifecycle in Six Commands",
+                   "Everything the AgentCore CLI does, end to end. No --region flag anywhere.", INDIGO)
+    parts += hp
+
+    stations = [
+        ("1", "create",  "scaffold the project", "agentcore.json: every", "resource array empty", "g-blue",   BLUE),
+        ("2", "dev",     "run it locally",       "Uvicorn on :8080,",     "hot reload",           "g-teal",   TEAL),
+        ("3", "deploy",  "ship it to AWS",       "JSON in, 4 CFN",        "resources out",        "g-orange", ORANGE),
+        ("4", "invoke",  "call the runtime",     "SSE stream, native",    "toolUse blocks",       "g-green",  GREEN),
+        ("5", "traces",  "read what happened",   "spans land in X-Ray",   "(~10 min delay)",      "g-purple", PURPLE),
+        ("6", "remove",  "tear it all down",     "stack converges",       "to empty",             "g-red",    RED),
+    ]
+    st_w, gap = 100, 8
+    ox = (W - (6 * st_w + 5 * gap)) // 2
+    ribbon_y = y + 56
+    # gradient ribbon behind stations
+    parts.append(f'<rect x="{ox+30}" y="{ribbon_y-4}" width="{6*st_w+5*gap-60}" height="8" rx="4" fill="url(#g-ribbon)" opacity="0.25"/>')
+    parts.append(f'<rect x="{ox+30}" y="{ribbon_y-2}" width="{6*st_w+5*gap-60}" height="4" rx="2" fill="url(#g-ribbon)"/>')
+    for i, (num, cmd, d0, l1, l2, grad, color) in enumerate(stations):
+        cx = ox + i * (st_w + gap) + st_w // 2
+        # number circle
+        parts.append(f'<circle cx="{cx}" cy="{ribbon_y}" r="17" fill="url(#{grad})" filter="url(#ds)"/>')
+        parts.append(f'<text x="{cx}" y="{ribbon_y+5}" text-anchor="middle" font-family="{SANS}" font-size="13" font-weight="800" fill="white">{num}</text>')
+        # command chip: subcommand only, with a small "agentcore" caption
+        chip_y = ribbon_y + 34
+        parts.append(f'<text x="{cx}" y="{chip_y-5}" text-anchor="middle" font-family="{SANS}" font-size="8.5" font-weight="600" fill="{MUTED}">agentcore</text>')
+        cw = 16 + 8.6 * len(cmd)
+        parts.append(f'<rect x="{cx-cw/2:.0f}" y="{chip_y}" width="{cw:.0f}" height="21" rx="6" fill="white" stroke="{color}" stroke-width="1.5"/>')
+        parts.append(f'<text x="{cx}" y="{chip_y+15}" text-anchor="middle" font-family="{MONO}" font-size="12" font-weight="700" fill="{color}">{cmd}</text>')
+        # description
+        parts.append(f'<text x="{cx}" y="{chip_y+42}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-weight="600" fill="{INK}">{esc(d0)}</text>')
+        parts.append(f'<text x="{cx}" y="{chip_y+56}" text-anchor="middle" font-family="{SANS}" font-size="9.5" fill="{MUTED}">{esc(l1)}</text>')
+        parts.append(f'<text x="{cx}" y="{chip_y+68}" text-anchor="middle" font-family="{SANS}" font-size="9.5" fill="{MUTED}">{esc(l2)}</text>')
+
+    ny = chip_y + 96
+    # bottom banner
+    bw = 6 * st_w + 5 * gap
+    parts.append(card(ox, ny, bw, 44, fill=SLATE_B, stroke=LINE, rx=10))
+    parts.append(f'<text x="{ox+bw/2}" y="{ny+19}" text-anchor="middle" font-family="{SANS}" font-size="11" font-weight="700" fill="{INK}">Where does it deploy? aws-targets.json decides.</text>')
+    parts.append(f'<text x="{ox+bw/2}" y="{ny+35}" text-anchor="middle" font-family="{SANS}" font-size="10" fill="{SLATE}">The first deploy calls STS, learns your account and writes the target back into the file.</text>')
+    parts.append('</svg>')
+    svg = "\n".join(parts)
+    return save_svg(svg, "F0-command-map"), "F0-command-map"
+
+# =====================================================================
+# F1: capability map (color-grouped grid, 2 lit)
+# =====================================================================
+def fig1():
+    W = 680
+    caps = [
+        ("Runtime", "lit"), ("Memory", PURPLE), ("Gateway", BLUE), ("Identity", BLUE), ("Policy", BLUE),
+        ("Harness", TEAL), ("Web Search", TEAL), ("Browser", TEAL), ("Code Interpreter", TEAL), ("Observability", "lit"),
+        ("Evaluations", YELLOW), ("Optimization", YELLOW), ("Payments", PINK), ("Registry", PINK),
+    ]
+    cell_w, cell_h, gap = 120, 88, 10
+    cols = 5
+    grid_w = cols * cell_w + (cols - 1) * gap
+    ox = (W - grid_w) // 2
+    hp, oy = header("what it is", "AgentCore: 14 Managed Capabilities",
+                    "This article lights up 2 of 14. The rest arrive one use case at a time.", GREEN)
+    H = oy + 3 * (cell_h + gap) + 118
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    parts += hp
+    for i, (name, kind) in enumerate(caps):
         r, c = divmod(i, cols)
-        x = ox + c * (cell_w + 10)
-        y = oy + r * (cell_h + 10)
-        if lit:
-            fill, stroke, tcol = C_GREEN_BG, C_GREEN, C_GREEN
-            badge = f'<rect x="{x+cell_w-42}" y="{y+8}" width="34" height="16" rx="3" fill="{C_GREEN}"/><text x="{x+cell_w-25}" y="{y+19}" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="white">ON</text>'
+        x = ox + c * (cell_w + gap)
+        y = oy + r * (cell_h + gap)
+        if kind == "lit":
+            parts.append(f'<rect x="{x-3}" y="{y-3}" width="{cell_w+6}" height="{cell_h+6}" rx="14" fill="{GREEN}" opacity="0.18"/>')
+            parts.append(card(x, y, cell_w, cell_h, fill=GREEN_B, stroke=GREEN, sw=2.5, rx=10))
+            parts.append(f'<text x="{x+cell_w/2}" y="{y+cell_h/2-2}" text-anchor="middle" font-family="{SANS}" font-size="13" font-weight="800" fill="#047857">{esc(name)}</text>')
+            bw_badge = 12 + 5.6 * len("THIS ARTICLE")
+            parts.append(f'<rect x="{x+cell_w/2-bw_badge/2:.0f}" y="{y+cell_h/2+8}" width="{bw_badge:.0f}" height="15" rx="7.5" fill="{GREEN}"/>')
+            parts.append(f'<text x="{x+cell_w/2}" y="{y+cell_h/2+18.5}" text-anchor="middle" font-family="{SANS}" font-size="8" font-weight="800" letter-spacing="0.6" fill="white">THIS ARTICLE</text>')
         else:
-            fill, stroke, tcol = C_GRAY_BG, C_LINE, C_TEXT_LT
-            badge = ""
-        parts.append(f'<rect x="{x}" y="{y}" width="{cell_w}" height="{cell_h}" rx="8" fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>')
-        parts.append(f'<text x="{x+cell_w//2}" y="{y+cell_h//2+5}" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="600" fill="{tcol}">{name}</text>')
-        parts.append(badge)
-    parts.append(f'<text x="340" y="{oy+grid_h+30}" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Difficulty: D1 (Runtime) -> D5 (Registry). Each use case adds at least one new capability.</text>')
+            parts.append(card(x, y, cell_w, cell_h, fill="white", stroke=kind, sw=1.8, rx=10))
+            parts.append(f'<rect x="{x}" y="{y}" width="{cell_w}" height="5" rx="2.5" fill="{kind}" opacity="0.9"/>')
+            fs = 12 if len(name) <= 12 else 10.5
+            parts.append(f'<text x="{x+cell_w/2}" y="{y+cell_h/2+4}" text-anchor="middle" font-family="{SANS}" font-size="{fs}" font-weight="700" fill="{kind}">{esc(name)}</text>')
+    # legend (two rows of three)
+    ly = oy + 3 * (cell_h + gap) + 24
+    legend = [("Runtime + Observability", GREEN), ("Access: gateway, identity, policy", BLUE),
+              ("Tools: search, browser, code, harness", TEAL), ("Memory", PURPLE),
+              ("Quality: evaluations, optimization", YELLOW), ("Business: payments, registry", PINK)]
+    for k, (label, color) in enumerate(legend):
+        row, col = divmod(k, 3)
+        lx = 70 + col * 200
+        lyk = ly + row * 20
+        parts.append(f'<circle cx="{lx+5}" cy="{lyk-4}" r="4.5" fill="{color}"/>')
+        parts.append(f'<text x="{lx+15}" y="{lyk}" font-family="{SANS}" font-size="10" fill="{SLATE}">{esc(label)}</text>')
+    parts.append(f'<text x="{W/2}" y="{ly+52}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-style="italic" fill="{MUTED}">Difficulty rises D1 (first agent) to D5 (multi-agent + registry). Each use case adds at least one new capability.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F1-capability-map"), "F1-capability-map"
 
-# ---- F2: Three-layer mental model ----
+# =====================================================================
+# F2: three layers (stacked gradient cards + rule banner)
+# =====================================================================
 def fig2():
-    h = 380
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="38" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="700" fill="{C_TEXT}">Three Layers: One Direction</text>')
+    W, H = 680, 496
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("mental model", "Three Layers, One Direction",
+                   "You write code and JSON. The CLI generates everything else. AWS runs the stack.", PURPLE)
+    parts += hp
     layers = [
-        (80, "Layer 1: Your code", "src/ - agent entrypoint, tools, model loading", C_BLUE, C_BLUE_BG),
-        (170, "Layer 2: The contract", "agentcore.json + aws-targets.json - you write by hand", C_PURPLE, C_PURPLE_BG),
-        (260, "Layer 3: The plumbing", "agentcore/cdk/ - CLI generates on every deploy", C_GRAY, C_GRAY_BG),
+        ("1", "YOUR CODE", "src/ - agent entrypoint, tools, model loading", "YOU MAINTAIN", BLUE, BLUE_B, "g-blue"),
+        ("2", "THE CONTRACT", "agentcore.json + aws-targets.json - written by hand", "YOU MAINTAIN", PURPLE, PURPLE_B, "g-purple"),
+        ("3", "THE PLUMBING", "agentcore/cdk/ - a CDK project regenerated on every deploy", "CLI REGENERATES", ORANGE, ORANGE_B, "g-orange"),
     ]
-    for y, title, desc, color, bg in layers:
-        parts.append(f'<rect x="80" y="{y}" width="520" height="70" rx="10" fill="{bg}" stroke="{color}" stroke-width="2"/>')
-        parts.append(f'<text x="100" y="{y+28}" font-family="sans-serif" font-size="15" font-weight="700" fill="{color}">{title}</text>')
-        parts.append(f'<text x="100" y="{y+50}" font-family="sans-serif" font-size="12" fill="{C_TEXT_LT}">{desc}</text>')
-    parts.append(f'<text x="340" y="{h-20}" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="{C_TEXT_LT}">Rule: declare in JSON. Everything generated is regenerable.</text>')
+    bx, bw, bh, bg_ = 60, 470, 74, 20
+    for i, (num, title, desc, own, color, light, grad) in enumerate(layers):
+        ly = y + i * (bh + bg_)
+        parts.append(card(bx, ly, bw, bh, fill=light, stroke=color, sw=2, rx=12))
+        parts.append(f'<circle cx="{bx+34}" cy="{ly+bh/2}" r="18" fill="url(#{grad})"/>')
+        parts.append(f'<text x="{bx+34}" y="{ly+bh/2+5}" text-anchor="middle" font-family="{SANS}" font-size="14" font-weight="800" fill="white">{num}</text>')
+        parts.append(f'<text x="{bx+66}" y="{ly+30}" font-family="{SANS}" font-size="14.5" font-weight="800" fill="{color}">{esc(title)}</text>')
+        parts.append(f'<text x="{bx+66}" y="{ly+52}" font-family="{SANS}" font-size="11" fill="{SLATE}">{esc(desc)}</text>')
+        # owner chip on the right
+        cw = 8 * 0.62 * len(own) + 16
+        parts.append(f'<rect x="{bx+bw-cw-12:.0f}" y="{ly+12}" width="{cw:.0f}" height="16" rx="8" fill="white" stroke="{color}" stroke-width="1.2"/>')
+        parts.append(f'<text x="{bx+bw-cw/2-12:.0f}" y="{ly+23.5}" text-anchor="middle" font-family="{SANS}" font-size="8" font-weight="700" letter-spacing="0.5" fill="{color}">{own}</text>')
+    # downward deploy arrow on the right
+    ax = bx + bw + 40
+    arrow_top = y + 8
+    arrow_bot = y + 3 * (bh + bg_) - bg_ - 14
+    parts.append(f'<line x1="{ax}" y1="{arrow_top}" x2="{ax}" y2="{arrow_bot}" stroke="{ORANGE}" stroke-width="3"/>')
+    parts.append(f'<path d="M {ax-7} {arrow_bot-12} L {ax} {arrow_bot} L {ax+7} {arrow_bot-12} Z" fill="{ORANGE}"/>')
+    y_mid = (arrow_top + arrow_bot) / 2
+    parts.append(f'<text x="{ax+12}" y="{y_mid - 3:.0f}" font-family="{MONO}" font-size="10.5" font-weight="700" fill="{ORANGE}">agentcore</text>')
+    parts.append(f'<text x="{ax+12}" y="{y_mid + 11:.0f}" font-family="{MONO}" font-size="10.5" font-weight="700" fill="{ORANGE}">deploy</text>')
+    # rule banner
+    ry = y + 3 * (bh + bg_) + 6
+    parts.append(f'<rect x="60" y="{ry}" width="560" height="52" rx="12" fill="url(#g-ink)" filter="url(#ds)"/>')
+    parts.append(f'<text x="340" y="{ry+22}" text-anchor="middle" font-family="{SANS}" font-size="14" font-weight="800" fill="white">Declare in JSON. Everything generated is regenerable.</text>')
+    parts.append(f'<text x="340" y="{ry+41}" text-anchor="middle" font-family="{SANS}" font-size="10.5" fill="#93C5FD">The rest of this article is that one rule, traced end to end.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F2-three-layers"), "F2-three-layers"
 
-# ---- F3: Directory anatomy (hand-written vs CLI-generated) ----
+# =====================================================================
+# F3: project anatomy (one tree card + ownership legend chips)
+# =====================================================================
 def fig3():
-    h = 480
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="{C_TEXT}">Project Directory: Two Colours</text>')
-    parts.append(f'<rect x="470" y="14" width="12" height="12" rx="2" fill="{C_BLUE}"/><text x="488" y="25" font-family="sans-serif" font-size="10" fill="{C_TEXT_LT}">you write</text>')
-    parts.append(f'<rect x="560" y="14" width="12" height="12" rx="2" fill="{C_GRAY}"/><text x="578" y="25" font-family="sans-serif" font-size="10" fill="{C_TEXT_LT}">CLI generates</text>')
-
-    # tree entries: (indent, name, kind, is_last)
+    W, H = 680, 588
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("project anatomy", "One Project, Two Kinds of Files",
+                   "Blue squares = you write it once. Gray squares = the CLI generates and overwrites it.", BLUE)
+    parts += hp
+    cx, cw, ch = 40, 600, 380
+    parts.append(card(cx, y, cw, ch, fill="white", stroke=LINE, sw=1.5))
+    # header strip
+    parts.append(f'<path d="M {cx} {y+36} L {cx} {y+14} Q {cx} {y} {cx+14} {y} L {cx+cw-14} {y} Q {cx+cw} {y} {cx+cw} {y+14} L {cx+cw} {y+36} Z" fill="{SLATE_B}"/>')
+    # legend chips inside header
+    c1, w1 = chip(cx + 16, y + 9, "you write", BLUE, bg=BLUE_B, size=9.5, pad=9)
+    parts.append(c1)
+    c2, w2 = chip(cx + 16 + w1 + 10, y + 9, "CLI generates", SLATE, bg="#E2E8F0", size=9.5, pad=9, text_color=SLATE)
+    parts.append(c2)
     entries = [
-        (0, "01-first-agent/", "root", False),
-        (1, "src/", "blue", False),
-        (2, "main.py", "blue", False),
-        (2, "model/load.py", "blue", False),
-        (2, "model/sanitize.py", "blue", False),
-        (2, "pyproject.toml", "blue", True),
-        (1, "tests/", "blue", False),
-        (2, "smoke.py", "blue", False),
-        (2, "test_sanitize.py", "blue", True),
-        (1, "README.md", "blue", False),
-        (1, "article.md", "blue", True),
-        (1, "agentcore/", "root", True),
-        (2, "agentcore.json", "star", False),
-        (2, "aws-targets.json", "star", False),
-        (2, ".gitignore", "gear", False),
-        (2, "cdk/", "gear", False),
-        (2, ".cli/", "gear", False),
-        (2, ".llm-context/", "gear", False),
-        (2, ".cache/", "gear", True),
+        (0, "01-first-agent/", "", INK, False),
+        (1, "src/", "", INK, False),
+        (2, "main.py", "the entrypoint", BLUE, True),
+        (2, "model/load.py", "model selection", BLUE, True),
+        (2, "model/sanitize.py", "stream filter", BLUE, True),
+        (1, "tests/smoke.py", "capability assertions", BLUE, True),
+        (1, "README.md", "operational doc", BLUE, True),
+        (1, "agentcore/", "", INK, False),
+        (2, "agentcore.json", "THE CONTRACT", BLUE, True),
+        (2, "aws-targets.json", "WHERE TO DEPLOY", BLUE, True),
+        (2, ".gitignore", "", SLATE, True),
+        (2, "cdk/", "vendored CDK app", SLATE, False),
+        (2, ".cli/", "logs, traces, state", SLATE, False),
+        (2, ".llm-context/ + .cache/", "schema ref, build staging", SLATE, False),
     ]
-    y0 = 60
-    lh = 20
-    for i, (indent, name, kind, is_last) in enumerate(entries):
-        y = y0 + i * lh
-        prefix = "  " * indent + ("`- " if is_last else "|- ")
-        if kind == "root":
-            color, marker = C_TEXT, ""
-        elif kind == "blue":
-            color, marker = C_BLUE, " [you write]"
-        elif kind == "star":
-            color, marker = C_BLUE, " [you write]"
-        elif kind == "gear":
-            color, marker = C_GRAY, " [CLI generates]"
-        else:
-            color, marker = C_TEXT_LT, ""
-        # color box
-        if kind == "blue" or kind == "star":
-            parts.append(f'<rect x="45" y="{y-2}" width="6" height="6" rx="1" fill="{C_BLUE}"/>')
-        elif kind == "gear":
-            parts.append(f'<rect x="45" y="{y-2}" width="6" height="6" rx="1" fill="{C_GRAY}"/>')
-        parts.append(f'<text x="58" y="{y+8}" font-family="monospace" font-size="11" fill="{color}">{prefix}{name}</text>')
-        if marker:
-            parts.append(f'<text x="350" y="{y+8}" font-family="sans-serif" font-size="9" fill="{C_TEXT_LT}">{marker}</text>')
-
-    parts.append(f'<text x="340" y="{h-18}" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="{C_TEXT_LT}">You never edit gear files. The next command overwrites them.</text>')
+    ty = y + 58
+    lh = 22.5
+    for i, (indent, name, note, color, is_file) in enumerate(entries):
+        yy = ty + i * lh
+        bx = cx + 24 + indent * 22
+        if is_file:
+            bcol = BLUE if color == BLUE else "#94A3B8"
+            parts.append(f'<rect x="{bx}" y="{yy-8}" width="10" height="10" rx="2.5" fill="{bcol}"/>')
+        elif name.endswith("/"):
+            parts.append(f'<path d="M {bx} {yy+3} h 11 l 4 4 v 7 h -15 Z" fill="none" stroke="{INK}" stroke-width="1.5"/>')
+        parts.append(f'<text x="{bx+18}" y="{yy+2}" font-family="{MONO}" font-size="11.5" font-weight="{700 if color==INK else 500}" fill="{color}">{esc(name)}</text>')
+        if note:
+            nx = cx + 330
+            ncol = BLUE if color == BLUE else MUTED
+            parts.append(f'<text x="{nx}" y="{yy+2}" font-family="{SANS}" font-size="9.5" font-style="italic" fill="{ncol}">{esc(note)}</text>')
+    # bottom warning banner
+    wy = y + ch + 16
+    parts.append(card(40, wy, 600, 46, fill=RED_B, stroke=RED, sw=1.5, rx=10))
+    parts.append(f'<text x="{340}" y="{wy+19}" text-anchor="middle" font-family="{SANS}" font-size="11.5" font-weight="800" fill="{RED}">Never hand-edit a gear file. The next command overwrites it.</text>')
+    parts.append(f'<text x="{340}" y="{wy+36}" text-anchor="middle" font-family="{SANS}" font-size="10" fill="{SLATE}">Project root = the closest folder up from cwd containing both agentcore/ and agentcore/agentcore.json.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F3-directory-anatomy"), "F3-directory-anatomy"
 
-# ---- F4: Six-step deploy pipeline ----
+# =====================================================================
+# F4: deploy pipeline (gradient cards + timing bars)
+# =====================================================================
 def fig4():
-    h = 260
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="{C_TEXT}">Deploy: Six Steps to READY</text>')
-
+    W, H = 680, 404
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("under the hood", "Deploy: Six Steps to READY",
+                   "One command. Zero Dockerfiles. Four CloudFormation resources.", ORANGE)
+    parts += hp
     steps = [
-        ("1", "Package", "zip src/ + deps\n41 MB asset", C_BLUE, C_BLUE_BG, "seconds"),
-        ("2", "Synthesize", "CDK app reads JSON\nemits CFN template", C_PURPLE, C_PURPLE_BG, "~3s"),
-        ("3", "Upload", "zip -> S3\n(bootstrapped bucket)", C_ORANGE, C_ORANGE_BG, "seconds"),
-        ("4", "Create stack", "CloudFormation\n4 resources", C_ORANGE, C_ORANGE_BG, "~5min (cold)"),
-        ("5", "Record state", "deployed-state.json\nARN + endpoint", C_GRAY, C_GRAY_BG, "instant"),
-        ("6", "Print endpoint", "Runtime: READY", C_GREEN, C_GREEN_BG, "instant"),
+        ("1", "Package", "zip src/ + deps", "41 MB asset", "g-blue", BLUE),
+        ("2", "Synthesize", "CDK reads JSON,", "emits CFN template", "g-purple", PURPLE),
+        ("3", "Upload", "asset goes to the", "bootstrap S3 bucket", "g-teal", TEAL),
+        ("4", "Create stack", "CloudFormation", "provisions 4 resources", "g-orange", ORANGE),
+        ("5", "Record state", "ARN + endpoint into", "deployed-state.json", "g-purple", PURPLE),
+        ("6", "Print endpoint", "runtime flips to", "READY", "g-green", GREEN),
     ]
-    bw, bh = 88, 120
-    gap = 12
-    total_w = 6 * bw + 5 * gap
-    ox = (680 - total_w) // 2
-    oy = 70
-    for i, (num, title, desc, color, bg, timing) in enumerate(steps):
+    bw, bh, gap = 98, 116, 8
+    total = 6 * bw + 5 * gap
+    ox = (W - total) // 2
+    for i, (num, title, l1, l2, grad, color) in enumerate(steps):
         x = ox + i * (bw + gap)
-        parts.append(f'<rect x="{x}" y="{oy}" width="{bw}" height="{bh}" rx="8" fill="{bg}" stroke="{color}" stroke-width="2"/>')
-        parts.append(f'<circle cx="{x+bw//2}" cy="{oy+22}" r="14" fill="{color}"/><text x="{x+bw//2}" y="{oy+26}" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="white">{num}</text>')
-        parts.append(f'<text x="{x+bw//2}" y="{oy+52}" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="{color}">{title}</text>')
-        lines = desc.split("\n")
-        for j, line in enumerate(lines):
-            parts.append(f'<text x="{x+bw//2}" y="{oy+72+j*14}" text-anchor="middle" font-family="sans-serif" font-size="9" fill="{C_TEXT_LT}">{line}</text>')
-        parts.append(f'<text x="{x+bw//2}" y="{oy+bh-8}" text-anchor="middle" font-family="sans-serif" font-size="9" font-style="italic" fill="{C_TEXT_LT}">{timing}</text>')
+        parts.append(card(x, y, bw, bh, fill="white", stroke=color, sw=2, rx=12))
+        parts.append(f'<circle cx="{x+bw/2}" cy="{y+26}" r="15" fill="url(#{grad})"/>')
+        parts.append(f'<text x="{x+bw/2}" y="{y+31}" text-anchor="middle" font-family="{SANS}" font-size="12" font-weight="800" fill="white">{num}</text>')
+        parts.append(f'<text x="{x+bw/2}" y="{y+58}" text-anchor="middle" font-family="{SANS}" font-size="11.5" font-weight="800" fill="{color}">{esc(title)}</text>')
+        parts.append(f'<text x="{x+bw/2}" y="{y+77}" text-anchor="middle" font-family="{SANS}" font-size="9" fill="{SLATE}">{esc(l1)}</text>')
+        parts.append(f'<text x="{x+bw/2}" y="{y+90}" text-anchor="middle" font-family="{SANS}" font-size="9" fill="{SLATE}">{esc(l2)}</text>')
         if i < 5:
-            ax = x + bw
-            parts.append(f'<line x1="{ax+2}" y1="{oy+bh//2}" x2="{ax+gap-2}" y2="{oy+bh//2}" stroke="{C_LINE}" stroke-width="2" marker-end=""/>')
-
-    parts.append(f'<text x="340" y="{oy+bh+30}" text-anchor="middle" font-family="sans-serif" font-size="12" fill="{C_TEXT_LT}">Cold deploy: 9 min 49 s  |  Code-only redeploy: 26 s</text>')
-    parts.append(f'<text x="340" y="{oy+bh+52}" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="{C_TEXT_LT}">Stack name = AgentCore-&lt;projectName&gt;-&lt;targetName&gt; (from JSON, never hardcoded)</text>')
+            ax = x + bw + 1
+            parts.append(f'<path d="M {ax} {y+bh/2-5} L {ax+gap-2} {y+bh/2} L {ax} {y+bh/2+5} Z" fill="{MUTED}"/>')
+    # timing bars
+    by = y + bh + 36
+    parts.append(f'<text x="40" y="{by-8}" font-family="{SANS}" font-size="11.5" font-weight="700" fill="{INK}">Measured wall-clock, cold account vs warm redeploy</text>')
+    bar_x, bar_w = 40, 480
+    # cold bar (589 s)
+    parts.append(card(bar_x, by, bar_w, 26, fill="white", stroke=ORANGE, sw=1.5, rx=8))
+    parts.append(f'<rect x="{bar_x+2}" y="{by+2}" width="{bar_w-4}" height="22" rx="6" fill="url(#g-orange)"/>')
+    parts.append(f'<text x="{bar_x+bar_w/2}" y="{by+17}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-weight="700" fill="white">first deploy, cold: 9 min 49 s (mostly npm install, 221 packages)</text>')
+    # warm bar (26 s)
+    wy = by + 36
+    w_w = max(26 / 589 * bar_w, 30)
+    parts.append(card(bar_x, wy, bar_w, 26, fill="white", stroke=GREEN, sw=1.5, rx=8))
+    parts.append(f'<rect x="{bar_x+2}" y="{wy+2}" width="{w_w:.0f}" height="22" rx="6" fill="url(#g-green)"/>')
+    parts.append(f'<text x="{bar_x+w_w+10:.0f}" y="{wy+17}" font-family="{SANS}" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 26 s</text>')
+    # stack name note
+    ny = wy + 52
+    parts.append(f'<text x="40" y="{ny}" font-family="{SANS}" font-size="10.5" fill="{SLATE}">Stack name = <tspan font-family="{MONO}" font-weight="700" fill="{INK}">AgentCore-&lt;projectName&gt;-&lt;targetName&gt;</tspan> - both values come from the JSON, never hardcoded.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F4-deploy-pipeline"), "F4-deploy-pipeline"
 
-# ---- F5: One surface, two hosts (Uvicorn vs microVM) ----
+# =====================================================================
+# F5: one surface, two hosts (vs comparison)
+# =====================================================================
 def fig5():
-    h = 360
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="{C_TEXT}">One HTTP Surface, Two Hosts</text>')
-
-    # shared contract box at top center
-    parts.append(f'<rect x="180" y="55" width="320" height="50" rx="8" fill="{C_BLUE_BG}" stroke="{C_BLUE}" stroke-width="2"/>')
-    parts.append(f'<text x="340" y="78" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="{C_BLUE}">GET /ping  +  POST /invocations</text>')
-    parts.append(f'<text x="340" y="96" text-anchor="middle" font-family="sans-serif" font-size="10" fill="{C_TEXT_LT}">Your code implements these two routes. Nothing else.</text>')
-
-    # left: local
-    parts.append(f'<rect x="40" y="140" width="280" height="140" rx="10" fill="{C_GRAY_BG}" stroke="{C_GRAY}" stroke-width="2"/>')
-    parts.append(f'<text x="180" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="{C_GRAY}">agentcore dev (local)</text>')
-    parts.append(f'<text x="180" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Uvicorn on localhost:8080</text>')
-    parts.append(f'<text x="180" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Hot reload on file save</text>')
-    parts.append(f'<text x="180" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Model calls -> Bedrock (cloud)</text>')
-    parts.append(f'<text x="180" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="{C_GREEN}">No deployment needed</text>')
-
-    # right: cloud
-    parts.append(f'<rect x="360" y="140" width="280" height="140" rx="10" fill="{C_ORANGE_BG}" stroke="{C_ORANGE}" stroke-width="2"/>')
-    parts.append(f'<text x="500" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="{C_ORANGE}">agentcore deploy (cloud)</text>')
-    parts.append(f'<text x="500" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Serverless microVM per session</text>')
-    parts.append(f'<text x="500" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">IAM role + endpoint + traces</text>')
-    parts.append(f'<text x="500" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">Scaling handled by platform</text>')
-    parts.append(f'<text x="500" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="{C_GREEN}">Same code, same routes</text>')
-
-    # connecting lines
-    parts.append(f'<line x1="340" y1="105" x2="180" y2="140" stroke="{C_LINE}" stroke-width="1.5" stroke-dasharray="4,3"/>')
-    parts.append(f'<line x1="340" y1="105" x2="500" y2="140" stroke="{C_LINE}" stroke-width="1.5" stroke-dasharray="4,3"/>')
-
-    parts.append(f'<text x="340" y="{h-15}" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="{C_TEXT_LT}">No shim, no adapter, no second interface to drift.</text>')
+    W, H = 680, 478
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("run it", "One HTTP Surface, Two Hosts",
+                   "Your code implements two routes. Everything else about hosting is AgentCore's job.", TEAL)
+    parts += hp
+    # contract card top center
+    cw, ch = 400, 64
+    cx = (W - cw) // 2
+    parts.append(f'<rect x="{cx}" y="{y}" width="{cw}" height="{ch}" rx="12" fill="url(#g-ink)" filter="url(#ds)"/>')
+    parts.append(f'<text x="{W/2}" y="{y+28}" text-anchor="middle" font-family="{MONO}" font-size="14" font-weight="800" fill="white">GET /ping   |   POST /invocations</text>')
+    parts.append(f'<text x="{W/2}" y="{y+48}" text-anchor="middle" font-family="{SANS}" font-size="10.5" fill="#93C5FD">the only two routes your code implements</text>')
+    # two host cards
+    hy = y + ch + 44
+    hh = 190
+    hw = 285
+    lx, rx_ = 40, W - 40 - hw
+    hosts = [
+        (lx, "agentcore dev", "LOCAL", "g-teal", TEAL, TEAL_B,
+         ["Uvicorn on localhost:8080", "hot reload on file save", "model calls still go to Bedrock", "no deployment, no stack"]),
+        (rx_, "agentcore deploy", "CLOUD", "g-orange", ORANGE, ORANGE_B,
+         ["serverless microVM per session", "IAM role + HTTPS endpoint", "traces: X-Ray + CloudWatch", "scaling handled by the platform"]),
+    ]
+    for x, title, tag, grad, color, light, items in hosts:
+        parts.append(card(x, hy, hw, hh, fill="white", stroke=color, sw=2, rx=14))
+        parts.append(f'<rect x="{x}" y="{hy}" width="{hw}" height="44" rx="14" fill="url(#{grad})"/>')
+        parts.append(f'<rect x="{x}" y="{hy+30}" width="{hw}" height="14" fill="url(#{grad})"/>')
+        parts.append(f'<text x="{x+16}" y="{hy+27}" font-family="{SANS}" font-size="14" font-weight="800" fill="white">{esc(title)}</text>')
+        tw = 6 * 0.62 * len(tag) + 14
+        parts.append(f'<rect x="{x+hw-tw-14:.0f}" y="{hy+13}" width="{tw:.0f}" height="18" rx="9" fill="white" opacity="0.25"/>')
+        parts.append(f'<text x="{x+hw-14-tw/2:.0f}" y="{hy+25.5}" text-anchor="middle" font-family="{SANS}" font-size="9" font-weight="800" letter-spacing="1" fill="white">{tag}</text>')
+        for j, item in enumerate(items):
+            iy = hy + 66 + j * 30
+            parts.append(f'<circle cx="{x+24}" cy="{iy-4}" r="7" fill="{light}"/>')
+            parts.append(f'<path d="M {x+20.5} {iy-4} l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>')
+            parts.append(f'<text x="{x+40}" y="{iy}" font-family="{SANS}" font-size="10.5" fill="{SLATE}">{esc(item)}</text>')
+    # equals badge between
+    mbx, mby = W / 2, hy + hh / 2
+    parts.append(f'<circle cx="{mbx}" cy="{mby}" r="19" fill="url(#g-green)" filter="url(#ds)"/>')
+    parts.append(f'<text x="{mbx}" y="{mby+6}" text-anchor="middle" font-family="{SANS}" font-size="17" font-weight="800" fill="white">=</text>')
+    parts.append(f'<text x="{mbx}" y="{hy-8}" text-anchor="middle" font-family="{SANS}" font-size="10" font-weight="700" fill="#047857">same code, same routes</text>')
+    parts.append(f'<path d="M {lx+hw+8} {mby} L {rx_-8} {mby}" stroke="#10B981" stroke-width="2" stroke-dasharray="5,4"/>')
+    # bottom note
+    ny = hy + hh + 26
+    parts.append(f'<text x="{W/2}" y="{ny}" text-anchor="middle" font-family="{SANS}" font-size="11" font-style="italic" fill="{MUTED}">No shim, no adapter, no second interface to drift. What passed locally deploys unchanged.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F5-one-surface"), "F5-one-surface"
 
-# ---- F6: X-Ray span tree ----
+# =====================================================================
+# F6: span tree + side annotations
+# =====================================================================
 def fig6():
-    h = 330
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="{C_TEXT}">X-Ray Trace: One Tool-Using Invoke</text>')
-
-    # tree structure
+    W, H = 680, 470
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("observability", "One Invoke, Dissected",
+                   "The X-Ray span tree teaches the agent loop without reading framework source.", GREEN)
+    parts += hp
     nodes = [
-        (340, 65, "invoke_agent  Strands Agents", C_BLUE, C_BLUE_BG, 'tools=["add_numbers"], 934 tokens'),
-        (210, 130, "execute_event_loop_cycle", C_PURPLE, C_PURPLE_BG, "cycle 1"),
-        (520, 130, "execute_event_loop_cycle", C_PURPLE, C_PURPLE_BG, "cycle 2"),
-        (130, 195, "execute_tool  add_numbers", C_GREEN, C_GREEN_BG, "TOOL, status=success"),
-        (360, 195, "chat  deepseek.v3.2", C_ORANGE, C_ORANGE_BG, "finish=tool_use"),
-        (570, 195, "chat  deepseek.v3.2", C_ORANGE, C_ORANGE_BG, "finish=end_turn"),
+        (255, y + 14, "invoke_agent", "Strands Agents  ·  934 tokens", "g-blue", BLUE),
+        (160, y + 94, "execute_event_loop_cycle", "cycle 1", "g-purple", PURPLE),
+        (350, y + 94, "execute_event_loop_cycle", "cycle 2", "g-purple", PURPLE),
+        (88,  y + 174, "execute_tool add_numbers", "TOOL span, status=success", "g-green", GREEN),
+        (255, y + 174, "chat deepseek.v3.2", "finish_reason=tool_use", "g-orange", ORANGE),
+        (422, y + 174, "chat deepseek.v3.2", "finish_reason=end_turn", "g-orange", ORANGE),
     ]
-    # edges
-    edges = [(0,1), (0,2), (1,3), (1,4), (2,5)]
+    nw, nh = 158, 50
+    edges = [(0, 1), (0, 2), (1, 3), (1, 4), (2, 5)]
     for a, b in edges:
-        x1, y1 = nodes[a][0], nodes[a][1]+22
-        x2, y2 = nodes[b][0], nodes[b][1]-22
-        parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{C_LINE}" stroke-width="1.5"/>')
-
-    for x, y, label, color, bg, meta in nodes:
-        w = 200
-        parts.append(f'<rect x="{x-w//2}" y="{y}" width="{w}" height="44" rx="6" fill="{bg}" stroke="{color}" stroke-width="1.5"/>')
-        parts.append(f'<text x="{x}" y="{y+17}" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="{color}">{label}</text>')
-        parts.append(f'<text x="{x}" y="{y+34}" text-anchor="middle" font-family="sans-serif" font-size="9" fill="{C_TEXT_LT}">{meta}</text>')
-
-    parts.append(f'<text x="340" y="{h-42}" text-anchor="middle" font-family="sans-serif" font-size="11" fill="{C_TEXT_LT}">One cycle per model round trip. The tool call is its own span inside the cycle.</text>')
-    parts.append(f'<text x="340" y="{h-20}" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="{C_RED}">Caveat: spans need ~10 min to become queryable. Local dev has no tool span.</text>')
+        x1, y1 = nodes[a][0], nodes[a][1] + nh
+        x2, y2 = nodes[b][0], nodes[b][1]
+        my = (y1 + y2) / 2
+        parts.append(f'<path d="M {x1} {y1} V {my} H {x2} V {y2}" fill="none" stroke="{LINE}" stroke-width="1.8"/>')
+        parts.append(f'<path d="M {x2-4} {y2-6} L {x2} {y2} L {x2+4} {y2-6} Z" fill="{MUTED}"/>')
+    for x, yy, title, meta, grad, color in nodes:
+        parts.append(card(x - nw / 2, yy, nw, nh, fill="white", stroke=color, sw=1.8, rx=10))
+        parts.append(f'<rect x="{x - nw/2}" y="{yy}" width="5" height="{nh}" rx="2.5" fill="url(#{grad})"/>')
+        tfs = 9.3 if len(title) > 20 else 10.5
+        parts.append(f'<text x="{x - nw/2 + 13}" y="{yy+21}" font-family="{MONO}" font-size="{tfs}" font-weight="700" fill="{INK}">{esc(title)}</text>')
+        parts.append(f'<text x="{x - nw/2 + 13}" y="{yy+38}" font-family="{SANS}" font-size="8.8" fill="{MUTED}">{esc(meta)}</text>')
+    # side annotations
+    ax_, aw = 540, 118
+    anns = [
+        (y + 60, YELLOW_B, "#B45309", "1 cycle = 1 model round trip"),
+        (y + 130, GREEN_B, "#047857", "the tool call is a first-class span, not hidden text"),
+        (y + 215, RED_B, RED, "spans need ~10 min to become queryable"),
+        (y + 280, RED_B, RED, "local dev records no tool span"),
+    ]
+    for ay, bg, tc, txt in anns:
+        lines = txt.split(" ")
+        rows, cur = [], ""
+        for wd in lines:
+            if len(cur) + len(wd) + 1 <= 20:
+                cur = (cur + " " + wd).strip()
+            else:
+                rows.append(cur); cur = wd
+        rows.append(cur)
+        rh = 14 + len(rows) * 12
+        parts.append(f'<rect x="{ax_-8}" y="{ay}" width="{aw}" height="{rh}" rx="8" fill="{bg}"/>')
+        for j, r_ in enumerate(rows):
+            parts.append(f'<text x="{ax_}" y="{ay+17+j*12}" font-family="{SANS}" font-size="8.8" font-weight="600" fill="{tc}">{esc(r_)}</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F6-span-tree"), "F6-span-tree"
 
-# ---- F7: Series roadmap (7 articles, difficulty ladder) ----
+# =====================================================================
+# F7: series roadmap (difficulty staircase)
+# =====================================================================
 def fig7():
-    h = 420
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 {h}" width="680">']
-    parts.append(f'<rect width="680" height="{h}" fill="{C_BG}"/>')
-    parts.append(f'<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="{C_TEXT}">Series Roadmap: 7 Use Cases, Rising Difficulty</text>')
-
-    articles = [
-        ("A1", "First Agent", "D1", "runtime, observability", C_GREEN),
-        ("A2", "Memory", "D2", "memory", C_GREEN),
-        ("A3", "Gateway + Identity", "D3", "gateway, identity", "#2ECC71"),
-        ("A4", "Policy", "D3", "policy", "#2ECC71"),
-        ("A5", "Research Agent", "D4", "web search, browser,\ncode interpreter, harness", C_ORANGE),
-        ("A6", "Quality Loop", "D4", "evaluations,\noptimization", C_ORANGE),
-        ("A7", "Multi-Agent + Registry", "D5", "multi-agent, registry", C_RED),
+    W, H = 680, 430
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
+             f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
+    hp, y = header("the series", "Seven Use Cases, Rising Difficulty",
+                   "Each deploys standalone. Same pattern every time: real deployment, measured outputs.", RED)
+    parts += hp
+    arts = [
+        ("A1", "First Agent",       "D1", "runtime", "observability", "g-green", GREEN),
+        ("A2", "Memory",            "D2", "memory", "", "g-green", GREEN),
+        ("A3", "Gateway+Identity",  "D3", "gateway", "identity", "g-teal", TEAL),
+        ("A4", "Policy",            "D3", "policy", "", "g-teal", TEAL),
+        ("A5", "Research Agent",    "D4", "search, browser,", "code interp, harness", "g-orange", ORANGE),
+        ("A6", "Quality Loop",      "D4", "evaluations,", "optimization", "g-orange", ORANGE),
+        ("A7", "Multi-Agent",       "D5", "coordination,", "registry", "g-red", RED),
     ]
-
-    bw = 80
-    gap = 12
-    total_w = 7 * bw + 6 * gap
-    ox = (680 - total_w) // 2
-    oy = 80
-
-    # staircase baseline
-    for i, (aid, title, diff, caps, color) in enumerate(articles):
+    bw, gap = 82, 10
+    total = 7 * bw + 6 * gap
+    ox = (W - total) // 2
+    base = y + 218
+    max_h = 190
+    for i, (aid, title, diff, l1, l2, grad, color) in enumerate(arts):
         x = ox + i * (bw + gap)
-        h_bar = 60 + i * 28
-        parts.append(f'<rect x="{x}" y="{oy + 200 - h_bar}" width="{bw}" height="{h_bar}" rx="6" fill="{color}" opacity="0.15" stroke="{color}" stroke-width="1.5"/>')
-        parts.append(f'<text x="{x+bw//2}" y="{oy+200-h_bar-8}" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="{color}">{aid}</text>')
-        parts.append(f'<text x="{x+bw//2}" y="{oy+200-h_bar+18}" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="600" fill="{color}">{diff}</text>')
-        # title below bar
-        parts.append(f'<text x="{x+bw//2}" y="{oy+218}" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="600" fill="{C_TEXT}">{title}</text>')
-        # caps
-        cap_lines = caps.split("\n")
-        for j, cl in enumerate(cap_lines):
-            parts.append(f'<text x="{x+bw//2}" y="{oy+232+j*11}" text-anchor="middle" font-family="sans-serif" font-size="7" fill="{C_TEXT_LT}">{cl}</text>')
-
-    parts.append(f'<text x="340" y="{h-20}" text-anchor="middle" font-family="sans-serif" font-size="11" font-style="italic" fill="{C_TEXT_LT}">Each use case deploys standalone. Each article follows the same pattern: real deployment, measured outputs.</text>')
+        bh = 66 + i * (max_h - 66) / 6
+        ty = base - bh
+        parts.append(f'<rect x="{x}" y="{ty}" width="{bw}" height="{bh}" rx="10" fill="url(#{grad})" opacity="0.92" filter="url(#ds)"/>')
+        parts.append(f'<text x="{x+bw/2}" y="{ty+26}" text-anchor="middle" font-family="{SANS}" font-size="15" font-weight="800" fill="white">{aid}</text>')
+        c, _ = chip(x + bw/2 - 15, ty + 36, diff, "white", bg=None, size=8.5, pad=6, h=14)
+        parts.append(f'<rect x="{x+bw/2-15}" y="{ty+36}" width="30" height="14" rx="7" fill="white" opacity="0.3"/>')
+        parts.append(f'<text x="{x+bw/2}" y="{ty+46.5}" text-anchor="middle" font-family="{SANS}" font-size="8.5" font-weight="800" fill="white">{diff}</text>')
+        parts.append(f'<text x="{x+bw/2}" y="{base+18}" text-anchor="middle" font-family="{SANS}" font-size="9.5" font-weight="700" fill="{INK}">{esc(title)}</text>')
+        parts.append(f'<text x="{x+bw/2}" y="{base+33}" text-anchor="middle" font-family="{SANS}" font-size="8" fill="{MUTED}">{esc(l1)}</text>')
+        if l2:
+            parts.append(f'<text x="{x+bw/2}" y="{base+44}" text-anchor="middle" font-family="{SANS}" font-size="8" fill="{MUTED}">{esc(l2)}</text>')
+    # difficulty arrow
+    parts.append(f'<path d="M {ox-6} {base-70} L {ox+total+6} {base-max_h-24}" stroke="{RED}" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>')
+    parts.append(f'<text x="{W/2}" y="{base+72}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-style="italic" fill="{MUTED}">This article (A0) covered runtime + observability with a hello-world agent. Everything else builds on the same contract.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F7-series-roadmap"), "F7-series-roadmap"
 
 # ---- generate all ----
-figs = [fig1(), fig2(), fig3(), fig4(), fig5(), fig6(), fig7()]
-
-for svg_path, name in figs:
-    png_path = to_png(svg_path, name, w=1400)
-    print(f"  {name}: {os.path.basename(svg_path)} + {os.path.basename(png_path)}")
-
-print(f"\nDone. {len(figs)} figures generated in {OUT}")
+if __name__ == "__main__":
+    figs = [fig0(), fig1(), fig2(), fig3(), fig4(), fig5(), fig6(), fig7()]
+    for svg_path, name in figs:
+        png_path = to_png(svg_path, name, w=1440)
+        print(f"  {name}: {os.path.basename(svg_path)} + {os.path.basename(png_path)}")
+    print(f"\nDone. {len(figs)} figures generated in {OUT}")

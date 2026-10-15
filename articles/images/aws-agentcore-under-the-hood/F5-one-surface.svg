@@ -1,22 +1,83 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" width="680">
-<rect width="680" height="360" fill="#FFFFFF"/>
-<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="#1A1A2E">One HTTP Surface, Two Hosts</text>
-<rect x="180" y="55" width="320" height="50" rx="8" fill="#D6EAF8" stroke="#2E86DE" stroke-width="2"/>
-<text x="340" y="78" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#2E86DE">GET /ping  +  POST /invocations</text>
-<text x="340" y="96" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#555555">Your code implements these two routes. Nothing else.</text>
-<rect x="40" y="140" width="280" height="140" rx="10" fill="#ECF0F1" stroke="#95A5A6" stroke-width="2"/>
-<text x="180" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#95A5A6">agentcore dev (local)</text>
-<text x="180" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Uvicorn on localhost:8080</text>
-<text x="180" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Hot reload on file save</text>
-<text x="180" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Model calls -> Bedrock (cloud)</text>
-<text x="180" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="#27AE60">No deployment needed</text>
-<rect x="360" y="140" width="280" height="140" rx="10" fill="#FFF3E0" stroke="#FF8C00" stroke-width="2"/>
-<text x="500" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#FF8C00">agentcore deploy (cloud)</text>
-<text x="500" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Serverless microVM per session</text>
-<text x="500" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">IAM role + endpoint + traces</text>
-<text x="500" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Scaling handled by platform</text>
-<text x="500" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="#27AE60">Same code, same routes</text>
-<line x1="340" y1="105" x2="180" y2="140" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,3"/>
-<line x1="340" y1="105" x2="500" y2="140" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,3"/>
-<text x="340" y="345" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#555555">No shim, no adapter, no second interface to drift.</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 478" width="680">
+<rect width="680" height="478" fill="white"/>
+
+<defs>
+  <filter id="ds" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="0" dy="2.5" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.15"/>
+  </filter>
+  <linearGradient id="g-blue" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3B82F6"/><stop offset="1" stop-color="#1D4ED8"/>
+  </linearGradient>
+  <linearGradient id="g-purple" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#6D28D9"/>
+  </linearGradient>
+  <linearGradient id="g-orange" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FF9900"/><stop offset="1" stop-color="#EA580C"/>
+  </linearGradient>
+  <linearGradient id="g-green" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#10B981"/><stop offset="1" stop-color="#047857"/>
+  </linearGradient>
+  <linearGradient id="g-red" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F43F5E"/><stop offset="1" stop-color="#BE123C"/>
+  </linearGradient>
+  <linearGradient id="g-teal" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#14B8A6"/><stop offset="1" stop-color="#0F766E"/>
+  </linearGradient>
+  <linearGradient id="g-ink" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#0F172A"/><stop offset="1" stop-color="#1E3A8A"/>
+  </linearGradient>
+  <linearGradient id="g-ribbon" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2563EB"/><stop offset="0.35" stop-color="#0D9488"/>
+    <stop offset="0.65" stop-color="#EA580C"/><stop offset="1" stop-color="#E11D48"/>
+  </linearGradient>
+</defs>
+
+<rect x="40" y="24" width="67" height="21" rx="10.5" fill="#0D9488"/>
+<text x="73" y="38.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">RUN IT</text>
+<text x="40" y="80" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">One HTTP Surface, Two Hosts</text>
+<text x="40" y="102" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12.5" fill="#475569">Your code implements two routes. Everything else about hosting is AgentCore's job.</text>
+<rect x="140" y="126" width="400" height="64" rx="12" fill="url(#g-ink)" filter="url(#ds)"/>
+<text x="340.0" y="154" text-anchor="middle" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="14" font-weight="800" fill="white">GET /ping   |   POST /invocations</text>
+<text x="340.0" y="174" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#93C5FD">the only two routes your code implements</text>
+<rect x="40" y="234" width="285" height="190" rx="14" fill="white" stroke="#0D9488" stroke-width="2" filter="url(#ds)"/>
+<rect x="40" y="234" width="285" height="44" rx="14" fill="url(#g-teal)"/>
+<rect x="40" y="264" width="285" height="14" fill="url(#g-teal)"/>
+<text x="56" y="261" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">agentcore dev</text>
+<rect x="278" y="247" width="33" height="18" rx="9" fill="white" opacity="0.25"/>
+<text x="295" y="259.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-weight="800" letter-spacing="1" fill="white">LOCAL</text>
+<circle cx="64" cy="296" r="7" fill="#CCFBF1"/>
+<path d="M 60.5 296 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="80" y="300" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">Uvicorn on localhost:8080</text>
+<circle cx="64" cy="326" r="7" fill="#CCFBF1"/>
+<path d="M 60.5 326 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="80" y="330" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">hot reload on file save</text>
+<circle cx="64" cy="356" r="7" fill="#CCFBF1"/>
+<path d="M 60.5 356 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="80" y="360" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">model calls still go to Bedrock</text>
+<circle cx="64" cy="386" r="7" fill="#CCFBF1"/>
+<path d="M 60.5 386 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="80" y="390" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">no deployment, no stack</text>
+<rect x="355" y="234" width="285" height="190" rx="14" fill="white" stroke="#EA580C" stroke-width="2" filter="url(#ds)"/>
+<rect x="355" y="234" width="285" height="44" rx="14" fill="url(#g-orange)"/>
+<rect x="355" y="264" width="285" height="14" fill="url(#g-orange)"/>
+<text x="371" y="261" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">agentcore deploy</text>
+<rect x="593" y="247" width="33" height="18" rx="9" fill="white" opacity="0.25"/>
+<text x="610" y="259.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-weight="800" letter-spacing="1" fill="white">CLOUD</text>
+<circle cx="379" cy="296" r="7" fill="#FFEDD5"/>
+<path d="M 375.5 296 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="395" y="300" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">serverless microVM per session</text>
+<circle cx="379" cy="326" r="7" fill="#FFEDD5"/>
+<path d="M 375.5 326 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="395" y="330" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">IAM role + HTTPS endpoint</text>
+<circle cx="379" cy="356" r="7" fill="#FFEDD5"/>
+<path d="M 375.5 356 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="395" y="360" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">traces: X-Ray + CloudWatch</text>
+<circle cx="379" cy="386" r="7" fill="#FFEDD5"/>
+<path d="M 375.5 386 l 2.5 2.8 l 4.5 -5.5" stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<text x="395" y="390" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">scaling handled by the platform</text>
+<circle cx="340.0" cy="329.0" r="19" fill="url(#g-green)" filter="url(#ds)"/>
+<text x="340.0" y="335.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="800" fill="white">=</text>
+<text x="340.0" y="226" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" fill="#047857">same code, same routes</text>
+<path d="M 333 329.0 L 347 329.0" stroke="#10B981" stroke-width="2" stroke-dasharray="5,4"/>
+<text x="340.0" y="450" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" font-style="italic" fill="#64748B">No shim, no adapter, no second interface to drift. What passed locally deploys unchanged.</text>
 </svg>
