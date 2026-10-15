@@ -174,8 +174,8 @@ def fig1():
     grid_w = cols * cell_w + (cols - 1) * gap
     ox = (W - grid_w) // 2
     hp, oy = header("what it is", "AgentCore: 14 Managed Capabilities",
-                    "This article lights up 2 of 14. The rest arrive one use case at a time.", GREEN)
-    H = oy + 3 * (cell_h + gap) + 118
+                    "This article puts two of the 14 to work: Runtime and Observability.", GREEN)
+    H = oy + 3 * (cell_h + gap) + 64
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
              f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
     parts += hp
@@ -206,7 +206,6 @@ def fig1():
         lyk = ly + row * 20
         parts.append(f'<circle cx="{lx+5}" cy="{lyk-4}" r="4.5" fill="{color}"/>')
         parts.append(f'<text x="{lx+15}" y="{lyk}" font-family="{SANS}" font-size="10" fill="{SLATE}">{esc(label)}</text>')
-    parts.append(f'<text x="{W/2}" y="{ly+52}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-style="italic" fill="{MUTED}">Difficulty rises D1 (first agent) to D5 (multi-agent + registry). Each use case adds at least one new capability.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F1-capability-map"), "F1-capability-map"
