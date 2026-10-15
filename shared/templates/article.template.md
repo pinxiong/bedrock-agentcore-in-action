@@ -1,10 +1,11 @@
 # UC{{UC_NUM}} · {{UC_TITLE}}
 
-Follows the series skeleton in [PLAN.md](../../PLAN.md) section 8.3. The operations
-doc is `README.md`; this file is the narrative. Keep them separate: the README
-must be copy-pasteable, the article must be readable.
+Follows the series article skeleton defined in the repository plan, section 8.3.
+The operations doc is `README.md`; this file is the narrative. Keep them separate:
+the README must be copy-pasteable, the article must be readable.
 
-> Verified on 2026-XX-XX against AgentCore as of that date.
+> Verified on 2026-XX-XX against AgentCore as of that date. Account ids in captured
+> output are redacted to `123456789012`.
 
 ---
 
@@ -20,7 +21,7 @@ must be copy-pasteable, the article must be readable.
 | Interfaces | {{AgentCore CLI / boto3 control plane / boto3 data plane}} |
 | Region | us-east-1 |
 | Complexity | D{{DIFFICULTY}}: {{what makes it that rung}} |
-| Official group | `{{one of the eight groups listed in docs/08-official-alignment.md}}` |
+| Official group | `{{one of the eight groups listed in the series alignment note}}` |
 
 ## 2. The problem
 
@@ -37,20 +38,19 @@ fails in production. This section is where the article earns a reader's attentio
 
 ## 5. Walkthrough
 
-{{The few commands that matter, each with its real output. Point at
-`usecases/{{UC_NUM}}-{{slug}}/` for the full version rather than pasting everything.}}
+{{The few commands that matter, each with its real output. Point at this folder for
+the full version rather than pasting everything. This folder is self-contained:
+`make doctor` / `make deploy` / `make test` / `make down` cover the whole loop.}}
 
 ## 6. Verification
 
-{{Real output from `python aia.py test {{UC_NUM}}`. Assertions, not adjectives.}}
+{{Real output from `make test` and `make check`. Assertions, not adjectives.}}
 
 ## 7. Cleanup
 
 ```bash
-python aia.py down {{UC_NUM}}     # wrapper: tag-scoped teardown of this use case only
-# the same thing by hand, from the use case root:
-agentcore remove all -y && agentcore deploy -y
-agentcore status                  # nothing from this use case should be listed
+make down                    # tag-scoped teardown of this use case only
+agentcore status             # nothing from this use case should be listed
 ```
 
 {{Say what survives on purpose, and why. Example: the CDK bootstrap stack and its
@@ -71,6 +71,8 @@ asset bucket are reused by every later deployment in the account.}}
 | `agentcore/agentcore.json` | the contract: every resource this use case declares | you |
 | `agentcore/aws-targets.json` | where deployments land | you |
 | `app/{{AGENT_NAME}}/` | the agent code `codeLocation` points at | you |
+| `Makefile` | every operation, all of them relative to this folder | you |
+| `tests/doctor.py`, `tests/copy_check.py` | environment self-check, and the proof the folder stands alone | you |
 | `raw/` | boto3 sidecar scripts; teaching only, never deployed | you |
 | `agentcore/cdk/`, `agentcore/.llm-context/`, `agentcore/.cli/` | generated plumbing | the CLI |
 
@@ -84,7 +86,10 @@ Repository: <https://github.com/awslabs/agentcore-samples>
 ## 12. Try it yourself
 
 ```bash
-python aia.py up {{UC_NUM}} && python aia.py test {{UC_NUM}} && python aia.py down {{UC_NUM}}
+cp -r usecases/{{UC_SLUG}} /tmp/{{UC_ID}} && cd /tmp/{{UC_ID}} && make doctor
+make deploy && make test && make down
 ```
 
-This use case is self-contained: you do not need any other use case deployed first.
+This use case is self-contained: copy the folder anywhere and it still runs, and
+you do not need any other use case deployed first. `make check` asserts exactly
+that, by copying the folder to a temporary directory and checking the copy.

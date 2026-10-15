@@ -73,7 +73,9 @@ class Report:
 
 def run(cmd: list[str], cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess:
     """Run a command cross-platform (no shell)."""
-    print(f"  $ {' '.join(cmd)}")
+    # flush=True: without it the child's output overtakes this line whenever
+    # stdout is a pipe, and the log reads as if the command ran after its output.
+    print(f"  $ {' '.join(cmd)}", flush=True)
     return subprocess.run(cmd, cwd=cwd, check=check)
 
 
@@ -327,10 +329,27 @@ def cmd_status(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_check(args: argparse.Namespace) -> int:
+    """The use case asserts its own independence; this only invokes it.
+
+    Re-implementing the copy scan here would create a second source of truth for
+    what "standalone" means, and the use case has to carry the assertion anyway
+    so that a copied folder can check itself.
+    """
+    uc_dir = find_uc_dir(args.usecase)
+    script = uc_dir / "tests" / "copy_check.py"
+    if not script.exists():
+        die(f"{script} does not exist; this use case cannot assert its own independence")
+    return run([sys.executable, "tests/copy_check.py"], cwd=uc_dir, check=False).returncode
+
+
 def cmd_verify(args: argparse.Namespace) -> int:
-    rc = cmd_test(args)
-    if rc != 0:
-        return rc
+    # cheapest and local first, so a folder that cannot stand alone never
+    # reaches the paid assertions
+    for step in (cmd_check, cmd_test):
+        rc = step(args)
+        if rc != 0:
+            return rc
     uc_dir = find_uc_dir(args.usecase)
     return run(
         [sys.executable, "shared/scripts/verify-coverage.py", "--usecase", f"uc{uc_number(uc_dir)}"],
@@ -464,7 +483,7 @@ def cmd_new(args: argparse.Namespace) -> int:
         "{{AWS_ACCOUNT_ID}}": detect_account(),
     }
     agent_dir = f"app/{subs['{{AGENT_NAME}}']}"
-    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "diagrams", "raw"):
+    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "raw"):
         (target / sub).mkdir(parents=True, exist_ok=True)
 
     # Agent code first. The agent code sits in app/<AgentName>/, which is the
@@ -476,8 +495,10 @@ def cmd_new(args: argparse.Namespace) -> int:
         src = BASELINE / "app" / "{{AGENT_NAME}}" / rel
         (target / agent_dir / rel).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
 
-    # IaC source of truth: the contract and the targets file
-    for rel in ("agentcore/agentcore.json", "agentcore/aws-targets.json"):
+    # IaC source of truth: the contract, the targets, and the gitignore the CLI
+    # writes next to them. The gitignore is not optional: without it a use case
+    # would commit agentcore/.env.local and the CLI's local state.
+    for rel in ("agentcore/agentcore.json", "agentcore/aws-targets.json", "agentcore/.gitignore"):
         src = BASELINE / rel
         (target / rel).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
 
@@ -489,6 +510,15 @@ def cmd_new(args: argparse.Namespace) -> int:
         "{{CAPABILITY_ASSERTIONS}}", assert_block
     )
     (target / "tests" / "smoke.py").write_text(smoke, encoding="utf-8")
+
+    # The self-contained entry points. These are what make "copy any folder and
+    # it runs independently" true for this use case: without them every command
+    # would be routed through the repository root, and a copy would be inert.
+    # run.py is the entry point (it works on Windows too); the Makefile only
+    # forwards, and copy_check.py asserts the two target lists stay in step.
+    # `tests/doctor.py` and `tests/copy_check.py` arrive through the tests glob.
+    for rel in ("run.py", "Makefile", "AGENTS.md"):
+        (target / rel).write_text(render((BASELINE / rel).read_text(encoding="utf-8"), subs), encoding="utf-8")
 
     doc_tpl = TEMPLATES / "usecase-doc.template.md"
     doc = render(doc_tpl.read_text(encoding="utf-8"), subs).replace("0X", uc_num)
@@ -507,8 +537,9 @@ def cmd_new(args: argparse.Namespace) -> int:
     )
 
     # raw/: teaching-only boto3 sidecar. The official samples keep two routes apart
-    # on purpose (CLI in 00-getting-started, boto3 in 01-features). This series ships
+    # on purpose (CLI in getting-started, boto3 in 01-features). This series can ship
     # both in one use case: the CLI route stays deployable, the API route stays visible.
+    # Nothing here is imported or packaged, so the folder still stands alone without it.
     (target / "raw" / "README.md").write_text(
         f"""# raw/ · boto3 sidecar ({uc_id})
 
@@ -521,8 +552,8 @@ what the CLI did for them.
 | `control_plane.py` | `bedrock-agentcore-control` | list and read back the resources `agentcore` just created |
 | `data_plane.py` | `bedrock-agentcore` | call `invoke_agent_runtime` directly and print the raw SSE stream |
 
-Why these exist, and where the official version of the same idea lives:
-docs/08-official-alignment.md section 3.1.
+Both scripts are optional. If you do not write them, delete this directory:
+`make check` only requires what the use case needs in order to run.
 """,
         encoding="utf-8",
     )
@@ -532,15 +563,21 @@ docs/08-official-alignment.md section 3.1.
         f"""
 done. next:
 
-  1. implement the capability assertions in tests/smoke.py
+  1. build the app environment, which also writes the lockfile that makes the
+     folder reproducible:
+       cd usecases/{slug} && make sync
+  2. implement the capability assertions in tests/smoke.py
      (it fails on purpose until each one is implemented)
-  2. deploy it:  cd usecases/{slug} && agentcore deploy
+  3. assert the folder stands alone; it will fail until step 1 is done:
+       make check
+  4. deploy it:
+       cd usecases/{slug} && make deploy
      agentcore/agentcore.json is the source of truth; the CDK app under
      agentcore/cdk/ is generated by the CLI. If agentcore/cdk/ is missing,
      run `agentcore create` once in a scratch directory and copy it in.
-  3. write the operations doc in README.md: twelve sections, every step needs
+  5. write the operations doc in README.md: twelve sections, every step needs
      command / expected output / how to verify / what to do if it fails
-  4. add or update this block in docs/05-capability-map.yaml, then run:
+  6. add or update this block in docs/05-capability-map.yaml, then run:
        python aia.py verify {uc_num}
 
   - id: {uc_id}
@@ -588,8 +625,9 @@ def main(argv: list[str] | None = None) -> int:
         ("up", cmd_up, "deploy exactly one use case"),
         ("down", cmd_down, "destroy exactly one use case"),
         ("test", cmd_test, "run one use case's assertions"),
+        ("check", cmd_check, "does that use case's folder stand alone if copied out?"),
         ("status", cmd_status, "what is deployed for one use case"),
-        ("verify", cmd_verify, "test + coverage + independence checks"),
+        ("verify", cmd_verify, "check + test + coverage + independence"),
     ]:
         p = sub.add_parser(name, help=help_txt)
         p.add_argument("usecase", help="use case number, e.g. 05")

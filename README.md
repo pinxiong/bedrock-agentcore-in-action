@@ -32,8 +32,8 @@ This repo takes the third option: **independent use cases, arranged as a ladder.
 
 ## The independence contract
 
-A use case in this repo is called independent only if all five of these hold. Each is
-checkable, and the last one runs in CI.
+A use case in this repo is called independent only if all six of these hold. Each is
+checkable, and the last two run in CI.
 
 | | Condition | How you can verify it |
 |---|---|---|
@@ -42,6 +42,7 @@ checkable, and the last one runs in CI.
 | **I3** | Own IaC stack | No cross-stack references, no shared state, no reading another use case's outputs |
 | **I4** | Own source tree | the directory each use case deploys (`codeLocation`, i.e. `usecases/NN-*/app/aia_ucNN/`) never imports another use case |
 | **I5** | Own documentation | The README starts from zero and lists only *knowledge* prerequisites, never "you must deploy UC0X first" |
+| **I6** | **Survives a copy** | `cp -r usecases/05-* /tmp/uc05 && cd /tmp/uc05 && python3 run.py check` passes |
 
 ```bash
 # The independence test, for any use case
@@ -55,6 +56,32 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 Every resource carries a `UseCase=NN` tag so that last assertion is possible.
 **Independence is asserted, not claimed.**
 
+### Copy any folder, and it still runs
+
+Each use case folder is a complete project on its own. Its entry point lives inside
+it, so the repository around it is convenience, not a dependency:
+
+```bash
+cp -r usecases/01-first-agent /tmp/uc01
+cd /tmp/uc01
+python3 run.py doctor     # toolchain, credentials, and this folder
+python3 run.py deploy     # deploy it
+python3 run.py test       # assert it
+python3 run.py down       # destroy it
+```
+
+`run.py` is the entry point and is pure standard library, so macOS, Linux and
+Windows behave identically. The `Makefile` next to it holds no logic and only
+forwards (`make deploy` is `python3 run.py deploy`), and `python3 run.py check`
+asserts that the two never drift apart.
+
+That `check` is a real test, not a scan: it copies the folder to a temporary
+directory with the same ignore rules a reader would use, compares the file
+inventories, then re-runs every check **on the copy** — including running
+`run.py help` and the copy's own `check` from inside the copy. Before this
+existed, "copy any folder and it runs independently" was a sentence in this
+README. Now a use case that breaks it fails CI.
+
 ### What independence costs, stated plainly
 
 Independent use cases must each carry a runnable baseline agent, which means some
@@ -62,9 +89,11 @@ duplication. Every use case README has a section called *What you repeated* that
 exactly what it re-embeds, so you always know whether you are looking at a
 self-contained example or a shared service. The baseline is generated from
 `shared/templates/baseline-agent/` by `python aia.py new`, so the duplicate
-is authored once. What this repo deliberately does **not** do is factor the baseline into
-a shared library that use cases import: that would recouple I3 and I4 and take us straight
-back to chained stages.
+is authored once. The same goes for the in-folder entry point: `run.py`, `Makefile`,
+`AGENTS.md`, `tests/doctor.py` and `tests/copy_check.py` are five more copies per use
+case, and that is the price of I6. What this repo deliberately does **not** do is factor
+the baseline into a shared library that use cases import: that would recouple I3 and I4
+and take us straight back to chained stages.
 
 ---
 
@@ -184,31 +213,43 @@ cd bedrock-agentcore-in-action
 pip install pyyaml                     # or: uv pip install pyyaml
 python aia.py doctor                   # checks CLI, Node, Python, region, model access, command shadowing
 
+python aia.py check 01                 # does that folder stand on its own?
 python aia.py up 01 && python aia.py test 01 && python aia.py down 01
 ```
 
-Then pick any other use case. Order is suggested, not required.
+Then pick any other use case. Order is suggested, not required. Once you are
+inside a use case folder, use its own entry point: `python3 run.py --list`.
 
 ## Repository layout
 
 ```
-usecases/       7 self-contained use cases, each with app, agentcore, tests, README and article
+usecases/       7 self-contained use cases, each with run.py, app, agentcore, tests, README and article
 bonus/payments/ the standalone payments branch
 docs/           series-wide guides, the machine-readable capability map, the difficulty rubric
 shared/         scripts and templates, including the use case generator and the baseline agent
 PLAN.md         how the series was designed
 ```
 
+Each `usecases/NN-*/` folder is a project root, not a package inside a project: it
+holds its own `run.py`, `Makefile`, `AGENTS.md`, `agentcore/` contract and `tests/`,
+and nothing in it points at a path outside itself.
+
 ## Conventions
 
 - **Region**: `us-east-1` everywhere.
 - **Build type**: `CodeZip` (no Docker). Container is discussed, not required.
 - **Tags**: every resource carries `Project=agentcore-in-action`, `UseCase=0X`, `AutoDelete=true`.
-- **Boundaries**: no cross-use-case imports, no cross-stack references.
+- **Boundaries**: no cross-use-case imports, no cross-stack references, and no path
+  inside a use case points outside it.
 - **Framework**: Python 3.11 with Strands Agents; UC03 and UC07 also ship a LangGraph variant.
 - **No secrets in the repo**: `.env.example` holds placeholders only; `gitleaks` runs in CI.
-- **Cross-platform**: every command goes through `python aia.py`, plain Python with no Make,
-  no bash and no WSL. macOS, Linux and Windows behave identically.
+- **Two levels of tooling**: `python aia.py <cmd>` is the repository-level dispatcher for
+  work that spans use cases; each use case also has its own `run.py` for everything that
+  concerns only itself. The second one is what makes a folder copyable, so it is the
+  one a reader should reach for.
+- **Cross-platform**: `run.py` is plain Python with no shell dependency, and the
+  `Makefile` only forwards to it. macOS, Linux and Windows behave identically, and
+  `python3 run.py <target>` is the form that holds everywhere.
 
 ## Adding a use case
 
@@ -216,11 +257,12 @@ PLAN.md         how the series was designed
 python aia.py new 08-your-idea --difficulty 5
 ```
 
-This scaffolds a working baseline, a README from the twelve-section template, and a smoke
-test, then tells you what to fill in. See
+This scaffolds a working baseline (including `run.py`, `Makefile`, `AGENTS.md`,
+`tests/doctor.py` and `tests/copy_check.py`), a README from the twelve-section
+template, and a smoke test, then tells you what to fill in. See
 [`docs/07-how-to-add-a-usecase.md`](docs/07-how-to-add-a-usecase.md). New use cases must
 declare their capabilities and difficulty in `docs/05-capability-map.yaml` and pass the
-three CI checks.
+four CI checks, one of which is `python3 run.py check` inside the new folder.
 
 ## License
 

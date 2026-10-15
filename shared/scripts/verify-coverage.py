@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """verify-coverage.py
 
-Reads docs/05-capability-map.yaml and enforces four classes of rules.
+Reads docs/05-capability-map.yaml and enforces five classes of rules.
 
   [COVER]   every one of the 14 capabilities is `deep` in at least one use case
   [EVID]    a use case declaring `deep: [cap]` must assert that capability in
             usecases/<dir>/tests/smoke.py via a CAPABILITY_ASSERTIONS dict
+  [COPY]    every use case folder stands alone when it is copied out. Each use
+            case ships tests/copy_check.py, which scans itself for paths that
+            escape the folder and then does a real copy to a temporary directory
+            and re-runs the same checks there. This class shells out to that
+            file rather than re-implementing it: the assertion belongs to the
+            use case, and keeping one implementation is what stops the two from
+            drifting. It exists because "copy any folder and it runs
+            independently" was a promise in the README before it was a test.
   [INDEP]   (a) difficulty is declared, inside the scale bounds, and the sequence
                 over the ladder is non-decreasing
             (b) every use case has its own agentcore/ directory and no cross-stack
@@ -27,6 +35,7 @@ Usage
   python3 shared/scripts/verify-coverage.py --usecase uc04
   python3 shared/scripts/verify-coverage.py --allow-missing-dirs   # during bootstrap
   python3 shared/scripts/verify-coverage.py --skip-cli             # no CLI on this machine
+  python3 shared/scripts/verify-coverage.py --skip-copy            # do not copy any tree
 
 Requires PyYAML:  pip install pyyaml
 """
@@ -51,6 +60,7 @@ except ModuleNotFoundError:  # pragma: no cover
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_FILE = "docs/05-capability-map.yaml"
+COPY_TIMEOUT_S = 300
 
 CROSS_STACK_PATTERNS = [
     (r"\bImportValue\b", "CloudFormation ImportValue"),
@@ -419,6 +429,59 @@ def check_commands(spec: dict, only: str | None, skip: bool, rep: Report) -> Non
     print()
 
 
+def check_copy(root: Path, spec: dict, only: str | None, allow_missing: bool, skip: bool, rep: Report) -> None:
+    print("[COPY] every use case folder stands alone when it is copied out")
+
+    if skip:
+        rep.warn("skipped (--skip-copy)")
+        print()
+        return
+
+    checked = 0
+    for uc in spec.get("usecases", []) + spec.get("bonus", []):
+        if only and uc["id"] != only:
+            continue
+        uc_dir = root / uc["dir"]
+        script = uc_dir / "tests" / "copy_check.py"
+        if not script.exists():
+            msg = f"{uc['id']}: no tests/copy_check.py, so nothing asserts the folder stands alone"
+            if allow_missing:
+                rep.warn(msg + " (allowed during bootstrap)")
+            else:
+                rep.fail(msg)
+            continue
+
+        try:
+            proc = subprocess.run(
+                [sys.executable, "tests/copy_check.py", "--quiet"],
+                cwd=uc_dir,
+                capture_output=True,
+                text=True,
+                timeout=COPY_TIMEOUT_S,
+            )
+        except subprocess.TimeoutExpired:
+            rep.fail(f"{uc['id']}: tests/copy_check.py did not finish within {COPY_TIMEOUT_S}s")
+            continue
+
+        if proc.returncode == 0:
+            summary = next(
+                (l for l in reversed(proc.stdout.splitlines()) if "passed," in l), ""
+            ).strip()
+            rep.ok(f"{uc['id']}: the folder stands alone ({summary or 'copy_check passed'})")
+        else:
+            rep.fail(f"{uc['id']}: the folder does not stand alone")
+            inner = [l.strip() for l in proc.stdout.splitlines() if l.strip().startswith("FAIL")]
+            for line in inner[:8]:
+                rep.fail(f"  {line}")
+            if not inner:
+                rep.fail(f"  copy_check exited {proc.returncode}: {proc.stderr.strip()[:200]}")
+        checked += 1
+
+    if not checked:
+        rep.warn("no complete use case to copy yet")
+    print()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", default=str(REPO_ROOT), help="repository root (default: this repo)")
@@ -433,6 +496,11 @@ def main() -> int:
         action="store_true",
         help="skip the [CMD] check (for machines without the agentcore CLI)",
     )
+    ap.add_argument(
+        "--skip-copy",
+        action="store_true",
+        help="skip the [COPY] check (it copies each use case to a temporary directory)",
+    )
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
@@ -445,6 +513,7 @@ def main() -> int:
     if not args.usecase:
         check_coverage(spec, rep)
     check_evidence(root, spec, args.usecase, args.allow_missing_dirs, rep)
+    check_copy(root, spec, args.usecase, args.allow_missing_dirs, args.skip_copy, rep)
     check_independence(root, spec, args.usecase, args.allow_missing_dirs, rep)
     check_commands(spec, args.usecase, args.skip_cli, rep)
     return rep.emit()

@@ -1,11 +1,11 @@
 """Independence helper used by every use case's smoke test.
 
-Implements assertion I2 from README's independence contract: after `python aia.py down`,
-no resource tagged with another use case's number may exist because of this run.
+Implements assertion I2 of the independence contract: after `make down`, no
+resource tagged with another use case's number may exist because of this run.
 
 Requires boto3 and working credentials. Set AWS_REGION if you do not use us-east-1.
 
-This file is copied into each use case by `aia.py new` rather
+This file is copied into each use case by the scaffold generator rather
 than imported, so that use cases stay independent of one another (contract I4).
 """
 
@@ -34,7 +34,7 @@ def _client():
     except NoCredentialsError as exc:
         raise AssertionError(
             "the independence check needs AWS credentials. "
-            "fix: run `aws sts get-caller-identity`, then re-run `aia test`"
+            "fix: run `aws sts get-caller-identity`, then re-run `make test`"
         ) from exc
     except Exception as exc:  # noqa: BLE001
         raise AssertionError(

@@ -171,7 +171,7 @@ agentcore create --name <AgentName> --framework Strands \
 
 ### 2.1 「独立」的精确定义（可验证，不是形容词）
 
-一个用例"独立"，必须同时满足五条。任何一条不满足，就不是独立用例：
+一个用例"独立"，必须同时满足六条。任何一条不满足，就不是独立用例：
 
 | # | 条件 | 判据 |
 |---|---|---|
@@ -180,6 +180,7 @@ agentcore create --name <AgentName> --framework Strands \
 | **I3** | **IaC 独立** | 每例一个独立栈、独立资源命名空间；**无跨栈 export/import**，不读别的用例的参数 |
 | **I4** | **代码独立** | 每例的 `codeLocation`（= `usecases/NN-*/app/aia_ucNN/`）**不 import** 其他用例的模块；共享代码只能以"生成器模板"形式**复制**进来后各自演进 |
 | **I5** | **文档独立** | README 从零讲起；前置条件只写**知识**，绝不写"你必须先跑完 UC0X" |
+| **I6** | **拷贝即独立** | `cp -r usecases/NN-* /tmp/ucNN` 之后，目录内**没有任何路径指向目录之外**，且副本里 `python3 run.py check` 通过 |
 
 **回归测试（每条用例的 DoD 之一）**
 
@@ -191,9 +192,15 @@ python aia.py up 05 && python aia.py test 05 && python aia.py down 05
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=01,02,03,04,06,07
 # 期望：ResourceTagMappingList 为空
+
+# 断言 I6：把目录拷走，它仍然自洽（这一步不需要 AWS）
+cp -r usecases/05-* /tmp/uc05 && cd /tmp/uc05 && python3 run.py check
+# 期望：0 failed，且副本在自己的目录里跑得起来
 ```
 
-资源标签里带 `UseCase=NN` 就是为了让这条断言可执行。**独立性是跑出来的，不是写出来的。**
+资源标签里带 `UseCase=NN` 就是为了让前两条断言可执行。**独立性是跑出来的，不是写出来的。**
+
+**I6 的实测口径**（`tests/copy_check.py`，每例自带一份）：不是扫一遍就算，而是按读者会用的排除规则**真的复制一份**到临时目录，比对两侧文件清单，然后**在副本上**重跑全部检查，包括在副本里执行 `run.py help`、`make help` 与副本自己的 `check`。前四条是推理这棵树，这一条是造出第二棵树再看它。
 
 ### 2.2 「难度递增」的度量（不是感觉，是刻度尺）
 
@@ -218,18 +225,29 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 | 最小 agent 骨架（≈ 1 个文件、20 行） | 7 份 | `aia.py new` 从 `shared/templates/baseline-agent/` **生成**出来，只写一次 |
 | IaC 栈骨架（CDK app 入口 + 标签） | 7 份 | 同上，由生成器生成；各例只改自己的资源声明 |
 | 冒烟测试骨架 | 7 份 | 同上，生成骨架后各例填自己的断言 |
+| 自包含操作入口 `run.py` + `Makefile` + `AGENTS.md` + `tests/doctor.py` + `tests/copy_check.py` | 7 份 × 5 个文件 | 同上，由生成器生成。这是 I6 的价格：入口一旦在目录外，目录就不能单独拷走 |
 
-**不做的事**：不建"公共运行时依赖"（例如让 7 个用例 import 同一个 `shared/lib`）。那样 IaC 与代码就重新耦合，I3/I4 立刻失效，等于回到 v2 的伪独立。
+**入口为什么不放在仓库根**：放在根上只写一份，看起来更省，但那样每个用例都必须连着仓库才能操作，`cp -r` 出来就是一个死目录。I6 要求入口在目录**内**，代价是重复，收益是"拷走即用"这句话可以被断言。
+
+**两个入口的关系**：`run.py` 是唯一实现（纯标准库，macOS / Linux / Windows 一致），`Makefile` 只转发。两个入口各写一套是这类骨架最典型的腐烂方式，所以 `tests/copy_check.py` 有一条断言把目标名钉在一起，并检查每条 make 配方都转发给 `run.py`。
+
+**不做的事**：不建"公共运行时依赖"（例如让 7 个用例 import 同一个 `shared/lib`）。那样 IaC 与代码就重新耦合，I3/I4 立刻失效，等于回到 v2 的伪独立。同样不建"公共入口脚本"（那会直接废掉 I6）。
 
 **代价的诚实表述（要写进每篇文档）**：每个用例的文档里有一节列出"为独立而内嵌的基线是什么"。读者应当知道自己在看一份自包含的示例，而不是一个微服务仓库的最佳实践。
 
 ### 2.4 「覆盖」如何保证
 
-`docs/05-capability-map.yaml` 声明每个用例的 `deep`（深挖）与 `incidental`（用到）能力，以及对应的 `assertions`（断言）。`shared/scripts/verify-coverage.py` 校验三类规则：
+`docs/05-capability-map.yaml` 声明每个用例的 `deep`（深挖）与 `incidental`（用到）能力，以及对应的 `assertions`（断言）。`shared/scripts/verify-coverage.py` 校验五类规则：
 
-1. **覆盖**：14 项能力每项至少被一个用例 `deep`。
-2. **实证**：某用例声明 `deep: [policy]`，则 `usecases/NN-*/tests/smoke.py` 里必须有对应断言，否则 FAIL。
-3. **独立性**：难度序列单调不减（§2.2）；用例目录不含指向其他用例的 import（I4）；每个用例有独立 `iac/` 目录（I3）。
+| 类 | 校验 | 依据 |
+|---|---|---|
+| `[COVER]` | 14 项能力每项至少被一个用例 `deep` | capability map |
+| `[EVID]` | 某用例声明 `deep: [policy]`，则 `usecases/NN-*/tests/smoke.py` 的 `CAPABILITY_ASSERTIONS` 里必须有对应断言 | smoke.py |
+| `[COPY]` | 该用例目录被拷走后仍然自洽（I6） | **调用**用例自带的 `tests/copy_check.py` |
+| `[INDEP]` | 难度序列单调不减（§2.2）；`agentcore/` 无跨栈引用（I3）；`codeLocation` 目录不 import 其他用例（I4） | 合约 + 源码 |
+| `[CMD]` | capability map 的 `cli:` 字段里每条 `agentcore` 命令/子命令/参数都真实存在 | 安装的 CLI |
+
+`[COPY]` 刻意不复用实现：仓库级校验只是 shell 出去调用每例自带的 `tests/copy_check.py`。理由有二：这条断言必须**跟着目录走**（拷走之后还要能自证），而两处各写一套必然会漂移。同理，`[CMD]` 存在的理由是本方案曾写过两条不存在的命令（`agentcore create --harness`、`agentcore add identity`），现在这类错误会被 CI 拦下。
 
 "覆盖了全部 14 项能力"因此从一句声明变成一个 CI 检查项。
 
@@ -480,7 +498,7 @@ bedrock-agentcore-in-action/
 │
 ├── shared/
 │   ├── scripts/
-│   │   └── verify-coverage.py   # ★ 覆盖 + 实证 + 独立性三类校验
+│   │   └── verify-coverage.py   # ★ 覆盖 + 实证 + 拷贝独立性 + 独立 + 命令五类校验
 │   │                            #   （调度 / 自检 / 生成器 / 成本清单都收敛在根目录 aia.py）
 │   └── templates/
 │       ├── usecase-doc.template.md
@@ -631,7 +649,7 @@ bedrock-agentcore-in-action/
 
 | 阶段 | 内容 | 完成标志 |
 |---|---|---|
-| **P0 地基** | 建仓库、`docs/`、生成器 `aia.py new`、`baseline-agent/` 模板、`verify-coverage.py`、`aia doctor` | 生成器能生成出一个能通过 CI 的空用例；三类校验全绿 |
+| **P0 地基** | 建仓库、`docs/`、生成器 `aia.py new`、`baseline-agent/` 模板、`verify-coverage.py`、`aia doctor` | 生成器能生成出一个能通过 CI 的空用例；五类校验全绿 |
 | **P1 打底两档** | UC01（D1）+ UC02（D2）（+ 2 篇） | DoD 八条全绿；两例都能在干净账号单独部署 |
 | **P2 跨过认证与裁决** | UC03（D3）+ UC04（D3） | 同上；UC04 的 Log-only → Enforce 可复现 |
 | **P3 难度爬升** | UC05（D4）+ UC06（D4） | 同上；UC05 给 Harness 与 export 两条路径；UC06 A/B 有显著性截图 |
@@ -692,6 +710,21 @@ bedrock-agentcore-in-action/
 1. **能力数口径必须标出处**。AWS 文档核心服务表 13 项（无 Web Search，含 Optimization），samples 的 `01-features` 表 13 项（含 Web Search，无 Optimization），并集才是我们的 14 项。任何地方写「14 项」都要能对上 `docs/05-capability-map.yaml` 的 `capabilities[].src`。
 2. **写进文档的命令必须在本机 CLI 里存在**。`verify-coverage.py` 的 `[CMD]` 校验会用 `Usage:` 行核对 `cli:` 字段里的命令、子命令与 flag。这条是被真实错误逼出来的：计划里曾出现 `agentcore create --harness` 与（照抄官方 samples 根 README 的）`agentcore add identity`，两者都不存在。
 
+### 10.3 「拷贝即独立」拍板（2026-10-16）
+
+用户提出的原话是：**每个 usecase 都是可以独立运行的，copy any folder and it runs independently。** 审计后确认：此前 I1–I5 描述的是**部署期**独立，而**操作入口全在仓库根**（`aia.py doctor/up/test/down`），文档里甚至写着 `cd ../..` 回到仓库根，所以把 `usecases/01-first-agent/` 单拷出来是一个死目录。这句话当时是承诺，不是事实。
+
+| # | 决策 | 结论 |
+|---|---|---|
+| **K** | 入口放哪 | **放进每个用例目录**。新增 `run.py`（唯一实现）、`Makefile`（只转发）、`AGENTS.md`、`tests/doctor.py`、`tests/copy_check.py`；契约加 **I6 拷贝即独立** |
+| **L** | 为什么是 `run.py` 而不是 Make 或 shell | 根 README 原有约定是"所有命令走 Python，不用 Make"，为的是 macOS / Linux / Windows 一致。用 Makefile 当唯一入口会推翻这条约定，所以 Makefile 降级为转发层，`run.py` 是唯一实现 |
+| **M** | I6 怎么验证 | 用例自带 `tests/copy_check.py`：**真的复制一份**到临时目录 → 比对文件清单 → 在副本上重跑全部检查（含副本里跑 `run.py help`、`make help`、副本自己的 `check`）。仓库级 `[COPY]` 类只是调用它，不重写实现 |
+| **N** | 生成器与模板 | `aia.py new` 一并生成上述五个文件；两份文档模板同步改写，**禁止写仓库根命令**；删除 `diagrams/`（官方布局没有），生成 `agentcore/.gitignore`（此前漏了，会让 `agentcore/.env.local` 被提交） |
+
+**由此新增的一条硬约定**：**用例文档与代码里不得出现指向目录之外的路径**。`make` / `run.py` 是唯一允许出现在用例文档里的操作形式；`aia.py` 只在完整仓库的语境里提，且要显式说明"如果你手上有完整仓库"。这条同样由 `tests/copy_check.py` 断言（父目录跳转、绝对路径、仓库级共享目录、仓库级脚本四类模式）。
+
+**实测结果**：UC01 `python3 run.py check` → `16 passed, 0 failed`；生成器新造的用例 → `15 passed, 0 failed`（唯一 NOTE 是 `uv.lock` 未生成，属于 `make sync` 的下一步）。
+
 ---
 
 ## 11. 风险与注意事项
@@ -702,7 +735,9 @@ bedrock-agentcore-in-action/
 | **区域割裂** | 读者在你没写的区域跑不通 | 全系列锁 `us-east-1`，前置条件显式说明 |
 | **Registry 命名空间迁移** | 照旧资料做必踩 | UC07 单列"避坑"小节；README 故障排查表置顶 |
 | **`agentcore` 命令冲突** | `agentcore --version` 报错，读者卡第一步 | `aia doctor` 自动检测并提示 `pip uninstall bedrock-agentcore-starter-toolkit` |
-| **独立性的重复成本** | 维护 7 套骨架容易漂移 | 生成器统一生成；CI 校验 I3/I4；文档第 11 节如实列出重复项 |
+| **独立性的重复成本** | 维护 7 套骨架容易漂移 | 生成器统一生成；CI 校验 I3/I4/I6；文档第 11 节如实列出重复项 |
+| **两个入口漂移**（`run.py` 与 `Makefile` 各写一套） | `make deploy` 与 `python3 run.py deploy` 行为不一致 | Makefile 只转发、不持逻辑；`tests/copy_check.py` 断言两侧目标名一致且每条配方都转发 |
+| **用例文档里混进仓库根命令** | 目录被拷走后命令全失效，I6 沦为口号 | `tests/copy_check.py` 扫描四类逃逸模式（父目录跳转 / 绝对路径 / 仓库级共享目录 / 仓库级脚本），文档模板明令禁止 |
 | **用例难度声明失真** | 阶梯名不副实，读者预期落空 | 难度只按 §2.2 的可量化刻度声明；CI 校验单调性与刻度区间 |
 | **Harness vs Runtime 定位混淆** | 读者选错路径 | UC05 用同一场景两种实现做正面对比 |
 | **Payments 前置门槛** | 读者卡在第一步 | 番外给 sandbox / 测试网路径 + 无钱包账号降级演示 |

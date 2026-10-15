@@ -1,8 +1,8 @@
 # UC01 · First Agent
 
-Follows the series skeleton in [PLAN.md](../../PLAN.md) section 8.3. The operations
-doc is `README.md`; this file is the narrative. Keep them separate: the README
-must be copy-pasteable, the article must be readable.
+Follows the series article skeleton defined in the repository plan, section 8.3.
+The operations doc is `README.md`; this file is the narrative. Keep them separate:
+the README must be copy-pasteable, the article must be readable.
 
 > Verified on 2026-XX-XX against AgentCore as of that date.
 
@@ -23,8 +23,8 @@ fails in production. This section is where the article earns a reader's attentio
 
 ## 4. Walkthrough
 
-{{The few commands that matter. Point at `usecases/01-{{rest}}/` for the
-full version rather than pasting everything.}}
+{{The few commands that matter. Point at this folder for the full version
+rather than pasting everything.}}
 
 ## 5. Verification
 
@@ -41,7 +41,9 @@ full version rather than pasting everything.}}
 ## 8. Try it yourself
 
 ```bash
-python aia.py up 01 && python aia.py test 01 && python aia.py down 01
+cp -r usecases/01-first-agent /tmp/uc01 && cd /tmp/uc01
+make doctor && make deploy && make test && make down
 ```
 
-This use case is self-contained: you do not need any other use case deployed first.
+This use case is self-contained: copy the folder anywhere and it still runs, and
+you do not need any other use case deployed first.

@@ -231,11 +231,16 @@ usecases/NN-<slug>/
 ├── agentcore/             # CLI 契约 + 生成的 CDK（唯一真相源）
 ├── app/aia_ucNN/          # agent 代码，codeLocation 指向这里
 ├── tests/                 # 本例的能力断言
+├── run.py                 # ★ 新增：目录内入口（doctor / deploy / test / down）
+├── Makefile               #   只转发给 run.py，不持逻辑
+├── AGENTS.md              #   本目录的 AI 助手上下文
 ├── raw/                   # ★ 新增：boto3 对照脚本（控制面 / 数据面各一）
 │   ├── control_plane.py   #   用 boto3 读一遍 CLI 刚创建的资源（看穿 CLI）
 │   └── data_plane.py      #   直接 invoke_agent_runtime，看到 SSE 原文
-└── diagrams/
+└── tests/                 #   smoke.py / doctor.py / copy_check.py / 独立性 helper
 ```
+
+目录内不出现任何指向目录之外的路径（I6）；`tests/copy_check.py` 会真的复制一份来验证。
 
 `raw/` 是我们相对官方的**增强**：官方 features 只用 boto3（看不到 CLI），官方 getting-started 只用 CLI（看不到 API）。我们两样都给，读者既拿到可部署产物，也拿到「CLI 到底调了什么」。
 

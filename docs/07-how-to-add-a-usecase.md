@@ -61,31 +61,41 @@ This reads `deep` from the map, then generates:
 usecases/08-your-idea/
 ├── README.md               from the twelve-section template
 ├── article.md              from the twelve-section article template
+├── AGENTS.md               context for an AI assistant working in this folder
+├── run.py                  ★ the entry point: doctor / deploy / test / down
+├── Makefile                forwards to run.py, holds no logic
 ├── .env.example            placeholders only
 ├── app/aia_uc08/           the baseline agent, verified entrypoint contract
 │   ├── main.py
 │   ├── model/
 │   └── pyproject.toml
 ├── raw/                    boto3 sidecar: control plane + data plane, never deployed
-├── tests/                  smoke.py plus the independence helper
-├── agentcore/              agentcore.json is yours to fill; cdk/ is generated
-└── diagrams/
+├── tests/                  smoke.py, doctor.py, copy_check.py, the independence helper
+└── agentcore/              agentcore.json is yours to fill; cdk/ is generated
 ```
 
 Pass `--capabilities a,b` to override the map, and `--dry-run` to see what would
 happen. The generated `smoke.py` carries a `CAPABILITY_ASSERTIONS` dict with one
-`TODO` per declared capability. **`python aia.py test 08` fails until every one is
+`TODO` per declared capability. **`python3 run.py test` fails until every one is
 implemented.** That is the point: a use case is not done because it deploys.
+
+Two commands you will run constantly from inside the new folder:
+
+```bash
+python3 run.py check     # does this folder stand alone? (fails until run.py sync has run)
+python3 run.py doctor    # toolchain, credentials, and this folder
+```
 
 ## 4. Build it, and keep it independent
 
-Three rules while you work, matching the contract:
+Four rules while you work, matching the contract:
 
 | Rule | Means |
 |---|---|
 | **I3** own stack | `agentcore/agentcore.json` must not reference another use case's stack. No `Fn.import_value`, no `terraform_remote_state`, no `Outputs` from a sibling. The verifier greps for all of these. |
 | **I4** own source | The directory `codeLocation` points at (the CLI's `app/<AgentName>/`) must not import another use case. If you need a helper, copy it in. |
-| **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `python aia.py down`. |
+| **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `run.py down`. |
+| **I6** own entry point | Nothing inside this folder may point at a path outside it. Commands in the README go through `run.py` (or `make`), never through the repository dispatcher. `run.py check` scans for parent hops, absolute paths, the repository's shared tree and its dispatcher script, and copies the folder to a temporary directory to prove it. |
 
 The trade-off is duplication, and it is deliberate. Say so out loud in the
 **What you repeated** section of the README rather than hiding it. A reader who

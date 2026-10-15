@@ -10,7 +10,8 @@ the real deployment and proves the two capabilities uc01 declares:
 The tests are deliberately concrete: they invoke the deployed agent and read the
 trace that invoke produced. Nothing here can pass against a stopped runtime.
 
-Contract with shared/scripts/verify-coverage.py:
+Contract with the series coverage verifier, which reads this dict from outside
+the folder while this folder stays runnable on its own:
   * CAPABILITY_ASSERTIONS maps each capability this use case declares as `deep`
     to the list of assertions that prove it. The verifier fails CI if a declared
     capability is absent here.
@@ -18,7 +19,7 @@ Contract with shared/scripts/verify-coverage.py:
     An unimplemented function is a hard failure, so a half-finished use case can
     never be mistaken for a finished one.
 
-Run:  python aia.py test 01   # or: python tests/smoke.py --usecase 01
+Run:  make test                 # or: python3 tests/smoke.py --usecase 01
 
 The run makes exactly one billable invoke; the observability check reuses it.
 """

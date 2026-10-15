@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | D1 | 模板补 `agentcore/.gitignore` | `aia.py new` 生成的用例缺这份文件，下一个用例跑完 deploy 再 `git add -A` 会把 `.cache/` 打包暂存和 `.cli/` 日志提交进公开仓库 | 从 CLI 生成的 UC01 版本复制进模板 | 待拍板 |
 | D2 | `.env.example` 的 `MODEL_ID` 旧值 | 仍是 `us.anthropic.claude-sonnet-4-5-...`，照文档做的人会直接踩国别政策封锁 | 改为 `deepseek.v3.2` | 待拍板 |
-| D3 | 清理三个空目录 `iac/` `scripts/` `diagrams/` | 旧布局残留，`aia.py` 已不创建不引用（`diagrams/` 由 `new` 创建但无人往里放图） | 删除；`diagrams/` 视图形存放方案再定 | 待拍板 |
+| D3 | 清理三个空目录 `iac/` `scripts/` `diagrams/` | 旧布局残留，`aia.py` 已不创建不引用（`diagrams/` 由 `new` 创建但无人往里放图） | 已删除；生成器也不再创建 `diagrams/`；`tests/copy_check.py` 会把这三个目录当残留直接 FAIL | 已定（2026-10-16） |
 | D4 | `verify-coverage.py` docstring 与 `capability-map.yaml` 注释过时 | 仍写 `iac/` 目录，代码实际检查 `agentcore/` | 同步改注释 | 待拍板 |
 | D5 | `capability-map.yaml` 的 `resource_prefix: aia-` 与实际不符 | 真实命名是 `aia_uc01` / `aiauc01`，资源名不允许连字符 | 改为 `aia_` 并注明连字符限制 | 待拍板 |
 | D6 | 根 `.gitignore` 未覆盖 `.idea/` | `git add -A` 会把 IDE 文件带进公开仓库；另有 `.idea/{{UC_SLUG}}.iml` 是模板占位符泄漏痕迹 | 补 `.idea/` 并删除已生成的 IDE 文件 | 待拍板 |

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """smoke.py for {{UC_ID}} · {{UC_SLUG}}
 
-Contract with shared/scripts/verify-coverage.py:
+Contract with the series coverage verifier, which reads this dict from outside
+the folder while this folder stays runnable on its own:
   * CAPABILITY_ASSERTIONS maps each capability this use case declares as `deep`
     to the list of assertions that prove it. The verifier fails CI if a declared
     capability is absent here.
@@ -9,7 +10,7 @@ Contract with shared/scripts/verify-coverage.py:
     An unimplemented function is a hard failure, so a half-finished use case can
     never be mistaken for a finished one.
 
-Run:  python aia.py test {{UC_NUM}}   # or: python tests/smoke.py --usecase {{UC_NUM}}
+Run:  make test                 # or: python3 tests/smoke.py --usecase {{UC_NUM}}
 """
 
 from __future__ import annotations
