@@ -185,10 +185,11 @@ def num_badge(slide, x, y, d, num, c1, c2):
     return s
 
 def dark_code(slide, x, y, w, h, lines, size=14, radius=0.06):
-    """dark code panel; lines = list of (text, color)"""
+    """dark code panel; lines = list of (text, color), vertically centered"""
     p = card(slide, x, y, w, h, fill=CODE_BG, line_color=None, radius=radius)
     tf = p.text_frame
     tf.word_wrap = False
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     tf.margin_left = Inches(0.25)
     tf.margin_top = Inches(0.18)
     for i, (line, col) in enumerate(lines):
@@ -226,9 +227,9 @@ def act_divider(act_no, act_title, items, accent):
     n += 1
     s = add_slide()
     dark_bg(s)
-    txt(s, 0.9, 1.55, 3.2, 1.6, f"ACT\n{act_no}", size=54, color=WHITE, bold=True, spacing=0.95)
-    grad_rect(s, 0.95, 3.45, 1.3, 0.09, accent, _lighten(accent), angle=0)
-    txt(s, 0.9, 3.75, 6.5, 0.9, act_title, size=32, color=WHITE, bold=True)
+    txt(s, 0.9, 2.35, 5.0, 1.0, f"ACT {act_no}", size=54, color=WHITE, bold=True, spacing=0.95)
+    grad_rect(s, 0.95, 3.55, 1.3, 0.09, accent, _lighten(accent), angle=0)
+    txt(s, 0.9, 3.85, 5.4, 0.9, act_title, size=32, color=WHITE, bold=True)
     # right: item list
     x0 = 6.6
     y0 = 1.7
@@ -264,11 +265,11 @@ for i, (t, d, c, cb, items) in enumerate(acts):
     x = 0.6 + i * 4.15
     card(s, x, 2.25, 3.85, 4.3, fill=WHITE, line_color=LINE, edge=c, radius=0.06)
     txt(s, x + 0.35, 2.6, 3.2, 0.45, t, size=15, color=c, bold=True)
-    txt(s, x + 0.35, 3.1, 3.2, 0.8, d, size=12.5, color=SLATE, spacing=1.05)
+    txt(s, x + 0.35, 3.1, 3.2, 0.8, d, size=13.5, color=SLATE, spacing=1.05)
     yy = 4.15
     for it in items:
-        txt(s, x + 0.35, yy, 3.25, 0.6, "· " + it, size=12, color=INK, spacing=1.0)
-        yy += 0.62
+        txt(s, x + 0.35, yy, 3.25, 0.6, "· " + it, size=13.5, color=INK, spacing=1.0)
+        yy += 0.66
 footer(s)
 
 # =====================================================================
@@ -279,12 +280,12 @@ title_block(s, "hook", "The usual story ends with a Dockerfile and a prayer", BL
 # left card: usual
 card(s, 0.6, 2.3, 5.85, 4.1, fill=SLATE_B, line_color=LINE, edge=MUTED, radius=0.06)
 txt(s, 1.0, 2.65, 5.0, 0.5, "The usual story", size=17, color=SLATE, bold=True)
-txt(s, 1.0, 3.25, 5.1, 2.6, "Write a Dockerfile\nPick an instance size\nHand-roll an IAM role\nHope the YAML is right", size=17, color=SLATE, spacing=1.5)
+txt(s, 1.0, 3.0, 5.1, 3.2, "Write a Dockerfile\nPick an instance size\nHand-roll an IAM role\nHope the YAML is right", size=17, color=SLATE, spacing=1.5, anchor=MSO_ANCHOR.MIDDLE)
 # right card: agentcore
 card(s, 6.9, 2.3, 5.85, 4.1, fill=GREEN_B, line_color=GREEN, edge=GREEN, radius=0.06)
 txt(s, 7.3, 2.65, 5.0, 0.5, "AgentCore", size=17, color=GREEN_D, bold=True)
-txt(s, 7.3, 3.25, 5.1, 2.0, "One JSON file\nOne command\n\nA running, observable endpoint", size=17, color=INK, spacing=1.5)
-txt(s, 6.9, 6.6, 5.85, 0.4, "Everything between them is this article.", size=12, color=MUTED, italic=True, align=PP_ALIGN.CENTER)
+txt(s, 7.3, 3.0, 5.1, 3.2, "One JSON file\nOne command\n\nA running, observable endpoint", size=17, color=INK, spacing=1.5, anchor=MSO_ANCHOR.MIDDLE)
+txt(s, 0.6, 6.6, 12.13, 0.4, "Everything between them is this article.", size=13, color=MUTED, italic=True, align=PP_ALIGN.CENTER)
 footer(s)
 
 # =====================================================================
@@ -299,15 +300,14 @@ n += 1
 s = add_slide()
 title_block(s, "what it is", "A family of managed runtimes, not a new framework", GREEN,
             sub="Not a framework · not container orchestration · not a model router. Serverless microVM per session.")
-pic(s, "F1-capability-map.png", 4.05, 2.3, w=6.0)
+pic(s, "F1-capability-map.png", 3.37, 2.3, w=6.6)
 footer(s)
 
 # S · F2
 n += 1
 s = add_slide()
 title_block(s, "mental model", "You write code and JSON. The CLI generates the rest.", PURPLE)
-pic(s, "F2-three-layers.png", 3.55, 2.15, w=6.9)
-txt(s, 0.6, 6.55, 12.1, 0.45, "Rule: declare in JSON. Everything generated is regenerable.", size=15, color=INK, bold=True, align=PP_ALIGN.CENTER)
+pic(s, "F2-three-layers.png", 3.22, 2.15, w=6.9)
 footer(s)
 
 # =====================================================================
@@ -337,14 +337,14 @@ vers = [
 ]
 yy = 3.05
 for k, v in vers:
-    txt(s, 0.95, yy, 2.1, 0.4, k, size=13, color=INK, bold=True)
-    txt(s, 3.1, yy, 3.5, 0.4, v, size=13, color=SLATE)
+    txt(s, 0.95, yy, 2.1, 0.4, k, size=14, color=INK, bold=True)
+    txt(s, 3.1, yy, 3.5, 0.4, v, size=14, color=SLATE)
     yy += 0.54
 # right: permissions card
 card(s, 7.0, 2.25, 5.75, 4.15, fill=WHITE, line_color=LINE, edge=BLUE, radius=0.05)
 txt(s, 7.35, 2.5, 5.0, 0.4, "Two identities, two permission sets", size=15, color=BLUE, bold=True)
-txt(s, 7.35, 3.05, 5.1, 1.1, "You (deployer): create CFN stacks, upload to the bootstrap bucket, manage AgentCore resources.", size=13, color=SLATE, spacing=1.1)
-txt(s, 7.35, 4.25, 5.1, 1.4, "The runtime (generated role): bedrock:InvokeModel* + logs:* + xray:PutTraceSegments. A least-privilege template for free.", size=13, color=SLATE, spacing=1.1)
+txt(s, 7.35, 3.1, 5.1, 1.1, "You (deployer): create CFN stacks, upload to the bootstrap bucket, manage AgentCore resources.", size=14, color=SLATE, spacing=1.12)
+txt(s, 7.35, 4.25, 5.1, 1.4, "The runtime (generated role): bedrock:InvokeModel* + logs:* + xray:PutTraceSegments. A least-privilege template for free.", size=14, color=SLATE, spacing=1.12)
 card(s, 7.35, 5.7, 5.05, 0.55, fill=RED_B, line_color=RED, radius=0.3)
 txt(s, 7.55, 5.78, 4.8, 0.4, "Trap: old Python CLI shadows npm one - pip uninstall it", size=11.5, color=RED_D, bold=True)
 footer(s)
@@ -355,7 +355,7 @@ s = add_slide()
 title_block(s, "step 1 · scaffold", "agentcore create builds the skeleton", BLUE)
 num_badge(s, 11.85, 0.55, 0.75, 1, BLUE, BLUE_D)
 pic(s, "F3-directory-anatomy.png", 4.15, 2.05, w=5.6)
-txt(s, 0.6, 2.5, 3.4, 3.6, "create writes\nagentcore.json\nwith 15 empty\nresource arrays,\nand aws-targets.json\nwith just [ ]\n\nBlue = you write\nGray = CLI generates", size=14, color=SLATE, spacing=1.15)
+txt(s, 0.6, 2.05, 3.4, 4.25, "create writes\nagentcore.json\nwith 15 empty\nresource arrays,\nand aws-targets.json\nwith just [ ]\n\nBlue = you write\nGray = CLI generates", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 2 contract
@@ -390,7 +390,7 @@ n += 1
 s = add_slide()
 title_block(s, "step 3 · deploy", "One command, six steps, four cloud resources", ORANGE)
 num_badge(s, 11.85, 0.55, 0.75, 3, ORANGE, ORANGE)
-pic(s, "F4-deploy-pipeline.png", 3.45, 2.1, w=7.1)
+pic(s, "F4-deploy-pipeline.png", 3.12, 2.1, w=7.1)
 footer(s)
 
 # S · deploy output + live demo
@@ -411,7 +411,7 @@ dark_code(s, 0.6, 2.2, 12.15, 4.15, [
     ("               runtime/aiauc01_aia_uc01-LH8zQV86C2", CODE_BLU),
     ("", CODE_TX),
     ("# cold: 9 min 49 s   ·   code-only redeploy: 26 s", CODE_GR),
-], size=15)
+], size=16)
 footer(s)
 
 # S · CDK is a compiler
@@ -428,7 +428,7 @@ dark_code(s, 0.6, 2.2, 7.7, 3.0, [
 ], size=14)
 txt(s, 0.6, 5.5, 7.7, 0.8, "Zero hard-coded names in the generated project (grepped).\nStack name = AgentCore-<projectName>-<targetName>, both from the JSON.", size=14, color=SLATE, spacing=1.15)
 card(s, 8.7, 2.2, 4.05, 4.1, fill=PURPLE_B, line_color=PURPLE, edge=PURPLE, radius=0.07)
-txt(s, 9.05, 2.5, 3.4, 3.6, "Same TypeScript,\ndifferent JSON\n→ different stack.\n\nChange the schema,\nnot the plumbing.\n\nThat is what\nschema-first means\nin practice.", size=15, color=INK, spacing=1.2)
+txt(s, 9.05, 2.2, 3.4, 4.1, "Same TypeScript,\ndifferent JSON\n→ different stack.\n\nChange the schema,\nnot the plumbing.\n\nThat is what\nschema-first means\nin practice.", size=15, color=INK, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 4 local
@@ -447,7 +447,7 @@ dark_code(s, 0.6, 4.85, 6.6, 1.5, [
     ('   -d \'{"prompt":"What is 128 plus 256?"}\'', CODE_TX),
     ("→ SSE stream, toolUse add_numbers, answer 384", CODE_BLU),
 ], size=13)
-txt(s, 7.6, 2.5, 5.1, 3.6, "Uvicorn + hot reload.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=16, color=SLATE, spacing=1.25)
+txt(s, 7.6, 2.2, 5.1, 4.15, "Uvicorn + hot reload.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=16, color=SLATE, spacing=1.25, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 5 cloud invoke (F5)
@@ -474,7 +474,7 @@ for i, (big, label, d, c, cb) in enumerate(cards):
     card(s, x, 2.3, 3.85, 3.5, fill=WHITE, line_color=LINE, edge=c, radius=0.07)
     txt(s, x + 0.3, 2.7, 3.25, 0.9, big, size=30, color=c, bold=True)
     txt(s, x + 0.3, 3.7, 3.25, 0.4, label, size=14, color=INK, bold=True)
-    txt(s, x + 0.3, 4.2, 3.25, 1.3, d, size=12.5, color=SLATE, spacing=1.15)
+    txt(s, x + 0.3, 4.2, 3.25, 1.3, d, size=13, color=SLATE, spacing=1.15)
 txt(s, 0.6, 6.15, 12.1, 0.5, "The infrastructure bill rounds to zero. The engineering cost is reading the trace.", size=15, color=INK, bold=True, align=PP_ALIGN.CENTER)
 footer(s)
 
@@ -501,15 +501,15 @@ dark_code(s, 0.6, 2.2, 7.5, 4.1, [
     ("        yield event", CODE_TX),
 ], size=15)
 card(s, 8.5, 2.2, 4.25, 4.1, fill=BLUE_B, line_color=BLUE, edge=BLUE, radius=0.07)
-txt(s, 8.85, 2.5, 3.6, 3.7, "GET  /ping\nPOST /invocations\n\nyield → one SSE event\n\nsession_id = your\nstate key. The platform\nhandles the microVMs.\n\nMODEL_ID = an env var\nfrom agentcore.json.", size=14.5, color=INK, spacing=1.18)
+txt(s, 8.85, 2.2, 3.6, 4.1, "GET  /ping\nPOST /invocations\n\nyield → one SSE event\n\nsession_id = your\nstate key. The platform\nhandles the microVMs.\n\nMODEL_ID = an env var\nfrom agentcore.json.", size=14.5, color=INK, spacing=1.18, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · trace (F6)
 n += 1
 s = add_slide()
 title_block(s, "under the hood ii", "The trace teaches the agent loop without reading source", GREEN)
-pic(s, "F6-span-tree.png", 3.35, 2.1, w=7.0)
-txt(s, 0.6, 6.5, 12.1, 0.5, "Caveats: spans need ~10 min to query · local dev records no tool span - assert against the deployment.", size=13, color=RED_D, bold=True, align=PP_ALIGN.CENTER)
+pic(s, "F6-span-tree.png", 3.47, 1.95, w=6.4)
+txt(s, 0.6, 6.5, 12.1, 0.5, "Caveats: spans need ~10 min to query · local dev records no tool span - assert against the deployment.", size=13.5, color=RED_D, bold=True, align=PP_ALIGN.CENTER)
 footer(s)
 
 # S · four failures
@@ -525,8 +525,8 @@ fails = [
 pos = [(0.6, 2.2), (6.75, 2.2), (0.6, 4.5), (6.75, 4.5)]
 for (t, d, c), (x, y) in zip(fails, pos):
     card(s, x, y, 5.95, 2.05, fill=WHITE, line_color=LINE, edge=c, radius=0.07)
-    txt(s, x + 0.35, y + 0.22, 5.3, 0.55, t, size=15.5, color=INK, bold=True)
-    txt(s, x + 0.35, y + 0.85, 5.35, 1.1, d, size=12.5, color=SLATE, spacing=1.12)
+    txt(s, x + 0.35, y + 0.2, 5.3, 0.55, t, size=16.5, color=INK, bold=True)
+    txt(s, x + 0.35, y + 0.85, 5.35, 1.1, d, size=13.5, color=SLATE, spacing=1.12)
 footer(s)
 
 # S · takeaways
@@ -546,7 +546,7 @@ for i, (t, d, c) in enumerate(items, 1):
     txt(s, 1.65, y + 0.44, 11.0, 0.4, d, size=13, color=SLATE)
     y += 1.02
 card(s, 1.65, 6.25, 10.6, 0.65, fill=PURPLE_B, line_color=None, radius=0.12)
-txt(s, 1.95, 6.36, 10.0, 0.45, "Your infrastructure is not code you maintain. It is code that compiles.", size=16, color=PURPLE_D, bold=True, italic=True)
+txt(s, 1.65, 6.25, 10.6, 0.65, "Your infrastructure is not code you maintain. It is code that compiles.", size=16, color=PURPLE_D, bold=True, italic=True, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · closing
