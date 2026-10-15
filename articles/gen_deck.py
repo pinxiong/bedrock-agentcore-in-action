@@ -331,15 +331,17 @@ vers = [
     ("Node.js", "22.x (CLI needs 20+)"),
     ("AgentCore CLI", "0.31.1"),
     ("AWS CLI", "2.x"),
-    ("Python", "3.11 local · CodeZip allows 3.10-3.13"),
+    ("uv", "0.11.9 (template agents)"),
+    ("Git", "2.39 (create runs git init)"),
+    ("Python", "3.11 local, CodeZip allows 3.10-3.13"),
     ("Region", "us-east-1 (whole series)"),
     ("Docker", "not needed - CodeZip builds"),
 ]
-yy = 3.05
+yy = 3.0
 for k, v in vers:
-    txt(s, 0.95, yy, 2.1, 0.4, k, size=14, color=INK, bold=True)
-    txt(s, 3.1, yy, 3.5, 0.4, v, size=14, color=SLATE)
-    yy += 0.54
+    txt(s, 0.95, yy, 2.1, 0.4, k, size=13.5, color=INK, bold=True)
+    txt(s, 3.1, yy, 3.5, 0.4, v, size=13.5, color=SLATE)
+    yy += 0.42
 # right: permissions card
 card(s, 7.0, 2.25, 5.75, 4.15, fill=WHITE, line_color=LINE, edge=BLUE, radius=0.05)
 txt(s, 7.35, 2.5, 5.0, 0.4, "Two identities, two permission sets", size=15, color=BLUE, bold=True)

@@ -38,13 +38,15 @@ AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管
 
 ## 三、开跑之前：环境清单
 
-动手前先对齐环境。以下版本全部实测过（2026-10-14）：
+动手前先对齐环境。以下版本全部实测过（2026-10-14/15）：
 
 | 工具 | 实测版本 | 说明 | 自检 |
 |---|---|---|---|
 | Node.js | 22.x | CLI 要求 20+ | `node --version` |
 | AgentCore CLI | 0.31.1 | 装法见下 | `agentcore --version` |
 | AWS CLI | 2.x | 任意近期版本 | `aws --version` |
+| uv | 0.11.9 | CLI 用它给模板 agent 建 Python 环境 | `uv --version` |
+| Git | 2.39 | `create` 会在新项目里跑 `git init` | `git --version` |
 | Python | 本地 3.11 | CodeZip 支持 3.10–3.13 | `python3 -V` |
 | AWS 账号 | 任意 | 权限见下 | `aws sts get-caller-identity` |
 | 区域 | us-east-1 | 全系列统一 | `aws configure get region` |
@@ -57,9 +59,18 @@ npm install -g @aws/agentcore@latest
 aws configure set region us-east-1
 ```
 
-然后跑四条自检，对照这个输出：
+然后跑下面这些自检，对照这个输出：
 
 ```bash
+node --version
+# v22.22.2
+
+uv --version
+# uv 0.11.9
+
+git --version
+# git version 2.39.5
+
 agentcore --version
 # 0.31.1
 
@@ -82,11 +93,18 @@ aws bedrock list-foundation-models --region us-east-1 \
 一个五秒钟的坑：如果 `agentcore --version` 报错但命令存在，多半是老的 Python 包 `bedrock-agentcore-starter-toolkit` 遮蔽了 npm 版，`pip uninstall bedrock-agentcore-starter-toolkit` 解决。
 
 > **📸 截图位 1 · 环境自检**
-> 截一整屏终端：提示符、四条自检命令、输出、时间。上面的表是清单，截图提供的是「这台机器确实是你跑的」这层证据。
+> 截一整屏终端：提示符、上面的自检命令、输出、时间。上面的表是清单，截图提供的是「这台机器确实是你跑的」这层证据。
 
 ## 四、Step 1 · 生成项目骨架
 
-`agentcore create` 负责搭骨架。这里用 `--no-agent` 保持最小脚手架；去掉该参数（同时给 `--framework`、`--model-provider`、`--memory`）会连示例 Agent 一起生成：
+`agentcore create` 负责搭骨架。官方 getting-started 示例用的是完整形态，会连示例 Agent 一起生成：
+
+```bash
+agentcore create --name CustomerSupport --framework Strands \
+  --model-provider Bedrock --memory none --defaults
+```
+
+我这里用的是最小形态，因为本文的 Agent 代码放在 `src/` 里、由我自己写：
 
 ```bash
 mkdir demo && cd demo
@@ -111,7 +129,7 @@ Project created successfully!
 
 ![项目解剖：CLI 写的 vs 你加的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；CLI 自带的脚手架把示例 Agent 放在 `app/` 里，本文则把 `codeLocation` 指到 `src/`。
+CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；加上 Agent 后同一条命令会多两步（`Add agent to project`、`Set up Python environment`），并生成 `app/<name>/` 与里面的 starter agent。
 
 **代码到底写在哪**，两条路径长得不一样，值得说清：让 CLI 生成 Agent，代码就在 `app/<agent-name>/`，契约如实记录（`codeLocation: "app/demo_a/"`、`entrypoint: "main.py"`）——这正是官方文档写的 App Structure：`app/<AgentName>/` 下放 `main.py`、`pyproject.toml` 和 `model/`。自带代码（BYO）的话，把这两个字段指向任何目录即可。本文走第二条路：用例代码放在 `src/`，便于单独测试。**`codeLocation` 指向哪里，哪里就是被打包、被部署、被 `agentcore dev` 启动的东西。** 关于这个布局，两个事实值得记住：
 

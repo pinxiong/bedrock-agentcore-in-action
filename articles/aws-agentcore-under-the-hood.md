@@ -42,13 +42,15 @@ One rule explains most of the design: everything you declare lives in JSON, and 
 
 ## The environment you need
 
-Before touching AgentCore, make sure your machine and account match this table. Everything here was verified on 2026-10-14.
+Before touching AgentCore, make sure your machine and account match this table. Everything here was verified on 2026-10-14 and 2026-10-15.
 
 | Tool | Version used | Notes | Check |
 |---|---|---|---|
 | Node.js | 22.x | 20+ required by the CLI | `node --version` |
 | AgentCore CLI | 0.31.1 | install below | `agentcore --version` |
 | AWS CLI | 2.x | any recent build | `aws --version` |
+| uv | 0.11.9 | the CLI builds the Python environment for template agents with it | `uv --version` |
+| Git | 2.39 | `create` runs `git init` in the new project | `git --version` |
 | Python | 3.11 local | 3.10 to 3.13 supported by CodeZip | `python3 -V` |
 | AWS account | any | with permissions below | `aws sts get-caller-identity` |
 | Region | us-east-1 | the whole series uses it | `aws configure get region` |
@@ -61,9 +63,18 @@ npm install -g @aws/agentcore@latest
 aws configure set region us-east-1
 ```
 
-Then run four checks and compare against this output:
+Then run the checks below and compare against this output:
 
 ```bash
+node --version
+# v22.22.2
+
+uv --version
+# uv 0.11.9
+
+git --version
+# git version 2.39.5
+
 agentcore --version
 # 0.31.1
 
@@ -86,11 +97,18 @@ aws bedrock list-foundation-models --region us-east-1 \
 One trap worth five seconds: if `agentcore --version` errors but the command exists, an old Python package (`bedrock-agentcore-starter-toolkit`) is shadowing the npm one. `pip uninstall bedrock-agentcore-starter-toolkit` fixes it.
 
 > **📸 Screenshot spot 1 · Environment check**
-> Capture one full terminal screen: the prompt, the four checks, their output and the clock. The table above is the exact list; the shot is evidence of the machine you actually ran it on.
+> Capture one full terminal screen: the prompt, the checks above, their output and the clock. The table is the exact list; the shot is evidence of the machine you actually ran it on.
 
 ## Step 1 · Scaffold the project
 
-`agentcore create` builds the project skeleton. I ran it with `--no-agent` here so the scaffold stays minimal; dropping the flag (with `--framework`, `--model-provider` and `--memory`) also generates a starter agent:
+`agentcore create` builds the project skeleton. The CLI's own getting-started sample uses the full form, which scaffolds a starter agent as well:
+
+```bash
+agentcore create --name CustomerSupport --framework Strands \
+  --model-provider Bedrock --memory none --defaults
+```
+
+I ran the minimal form instead, because this article's agent code lives in `src/` and I write it by hand:
 
 ```bash
 mkdir demo && cd demo
@@ -113,7 +131,7 @@ The interesting part is what lands on disk:
 
 ![Project anatomy: what the CLI writes vs what you add](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all, and the CLI's own scaffold puts a starter agent in `app/`; this article points `codeLocation` at `src/` instead.
+The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all. Add an agent and the same command reports two more steps (`Add agent to project`, `Set up Python environment`) and creates `app/<name>/` with a starter agent in it.
 
 A word on where your code goes, because the two paths look different. Let the CLI scaffold an agent and your code lives in `app/<agent-name>/`, and the contract records exactly that (`codeLocation: "app/demo_a/"`, `entrypoint: "main.py"`). The template path is precisely the CLI's documented App Structure: `app/<AgentName>/` holding `main.py`, `pyproject.toml` and `model/`. Bring your own code and you point the same two fields anywhere. This article takes the second path: the use-case code sits in `src/`, which keeps it testable on its own. Whatever `codeLocation` names is what gets zipped, deployed and started by `agentcore dev`. Two facts about this layout will save you an hour someday:
 
