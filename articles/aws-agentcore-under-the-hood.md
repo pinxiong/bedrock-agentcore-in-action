@@ -86,7 +86,7 @@ aws bedrock list-foundation-models --region us-east-1 \
 One trap worth five seconds: if `agentcore --version` errors but the command exists, an old Python package (`bedrock-agentcore-starter-toolkit`) is shadowing the npm one. `pip uninstall bedrock-agentcore-starter-toolkit` fixes it.
 
 > **📸 Screenshot spot 1 · Environment check**
-> Run the four checks above and paste your terminal capture here (replace this block with your screenshot).
+> Capture one full terminal screen: the prompt, the four checks, their output and the clock. The table above is the exact list; the shot is evidence of the machine you actually ran it on.
 
 ## Step 1 · Scaffold the project
 
@@ -113,7 +113,7 @@ Two facts about this layout will save you an hour someday:
 Peek inside the generated contract and you will see the shape of the design: `agentcore.json` with fifteen resource arrays, all empty; `aws-targets.json` with just `[]`. You are about to fill both in.
 
 > **📸 Screenshot spot 2 · Project scaffold**
-> Run `agentcore create` and `ls -R` (or `tree agentcore/`) and paste the terminal capture here.
+> Capture the tree in your editor (the `agentcore/` and `src/` folders expanded in the sidebar), not a plain terminal listing. The point is to show which entries are folders, which are files, and which ones you will edit.
 
 ## Step 2 · Write the contract: two JSON files
 
@@ -212,7 +212,7 @@ Timings, because every tutorial skips them: the first deploy on a cold account t
 Verify with `agentcore status`, which should report `Runtime: READY` plus the endpoint URL.
 
 > **📸 Screenshot spot 3 · First deploy**
-> Paste your `agentcore deploy` success output here, including the stack name and runtime ARN lines.
+> Capture the progress lines with their timestamps, not just the final ARN block. The cold-start wait is the part readers underestimate.
 
 ## Step 4 · Run the same code locally
 
@@ -229,7 +229,7 @@ curl -s -X POST http://localhost:8080/invocations \
 The reply comes back as a server-sent-event stream with the tool call visible inside it, and I edited `main.py` while the server ran and watched the reloader pick the change up without a restart.
 
 > **📸 Screenshot spot 4 · Local run**
-> Paste your `agentcore dev` session here: the server boot line and the curl reply.
+> Capture the `agentcore dev` boot banner plus one hot-reload line, so readers see the reloader react to a file save. The curl reply is already quoted above.
 
 ## Step 5 · Invoke the deployed runtime
 
@@ -270,7 +270,7 @@ Tool calls ride on native Bedrock `toolUse` protocol blocks, both locally and in
 What did that cost? DeepSeek V3.2 in us-east-1 costs $0.62 per million input tokens and $1.85 per million output. A two-cycle invoke used 846 input and 82 output tokens: about $0.0007 of model calls plus roughly $0.0002 of runtime compute. The infrastructure bill for a tutorial-grade agent rounds to zero.
 
 > **📸 Screenshot spot 5 · Cloud invoke**
-> Paste your `agentcore invoke` reply here (the one that prints the session ID).
+> Capture the invoke screen with the runtime ARN and the session ID both visible, so readers can tell this call hit the deployed endpoint and not localhost.
 
 ## Under the hood I: the HTTP contract
 
@@ -328,7 +328,7 @@ The structure teaches you how the agent loop works even if you never read the fr
 Two honest caveats come from measuring this. First, spans are asynchronous: transaction search took about ten minutes before anything was queryable, so a test that invokes and immediately greps CloudWatch will fail. Second, the local `agentcore dev` traces (OTLP files under `agentcore/.cli/traces/`) record tool calls in logs but not as spans. Only the deployed runtime emits the `execute_tool` span, which is why a smoke test that asserts on a tool span must run against the deployment.
 
 > **📸 Screenshot spot 6 · Observability**
-> Paste the CloudWatch GenAI observability console (or your `agentcore traces get` output) showing the `execute_tool` span here.
+> Capture the CloudWatch GenAI observability console or the X-Ray trace map with the `execute_tool` span expanded. This is the one thing the text tree above cannot convey: the visual waterfall and where the time went.
 
 ## What broke and what it taught
 
@@ -354,13 +354,13 @@ All measurements come from one real deployment on 2026-10-14: AgentCore CLI 0.31
 
 ## Screenshot checklist (for publishing)
 
-This article reserves six spots for your own terminal captures. Fill them in after running the steps, then delete this section before publishing:
+This article reserves six spots for your own terminal captures. Fill them in after running the steps, then delete this section before publishing. The text outputs stay in the article as the copyable record; each shot is there to show what text cannot:
 
-| Spot | After which step | What to capture |
-|---|---|---|
-| 1 | environment checks | the four check commands and their output |
-| 2 | Step 1 | `agentcore create` output plus the project tree |
-| 3 | Step 3 | deploy success lines with stack name and ARN |
-| 4 | Step 4 | `agentcore dev` boot line and the curl reply |
-| 5 | Step 5 | `agentcore invoke` reply with session ID |
-| 6 | Under the hood II | the trace showing the `execute_tool` span |
+| Spot | After which step | What to capture | What the text above cannot show |
+|---|---|---|---|
+| 1 | environment checks | one full terminal screen, prompt and clock included | that this ran on a real machine, with real paths |
+| 2 | Step 1 | the tree in the editor sidebar | folders vs files, and what you will actually edit |
+| 3 | Step 3 | progress lines with timestamps | how long the cold start actually takes |
+| 4 | Step 4 | dev boot banner plus a hot-reload line | the reloader reacting to a save |
+| 5 | Step 5 | invoke screen with ARN and session ID | that the call hit the endpoint, not localhost |
+| 6 | Under the hood II | CloudWatch console or X-Ray trace map, tool span expanded | the visual waterfall and where the time went |

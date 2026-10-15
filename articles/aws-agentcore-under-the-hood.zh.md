@@ -82,7 +82,7 @@ aws bedrock list-foundation-models --region us-east-1 \
 一个五秒钟的坑：如果 `agentcore --version` 报错但命令存在，多半是老的 Python 包 `bedrock-agentcore-starter-toolkit` 遮蔽了 npm 版，`pip uninstall bedrock-agentcore-starter-toolkit` 解决。
 
 > **📸 截图位 1 · 环境自检**
-> 跑完上面四条自检后，把终端截图贴到这里（替换本段）。
+> 截一整屏终端：提示符、四条自检命令、输出、时间。上面的表是清单，截图提供的是「这台机器确实是你跑的」这层证据。
 
 ## 四、Step 1 · 生成项目骨架
 
@@ -111,7 +111,7 @@ agentcore create --name demo_proj --project-name demoproj --no-agent --build Cod
 打开生成的契约文件看一眼，设计的形态一目了然：`agentcore.json` 带 15 个资源数组、全部为空；`aws-targets.json` 里只有一个 `[]`。接下来就轮到你来填了。
 
 > **📸 截图位 2 · 项目骨架**
-> 跑完 `agentcore create` 后，把输出和 `tree agentcore/` 的截图贴到这里。
+> 截编辑器里的目录树（侧边栏展开 `agentcore/` 和 `src/`），不要截终端里的纯文本列表。目的是让人看清哪些是目录、哪些是文件、哪些是你以后要改的。
 
 ## 五、Step 2 · 写契约：两个 JSON 文件
 
@@ -190,7 +190,7 @@ const targets = await configIO.readAWSDeploymentTargets(); // aws-targets.json
 耗时也交代一下：冷账号首次部署 9 分 49 秒（大头是 CDK 工程的 npm install，221 个包）；只改代码的重部署 26 秒。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
 
 > **📸 截图位 3 · 首次部署**
-> 把你的 `agentcore deploy` 成功输出贴到这里，带栈名和 ARN 那几行。
+> 截部署过程中的进度行（要带时间戳），不要只截最后那段 ARN 输出。冷启动等待才是读者最容易低估的部分。
 
 ## 七、Step 4 · 本地先跑一遍
 
@@ -207,7 +207,7 @@ curl -s -X POST http://localhost:8080/invocations \
 回复以 SSE 流返回，工具调用明晃晃地在里面。我边跑边改 `main.py`，热重载直接生效，不用重启。
 
 > **📸 截图位 4 · 本地运行**
-> 把你的 `agentcore dev` 会话贴到这里：server 启动那一行 + curl 的回复。
+> 截 `agentcore dev` 的启动横幅，加上一行热重载日志，让人看到改文件后服务自动重载。curl 的回复上文已经贴过了。
 
 ## 八、Step 5 · 调用线上 Runtime
 
@@ -250,7 +250,7 @@ data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, 
 花了多少钱？DeepSeek V3.2 在 us-east-1 的价格是输入 $0.62/M、输出 $1.85/M token。一次两轮调用 846 输入 + 82 输出，模型费约 $0.0007，Runtime 计算约 $0.0002。教学级 Agent 的基础设施账单约等于零。
 
 > **📸 截图位 5 · 线上调用**
-> 把你的 `agentcore invoke` 回复贴到这里（带 Session ID 的那种）。
+> 截调用那一屏，要同时看到 runtime ARN 和 Session ID，让人能确认这打的是线上 endpoint，不是 localhost。
 
 ## 九、原理深挖 I：入口契约，不是魔法
 
@@ -298,7 +298,7 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 - **本地 dev 的 trace 没有独立 tool span**：工具调用只记在日志里。要在 trace 里断言工具 span，必须打线上。
 
 > **📸 截图位 6 · 可观测**
-> 把 CloudWatch GenAI observability 控制台（或 `agentcore traces get` 的输出）贴到这里，要能看到 `execute_tool` 那一层。
+> 截 CloudWatch GenAI observability 控制台或 X-Ray trace 图，展开 `execute_tool` 那一层。这是上文的文本 span 树给不了的东西：时间瀑布图，以及时间到底花在哪。
 
 ## 十一、四个真实故障
 
@@ -319,3 +319,16 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 ---
 
 **环境口径**：2026-10-14 实测。AgentCore CLI 0.31.1、Node 22、本地 Python 3.11（运行时目标 `PYTHON_3_13`）、Strands Agents 1.60.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为冷账号墙钟时间，token 数从 trace span 读出。
+
+## 截图清单一览（发布前删）
+
+正文里留了 6 个截图位。执行完对应步骤后贴自己的图，发布前删掉本节。文字输出在文章里保留，作为可复制的记录；截图只补文字给不了的东西：
+
+| 位 | 对应步骤 | 截什么 | 文字给不了什么 |
+|---|---|---|---|
+| 1 | 环境自检 | 一整屏终端，带提示符和时间 | 这台机器是你真跑过的、真实路径 |
+| 2 | Step 1 | 编辑器侧边栏的目录树 | 目录与文件的区别、你以后要改哪些 |
+| 3 | Step 3 | 带时间戳的部署进度行 | 冷启动到底等了多久 |
+| 4 | Step 4 | dev 启动横幅 + 一行热重载日志 | 保存文件后服务真的重载了 |
+| 5 | Step 5 | 调用屏幕，含 ARN 与 Session ID | 这次调用打的是线上 endpoint 而不是 localhost |
+| 6 | 原理深挖 II | CloudWatch 控制台或 X-Ray trace 图，展开 tool span | 时间瀑布图，时间花在哪 |
