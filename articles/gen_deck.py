@@ -355,7 +355,7 @@ s = add_slide()
 title_block(s, "step 1 · scaffold", "agentcore create builds the skeleton", BLUE)
 num_badge(s, 11.85, 0.55, 0.75, 1, BLUE, BLUE_D)
 pic(s, "F3-directory-anatomy.png", 4.15, 2.05, w=5.6)
-txt(s, 0.6, 2.05, 3.4, 4.25, "create writes\nagentcore.json\nwith 15 empty\nresource arrays,\nand aws-targets.json\nwith just [ ]\n\nBlue = you write\nGray = CLI generates", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
+txt(s, 0.6, 2.05, 3.4, 4.25, "create writes the whole\nagentcore/ tree - but only\ntwo files are yours to edit:\nagentcore.json and\naws-targets.json.\n\nEverything else is\nregenerable. --no-agent\nships no code folder.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 2 contract

@@ -86,7 +86,7 @@ aws bedrock list-foundation-models --region us-east-1 \
 
 ## 四、Step 1 · 生成项目骨架
 
-`agentcore create` 负责搭骨架。这里用 `--no-agent` 保持最小脚手架，去掉该参数会顺带生成一个示例 Agent：
+`agentcore create` 负责搭骨架。这里用 `--no-agent` 保持最小脚手架；去掉该参数（同时给 `--framework`、`--model-provider`、`--memory`）会连示例 Agent 一起生成：
 
 ```bash
 mkdir demo && cd demo
@@ -97,16 +97,24 @@ agentcore create --name demo_proj --project-name demoproj --no-agent --build Cod
 
 ```text
 [done]  Create demoproj/ project directory
+[done]  Prepare agentcore/ directory
+[done]  Initialize git repository
+
+Created:
+  demoproj/
+    agentcore/  Config and CDK project
+
+Project created successfully!
 ```
 
-真正值得看的是磁盘上多了什么：一层放你未来的代码，一层属于 CLI：
+真正值得看的是磁盘上多了什么：
 
-![项目解剖：你写的 vs CLI 生成的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
+![项目解剖：CLI 写的 vs 你加的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-关于这个布局，两个事实值得记住：
+CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；CLI 自带的脚手架把示例 Agent 放在 `app/` 里，本文则把 `codeLocation` 指到 `src/`。关于这个布局，两个事实值得记住：
 
-- 蓝色方块是你的输入，灰色方块是生成物。**永远不要手改灰色文件**，下一条命令就会覆盖它；
-- 项目根检测很严格：CLI 从当前目录逐级向上，找到同时包含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层。两者缺一都不算项目，而报错 `No agentcore project found` 不会告诉你缺的是哪个。在 `agentcore/` 里执行命令会直接报 `Please run this command from your project root directory`。
+- **真正属于你编辑的只有两个文件**：`agentcore.json` 和 `aws-targets.json`。`agentcore/` 里其余一切都是可再生的，下一条命令就会覆盖；
+- 项目根检测很严格：CLI 从当前目录逐级向上，找到同时包含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层。两者缺一都不算项目，而报错 `No agentcore project found` 不会告诉你缺的是哪个。
 
 打开生成的契约文件看一眼，设计的形态一目了然：`agentcore.json` 带 15 个资源数组、全部为空；`aws-targets.json` 里只有一个 `[]`。接下来就轮到你来填了。
 

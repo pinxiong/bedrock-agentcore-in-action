@@ -90,7 +90,7 @@ One trap worth five seconds: if `agentcore --version` errors but the command exi
 
 ## Step 1 · Scaffold the project
 
-`agentcore create` builds the project skeleton. I ran it with `--no-agent` here so the scaffold stays minimal; drop the flag to also generate a starter agent:
+`agentcore create` builds the project skeleton. I ran it with `--no-agent` here so the scaffold stays minimal; dropping the flag (with `--framework`, `--model-provider` and `--memory`) also generates a starter agent:
 
 ```bash
 mkdir demo && cd demo
@@ -99,16 +99,24 @@ agentcore create --name demo_proj --project-name demoproj --no-agent --build Cod
 
 ```text
 [done]  Create demoproj/ project directory
+[done]  Prepare agentcore/ directory
+[done]  Initialize git repository
+
+Created:
+  demoproj/
+    agentcore/  Config and CDK project
+
+Project created successfully!
 ```
 
-The interesting part is what lands on disk. One directory holds your future code, and one subdirectory belongs to the CLI:
+The interesting part is what lands on disk:
 
-![Project anatomy: what you write vs what the CLI generates](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
+![Project anatomy: what the CLI writes vs what you add](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-Two facts about this layout will save you an hour someday:
+The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all, and the CLI's own scaffold puts a starter agent in `app/`; this article points `codeLocation` at `src/` instead. Two facts about this layout will save you an hour someday:
 
-- Files with blue squares are yours; gray squares are generated. Never hand-edit a gray file, because the next command overwrites it.
-- Project detection is strict: the CLI walks up from your current directory until it finds a folder holding both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project, and the error (`No agentcore project found`) does not say which is missing. Run commands from the directory that contains `agentcore/`.
+- Only two files are truly yours to edit: `agentcore.json` and `aws-targets.json`. Everything else in `agentcore/` is regenerable, and the next command overwrites it.
+- Project detection is strict: the CLI walks up from your current directory until it finds a folder holding both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project, and the error (`No agentcore project found`) does not say which is missing.
 
 Peek inside the generated contract and you will see the shape of the design: `agentcore.json` with fifteen empty resource arrays, `aws-targets.json` with just `[]`. You are about to fill both in.
 
