@@ -375,8 +375,8 @@ dark_code(s, 0.6, 2.2, 6.9, 4.1, [
     ('    "envVars": [{ "name": "MODEL_ID",', CODE_TX),
     ('      "value": "deepseek.v3.2" }]', CODE_TX),
     ("  }]", CODE_TX),
-    ("  ...15 arrays, all empty...", CODE_GR),
     ("}", CODE_TX),
+    ("$ agentcore validate   # -> Valid", CODE_GRN),
 ], size=14)
 card(s, 7.8, 2.2, 4.95, 1.75, fill=WHITE, line_color=LINE, edge=PURPLE, radius=0.08)
 txt(s, 8.15, 2.4, 4.3, 0.4, "aws-targets.json", size=14, color=PURPLE, bold=True)
@@ -438,7 +438,7 @@ title_block(s, "step 4 · run it locally", "Same app, same routes, no deployment
 num_badge(s, 11.85, 0.55, 0.75, 4, TEAL, TEAL_D)
 live_chip(s, 9.15, 1.62)
 dark_code(s, 0.6, 2.2, 6.6, 2.4, [
-    ("$ agentcore dev", CODE_GRN),
+    ("$ agentcore dev -l", CODE_GRN),
     ("Server: http://localhost:8080/invocations", CODE_TX),
     ("(GET /ping + POST /invocations - same two routes)", CODE_GR),
 ], size=14)
@@ -447,7 +447,7 @@ dark_code(s, 0.6, 4.85, 6.6, 1.5, [
     ('   -d \'{"prompt":"What is 128 plus 256?"}\'', CODE_TX),
     ("→ SSE stream, toolUse add_numbers, answer 384", CODE_BLU),
 ], size=13)
-txt(s, 7.6, 2.2, 5.1, 4.15, "Uvicorn + hot reload.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=16, color=SLATE, spacing=1.25, anchor=MSO_ANCHOR.MIDDLE)
+txt(s, 7.6, 2.2, 5.1, 4.15, "Uvicorn + hot reload.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nFlags worth knowing:\n-p port, -b TUI, --skip-deploy.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 5 cloud invoke (F5)

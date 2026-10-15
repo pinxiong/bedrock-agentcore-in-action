@@ -4,13 +4,13 @@
 
 多数 Agent 部署故事的结局都一样：写 Dockerfile、选实例规格、手工搓 IAM 角色，然后祈祷 YAML 没写错。AWS Bedrock AgentCore 走了另一条路：**整个部署契约就是一个 JSON 文件，一条命令把它变成一个可运行、可观测的线上服务。**
 
-我按这条路部署了一个 Agent，中途搞挂过几次，也把从 JSON 文件到线上 endpoint 之间的每一步都翻了一遍。这篇文章按真实操作顺序走完全程：先备环境，再一步步部署、调用、看 trace，每一步都附上我实测的命令和输出。文中所有数据都来自 us-east-1 的真实部署，不是抄文档。
+我按这条路部署了一个 Agent，中途搞挂过几次，也把从 JSON 文件到线上 endpoint 的每一步翻了一遍。这篇文章按真实操作顺序走完全程：先备环境，再一步步部署、调用、看 trace，每一步都附实测的命令和输出。文中数据都来自 us-east-1 的真实部署，不是抄文档。
 
 ![AgentCore CLI 全生命周期：六条命令](images/aws-agentcore-under-the-hood/F0-command-map.png)
 
 ## 一、AgentCore 是什么，不是什么
 
-AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能力：Runtime、Memory、Gateway、Identity、Policy、Web Search、Browser、Code Interpreter、Observability、Evaluations、Optimization、Payments、Registry 等。本文只点亮其中两格：Runtime 和 Observability。
+AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管、记忆、访问控制、工具、质量与业务集成。本文只点亮其中两格：Runtime 和 Observability。
 
 ![AgentCore：14 项能力，本文点亮 2 项](images/aws-agentcore-under-the-hood/F1-capability-map.png)
 
@@ -20,7 +20,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能�
 - 不是容器编排服务。Runtime 是 serverless 的，每个 session 一个 microVM，扩缩容平台包了；
 - 不是模型路由器。你的代码调 Bedrock 的方式和其他任何地方一模一样。
 
-自管过 ECS 或 Fargate 的话，体感差异非常直接：没有 Dockerfile、没有任务定义、没有 target group、没有健康检查配置。Runtime 只要求你的代码提供两个路由，其他全是平台的。
+自管过 ECS 或 Fargate 的话，差异很直接：没有 Dockerfile、没有任务定义、没有 target group。这台 Runtime 只向你的代码要两个路由，其余全是平台给的。
 
 ## 二、三层结构，一个方向
 
@@ -133,6 +133,19 @@ agentcore create --name demo_proj --project-name demoproj --no-agent --build Cod
 
 `create` 生成这个文件时所有资源数组都是空的，`agentcore add` 家族的子命令往里塞条目。允许手编，但以官方 schema 为准，CLI 逐字段校验。
 
+runtime 块里有四个字段错一个就部署失败：`entrypoint`、`codeLocation`（`src/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，所以换模型是改 JSON，不是改代码。
+
+命名也有个坑：项目名是 `aiauc01`（顶层 `name`），runtime 名是 `aia_uc01`（`runtimes[].name`）。CloudFormation 用两者一起命名，线上 runtime ID 因此长成 `aiauc01_aia_uc01-LH8zQV86C2`。
+
+部署前先问一句契约合不合法：
+
+```bash
+agentcore validate
+# Valid
+```
+
+这是 deploy 里 `Validate project` 那步用的同一套 schema 校验，一秒出结果，不用等构建跑两分钟。
+
 第二个文件决定部署到哪：
 
 ```json
@@ -170,13 +183,13 @@ agentcore deploy -y --target default
 ![部署六步流水线，附实测耗时](images/aws-agentcore-under-the-hood/F4-deploy-pipeline.png)
 
 1. **打包代码**：`src/` 加平台依赖压成一个资产包，我的 Hello World 是 41 MB，本地 `.venv` 被排除，全程没有镜像构建；
-2. **合成**：CLI 跑内置的 CDK app，读两个 JSON，产出 CloudFormation 模板到 `cdk.out/`；
-3. **上传资产**：zip 进 S3 桶（`cdk bootstrap` 一次性建的）；
-4. **建栈**：CloudFormation 只建 4 个资源：Runtime 本体、IAM 角色、IAM 策略、元信息；
+2. **合成**：CLI 跑内置的 CDK app，读两个 JSON，把模板产出到 `cdk.out/`；
+3. **上传资产**：zip 进 S3 桶，那是 `cdk bootstrap` 一次性建好的；
+4. **建栈**：CloudFormation 只建 4 个资源：Runtime 本体、IAM 角色、Bedrock 模型访问策略、元信息；
 5. **记录状态**：ARN 和 endpoint 写进 `deployed-state.json`；
 6. **打印 endpoint**。
 
-合成这步最能看到 schema-first 的本质。生成的 CDK app 里没有任何项目知识：
+合成这步最能看到 schema-first 的本质，生成的 CDK app 里没有任何项目知识：
 
 ```ts
 // agentcore/cdk/bin/cdk.ts（生成工程原文）
@@ -187,24 +200,26 @@ const targets = await configIO.readAWSDeploymentTargets(); // aws-targets.json
 
 栈名也来自 JSON：`AgentCore-<项目名>-<目标名>`，我的是 `AgentCore-aiauc01-default`。我 grep 过整个生成工程，硬编码名字零命中。**同一份 TypeScript，喂什么 JSON 就合成什么栈。** 这就是 schema-first 的实践形态：cdk/ 是编译器，agentcore.json 是程序。
 
-耗时也交代一下：冷账号首次部署 9 分 49 秒（大头是 CDK 工程的 npm install，221 个包）；只改代码的重部署 26 秒。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
+耗时也交代一下：冷账号首次部署 9 分 49 秒（大头是 CDK 工程的 npm install）；只改代码的重部署 26 秒。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
 
 > **📸 截图位 3 · 首次部署**
 > 截部署过程中的进度行（要带时间戳），不要只截最后那段 ARN 输出。冷启动等待才是读者最容易低估的部分。
 
 ## 七、Step 4 · 本地先跑一遍
 
-部署前（或者不部署也行），`agentcore dev` 在本地 Uvicorn 起同一个 app、同样的两个路由，模型调用照样走 Bedrock（要凭证，但不用部署）：
+部署前（或者不部署也行），`agentcore dev` 在本地 Uvicorn 起同一个 app、同样的两个路由，模型调用照样走 Bedrock：要凭证，但不用部署。我习惯带 `-l` 跑，让它就是个日志打到 stdout 的服务器；不带参数它会打开浏览器聊天界面：
 
 ```bash
-agentcore dev
+agentcore dev -l
 # 另开一个终端
 curl -s -X POST http://localhost:8080/invocations \
   -H 'Content-Type: application/json' \
   -d '{"prompt":"What is 128 plus 256? Use the tool."}'
 ```
 
-回复以 SSE 流返回，工具调用明晃晃地在里面。我边跑边改 `main.py`，热重载直接生效，不用重启。
+**看流，不要只看最后一行**：应该能看到 `toolUse` 里的 `name: add_numbers`，然后是第二条带答案 `384` 的消息。工具压根没被调用的话，问题在你的 prompt 或工具 docstring，不在平台。另外三个参数值得记：`-p` 换端口、`-b` 用终端 TUI、`--skip-deploy` 阻止 dev 顺带部署工程声明的资源。
+
+我边跑边改 `main.py`，热重载直接生效，不用重启。
 
 > **📸 截图位 4 · 本地运行**
 > 截 `agentcore dev` 的启动横幅，加上一行热重载日志，让人看到改文件后服务自动重载。curl 的回复上文已经贴过了。
@@ -243,9 +258,7 @@ data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, 
 
 ![同一张 HTTP 面孔，两种宿主](images/aws-agentcore-under-the-hood/F5-one-surface.png)
 
-先把这张图的标题说清楚。「同一张面孔」指的是你必须实现的两个路由：`GET /ping` 做健康检查，`POST /invocations` 干活。「两种宿主」指的是同时提供这两个路由的两套环境：本地那套是 `agentcore dev` 起的 Uvicorn 进程，地址 `localhost:8080`；线上那套是 AgentCore 托管的一台 microVM，同一组路由挂在 `https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<runtime-arn>/invocations` 上。路由、扩缩容、TLS 全在平台侧，你的代码不知道自己跑在哪一套里。而 `agentcore invoke` 不是第三种接法，它只是线上这个 `/invocations` 入口的 CLI 客户端，和 boto3 是同一层的东西。
-
-**AgentCore 没有发明新的工具协议，本地和云端用的都是 Bedrock 原生 `toolUse` 协议块。**
+先把这张图的标题说清楚。「同一张面孔」是你必须实现的两个路由：`GET /ping` 做健康检查，`POST /invocations` 干活。「两种宿主」是同时提供这两个路由的两套环境：本地是 `agentcore dev` 起的 Uvicorn，`localhost:8080`；线上是 AgentCore 托管的一台 microVM，同一组路由挂在 `https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<runtime-arn>/invocations` 上。路由、扩缩容、TLS 全在平台侧，你的代码不知道自己跑在哪套里。`agentcore invoke` 不是第三种接法，只是线上 `/invocations` 的 CLI 客户端，和 boto3 同一层。本地和线上用的都是 Bedrock 原生 `toolUse` 协议块，没有新工具协议要学。
 
 花了多少钱？DeepSeek V3.2 在 us-east-1 的价格是输入 $0.62/M、输出 $1.85/M token。一次两轮调用 846 输入 + 82 输出，模型费约 $0.0007，Runtime 计算约 $0.0002。教学级 Agent 的基础设施账单约等于零。
 
@@ -271,7 +284,7 @@ async def invoke(payload, context):
 
 - **入口是异步生成器**，每个 yield 的 dict 变成一个 SSE 事件。流式是平台的默认形态，不是附加项；
 - **`context.session_id` 是你分片状态的钥匙**。每个 session 独立 microVM，扩缩容平台管，你只管按 session 键控状态；
-- **模型是个参数**。`MODEL_ID` 是 `agentcore.json` 声明的环境变量，换模型改一个 JSON 值。
+- **模型是个参数**：`MODEL_ID` 是 `agentcore.json` 声明的环境变量，换模型改一个 JSON 值。
 
 ## 十、原理深挖 II：trace 里到底记了什么
 
@@ -294,31 +307,31 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 
 两个实测出来的坑：
 
-- **span 是异步的**：Transaction Search 要约 10 分钟才能查到，invoke 完立刻 grep CloudWatch 必然失败；
-- **本地 dev 的 trace 没有独立 tool span**：工具调用只记在日志里。要在 trace 里断言工具 span，必须打线上。
+- **span 是异步的**：Transaction Search 要约 10 分钟才查到，invoke 完立刻 grep CloudWatch 必然失败；
+- **本地 dev 的 trace 没有独立 tool span**，工具调用只记在日志里。要在 trace 里断言工具 span，必须打线上。
 
 > **📸 截图位 6 · 可观测**
 > 截 CloudWatch GenAI observability 控制台或 X-Ray trace 图，展开 `execute_tool` 那一层。这是上文的文本 span 树给不了的东西：时间瀑布图，以及时间到底花在哪。
 
 ## 十一、四个真实故障
 
-- **陈旧的 `cdk.out` 会弄挂下一次 deploy**。CLI 每次 synth 前删 `cdk.out`，残留状态让 synth 报 `Subprocess exited with error 1`。手动跑 `cdk synth` 是通的，说明工程没坏。`rm -rf agentcore/cdk/cdk.out` 解决。把 `cdk.out` 当普通构建产物：随时可删；
+- **陈旧的 `cdk.out` 会弄挂下一次 deploy**。CLI 每次 synth 前删 `cdk.out`，残留状态让 synth 报 `Subprocess exited with error 1`。手动跑 `cdk synth` 是通的，说明工程没坏。`rm -rf agentcore/cdk/cdk.out` 解决；
 - **改名即销毁**。`name` 字段变成 CloudFormation 的 Logical ID，改名不是重命名，是删旧建新；
-- **模型往文本通道漏脚手架**。DeepSeek 漏内部模板标记碎片，Nova 漏 `<thinking>` 块。我绕开 Strands 直调 `converse_stream` 验证过，试的四个模型全漏，这是模型行为不是框架 bug。修复在入口处加流式安全的过滤器：按 `messageStart` 为每个 assistant message 重建过滤器，因为一次工具调用其实是多条消息，上一条截断了不能把下一条也静音；
+- **模型往文本通道漏脚手架**。DeepSeek 漏内部模板标记碎片，Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：试的四个模型全漏，是模型行为不是框架 bug。修复是在入口加流式安全过滤器，按 `messageStart` 为每个 assistant message 重建，因为一次工具调用其实是多条消息，上一条截断了不能把下一条也静音；
 - **区域不是 flag**。所有 `--region` 猜测都报 `unknown option`，targets 文件说了算。
 
 ## 十二、带走四句话
 
 1. **JSON 文件就是接口**，其余一切都是它驱动的可再生管道；
-2. **CDK 在这里是内置编译器**，你不写 construct、不改生成工程，改 schema 同一份代码编译出不同的栈；
+2. **CDK 在这里是内置编译器**：不写 construct、不改生成工程，改 schema，同一份代码编译出不同的栈；
 3. **本地和线上共享一个 HTTP 契约**，本地通过的代码上线不需要适配层；
-4. **可观测是真的，但异步的**，写测试时给 span 留几分钟。
+4. **可观测是真的，但异步的**：写测试时给 span 留几分钟。
 
 一句话总结：**在 AgentCore 里，你的基础设施不是你维护的代码，而是编译的代码。**
 
 ---
 
-**环境口径**：2026-10-14 实测。AgentCore CLI 0.31.1、Node 22、本地 Python 3.11（运行时目标 `PYTHON_3_13`）、Strands Agents 1.60.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为冷账号墙钟时间，token 数从 trace span 读出。
+**环境口径**：2026-10-14 实测。CLI 0.31.1、Node 22、本地 Python 3.11（运行时目标 `PYTHON_3_13`）、Strands Agents 1.60.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为冷账号墙钟时间，token 数从 trace span 读出。
 
 ## 截图清单一览（发布前删）
 
