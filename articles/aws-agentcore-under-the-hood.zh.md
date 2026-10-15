@@ -111,7 +111,9 @@ Project created successfully!
 
 ![项目解剖：CLI 写的 vs 你加的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；CLI 自带的脚手架把示例 Agent 放在 `app/` 里，本文则把 `codeLocation` 指到 `src/`。关于这个布局，两个事实值得记住：
+CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；CLI 自带的脚手架把示例 Agent 放在 `app/` 里，本文则把 `codeLocation` 指到 `src/`。
+
+**代码到底写在哪**，两条路径长得不一样，值得说清：让 CLI 生成 Agent，代码就在 `app/<agent-name>/`，契约如实记录（`codeLocation: "app/demo_a/"`、`entrypoint: "main.py"`）；自带代码（BYO）的话，把这两个字段指向任何目录即可。本文走第二条路：用例代码放在 `src/`，便于单独测试。**`codeLocation` 指向哪里，哪里就是被打包、被部署、被 `agentcore dev` 启动的东西。** 关于这个布局，两个事实值得记住：
 
 - **真正属于你编辑的只有两个文件**：`agentcore.json` 和 `aws-targets.json`。`agentcore/` 里其余一切都是可再生的，下一条命令就会覆盖；
 - 项目根检测很严格：CLI 从当前目录逐级向上，找到同时包含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层。两者缺一都不算项目，而报错 `No agentcore project found` 不会告诉你缺的是哪个。

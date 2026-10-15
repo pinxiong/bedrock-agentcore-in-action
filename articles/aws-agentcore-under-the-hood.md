@@ -113,7 +113,9 @@ The interesting part is what lands on disk:
 
 ![Project anatomy: what the CLI writes vs what you add](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all, and the CLI's own scaffold puts a starter agent in `app/`; this article points `codeLocation` at `src/` instead. Two facts about this layout will save you an hour someday:
+The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all, and the CLI's own scaffold puts a starter agent in `app/`; this article points `codeLocation` at `src/` instead.
+
+A word on where your code goes, because the two paths look different. Let the CLI scaffold an agent and your code lives in `app/<agent-name>/`, and the contract records exactly that (`codeLocation: "app/demo_a/"`, `entrypoint: "main.py"`). Bring your own code and you point the same two fields anywhere. This article takes the second path: the use-case code sits in `src/`, which keeps it testable on its own. Whatever `codeLocation` names is what gets zipped, deployed and started by `agentcore dev`. Two facts about this layout will save you an hour someday:
 
 - Only two files are truly yours to edit: `agentcore.json` and `aws-targets.json`. Everything else in `agentcore/` is regenerable, and the next command overwrites it.
 - Project detection is strict: the CLI walks up from your current directory until it finds a folder holding both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project, and the error (`No agentcore project found`) does not say which is missing.

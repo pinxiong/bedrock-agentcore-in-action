@@ -73,11 +73,11 @@
 <text x="632" y="247" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">stream filter</text>
 <text x="374" y="268" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">tests/smoke.py</text>
 <text x="632" y="268" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">assertions</text>
-<text x="374" y="308.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">create --no-agent ships no code folder at all.</text>
-<text x="374" y="328.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">The contract names it: the CLI scaffold uses app/,</text>
-<text x="374" y="348.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">this article points codeLocation at src/.</text>
-<text x="374" y="376.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Drop --no-agent (with --framework, --model-provider</text>
-<text x="374" y="396.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">and --memory) to get a starter agent instead.</text>
+<text x="374" y="308.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Two legitimate paths. Scaffold an agent with the</text>
+<text x="374" y="328.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">CLI and your code lands in app/&lt;name&gt;/. Bring your</text>
+<text x="374" y="348.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">own and point codeLocation anywhere - here: src/.</text>
+<text x="374" y="376.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Whatever it names is what gets zipped, deployed</text>
+<text x="374" y="396.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">and started by agentcore dev.</text>
 <rect x="40" y="514" width="600" height="46" rx="10" fill="#FFE4E6" stroke="#E11D48" stroke-width="1.5" filter="url(#ds)"/>
 <text x="340" y="533" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="800" fill="#E11D48">Never hand-edit a generated file: the next command overwrites it.</text>
 <text x="340" y="550" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" fill="#475569">Project root = the nearest folder up from cwd holding agentcore/ and agentcore/agentcore.json.</text>

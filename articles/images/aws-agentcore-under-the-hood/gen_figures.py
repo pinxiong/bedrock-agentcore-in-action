@@ -323,11 +323,11 @@ def fig3():
     ]
     for i, (ind, t, c, b, n, tag) in enumerate(right):
         line(rx, i, ind, t, c, b, n)
-    note_line(rx, 6.2, "create --no-agent ships no code folder at all.", SLATE)
-    note_line(rx, 7.2, "The contract names it: the CLI scaffold uses app/,", SLATE)
-    note_line(rx, 8.2, "this article points codeLocation at src/.", SLATE)
-    note_line(rx, 9.6, "Drop --no-agent (with --framework, --model-provider", SLATE)
-    note_line(rx, 10.6, "and --memory) to get a starter agent instead.", SLATE)
+    note_line(rx, 6.2, "Two legitimate paths. Scaffold an agent with the", SLATE)
+    note_line(rx, 7.2, "CLI and your code lands in app/<name>/. Bring your", SLATE)
+    note_line(rx, 8.2, "own and point codeLocation anywhere - here: src/.", SLATE)
+    note_line(rx, 9.6, "Whatever it names is what gets zipped, deployed", SLATE)
+    note_line(rx, 10.6, "and started by agentcore dev.", SLATE)
 
     # ---- bottom warning banner ----
     wy = y + ph + 16
