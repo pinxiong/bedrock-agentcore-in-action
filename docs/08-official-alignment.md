@@ -257,15 +257,37 @@ usecases/NN-<slug>/
 
 ---
 
-## 7. 需要拍板的决策
+## 7. 已拍板（2026-10-15）
 
-**D1 · 技术路线**：主形态 CLI + `raw/` 里加 boto3 对照脚本（推荐）／ 纯 CLI（现状）／ 纯 boto3（跟官方 features 一致）。
+| 决策 | 选择 | 落地情况 |
+|---|---|---|
+| **D1 技术路线** | **CLI 为主 + `raw/` boto3 对照** | 每个用例新增 `raw/`（控制面 + 数据面脚本），只用于教学、不参与部署；`aia.py` 生成时自动写入 `raw/README.md`；A0 正文已引用 boto3 数据面返回的 SSE 原文 |
+| **D2 身份鉴权** | **并入 UC03，不单独成篇** | UC03 深挖 inbound JWT + 一种 3LO，M2M / OBO / 多 IdP 降为例内高级节；官方 `05-authenticate-and-authorize` 分组不在系列里单独占一篇 |
+| **D3 篇章结构** | **保留难度阶梯，叠加官方坐标** | `docs/05-capability-map.yaml` 每个用例新增 `official.group / category / vertical / samples`；README 模板新增 §2.4 官方坐标 |
+| **D4 A0 回填** | **四块全补** | A0 的英文稿与中文稿已补：元信息表、Cleanup、Files、Related official samples；中文稿小节编号已重排为十三节 + 两个附录 |
 
-**D2 · 是否给身份鉴权单独一个用例**：官方把 `05-authenticate-and-authorize` 当作一个独立分组，深水区（3LO / M2M / OBO / 多 IdP）内容量很大。选项：并入 UC03（现状）／ 拆出 UC08「Auth Deep Dive」／ 作为 UC03 的高级附录。
+由此产生的机制改动（全部已提交）：
 
-**D3 · 系列篇章与官方 8 分组的对应**：保持「7 用例 + 1 番外 + A0」（推荐，差异点在难度阶梯）／ 重排成与官方 8 分组一一对应的 8 个用例（对齐度最高，但失去难度阶梯的叙事）。
+| 文件 | 改动 |
+|---|---|
+| `shared/scripts/verify-coverage.py` | 新增 `[CMD]` 校验：`cli:` 里的命令、子命令与 flag 必须在本机 CLI 里存在。判定用 `Usage:` 行，不用退出码（commander 带 `--help` 时一律返回 0，未知命令会回落打印父级帮助） |
+| `shared/templates/article.template.md` | 重写为十二节，内置官方四块 |
+| `shared/templates/usecase-doc.template.md` | 新增 §2.4 官方坐标，以及「主路线 CLI / 对照路线 boto3」的说明 |
+| `aia.py` | 生成 `raw/README.md`；打印的能力表片段加入 `official:` 与 `cli:` 字段 |
+| `docs/07-how-to-add-a-usecase.md` | 同步上述要求，并写明 CI 会拦下不存在的命令 |
+| `PLAN.md` | 能力清单补出处（文档 13 项 + samples 13 项 = 并集 14）；仓库结构补 `raw/`；§8.3 文章骨架改为十二节 |
 
-**D4 · A0 是否回填官方四块**（元信息表 / Files 表 / Cleanup / Related official samples）：A0 已定稿，回填会动版式，需要你点头。
+**未采纳的选项（留档）**：纯 CLI 路线；纯 boto3 路线；鉴权单独成篇；重排为官方 8 分组一一对应；A0 保持不动。
+
+### 7.1 这一轮修正的两处事实错误
+
+| 位置 | 错误 | 事实 |
+|---|---|---|
+| `docs/05-capability-map.yaml` uc05 `cli:` | `agentcore create --harness` | CLI 0.31.1 的 `create` 没有 `--harness` 参数。`--defaults` 的含义是「创建 harness 项目」，即 harness 是默认项目类型；显式入口是 `agentcore add harness`，导出是 `agentcore export harness` |
+| 我们的文档若照抄官方 samples 根 README | `agentcore add identity` | `agentcore add` 没有 `identity` 子命令。入站鉴权是 `agentcore add agent --authorizer-type CUSTOM_JWT`，出站凭证是 `agentcore add credential`。这条是官方 samples 根 README 自己过时，不要跟 |
+
+两处都已由新增的 `[CMD]` 校验兜住：把 `agentcore create --harness` 塞回去，`verify-coverage.py` 会报
+`FAIL uc05: agentcore create has no --harness`（已实测）。
 
 ---
 

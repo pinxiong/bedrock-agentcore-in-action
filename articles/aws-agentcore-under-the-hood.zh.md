@@ -8,6 +8,19 @@
 
 ![AgentCore CLI 全生命周期：六条命令](images/aws-agentcore-under-the-hood/F0-command-map.png)
 
+先用一张表把整篇交代清楚，然后我们再拆开看：
+
+| 项 | 值 |
+|---|---|
+| 类型 | 原理深挖走读，本系列的开篇 |
+| Agent | 一个 Strands agent，带一个工具 |
+| 用到的 AgentCore 能力 | Runtime、Observability |
+| 框架与模型 | Strands Agents 1.60.0，Bedrock 上的 `deepseek.v3.2` |
+| 构建方式 | `CodeZip`：全程不需要 Docker，工程里没有任何镜像 |
+| 接口 | 全流程用 AgentCore CLI 0.31.1，另用 boto3 数据面看原始响应流 |
+| 区域 | us-east-1 |
+| 复杂度 | 入门：一个 agent、一次部署、一条 trace |
+
 ## 一、AgentCore 是什么，不是什么
 
 AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管、记忆、访问控制、工具、质量与业务集成。本文只点亮其中两格：Runtime 和 Observability。
@@ -297,7 +310,19 @@ data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, 
 > **📸 截图位 5 · 线上调用**
 > 截调用那一屏，要同时看到 runtime ARN 和 Session ID，让人能确认这打的是线上 endpoint，不是 localhost。
 
-## 九、原理深挖 I：入口契约，不是魔法
+## 九、清理：两条命令拆干净
+
+在项目根目录执行：
+
+```bash
+agentcore remove all -y     # 把 agentcore.json 里的资源数组清空
+agentcore deploy -y         # 把栈收敛成空
+agentcore status            # 应该列不出任何已部署资源
+```
+
+`remove all` 只改 JSON，自己不动 AWS；真正删掉 Runtime、它的 IAM 角色和整条栈的是紧随其后的 `deploy`。有两样东西是**故意留下**的：CDK bootstrap 栈（`CDKToolkit`）和它的资产桶，这个账号后续每次部署都会复用；以及 `/aws/bedrock-agentcore/runtimes/` 下的 CloudWatch 日志组，里面就是你刚读的那批 trace。账号要弃用的话再手动删。AgentCore 按用量计费而不是按小时，所以项目挂着不动本身不产生费用。
+
+## 十、原理深挖 I：入口契约，不是魔法
 
 刨掉工具层，Runtime 对你的代码只发两种请求：`GET /ping` 健康检查，`POST /invocations` 干活。`BedrockAgentCoreApp` 是个薄适配器，把路由接到你写的异步生成器上：
 
@@ -310,7 +335,7 @@ async def invoke(payload, context):
         yield event
 ```
 
-（真实代码还会把每个文本增量过一层流式过滤器，见第十一节的故障。）
+（真实代码还会把每个文本增量过一层流式过滤器，见第十二节的故障。）
 
 三个要点：
 
@@ -318,7 +343,7 @@ async def invoke(payload, context):
 - **`context.session_id` 是你分片状态的钥匙**。每个 session 独立 microVM，扩缩容平台管，你只管按 session 键控状态；
 - **模型是个参数**：`MODEL_ID` 是 `agentcore.json` 声明的环境变量，换模型改一个 JSON 值。
 
-## 十、原理深挖 II：trace 里到底记了什么
+## 十一、原理深挖 II：trace 里到底记了什么
 
 一次线上 invoke 在 X-Ray 里长这样（`agentcore traces list` 在调用后约 2–3 分钟能看到）：
 
@@ -345,14 +370,14 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 > **📸 截图位 6 · 可观测**
 > 截 CloudWatch GenAI observability 控制台或 X-Ray trace 图，展开 `execute_tool` 那一层。这是上文的文本 span 树给不了的东西：时间瀑布图，以及时间到底花在哪。
 
-## 十一、四个真实故障
+## 十二、四个真实故障
 
 - **陈旧的 `cdk.out` 会弄挂下一次 deploy**。CLI 每次 synth 前删 `cdk.out`，残留状态让 synth 报 `Subprocess exited with error 1`。手动跑 `cdk synth` 是通的，说明工程没坏。`rm -rf agentcore/cdk/cdk.out` 解决；
 - **改名即销毁**。`name` 字段变成 CloudFormation 的 Logical ID，改名不是重命名，是删旧建新；
 - **模型往文本通道漏脚手架**。DeepSeek 漏内部模板标记碎片，Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：试的四个模型全漏，是模型行为不是框架 bug。修复是在入口加流式安全过滤器，按 `messageStart` 为每个 assistant message 重建，因为一次工具调用其实是多条消息，上一条截断了不能把下一条也静音；
 - **区域不是 flag**。所有 `--region` 猜测都报 `unknown option`，targets 文件说了算。
 
-## 十二、带走四句话
+## 十三、带走四句话
 
 1. **JSON 文件就是接口**，其余一切都是它驱动的可再生管道；
 2. **CDK 在这里是内置编译器**：不写 construct、不改生成工程，改 schema，同一份代码编译出不同的栈；
@@ -364,6 +389,32 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 ---
 
 **环境口径**：2026-10-14 实测。CLI 0.31.1、Node 22、本地 Python 3.11（运行时目标 `PYTHON_3_13`）、Strands Agents 1.60.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为冷账号墙钟时间，token 数从 trace span 读出。
+
+## 附一、文件清单
+
+| 路径 | 是什么 | 谁写的 |
+|---|---|---|
+| `agentcore/agentcore.json` | 契约：工程声明的全部资源 | 你 |
+| `agentcore/aws-targets.json` | 部署目标（账号 + 区域） | 你 |
+| `app/aia_uc01/main.py` | agent 本体：入口、工具、系统提示词 | 你 |
+| `app/aia_uc01/model/load.py` | 把 `MODEL_ID` 装配成 Strands 模型 | 你 |
+| `app/aia_uc01/model/sanitize.py` | 过滤模型泄漏出来的标记 | 你 |
+| `app/aia_uc01/pyproject.toml` | agent 自己的依赖 | 你 |
+| `agentcore/cdk/` | CDK 工程，每次部署重新生成 | CLI |
+| `agentcore/.llm-context/*.ts` | 权威 schema，给你和你的 AI 助手看 | CLI |
+| `agentcore/.cli/` | 部署状态、日志、trace | CLI |
+| `AGENTS.md`、`README.md` | 建工程时写下的工程上下文 | CLI |
+
+## 附二、对应的官方样例
+
+本文这条链路就是 AWS 官方样例仓库给「第一个 agent」用的 CLI 路线。想往下深挖，去这几个目录：
+
+- `00-getting-started/`：同一套 create / dev / deploy / invoke，agent 换成客服助手；
+- `01-features/02-host-your-agent/01-runtime/01-hosting-agents/01-http-protocol/01-strands-bedrock/`：同一个 agent 改用 boto3 部署，每个 API 调用与参数都摊开写；
+- `01-features/06-observe-evaluate-optimize-your-agent/01-observe/`：更深的可观测，自定义 span、span 过滤器、属性脱敏；
+- `02-use-cases/01-conversational-agents/customer-support-assistant-vpc/`：同一套模式的产线形态，带 memory 与知识库。
+
+仓库：<https://github.com/awslabs/agentcore-samples> · 文档：<https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html>
 
 ## 截图清单一览（发布前删）
 

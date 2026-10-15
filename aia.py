@@ -464,7 +464,7 @@ def cmd_new(args: argparse.Namespace) -> int:
         "{{AWS_ACCOUNT_ID}}": detect_account(),
     }
     agent_dir = f"app/{subs['{{AGENT_NAME}}']}"
-    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "diagrams"):
+    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "diagrams", "raw"):
         (target / sub).mkdir(parents=True, exist_ok=True)
 
     # Agent code first. The agent code sits in app/<AgentName>/, which is the
@@ -506,6 +506,27 @@ def cmd_new(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
 
+    # raw/: teaching-only boto3 sidecar. The official samples keep two routes apart
+    # on purpose (CLI in 00-getting-started, boto3 in 01-features). This series ships
+    # both in one use case: the CLI route stays deployable, the API route stays visible.
+    (target / "raw" / "README.md").write_text(
+        f"""# raw/ · boto3 sidecar ({uc_id})
+
+Not part of the deployment. Nothing here is imported by `app/{subs['{{AGENT_NAME}}']}/`
+and nothing here is packaged by `agentcore deploy`. It exists so a reader can see
+what the CLI did for them.
+
+| Script | Client | What it shows |
+|---|---|---|
+| `control_plane.py` | `bedrock-agentcore-control` | list and read back the resources `agentcore` just created |
+| `data_plane.py` | `bedrock-agentcore` | call `invoke_agent_runtime` directly and print the raw SSE stream |
+
+Why these exist, and where the official version of the same idea lives:
+docs/08-official-alignment.md section 3.1.
+""",
+        encoding="utf-8",
+    )
+
     caps = ", ".join(capabilities)
     print(
         f"""
@@ -526,8 +547,15 @@ done. next:
     dir: usecases/{slug}
     title: {title}
     difficulty: {difficulty}
+    official:
+      group: <one of the eight groups in docs/08-official-alignment.md>
+      category: <conversational-agents | workflow-automation-agents | coding-assistants>
+      vertical: <business vertical, e.g. Retail / E-commerce>
+      samples:
+        - <NN-layer/NN-group/NN-sample/ in awslabs/agentcore-samples>
     standalone: true
     knowledge_prereqs: []
+    cli: <the agentcore commands this use case needs; verify-coverage.py checks they exist>
     deep: [{caps}]
     incidental: []
     assertions:

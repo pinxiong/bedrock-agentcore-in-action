@@ -12,6 +12,19 @@ This article walks that path once and explains what happens under the hood. Ever
 
 ![The whole AgentCore CLI lifecycle in six commands](images/aws-agentcore-under-the-hood/F0-command-map.png)
 
+The whole article in one table, before we take it apart:
+
+| Field | Value |
+|---|---|
+| Type | Under-the-hood walkthrough, the opener of this series |
+| Agent | One Strands agent with one tool |
+| AgentCore capabilities used | Runtime, Observability |
+| Framework and model | Strands Agents 1.60.0, `deepseek.v3.2` on Bedrock |
+| Build type | `CodeZip`: no Docker, no image anywhere in the project |
+| Interfaces | AgentCore CLI 0.31.1 for everything, plus the boto3 data plane to show the raw response stream |
+| Region | us-east-1 |
+| Complexity | Beginner: one agent, one deploy, one trace |
+
 ## What AgentCore is and what it is not
 
 AgentCore is a family of managed runtimes for AI agents: 14 capabilities covering hosting, memory, access control, tools, quality and business integration. This article lights up two of them, the runtime and observability.
@@ -315,6 +328,18 @@ What did that cost? DeepSeek V3.2 in us-east-1 charges $0.62 per million input t
 > **📸 Screenshot spot 5 · Cloud invoke**
 > Capture the invoke screen with the runtime ARN and the session ID both visible, so readers can tell this call hit the deployed endpoint and not localhost.
 
+## Cleanup
+
+Two commands bring the whole thing down, run from the project root:
+
+```bash
+agentcore remove all -y     # empties every resource array in agentcore.json
+agentcore deploy -y         # converges the stack to an empty one
+agentcore status            # nothing deployed should be listed
+```
+
+`remove all` edits the JSON; it does not touch AWS on its own. The `deploy` that follows is what deletes the runtime, its IAM role and the stack. Two things survive on purpose: the CDK bootstrap stack (`CDKToolkit`) and its asset bucket, which every future deployment in that account reuses, and the CloudWatch log group under `/aws/bedrock-agentcore/runtimes/` holding the traces you just read. Delete those by hand if you are finished with the account. AgentCore bills per use rather than per hour, so a project left deployed between sessions is not what costs you money here.
+
 ## Under the hood I: the HTTP contract
 
 Strip away the tooling. The runtime makes exactly two requests to your code: `GET /ping` for health checks and `POST /invocations` for work. `BedrockAgentCoreApp` is a thin adapter that maps those routes onto an async generator you write:
@@ -394,6 +419,32 @@ One sentence to take away: in AgentCore your infrastructure is not code you main
 ## The setup behind the numbers
 
 All measurements come from one deployment on 2026-10-14: CLI 0.31.1, Node 22, local Python 3.11 (runtime target `PYTHON_3_13`), Strands Agents 1.60.0, `deepseek.v3.2` in us-east-1, CodeZip builds, one hello-world agent with a single `add_numbers` tool. Deploy timings are wall-clock and token counts come from trace spans rather than estimates.
+
+## File reference
+
+| Path | What it is | Written by |
+|---|---|---|
+| `agentcore/agentcore.json` | the contract: every resource the project declares | you |
+| `agentcore/aws-targets.json` | where deployments land (account and region) | you |
+| `app/aia_uc01/main.py` | the agent: entrypoint, tool, system prompt | you |
+| `app/aia_uc01/model/load.py` | turns `MODEL_ID` into a Strands model | you |
+| `app/aia_uc01/model/sanitize.py` | stream filter for leaked model scaffolding | you |
+| `app/aia_uc01/pyproject.toml` | the agent's own dependencies | you |
+| `agentcore/cdk/` | the CDK app, regenerated on every deploy | the CLI |
+| `agentcore/.llm-context/*.ts` | authoritative schema for you and your AI assistant | the CLI |
+| `agentcore/.cli/` | deploy state, logs and traces | the CLI |
+| `AGENTS.md`, `README.md` | project context created with the project | the CLI |
+
+## Related official samples
+
+The loop in this article is the CLI route that AWS's own samples repository uses for its first-agent walkthrough. Where to go deeper in that repository:
+
+- `00-getting-started/`: the same create, dev, deploy and invoke loop, with a customer-support agent instead of a calculator.
+- `01-features/02-host-your-agent/01-runtime/01-hosting-agents/01-http-protocol/01-strands-bedrock/`: the same agent deployed through boto3 rather than the CLI, which is where every API call and parameter is spelled out.
+- `01-features/06-observe-evaluate-optimize-your-agent/01-observe/`: deeper observability, with custom spans, span filters and attribute redaction.
+- `02-use-cases/01-conversational-agents/customer-support-assistant-vpc/`: the same pattern at production scale, with memory and a knowledge base behind a gateway.
+
+Repository: <https://github.com/awslabs/agentcore-samples> · Documentation: <https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html>
 
 ## Screenshot checklist (for publishing)
 

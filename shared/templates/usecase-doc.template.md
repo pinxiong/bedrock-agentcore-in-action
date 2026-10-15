@@ -66,6 +66,23 @@
 | I4 | 代码独立 | `app/{{AGENT_NAME}}/` 不 import 任何其他用例 |
 | I5 | 文档独立 | 本节以上即为全部前置 |
 
+### 2.4 官方坐标（对齐 awslabs/agentcore-samples）
+
+| 坐标 | 值 | 说明 |
+|---|---|---|
+| 官方分组 | `{{八个分组之一}}` | 分组名见 [docs/08-official-alignment.md](../../docs/08-official-alignment.md) |
+| 工作负载分类 | `{{conversational-agents / workflow-automation-agents / coding-assistants}}` | 官方按「有无用户在环」分三类 |
+| 业务垂直 | {{例：Retail / E-commerce}} | 官方 use-cases 表有同样一列 |
+| 可对照的官方样例 | `{{NN-layer/NN-group/NN-sample/}}` | 同一能力的另一种写法，读者可跳过去看 |
+
+> 本系列的差异点是**难度阶梯**（官方没有难度阶梯），官方坐标只用来定位，不改变本例的独立性。
+
+**本目录的两条路线**（对齐官方刻意分开的两种教学形态，见 docs/08-official-alignment.md §3.1）：
+
+- 主路线：`agentcore` CLI。可部署产物与官方 `00-getting-started` 完全一致，读者照抄即得；
+- 对照路线：`raw/` 下的 boto3 脚本（控制面 `bedrock-agentcore-control` + 数据面 `bedrock-agentcore`），
+  只用于教学，把 CLI 替你做的那几个 API 调用摊开。官方 `01-features` 就是这个做法。
+
 ---
 
 ## 3. 为什么需要这一层

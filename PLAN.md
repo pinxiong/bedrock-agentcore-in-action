@@ -37,6 +37,13 @@
 | 13 | **Payments** | x402 / MPP 微支付 + 消费上限 | 2026-08 | 番外 |
 | 14 | **Registry** | Agent / 工具 / Skill 的治理型目录 | 2026-08 | UC07 |
 
+**这 14 项的出处**（2026-10-15 对齐官方，两处清单口径不同，勿混用）：
+
+- AWS 文档 `what-is-bedrock-agentcore` 的核心服务表列 **13 项**：Harness、Runtime、Memory、Gateway、Identity、Code Interpreter、Browser、Observability、Payments、Evaluations、Optimization、Policy、Registry（**没有 Web Search**）；
+- `awslabs/agentcore-samples` 的 `01-features/README.md` 也列 **13 项**，但含 Web Search、不含 Optimization；
+- **并集 = 14**，即本表。`docs/05-capability-map.yaml` 的 `capabilities[].src` 逐项标注了每项出自哪份清单。
+- 措辞修正：Policy 的规则语言官方写法是 **Dogwood**（与 Cedar 兼容），只说 Cedar 不准确。
+
 ### 1.2 部署形态（v1 里我表述不清的地方，已核实修正）
 
 **AgentCore 不涉及 ECS。** Runtime 是 serverless 托管运行时，每个 session 跑在独立 microVM 里，你不管集群、节点、扩缩容、负载均衡。
@@ -447,6 +454,7 @@ bedrock-agentcore-in-action/
 │   │   ├── README.md            #   十二节可操作文档
 │   │   ├── app/aia_uc01/        #   ★ 自带 agent（CLI 官方布局）；agentcore.json 的 codeLocation 指向这里
 │   │   ├── agentcore/           #   ★ 本用例的 IaC：agentcore.json 是唯一真相源 + CLI 生成的 CDK 应用
+│   │   ├── raw/                 #   boto3 对照脚本（控制面 + 数据面），只用于教学，不参与部署
 │   │   ├── tests/smoke.py       #   本例断言，与 capability-map 一一对应
 │   │   └── article.md           #   发表稿（英文）
 │   ├── 02-memory/
@@ -596,16 +604,26 @@ bedrock-agentcore-in-action/
 | 07 | Multi-Agent Systems Are Easy. Isolation, Protocol, and Traces Are Not. | Before You Build Another Agent, Search the Registry |
 | 番外 | Your Agent Can Pay. Should It? | Spending Limits as a First-Class Control |
 
-### 8.3 统一骨架
+### 8.3 统一骨架（十二节，对齐官方样例 README）
 
-1. **The problem**（业务场景，不谈技术）
-2. **Why the obvious approach breaks**（先讲朴素做法的坑，张力来源）
-3. **Architecture**（一张图）
-4. **Walkthrough**（关键命令，指向仓库目录，不堆全量代码）
-5. **Verification**（真实运行输出 / 截图）
-6. **What surprised me**（真实踩坑，决定能否被转发）
-7. **When not to use this**（诚实说边界）
-8. **Try it yourself**（`cd usecases/NN-*` + 一键部署，强调不需要先做前面的用例）
+1. **At a glance**（元信息表：agent 类型、用到的能力、框架与模型、构建方式、接口、区域、难度、官方分组）
+2. **The problem**（业务场景，不谈技术）
+3. **Why the obvious approach breaks**（先讲朴素做法的坑，张力来源）
+4. **Architecture**（一张图）
+5. **Walkthrough**（关键命令 + 真实输出，指向仓库目录，不堆全量代码）
+6. **Verification**（真实运行输出 / 截图）
+7. **Cleanup**（清理命令 + 说明哪些资源是故意留下的）
+8. **What surprised me**（真实踩坑，决定能否被转发）
+9. **When not to use this**（诚实说边界）
+10. **Files**（每个路径一行：是什么、谁写的）
+11. **Related official samples**（2·4 条官方样例路径 + 到那儿看什么）
+12. **Try it yourself**（`cd usecases/NN-*` + 一键部署，强调不需要先做前面的用例）
+
+第 1、7、10、11 节是 2026-10-15 从官方 `awslabs/agentcore-samples` 的样例 README 骨架里补进来的，
+模板 `shared/templates/article.template.md` 已内置，**不要删**。官方骨架的对照见 `docs/08-official-alignment.md` §3.3。
+
+每例的 README 还要多一节 **2.4 官方坐标**（官方分组 / 工作负载分类 / 业务垂直 / 可对照的官方样例），
+四个字段与 `docs/05-capability-map.yaml` 里该用例的 `official:` 块一一对应。
 
 ---
 
@@ -658,6 +676,22 @@ bedrock-agentcore-in-action/
 | Docker | **未安装** → 正是 `CodeZip` 路线存在的意义 |
 | CDK CLI | 未单独安装；`agentcore deploy` 内部自带 CDK 调用路径 |
 
+### 10.2 官方对齐拍板（2026-10-15 调研 awslabs/agentcore-samples 后）
+
+完整调研见 [`docs/08-official-alignment.md`](docs/08-official-alignment.md)。
+
+| # | 决策 | 结论 |
+|---|---|---|
+| **G** | 技术路线 | **CLI 为主 + `raw/` boto3 对照**。官方是刻意分两条路的：`01-features` 用 boto3（原文：`full visibility into every API call is the point of educational content`），`getting-started`/`IaC`/`blueprints` 用 CLI。我们两条都要：主路线保证读者产物与官方一致，`raw/` 保证看得见 API 层 |
+| **H** | 身份鉴权是否单独成篇 | **不单独成篇，并入 UC03**。UC03 深挖 inbound JWT + 一种 3LO，M2M / OBO / 多 IdP 降为例内高级节 |
+| **I** | 篇章结构 | **保留难度阶梯，叠加官方坐标**。官方没有难度阶梯，这是本系列的差异点；但每个用例必须带 `official.group / category / vertical / samples` 四个坐标，否则读者无法把它映射回官方分类 |
+| **J** | A0 是否回填官方四块 | **四块全补**：元信息表、Cleanup、Files、Related official samples。官方骨架对照见 §8.3 |
+
+由此**新增的两条硬约定**：
+
+1. **能力数口径必须标出处**。AWS 文档核心服务表 13 项（无 Web Search，含 Optimization），samples 的 `01-features` 表 13 项（含 Web Search，无 Optimization），并集才是我们的 14 项。任何地方写「14 项」都要能对上 `docs/05-capability-map.yaml` 的 `capabilities[].src`。
+2. **写进文档的命令必须在本机 CLI 里存在**。`verify-coverage.py` 的 `[CMD]` 校验会用 `Usage:` 行核对 `cli:` 字段里的命令、子命令与 flag。这条是被真实错误逼出来的：计划里曾出现 `agentcore create --harness` 与（照抄官方 samples 根 README 的）`agentcore add identity`，两者都不存在。
+
 ---
 
 ## 11. 风险与注意事项
@@ -673,4 +707,5 @@ bedrock-agentcore-in-action/
 | **Harness vs Runtime 定位混淆** | 读者选错路径 | UC05 用同一场景两种实现做正面对比 |
 | **Payments 前置门槛** | 读者卡在第一步 | 番外给 sandbox / 测试网路径 + 无钱包账号降级演示 |
 | **成本失控** | 读者被账单吓到 | 每例给数字；`AutoDelete` 标签；`python aia.py cost` |
+| **官方口径漂移** | 照抄过时写法（官方 samples 根 README 自己就写着不存在的 `agentcore add identity`），或能力数出处混用 | `[CMD]` 校验兜住命令；`capabilities[].src` 兜住出处；`docs/08-official-alignment.md` 附可复核命令，季度重核 |
 | **配额**（并发 session、Bedrock TPM） | UC07 压测失败 | 文档给配额申请指引；压测默认降到 10 并发 |

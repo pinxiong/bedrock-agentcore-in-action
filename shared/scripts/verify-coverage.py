@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """verify-coverage.py
 
-Reads docs/05-capability-map.yaml and enforces three classes of rules.
+Reads docs/05-capability-map.yaml and enforces four classes of rules.
 
   [COVER]   every one of the 14 capabilities is `deep` in at least one use case
   [EVID]    a use case declaring `deep: [cap]` must assert that capability in
@@ -12,6 +12,13 @@ Reads docs/05-capability-map.yaml and enforces three classes of rules.
                 reference (ImportValue / remote_state / another use case's name)
             (c) the directory a use case deploys (codeLocation in
                 agentcore/agentcore.json) never imports another use case
+  [CMD]     every `agentcore ...` command, subcommand and flag written in a
+            use case's `cli:` field exists in the installed CLI. This exists
+            because the plan once carried commands that do not exist
+            (`agentcore create --harness`, `agentcore add identity`). Probing
+            uses the `Usage:` line, not the exit code: commander exits 0 even
+            for an unknown command when `--help` is present, and falls back to
+            printing the parent's help.
 
 Exit code 0 = all checks pass, 1 = at least one FAIL.
 
@@ -19,6 +26,7 @@ Usage
   python3 shared/scripts/verify-coverage.py
   python3 shared/scripts/verify-coverage.py --usecase uc04
   python3 shared/scripts/verify-coverage.py --allow-missing-dirs   # during bootstrap
+  python3 shared/scripts/verify-coverage.py --skip-cli             # no CLI on this machine
 
 Requires PyYAML:  pip install pyyaml
 """
@@ -28,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -135,6 +144,35 @@ def load_map(root: Path) -> dict:
         sys.exit(f"capability map not found: {path}")
     with path.open(encoding="utf-8") as fh:
         return yaml.safe_load(fh)
+
+
+# ---------------------------------------------------------------------------
+# [CMD] support: shell out to the installed CLI and cache its help text
+# ---------------------------------------------------------------------------
+
+CLI_TIMEOUT_S = 20
+_HELP_CACHE: dict[tuple[str, ...], str | None] = {}
+
+
+def cli_help(tokens: tuple[str, ...]) -> str | None:
+    """Help text for `agentcore <tokens>`, or None when the CLI is not installed.
+
+    Call with an empty tuple to probe for the binary itself.
+    """
+    if tokens in _HELP_CACHE:
+        return _HELP_CACHE[tokens]
+    try:
+        proc = subprocess.run(
+            ["agentcore", *tokens, "--help"],
+            capture_output=True,
+            text=True,
+            timeout=CLI_TIMEOUT_S,
+        )
+        text: str | None = (proc.stdout or "") + (proc.stderr or "")
+    except (FileNotFoundError, subprocess.TimeoutExpired, OSError):
+        text = None
+    _HELP_CACHE[tokens] = text
+    return text
 
 
 def check_coverage(spec: dict, rep: Report) -> None:
@@ -321,6 +359,66 @@ def check_independence(root: Path, spec: dict, only: str | None, allow_missing: 
     print()
 
 
+def check_commands(spec: dict, only: str | None, skip: bool, rep: Report) -> None:
+    print("[CMD] every `agentcore ...` written in a cli: field exists in the installed CLI")
+
+    if skip:
+        rep.warn("skipped (--skip-cli)")
+        print()
+        return
+
+    if cli_help(()) is None:
+        rep.warn("`agentcore` not on PATH: skipped (install it, or pass --skip-cli)")
+        print()
+        return
+
+    checked = 0
+    for uc in spec.get("usecases", []) + spec.get("bonus", []):
+        if only and uc["id"] != only:
+            continue
+        cli = uc.get("cli")
+        if not cli:
+            continue
+
+        problems: list[str] = []
+        for raw in re.split(r"&&|;|\n", cli):
+            raw = raw.strip()
+            if "agentcore" not in raw:
+                continue
+            tokens = raw.split("agentcore", 1)[1].split("#", 1)[0].split()
+            if not tokens:
+                continue
+
+            cmd = tokens[0]
+            sub = tokens[1] if len(tokens) > 1 and not tokens[1].startswith("-") else None
+            scope = (cmd,) if sub is None else (cmd, sub)
+            text = cli_help(scope)
+            if text is None:
+                break
+
+            # A real command echoes its own path on the Usage line; an unknown one
+            # prints the parent's help instead.
+            want = "agentcore " + " ".join(scope)
+            if not re.search(rf"^Usage:\s+{re.escape(want)}\b", text, re.M):
+                problems.append(f"`agentcore {' '.join(scope)}` does not exist")
+                continue
+
+            for flag in (t for t in tokens if t.startswith("-")):
+                if not re.search(rf"(?<![\w-]){re.escape(flag)}(?![\w-])", text):
+                    problems.append(f"`agentcore {' '.join(scope)}` has no {flag}")
+
+        if problems:
+            for p in problems:
+                rep.fail(f"{uc['id']}: {p}")
+        else:
+            rep.ok(f"{uc['id']}: every command in cli: exists ({cli})")
+        checked += 1
+
+    if not checked:
+        rep.warn("no cli: fields to check")
+    print()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", default=str(REPO_ROOT), help="repository root (default: this repo)")
@@ -329,6 +427,11 @@ def main() -> int:
         "--allow-missing-dirs",
         action="store_true",
         help="treat not-yet-implemented use case directories as warnings, not failures",
+    )
+    ap.add_argument(
+        "--skip-cli",
+        action="store_true",
+        help="skip the [CMD] check (for machines without the agentcore CLI)",
     )
     args = ap.parse_args()
 
@@ -343,6 +446,7 @@ def main() -> int:
         check_coverage(spec, rep)
     check_evidence(root, spec, args.usecase, args.allow_missing_dirs, rep)
     check_independence(root, spec, args.usecase, args.allow_missing_dirs, rep)
+    check_commands(spec, args.usecase, args.skip_cli, rep)
     return rep.emit()
 
 
