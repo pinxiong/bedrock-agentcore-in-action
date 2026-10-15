@@ -34,7 +34,7 @@
 | 必须理解的机制 | 部署模型：agent 代码跑到哪里去了、session 是什么 | 部署模型 ✅ |
 | 参考耗时 | 30 min | ≤ 30 min ✅ |
 
-**难度上升的实际含义**：这是全系列的零档。你要建立的认知只有一件事——「我的 Python 代码不再是本地进程，而是被 AgentCore 托管起来的东西」，因此它怎么被打包、怎么被调用、怎么被观测，全部要先走通一遍。后面的用例都在这条链路之上加东西。
+**难度上升的实际含义**：这是全系列的零档。你要建立的认知只有一件事：「我的 Python 代码不再是本地进程，而是被 AgentCore 托管起来的东西」，因此它怎么被打包、怎么被调用、怎么被观测，全部要先走通一遍。后面的用例都在这条链路之上加东西。
 
 ### 2.2 前置**知识**（不是前置资源）
 
@@ -104,7 +104,7 @@ python3 run.py down         # 销毁
 
 ## 3. 为什么需要这一层
 
-一个 agent 在笔记本上跑通，和生产上"有个人在用"之间，隔着一整套东西：代码要打包成一个能运行的单元、要有一份别人调得动的地址、要有身份去调模型、要有日志能事后复盘。朴素做法是把 agent 包一层 FastAPI 丢到一台常开的机器上——然后你会依次遇到：谁来管这台机器、扩容怎么扩、会话怎么隔离、日志去哪了。
+一个 agent 在笔记本上跑通，和生产上"有个人在用"之间，隔着一整套东西：代码要打包成一个能运行的单元、要有一份别人调得动的地址、要有身份去调模型、要有日志能事后复盘。朴素做法是把 agent 包一层 FastAPI 丢到一台常开的机器上，然后你会依次遇到：谁来管这台机器、扩容怎么扩、会话怎么隔离、日志去哪了。
 
 这个用例不解决这些问题，它解决的是**先走通一条最短的闭环**：代码从本地到受管运行时，并且这一次调用能被看见。
 
@@ -360,7 +360,7 @@ To resume: agentcore invoke --session-id 53451706-bd56-43f3-84ef-1eceaa3c2aee
 Log: .../agentcore/.cli/logs/invoke/invoke-aia_uc01-20261014-153601.log
 ```
 
-**如何验证**：两个条件同时满足——回复里出现 `42`，且**没有**任何 `<｜DSML｜...` 或 `<thinking>` 之类的标记。
+**如何验证**：两个条件同时满足：回复里出现 `42`，且**没有**任何 `<｜DSML｜...` 或 `<thinking>` 之类的标记。
 
 命令行只给你拼好的文本。想看底层到底发生了什么（工具真的被调了吗？），直接读 SSE：
 
@@ -489,7 +489,7 @@ observability
 
 ### 7.6 本地跑（不碰 AWS）
 
-本地模式用一个真模型、假的 runtime——用来快速改 prompt，不产生部署。
+本地模式用一个真模型、假的 runtime，用来快速改 prompt，不产生部署。
 
 ```bash
 make dev                       # 监听 http://localhost:8080/invocations
@@ -627,7 +627,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 
 **关于模型输出里的脚手架标记（本用例踩到的真坑）**
 
-实测发现：DeepSeek v3.2 会在 text 通道里额外吐出 `<｜DSML｜function_calls`，Nova 三个型号会吐出完整的 `<thinking>...</thinking>`——**绕开 Strands 用 boto3 直连 `converse_stream` 也一样**，所以这不是框架的问题，是模型/服务端行为。
+实测发现：DeepSeek v3.2 会在 text 通道里额外吐出 `<｜DSML｜function_calls`，Nova 三个型号会吐出完整的 `<thinking>...</thinking>`，**绕开 Strands 用 boto3 直连 `converse_stream` 也一样**，所以这不是框架的问题，是模型/服务端行为。
 
 本用例在 `app/aia_uc01/model/sanitize.py` 里做了一层流式安全的过滤：按 `messageStart` 为每个 assistant message 重建过滤器（一次调用其实有多个 assistant message，工具调用前后各一个），剥掉配对的 `<thinking>...</thinking>`，并从 `<｜DSML｜` 处截断。因为标记不是原子 token、流式时会跨分片到达（实测被拆成 `<` / `｜DSML｜` / `function_c` / `alls` 四片），过滤器会 hold back 可能是标记前缀的尾巴。
 
@@ -692,7 +692,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 ## 12. Going further
 
 - 延伸实验：
-  1. 把 `NullConversationManager` 换成 `SlidingWindowConversationManager`，观察同一 session 第二次调用时输入 token 是否变大——这就是 UC02 要解决的问题。
+  1. 把 `NullConversationManager` 换成 `SlidingWindowConversationManager`，观察同一 session 第二次调用时输入 token 是否变大，这就是 UC02 要解决的问题。
   2. 再 `make deploy` 一次，让 runtime 升到 v3，然后用 `make traces` 对比两次版本的行为差异（对应附带的 `versioning-and-endpoints`）。
   3. 把 `codeLocation` 从 `app/aia_uc01/` 改成一份含 `Dockerfile` 的目录，切到 Container 构建，对比打包体积与冷启动（对应 `codezip-vs-container`）。改完先跑 `make check`：`codeLocation` 仍然必须在目录内，这是 I6 的硬性要求。
 - 官方文档：<https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime.html>

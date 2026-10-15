@@ -77,7 +77,7 @@ def uv_sync() -> int:
 
 
 def t_help(_args: argparse.Namespace) -> int:
-    print(f"{{UC_ID}} · {{UC_TITLE}} — targets")
+    print(f"{{UC_ID}} · {{UC_TITLE}} · targets")
     print()
     width = max(len(name) for name in TARGETS)
     for name, (summary, _fn) in TARGETS.items():

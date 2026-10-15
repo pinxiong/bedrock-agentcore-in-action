@@ -77,7 +77,7 @@ def uv_sync() -> int:
 
 
 def t_help(_args: argparse.Namespace) -> int:
-    print(f"{USE_CASE_NUMBER} · First Agent — targets")
+    print(f"{USE_CASE_NUMBER} · First Agent · targets")
     print()
     width = max(len(name) for name in TARGETS)
     for name, (summary, _fn) in TARGETS.items():

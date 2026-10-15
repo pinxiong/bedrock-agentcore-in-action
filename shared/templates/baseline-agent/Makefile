@@ -1,4 +1,4 @@
-# {{UC_ID}} · {{UC_TITLE}} — convenience wrapper around run.py.
+# {{UC_ID}} · {{UC_TITLE}} · convenience wrapper around run.py.
 #
 # This file holds no logic. Every target forwards to `run.py`, which is the real
 # entry point and works on macOS, Linux and Windows alike. Use `make` if you have
