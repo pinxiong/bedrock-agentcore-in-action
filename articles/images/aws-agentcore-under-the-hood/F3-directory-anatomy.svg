@@ -39,7 +39,7 @@
 <rect x="40" y="126" width="296" height="372" rx="12" fill="white" stroke="#CBD5E1" stroke-width="1.5" filter="url(#ds)"/>
 <path d="M 40 162 L 40 140 Q 40 126 54 126 L 322 126 Q 336 126 336 140 L 336 162 Z" fill="#F1F5F9"/>
 <rect x="56" y="135" width="112" height="17" rx="8.5" fill="#F1F5F9" opacity="1"/><text x="112" y="146.9" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#475569">CREATE WRITES IT</text>
-<text x="60" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">aiauc01/</text>
+<text x="60" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">helloagent/</text>
 <text x="318" y="184" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">the project root</text>
 <text x="76" y="205" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">AGENTS.md</text>
 <text x="318" y="205" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">AI assistant context</text>
@@ -61,7 +61,7 @@
 <text x="92" y="394" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">cdk/</text>
 <text x="318" y="394" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">vendored app</text>
 <text x="76" y="415" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">app/</text>
-<text x="92" y="436" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#2563EB">aia_uc01/</text>
+<text x="92" y="436" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#2563EB">hello_agent/</text>
 <rect x="248" y="425" width="70" height="14" rx="7" fill="#DBEAFE"/>
 <text x="283" y="435" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#1D4ED8">codeLocation</text>
 <text x="60" y="456.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#64748B">create runs five steps. Only two files</text>
@@ -69,7 +69,7 @@
 <rect x="354" y="126" width="296" height="372" rx="12" fill="white" stroke="#CBD5E1" stroke-width="1.5" filter="url(#ds)"/>
 <path d="M 354 162 L 354 140 Q 354 126 368 126 L 636 126 Q 650 126 650 140 L 650 162 Z" fill="#DBEAFE"/>
 <rect x="370" y="135" width="106" height="17" rx="8.5" fill="#DBEAFE" opacity="1"/><text x="423" y="146.9" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563EB">YOUR AGENT CODE</text>
-<text x="374" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">app/aia_uc01/</text>
+<text x="374" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">app/hello_agent/</text>
 <text x="632" y="184" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">codeLocation</text>
 <text x="390" y="205" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">main.py</text>
 <text x="632" y="205" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">entrypoint</text>

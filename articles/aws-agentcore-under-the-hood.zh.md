@@ -15,7 +15,7 @@
 | 类型 | 原理深挖走读，本系列的开篇 |
 | Agent | 一个 Strands agent，带一个工具 |
 | 用到的 AgentCore 能力 | Runtime、Observability |
-| 框架与模型 | Strands Agents 1.60.0，Bedrock 上的 `deepseek.v3.2` |
+| 框架与模型 | Strands Agents 1.61.0，Bedrock 上的 `deepseek.v3.2` |
 | 构建方式 | `CodeZip`：全程不需要 Docker，工程里没有任何镜像 |
 | 接口 | 全流程用 AgentCore CLI 0.31.1，另用 boto3 数据面看原始响应流 |
 | 区域 | us-east-1 |
@@ -51,7 +51,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管
 
 ## 三、开跑之前：环境清单
 
-动手前先对齐环境。以下版本全部实测过（2026-10-14/15）：
+动手前先对齐环境。以下版本全部实测过（2026-10-14 至 10-16）：
 
 | 工具 | 实测版本 | 说明 | 自检 |
 |---|---|---|---|
@@ -60,7 +60,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管
 | AWS CLI | 2.x | 任意近期版本 | `aws --version` |
 | uv | 0.11.9 | CLI 用它给模板 agent 建 Python 环境 | `uv --version` |
 | Git | 2.39 | `create` 会在新项目里跑 `git init` | `git --version` |
-| Python | 本地 3.11 | CodeZip 支持 3.10–3.14 | `python3 -V` |
+| Python | app venv 里是 3.12 | CodeZip 支持 3.10–3.14；runtime 目标版本是 CLI 的默认值，跟本机解释器无关 | `python3 -V` |
 | AWS 账号 | 任意 | 权限见下 | `aws sts get-caller-identity` |
 | 区域 | us-east-1 | 全系列统一 | `aws configure get region` |
 | Docker | 不需要 | 本系列统一 CodeZip 构建 | 不适用 |
@@ -110,32 +110,32 @@ aws bedrock list-foundation-models --region us-east-1 \
 
 ## 四、Step 1 · 生成项目骨架
 
-一条命令生成整个项目，这就是官方 getting-started 用的完整形态（换成本文的名字）：
+一条命令生成整个项目。这就是官方 getting-started 的命令，只多了一个 `--project-name`：它让项目目录名和 agent 名可以不同。
 
 ```bash
-agentcore create --name aia_uc01 --project-name aiauc01 \
+agentcore create --name hello_agent --project-name helloagent \
   --framework Strands --model-provider Bedrock --memory none --defaults
 ```
 
 实测输出：
 
 ```text
-[done]  Create aiauc01/ project directory
+[done]  Create helloagent/ project directory
 [done]  Prepare agentcore/ directory
 [done]  Initialize git repository
 [done]  Add agent to project
 [done]  Set up Python environment
 
 Created:
-  aiauc01/
-    app/aia_uc01/  Python agent (Strands)
-    agentcore/     Config and CDK project
+  helloagent/
+    app/hello_agent/  Python agent (Strands)
+    agentcore/        Config and CDK project
 
 Project created successfully!
 
 To continue, navigate to your new project:
 
-  cd aiauc01
+  cd helloagent
   agentcore
 ```
 
@@ -143,7 +143,7 @@ To continue, navigate to your new project:
 
 ![项目解剖：create 写的 vs 归你所有的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-`create` 一次写三样东西。项目根：`AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，外加一次 `git init`；`agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程；`app/aia_uc01/`：一个 starter agent，`main.py` 里 `BedrockAgentCoreApp` 的接线和 `@tool` 示例都已就位，`model/load.py` 负责装配模型，`pyproject.toml` 由 CLI 用 uv 建好环境。契约如实记录这个位置（`codeLocation: "app/aia_uc01/"`、`entrypoint: "main.py"`），这正是官方文档写的 App Structure。
+`create` 一次写三样东西。项目根：`AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，外加一次 `git init`；`agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程；`app/hello_agent/`：一个 starter agent，`main.py` 里 `BedrockAgentCoreApp` 的接线和 `@tool` 示例都已就位，`model/load.py` 负责装配模型，`pyproject.toml` 由 CLI 用 uv 建好环境。契约如实记录这个位置（`codeLocation: "app/hello_agent/"`、`entrypoint: "main.py"`），这正是官方文档写的 App Structure。
 
 starter 不是用完就扔的玩具。它的 `main.py` 已经是 Runtime 要的形状，所以本文的 agent 保留了脚手架，只换上自己的系统提示词、工具和模型装配。无论你的 agent 代码最终放哪，规则只有一条：**`codeLocation` 指向哪里，哪里就是被打包、被部署、被 `agentcore dev` 启动的东西。**（已经有一份 agent 代码不想搬？`agentcore add agent --type byo --code-location <目录> --entrypoint <文件>` 把同样两个字段指过去即可。）关于这个布局，两个事实值得记住：
 
@@ -161,14 +161,14 @@ starter 不是用完就扔的玩具。它的 `main.py` 已经是 Runtime 要的�
 
 ```json
 {
-  "name": "aiauc01",
+  "name": "helloagent",
   "managedBy": "CDK",
   "runtimes": [{
-    "name": "aia_uc01",
+    "name": "hello_agent",
     "build": "CodeZip",
     "entrypoint": "main.py",
-    "codeLocation": "app/aia_uc01/",
-    "runtimeVersion": "PYTHON_3_13",
+    "codeLocation": "app/hello_agent/",
+    "runtimeVersion": "PYTHON_3_14",
     "networkMode": "PUBLIC",
     "protocol": "HTTP",
     "envVars": [{ "name": "MODEL_ID", "value": "deepseek.v3.2" }]
@@ -178,9 +178,11 @@ starter 不是用完就扔的玩具。它的 `main.py` 已经是 Runtime 要的�
 
 `create` 生成这个文件时，除 `runtimes` 外的 13 个资源数组都是空的，`agentcore add` 家族的子命令往里塞条目。允许手编，但以官方 schema 为准，CLI 逐字段校验。
 
-runtime 块里有四个字段错一个就部署失败：`entrypoint`、`codeLocation`（`app/aia_uc01/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，所以换模型是改 JSON，不是改代码。
+runtime 块里有四个字段错一个就部署失败：`entrypoint`、`codeLocation`（`app/hello_agent/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，所以换模型是改 JSON，不是改代码。
 
-命名也有个坑：项目名是 `aiauc01`（顶层 `name`），runtime 名是 `aia_uc01`（`runtimes[].name`）。CloudFormation 用两者一起命名，线上 runtime ID 因此长成 `aiauc01_aia_uc01-LH8zQV86C2`。
+`runtimeVersion` 是 CLI 的默认值（0.31.1 上是 `PYTHON_3_14`），跟本机装的是哪个 Python 无关。
+
+命名也有个坑：项目名是 `helloagent`（顶层 `name`），runtime 名是 `hello_agent`（`runtimes[].name`）。CloudFormation 用两者一起命名，线上 runtime ID 因此长成 `helloagent_hello_agent-nxpWmb7y9F`。
 
 部署前先问一句契约合不合法：
 
@@ -207,7 +209,7 @@ agentcore validate
 agentcore deploy -y --target default
 ```
 
-实测输出（冷账号首次部署）：
+实测输出：
 
 ```text
 ✓ Load deployment target
@@ -219,8 +221,9 @@ agentcore deploy -y --target default
 ✓ Check stack status
 ✓ Deploy to AWS
 ✓ Persist deployment state
-✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)
-  ...RuntimeArnOutput...: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-LH8zQV86C2
+✓ Deployed to 'default' (stack: AgentCore-helloagent-default)
+  ApplicationAgentHelloAgentRuntimeIdOutputEA592B4B: helloagent_hello_agent-nxpWmb7y9F
+  ApplicationAgentHelloAgentRuntimeArnOutputFD708B13: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/helloagent_hello_agent-nxpWmb7y9F
 ```
 
 从命令到最后的 checkmark，一共发生六件事：
@@ -243,9 +246,9 @@ const spec = await configIO.readProjectSpec();             // agentcore.json
 const targets = await configIO.readAWSDeploymentTargets(); // aws-targets.json
 ```
 
-栈名也来自 JSON：`AgentCore-<项目名>-<目标名>`，我的是 `AgentCore-aiauc01-default`。我 grep 过整个生成工程，硬编码名字零命中。**同一份 TypeScript，喂什么 JSON 就合成什么栈。** 这就是 schema-first 的实践形态：cdk/ 是编译器，agentcore.json 是程序。
+栈名也来自 JSON：`AgentCore-<项目名>-<目标名>`，我的是 `AgentCore-helloagent-default`。我 grep 过整个生成工程，硬编码名字零命中。**同一份 TypeScript，喂什么 JSON 就合成什么栈。** 这就是 schema-first 的实践形态：cdk/ 是编译器，agentcore.json 是程序。
 
-耗时也交代一下：冷账号首次部署 9 分 49 秒（大头是 CDK 工程的 npm install）；只改代码的重部署 26 秒。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
+耗时也交代一下：这次部署端到端 3 分 29 秒，CLI 自己的分步日志写明了去向：构建 CDK 工程 25 秒、合成 CloudFormation 1 分 03 秒、建栈 1 分 51 秒。账号里第一次部署是 9 分 49 秒，多出来的时间基本是一次性的 `cdk bootstrap` 和 CDK 工程首轮 `npm install`。只改代码的重部署实测 1 分 26 秒，因为栈已存在，变的只有资产哈希。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
 
 > **📸 截图位 3 · 首次部署**
 > 截部署过程中的进度行（要带时间戳），不要只截最后那段 ARN 输出。冷启动等待才是读者最容易低估的部分。
@@ -280,25 +283,23 @@ agentcore invoke --prompt "What is 17 plus 25? Use the tool."
 实测输出：
 
 ```text
-I'll use the addition tool to calculate the sum of 17 and 25.
+17 plus 25 is 42.
 
-17 plus 25 equals 42.
-
-Session: 53451706-bd56-43f3-84ef-1eceaa3c2aee
-To resume: agentcore invoke --session-id 53451706-bd56-43f3-84ef-1eceaa3c2aee
-Log: .../agentcore/.cli/logs/invoke/invoke-aia_uc01-20261014-153601.log
+Session: f6279331-233c-4cf1-8a6c-8f829f476007
+To resume: agentcore invoke --session-id f6279331-233c-4cf1-8a6c-8f829f476007
+Log: .../agentcore/.cli/logs/invoke/invoke-hello_agent-20261016-003457.log
 ```
 
 同样的 prompt 打原始数据面（boto3 `invoke_agent_runtime`），拿到的是 SSE 流，工具调用就明晃晃地在里面：
 
 ```text
 data: {"event": {"contentBlockStart": {"start": {"toolUse": {"name": "add_numbers"}}, ...}}}
-data: {"event": {"contentBlockDelta": {"delta": {"toolUse": {"input": "{\"a\": 11, \"b\": 31}"}}, ...}}}
+data: {"event": {"contentBlockDelta": {"delta": {"toolUse": {"input": "{\"a\": 17, \"b\": 25}"}}, ...}}}
 data: {"event": {"messageStop": {"stopReason": "tool_use"}}}
 data: {"event": {"messageStart": {"role": "assistant"}}}
-data: {"event": {"contentBlockDelta": {"delta": {"text": "11 plus 31 equals 42."}, ...}}}
+data: {"event": {"contentBlockDelta": {"delta": {"text": "17 plus 25 equals 42."}, ...}}}
 data: {"event": {"messageStop": {"stopReason": "end_turn"}}}
-data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, "metrics": {"latencyMs": 820}}}}
+data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9}, "metrics": {"latencyMs": 533}}}}
 ```
 
 ![同一张 HTTP 面孔，两种宿主](images/aws-agentcore-under-the-hood/F5-one-surface.png)
@@ -350,14 +351,14 @@ async def invoke(payload, context):
 ![一次工具调用的 X-Ray span 树](images/aws-agentcore-under-the-hood/F6-span-tree.png)
 
 ```text
-invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tokens=934
+invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tokens=902
 ├── execute_event_loop_cycle  (cycle 1)
 │   ├── execute_tool add_numbers         gen_ai.tool.status=success  span_kind=TOOL
-│   └── chat  deepseek.v3.2 (LLM, 451 tokens)
-│       └── BedrockRuntime ConverseStream   finish_reason=tool_use
+│   └── chat  deepseek.v3.2 (LLM, 435 tokens)
+│       └── chat deepseek.v3.2 (Bedrock)   finish_reason=tool_use
 └── execute_event_loop_cycle  (cycle 2)
-    └── chat  deepseek.v3.2 (LLM, 483 tokens)
-        └── BedrockRuntime ConverseStream   finish_reason=end_turn
+    └── chat  deepseek.v3.2 (LLM, 467 tokens)
+        └── chat deepseek.v3.2 (Bedrock)   finish_reason=end_turn
 ```
 
 不用读框架源码，这棵树就把 Agent Loop 讲明白了：**每轮模型往返一个 cycle，工具调用是 cycle 里独立的 span，第二个 cycle 消费工具结果。**
@@ -388,7 +389,7 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 
 ---
 
-**环境口径**：2026-10-14 实测。CLI 0.31.1、Node 22、本地 Python 3.11（运行时目标 `PYTHON_3_13`）、Strands Agents 1.60.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为冷账号墙钟时间，token 数从 trace span 读出。
+**环境口径**：2026-10-16 实测。CLI 0.31.1、Node 22、app venv 为 Python 3.12，运行时目标 `PYTHON_3_14`（CLI 默认值，与本机解释器无关）、Strands Agents 1.61.0、deepseek.v3.2（us-east-1）、CodeZip 构建（无容器）。部署耗时为墙钟时间，token 数从 trace span 读出。
 
 ## 附一、文件清单
 
@@ -396,10 +397,10 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 |---|---|---|
 | `agentcore/agentcore.json` | 契约：工程声明的全部资源 | 你 |
 | `agentcore/aws-targets.json` | 部署目标（账号 + 区域） | 你 |
-| `app/aia_uc01/main.py` | agent 本体：入口、工具、系统提示词 | 你 |
-| `app/aia_uc01/model/load.py` | 把 `MODEL_ID` 装配成 Strands 模型 | 你 |
-| `app/aia_uc01/model/sanitize.py` | 过滤模型泄漏出来的标记 | 你 |
-| `app/aia_uc01/pyproject.toml` | agent 自己的依赖 | 你 |
+| `app/hello_agent/main.py` | agent 本体：入口、工具、系统提示词 | 你 |
+| `app/hello_agent/model/load.py` | 把 `MODEL_ID` 装配成 Strands 模型 | 你 |
+| `app/hello_agent/model/sanitize.py` | 过滤模型泄漏出来的标记 | 你 |
+| `app/hello_agent/pyproject.toml` | agent 自己的依赖 | 你 |
 | `agentcore/cdk/` | CDK 工程，每次部署重新生成 | CLI |
 | `agentcore/.llm-context/*.ts` | 权威 schema，给你和你的 AI 助手看 | CLI |
 | `agentcore/.cli/` | 部署状态、日志、trace | CLI |

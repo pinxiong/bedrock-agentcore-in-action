@@ -77,12 +77,12 @@
 <text x="605.0" y="184" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="800" fill="#059669">Print endpoint</text>
 <text x="605.0" y="203" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" fill="#475569">runtime flips to</text>
 <text x="605.0" y="216" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" fill="#475569">READY</text>
-<text x="40" y="270" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0F172A">Measured wall-clock, cold account vs warm redeploy</text>
+<text x="40" y="270" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0F172A">Measured wall-clock · first deploy ever in an account: 9 min 49 s</text>
 <rect x="40" y="278" width="480" height="26" rx="8" fill="white" stroke="#EA580C" stroke-width="1.5" filter="url(#ds)"/>
 <rect x="42" y="280" width="476" height="22" rx="6" fill="url(#g-orange)"/>
-<text x="280.0" y="295" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="white">first deploy, cold: 9 min 49 s (npm install dominates)</text>
+<text x="280.0" y="295" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="white">this deploy: 3 min 29 s (build + synth + stack create)</text>
 <rect x="40" y="314" width="480" height="26" rx="8" fill="white" stroke="#059669" stroke-width="1.5" filter="url(#ds)"/>
-<rect x="42" y="316" width="30" height="22" rx="6" fill="url(#g-green)"/>
-<text x="80" y="331" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 26 s</text>
+<rect x="42" y="316" width="198" height="22" rx="6" fill="url(#g-green)"/>
+<text x="248" y="331" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 1 min 26 s</text>
 <text x="40" y="366" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" fill="#475569">Stack name = <tspan font-family="'SF Mono', Menlo, Consolas, monospace" font-weight="700" fill="#0F172A">AgentCore-&lt;projectName&gt;-&lt;targetName&gt;</tspan> - both values come from the JSON, never hardcoded.</text>
 </svg>

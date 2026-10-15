@@ -368,13 +368,13 @@ num_badge(s, 11.85, 0.55, 0.75, 2, PURPLE, PURPLE_D)
 dark_code(s, 0.6, 2.2, 6.9, 4.1, [
     ("agentcore.json", CODE_GRN),
     ("{", CODE_TX),
-    ('  "name": "aiauc01",', CODE_TX),
+    ('  "name": "helloagent",', CODE_TX),
     ('  "managedBy": "CDK",', CODE_TX),
     ('  "runtimes": [{', CODE_TX),
     ('    "build": "CodeZip",', CODE_TX),
     ('    "entrypoint": "main.py",', CODE_TX),
-    ('    "codeLocation": "app/aia_uc01/",', CODE_TX),
-    ('    "runtimeVersion": "PYTHON_3_13",', CODE_TX),
+    ('    "codeLocation": "app/hello_agent/",', CODE_TX),
+    ('    "runtimeVersion": "PYTHON_3_14",', CODE_TX),
     ('    "protocol": "HTTP",', CODE_TX),
     ('    "envVars": [{ "name": "MODEL_ID",', CODE_TX),
     ('      "value": "deepseek.v3.2" }]', CODE_TX),
@@ -400,7 +400,7 @@ footer(s)
 # S · deploy output + live demo
 n += 1
 s = add_slide()
-title_block(s, "step 3 · deploy", "What success looks like (cold account)", ORANGE)
+title_block(s, "step 3 · deploy", "What success looks like", ORANGE)
 live_chip(s, 10.9, 1.62)
 dark_code(s, 0.6, 2.2, 12.15, 4.15, [
     ("$ agentcore deploy -y --target default", CODE_GRN),
@@ -410,11 +410,11 @@ dark_code(s, 0.6, 2.2, 12.15, 4.15, [
     ("✓ Build CDK project", CODE_TX),
     ("✓ Synthesize CloudFormation", CODE_TX),
     ("✓ Deploy to AWS", CODE_TX),
-    ("✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)", CODE_TX),
+    ("✓ Deployed to 'default' (stack: AgentCore-helloagent-default)", CODE_TX),
     ("  Runtime ARN: arn:aws:bedrock-agentcore:us-east-1:123456789012:", CODE_BLU),
-    ("               runtime/aiauc01_aia_uc01-LH8zQV86C2", CODE_BLU),
+    ("               runtime/helloagent_hello_agent-nxpWmb7y9F", CODE_BLU),
     ("", CODE_TX),
-    ("# cold: 9 min 49 s   ·   code-only redeploy: 26 s", CODE_GR),
+    ("# this deploy: 3 min 29 s   ·   code-only redeploy: 1 min 26 s", CODE_GR),
 ], size=16)
 footer(s)
 
@@ -471,7 +471,7 @@ title_block(s, "cost", "One invoke costs about $0.0009", GREEN)
 cards = [
     ("$0.0007", "model tokens", "846 in + 82 out\ndeepseek.v3.2 @$0.62/$1.85 per M", BLUE, BLUE_B),
     ("$0.0002", "runtime compute", "≈ 7 s active compute\nidle sessions are free", TEAL, TEAL_B),
-    ("9m49s / 26s", "first deploy / redeploy", "cold = npm install dominates\nwarm = asset hash only", ORANGE, ORANGE_B),
+    ("3m29s / 1m26s", "deploy / code-only redeploy", "first ever in an account: 9m49s\n(cdk bootstrap + first npm install)", ORANGE, ORANGE_B),
 ]
 for i, (big, label, d, c, cb) in enumerate(cards):
     x = 0.6 + i * 4.15

@@ -49,7 +49,7 @@
 <rect x="176.0" y="140" width="158" height="50" rx="10" fill="white" stroke="#2563EB" stroke-width="1.8" filter="url(#ds)"/>
 <rect x="176.0" y="140" width="5" height="50" rx="2.5" fill="url(#g-blue)"/>
 <text x="189.0" y="161" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="700" fill="#0F172A">invoke_agent</text>
-<text x="189.0" y="178" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.8" fill="#64748B">Strands Agents  ·  934 tokens</text>
+<text x="189.0" y="178" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.8" fill="#64748B">Strands Agents  ·  902 tokens</text>
 <rect x="81.0" y="220" width="158" height="50" rx="10" fill="white" stroke="#7C3AED" stroke-width="1.8" filter="url(#ds)"/>
 <rect x="81.0" y="220" width="5" height="50" rx="2.5" fill="url(#g-purple)"/>
 <text x="94.0" y="241" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="9.3" font-weight="700" fill="#0F172A">execute_event_loop_cycle</text>

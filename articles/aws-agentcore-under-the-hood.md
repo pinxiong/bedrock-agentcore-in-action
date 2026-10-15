@@ -19,7 +19,7 @@ The whole article in one table, before we take it apart:
 | Type | Under-the-hood walkthrough, the opener of this series |
 | Agent | One Strands agent with one tool |
 | AgentCore capabilities used | Runtime, Observability |
-| Framework and model | Strands Agents 1.60.0, `deepseek.v3.2` on Bedrock |
+| Framework and model | Strands Agents 1.61.0, `deepseek.v3.2` on Bedrock |
 | Build type | `CodeZip`: no Docker, no image anywhere in the project |
 | Interfaces | AgentCore CLI 0.31.1 for everything, plus the boto3 data plane to show the raw response stream |
 | Region | us-east-1 |
@@ -55,7 +55,7 @@ One rule explains most of the design: everything you declare lives in JSON, and 
 
 ## The environment you need
 
-Before touching AgentCore, make sure your machine and account match this table. Everything here was verified on 2026-10-14 and 2026-10-15.
+Before touching AgentCore, make sure your machine and account match this table. Everything here was verified between 2026-10-14 and 2026-10-16.
 
 | Tool | Version used | Notes | Check |
 |---|---|---|---|
@@ -64,7 +64,7 @@ Before touching AgentCore, make sure your machine and account match this table. 
 | AWS CLI | 2.x | any recent build | `aws --version` |
 | uv | 0.11.9 | the CLI builds the Python environment for template agents with it | `uv --version` |
 | Git | 2.39 | `create` runs `git init` in the new project | `git --version` |
-| Python | 3.11 local | 3.10 to 3.14 supported by CodeZip | `python3 -V` |
+| Python | 3.12 in the app venv | 3.10 to 3.14 supported by CodeZip; the runtime target is the CLI's default, not your interpreter | `python3 -V` |
 | AWS account | any | with permissions below | `aws sts get-caller-identity` |
 | Region | us-east-1 | the whole series uses it | `aws configure get region` |
 | Docker | not needed | this series uses CodeZip builds | n/a |
@@ -114,30 +114,30 @@ One trap worth five seconds: if `agentcore --version` errors but the command exi
 
 ## Step 1 · Scaffold the project
 
-One command builds the whole project. This is the CLI's own getting-started form, with this article's names:
+One command builds the whole project. It is the CLI's own getting-started form plus `--project-name`, which lets the project folder and the agent name differ:
 
 ```bash
-agentcore create --name aia_uc01 --project-name aiauc01 \
+agentcore create --name hello_agent --project-name helloagent \
   --framework Strands --model-provider Bedrock --memory none --defaults
 ```
 
 ```text
-[done]  Create aiauc01/ project directory
+[done]  Create helloagent/ project directory
 [done]  Prepare agentcore/ directory
 [done]  Initialize git repository
 [done]  Add agent to project
 [done]  Set up Python environment
 
 Created:
-  aiauc01/
-    app/aia_uc01/  Python agent (Strands)
-    agentcore/     Config and CDK project
+  helloagent/
+    app/hello_agent/  Python agent (Strands)
+    agentcore/        Config and CDK project
 
 Project created successfully!
 
 To continue, navigate to your new project:
 
-  cd aiauc01
+  cd helloagent
   agentcore
 ```
 
@@ -145,7 +145,7 @@ Five steps, and the interesting part is what lands on disk:
 
 ![Project anatomy: what create writes vs what you own](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-`create` writes three things. The project root gets `AGENTS.md`, a `README.md` and a `git init`. The `agentcore/` directory gets the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. And `app/aia_uc01/` gets a starter agent: `main.py` with the `BedrockAgentCoreApp` wiring and a `@tool` example, `model/load.py` for model instantiation, `pyproject.toml`, and a Python environment the CLI builds with uv. The contract records precisely that location (`codeLocation: "app/aia_uc01/"`, `entrypoint: "main.py"`), which is also the CLI's documented App Structure.
+`create` writes three things. The project root gets `AGENTS.md`, a `README.md` and a `git init`. The `agentcore/` directory gets the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. And `app/hello_agent/` gets a starter agent: `main.py` with the `BedrockAgentCoreApp` wiring and a `@tool` example, `model/load.py` for model instantiation, `pyproject.toml`, and a Python environment the CLI builds with uv. The contract records precisely that location (`codeLocation: "app/hello_agent/"`, `entrypoint: "main.py"`), which is also the CLI's documented App Structure.
 
 The starter is not a toy you throw away. Its `main.py` already has the shape the runtime wants, so this article's agent keeps the scaffolding and swaps in its own system prompt, tool and model loader. Wherever your agent code ends up living, one rule holds: whatever `codeLocation` names is what gets zipped, deployed and started by `agentcore dev`. (Already have agent code elsewhere? `agentcore add agent --type byo --code-location <dir> --entrypoint <file>` points the same two fields at it.)
 
@@ -166,16 +166,16 @@ Here is the whole deployment definition for my test agent, trimmed to the fields
 ```json
 {
   "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
-  "name": "aiauc01",
+  "name": "helloagent",
   "version": 1,
   "managedBy": "CDK",
   "runtimes": [
     {
-      "name": "aia_uc01",
+      "name": "hello_agent",
       "build": "CodeZip",
       "entrypoint": "main.py",
-      "codeLocation": "app/aia_uc01/",
-      "runtimeVersion": "PYTHON_3_13",
+      "codeLocation": "app/hello_agent/",
+      "runtimeVersion": "PYTHON_3_14",
       "networkMode": "PUBLIC",
       "protocol": "HTTP",
       "envVars": [{ "name": "MODEL_ID", "value": "deepseek.v3.2" }]
@@ -189,9 +189,11 @@ Here is the whole deployment definition for my test agent, trimmed to the fields
 
 `create` writes this file with every resource array empty. The `agentcore add` family (`add agent`, `add memory`, `add gateway`) then pushes entries in. Hand edits are allowed, but the published schema is the authority because the CLI validates every field against it.
 
-Four fields in that runtime block are the ones you cannot get wrong without a failed deploy: `entrypoint` (the file the platform calls), `codeLocation` (`app/aia_uc01/`), `build` (`CodeZip`, which means no container) and `protocol` (`HTTP`). The rest have defaults. `envVars` is how `MODEL_ID` reaches your code, so switching models is a JSON edit rather than a code change.
+Four fields in that runtime block are the ones you cannot get wrong without a failed deploy: `entrypoint` (the file the platform calls), `codeLocation` (`app/hello_agent/`), `build` (`CodeZip`, which means no container) and `protocol` (`HTTP`). The rest have defaults. `envVars` is how `MODEL_ID` reaches your code, so switching models is a JSON edit rather than a code change.
 
-One naming detail confused me for a while: the project is `aiauc01` (the top-level `name` field) and the runtime is `aia_uc01` (`runtimes[].name`). CloudFormation names things after both, which is why the deployed runtime ID came out as `aiauc01_aia_uc01-LH8zQV86C2`.
+`runtimeVersion` is a CLI default (`PYTHON_3_14` on 0.31.1), not a mirror of the Python on your machine.
+
+One naming detail confused me for a while: the project is `helloagent` (the top-level `name` field) and the runtime is `hello_agent` (`runtimes[].name`). CloudFormation names things after both, which is why the deployed runtime ID came out as `helloagent_hello_agent-nxpWmb7y9F`.
 
 Before deploying, ask the CLI whether the contract is even valid:
 
@@ -220,7 +222,7 @@ Now the moment the whole article is named after. From the project root:
 agentcore deploy -y --target default
 ```
 
-Real output, first deploy ever on a cold account:
+Real output:
 
 ```text
 ✓ Load deployment target
@@ -232,9 +234,9 @@ Real output, first deploy ever on a cold account:
 ✓ Check stack status
 ✓ Deploy to AWS
 ✓ Persist deployment state
-✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)
-  ApplicationAgentAiaUc01RuntimeIdOutput734A07B7: aiauc01_aia_uc01-LH8zQV86C2
-  ApplicationAgentAiaUc01RuntimeArnOutput3227EF65: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-LH8zQV86C2
+✓ Deployed to 'default' (stack: AgentCore-helloagent-default)
+  ApplicationAgentHelloAgentRuntimeIdOutputEA592B4B: helloagent_hello_agent-nxpWmb7y9F
+  ApplicationAgentHelloAgentRuntimeArnOutputFD708B13: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/helloagent_hello_agent-nxpWmb7y9F
 ```
 
 Between the command and the last checkmark, six things happen:
@@ -263,9 +265,9 @@ async function main() {
 }
 ```
 
-The stack name also comes from the JSON (`AgentCore-<projectName>-<targetName>`, mine was `AgentCore-aiauc01-default`) and grepping the generated project for hard-coded names returns zero hits. The same TypeScript synthesizes a different stack for any JSON you feed it: `cdk/` is a compiler and `agentcore.json` is the program.
+The stack name also comes from the JSON (`AgentCore-<projectName>-<targetName>`, mine was `AgentCore-helloagent-default`) and grepping the generated project for hard-coded names returns zero hits. The same TypeScript synthesizes a different stack for any JSON you feed it: `cdk/` is a compiler and `agentcore.json` is the program.
 
-Timings, because every tutorial skips them: the first deploy on a cold account took 9 minutes 49 seconds, mostly `npm install` for the CDK project, the asset upload and the stack create. A code-only redeploy took 26 seconds, because the stack already exists and only the asset hash changes. Verify with `agentcore status`, which reports `Runtime: READY` plus the endpoint URL.
+Timings, because every tutorial skips them: this deploy took 3 minutes 29 seconds, and the CLI's own step log says where it went: building the CDK project 25 s, synthesizing CloudFormation 1 m 3 s, creating the stack 1 m 51 s. The first deploy ever in this account took 9 minutes 49 seconds; the one-time `cdk bootstrap` and the CDK project's first `npm install` are most of the difference. A code-only redeploy took 1 minute 26 seconds, because the stack already exists and only the asset hash changes. Verify with `agentcore status`, which reports `Runtime: READY` plus the endpoint URL.
 
 > **📸 Screenshot spot 3 · First deploy**
 > Capture the progress lines with their timestamps, not just the final ARN block. The cold-start wait is the part readers underestimate.
@@ -298,25 +300,23 @@ agentcore invoke --prompt "What is 17 plus 25? Use the tool."
 ```
 
 ```text
-I'll use the addition tool to calculate the sum of 17 and 25.
+17 plus 25 is 42.
 
-17 plus 25 equals 42.
-
-Session: 53451706-bd56-43f3-84ef-1eceaa3c2aee
-To resume: agentcore invoke --session-id 53451706-bd56-43f3-84ef-1eceaa3c2aee
-Log: .../agentcore/.cli/logs/invoke/invoke-aia_uc01-20261014-153601.log
+Session: f6279331-233c-4cf1-8a6c-8f829f476007
+To resume: agentcore invoke --session-id f6279331-233c-4cf1-8a6c-8f829f476007
+Log: .../agentcore/.cli/logs/invoke/invoke-hello_agent-20261016-003457.log
 ```
 
 The same prompt against the raw data plane (boto3 `invoke_agent_runtime`) returns the SSE stream, and the tool call is not hidden inside it:
 
 ```text
-data: {"event": {"contentBlockStart": {"start": {"toolUse": {"toolUseId": "tooluse_V8T0pNRzrKLCyUR7wmvlVd", "name": "add_numbers"}}, "contentBlockIndex": 1}}}
-data: {"event": {"contentBlockDelta": {"delta": {"toolUse": {"input": "{\"a\": 11, \"b\": 31}"}}, "contentBlockIndex": 1}}}
+data: {"event": {"contentBlockStart": {"start": {"toolUse": {"toolUseId": "tooluse_SlGu2TGrfSFC3qTr249mSx", "name": "add_numbers"}}, "contentBlockIndex": 1}}}
+data: {"event": {"contentBlockDelta": {"delta": {"toolUse": {"input": "{\"a\": 17, \"b\": 25}"}}, "contentBlockIndex": 1}}}
 data: {"event": {"messageStop": {"stopReason": "tool_use"}}}
 data: {"event": {"messageStart": {"role": "assistant"}}}
-data: {"event": {"contentBlockDelta": {"delta": {"text": "11 plus 31 equals 42."}, "contentBlockIndex": 0}}}
+data: {"event": {"contentBlockDelta": {"delta": {"text": "17 plus 25 equals 42."}, "contentBlockIndex": 0}}}
 data: {"event": {"messageStop": {"stopReason": "end_turn"}}}
-data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9, "totalTokens": 480}, "metrics": {"latencyMs": 820}}}}
+data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9, "totalTokens": 480}, "metrics": {"latencyMs": 533}}}}
 ```
 
 ![One HTTP surface, two hosts: agentcore dev and agentcore deploy](images/aws-agentcore-under-the-hood/F5-one-surface.png)
@@ -381,14 +381,14 @@ agentcore traces get <trace-id>
 ![The X-Ray span tree of one tool-using invoke](images/aws-agentcore-under-the-hood/F6-span-tree.png)
 
 ```text
-invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tokens=934
+invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tokens=902
 ├── execute_event_loop_cycle  (cycle 1)
 │   ├── execute_tool add_numbers         gen_ai.tool.status=success  span_kind=TOOL
-│   └── chat  deepseek.v3.2 (LLM, 451 tokens)
-│       └── BedrockRuntime ConverseStream   finish_reason=tool_use
+│   └── chat  deepseek.v3.2 (LLM, 435 tokens)
+│       └── chat deepseek.v3.2 (Bedrock)   finish_reason=tool_use
 └── execute_event_loop_cycle  (cycle 2)
-    └── chat  deepseek.v3.2 (LLM, 483 tokens)
-        └── BedrockRuntime ConverseStream   finish_reason=end_turn
+    └── chat  deepseek.v3.2 (LLM, 467 tokens)
+        └── chat deepseek.v3.2 (Bedrock)   finish_reason=end_turn
 ```
 
 The structure teaches you how the agent loop works without reading framework source: one cycle per model round trip, the tool call as its own span inside the cycle, and a second cycle that consumes the result.
@@ -418,7 +418,7 @@ One sentence to take away: in AgentCore your infrastructure is not code you main
 
 ## The setup behind the numbers
 
-All measurements come from one deployment on 2026-10-14: CLI 0.31.1, Node 22, local Python 3.11 (runtime target `PYTHON_3_13`), Strands Agents 1.60.0, `deepseek.v3.2` in us-east-1, CodeZip builds, one hello-world agent with a single `add_numbers` tool. Deploy timings are wall-clock and token counts come from trace spans rather than estimates.
+All measurements come from one deployment on 2026-10-16: CLI 0.31.1, Node 22, app venv on Python 3.12 with runtime target `PYTHON_3_14` (the CLI's default, not the local interpreter), Strands Agents 1.61.0, `deepseek.v3.2` in us-east-1, CodeZip builds, one hello-world agent with a single `add_numbers` tool. Deploy timings are wall-clock and token counts come from trace spans rather than estimates.
 
 ## File reference
 
@@ -426,10 +426,10 @@ All measurements come from one deployment on 2026-10-14: CLI 0.31.1, Node 22, lo
 |---|---|---|
 | `agentcore/agentcore.json` | the contract: every resource the project declares | you |
 | `agentcore/aws-targets.json` | where deployments land (account and region) | you |
-| `app/aia_uc01/main.py` | the agent: entrypoint, tool, system prompt | you |
-| `app/aia_uc01/model/load.py` | turns `MODEL_ID` into a Strands model | you |
-| `app/aia_uc01/model/sanitize.py` | stream filter for leaked model scaffolding | you |
-| `app/aia_uc01/pyproject.toml` | the agent's own dependencies | you |
+| `app/hello_agent/main.py` | the agent: entrypoint, tool, system prompt | you |
+| `app/hello_agent/model/load.py` | turns `MODEL_ID` into a Strands model | you |
+| `app/hello_agent/model/sanitize.py` | stream filter for leaked model scaffolding | you |
+| `app/hello_agent/pyproject.toml` | the agent's own dependencies | you |
 | `agentcore/cdk/` | the CDK app, regenerated on every deploy | the CLI |
 | `agentcore/.llm-context/*.ts` | authoritative schema for you and your AI assistant | the CLI |
 | `agentcore/.cli/` | deploy state, logs and traces | the CLI |

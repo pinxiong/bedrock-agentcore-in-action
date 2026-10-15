@@ -291,7 +291,7 @@ def fig3():
     # ---- left: the project root the CLI writes ----
     panel(lx, SLATE, SLATE_B, "CREATE WRITES IT")
     left = [
-        (0, "aiauc01/", INK, True, "the project root", None),
+        (0, "helloagent/", INK, True, "the project root", None),
         (1, "AGENTS.md", SLATE, False, "AI assistant context", None),
         (1, "README.md", SLATE, False, "from the CLI", None),
         (1, ".git/", SLATE, False, "create runs git init", None),
@@ -303,7 +303,7 @@ def fig3():
         (2, ".cli/", SLATE, False, "", None),
         (2, "cdk/", SLATE, False, "vendored app", None),
         (1, "app/", INK, True, "", None),
-        (2, "aia_uc01/", BLUE, True, "", "codeLocation"),
+        (2, "hello_agent/", BLUE, True, "", "codeLocation"),
     ]
     for i, (ind, t, c, b, n, tag) in enumerate(left):
         line(lx, i, ind, t, c, b, n, BLUE_D if tag else None)
@@ -318,7 +318,7 @@ def fig3():
     # ---- right: the agent directory, which is yours from now on ----
     panel(rx, BLUE, BLUE_B, "YOUR AGENT CODE")
     right = [
-        (0, "app/aia_uc01/", INK, True, "codeLocation", None),
+        (0, "app/hello_agent/", INK, True, "codeLocation", None),
         (1, "main.py", BLUE, False, "entrypoint", None),
         (1, "model/load.py", BLUE, False, "model wiring", None),
         (1, "model/sanitize.py", BLUE, False, "output filter", None),
@@ -380,18 +380,18 @@ def fig4():
             parts.append(f'<path d="M {ax} {y+bh/2-5} L {ax+gap-2} {y+bh/2} L {ax} {y+bh/2+5} Z" fill="{MUTED}"/>')
     # timing bars
     by = y + bh + 36
-    parts.append(f'<text x="40" y="{by-8}" font-family="{SANS}" font-size="11.5" font-weight="700" fill="{INK}">Measured wall-clock, cold account vs warm redeploy</text>')
+    parts.append(f'<text x="40" y="{by-8}" font-family="{SANS}" font-size="11.5" font-weight="700" fill="{INK}">Measured wall-clock · first deploy ever in an account: 9 min 49 s</text>')
     bar_x, bar_w = 40, 480
-    # cold bar (589 s)
+    # this deploy (209 s)
     parts.append(card(bar_x, by, bar_w, 26, fill="white", stroke=ORANGE, sw=1.5, rx=8))
     parts.append(f'<rect x="{bar_x+2}" y="{by+2}" width="{bar_w-4}" height="22" rx="6" fill="url(#g-orange)"/>')
-    parts.append(f'<text x="{bar_x+bar_w/2}" y="{by+17}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-weight="700" fill="white">first deploy, cold: 9 min 49 s (npm install dominates)</text>')
-    # warm bar (26 s)
+    parts.append(f'<text x="{bar_x+bar_w/2}" y="{by+17}" text-anchor="middle" font-family="{SANS}" font-size="10.5" font-weight="700" fill="white">this deploy: 3 min 29 s (build + synth + stack create)</text>')
+    # warm bar (86 s)
     wy = by + 36
-    w_w = max(26 / 589 * bar_w, 30)
+    w_w = max(86 / 209 * bar_w, 30)
     parts.append(card(bar_x, wy, bar_w, 26, fill="white", stroke=GREEN, sw=1.5, rx=8))
     parts.append(f'<rect x="{bar_x+2}" y="{wy+2}" width="{w_w:.0f}" height="22" rx="6" fill="url(#g-green)"/>')
-    parts.append(f'<text x="{bar_x+w_w+10:.0f}" y="{wy+17}" font-family="{SANS}" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 26 s</text>')
+    parts.append(f'<text x="{bar_x+w_w+10:.0f}" y="{wy+17}" font-family="{SANS}" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 1 min 26 s</text>')
     # stack name note
     ny = wy + 52
     parts.append(f'<text x="40" y="{ny}" font-family="{SANS}" font-size="10.5" fill="{SLATE}">Stack name = <tspan font-family="{MONO}" font-weight="700" fill="{INK}">AgentCore-&lt;projectName&gt;-&lt;targetName&gt;</tspan> - both values come from the JSON, never hardcoded.</text>')
@@ -464,7 +464,7 @@ def fig6():
                    "The X-Ray span tree teaches the agent loop without reading framework source.", GREEN)
     parts += hp
     nodes = [
-        (255, y + 14, "invoke_agent", "Strands Agents  ·  934 tokens", "g-blue", BLUE),
+        (255, y + 14, "invoke_agent", "Strands Agents  ·  902 tokens", "g-blue", BLUE),
         (160, y + 94, "execute_event_loop_cycle", "cycle 1", "g-purple", PURPLE),
         (350, y + 94, "execute_event_loop_cycle", "cycle 2", "g-purple", PURPLE),
         (88,  y + 174, "execute_tool add_numbers", "TOOL span, status=success", "g-green", GREEN),
