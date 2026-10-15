@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 330" width="680">
+<rect width="680" height="330" fill="#FFFFFF"/>
+<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="#1A1A2E">X-Ray Trace: One Tool-Using Invoke</text>
+<line x1="340" y1="87" x2="210" y2="108" stroke="#BDC3C7" stroke-width="1.5"/>
+<line x1="340" y1="87" x2="520" y2="108" stroke="#BDC3C7" stroke-width="1.5"/>
+<line x1="210" y1="152" x2="130" y2="173" stroke="#BDC3C7" stroke-width="1.5"/>
+<line x1="210" y1="152" x2="360" y2="173" stroke="#BDC3C7" stroke-width="1.5"/>
+<line x1="520" y1="152" x2="570" y2="173" stroke="#BDC3C7" stroke-width="1.5"/>
+<rect x="240" y="65" width="200" height="44" rx="6" fill="#D6EAF8" stroke="#2E86DE" stroke-width="1.5"/>
+<text x="340" y="82" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#2E86DE">invoke_agent  Strands Agents</text>
+<text x="340" y="99" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">tools=["add_numbers"], 934 tokens</text>
+<rect x="110" y="130" width="200" height="44" rx="6" fill="#F4ECF7" stroke="#8E44AD" stroke-width="1.5"/>
+<text x="210" y="147" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#8E44AD">execute_event_loop_cycle</text>
+<text x="210" y="164" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">cycle 1</text>
+<rect x="420" y="130" width="200" height="44" rx="6" fill="#F4ECF7" stroke="#8E44AD" stroke-width="1.5"/>
+<text x="520" y="147" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#8E44AD">execute_event_loop_cycle</text>
+<text x="520" y="164" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">cycle 2</text>
+<rect x="30" y="195" width="200" height="44" rx="6" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5"/>
+<text x="130" y="212" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#27AE60">execute_tool  add_numbers</text>
+<text x="130" y="229" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">TOOL, status=success</text>
+<rect x="260" y="195" width="200" height="44" rx="6" fill="#FFF3E0" stroke="#FF8C00" stroke-width="1.5"/>
+<text x="360" y="212" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#FF8C00">chat  deepseek.v3.2</text>
+<text x="360" y="229" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">finish=tool_use</text>
+<rect x="470" y="195" width="200" height="44" rx="6" fill="#FFF3E0" stroke="#FF8C00" stroke-width="1.5"/>
+<text x="570" y="212" text-anchor="middle" font-family="sans-serif" font-size="10.5" font-weight="700" fill="#FF8C00">chat  deepseek.v3.2</text>
+<text x="570" y="229" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#555555">finish=end_turn</text>
+<text x="340" y="288" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">One cycle per model round trip. The tool call is its own span inside the cycle.</text>
+<text x="340" y="310" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="#E74C3C">Caveat: spans need ~10 min to become queryable. Local dev has no tool span.</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" width="680">
+<rect width="680" height="380" fill="#FFFFFF"/>
+<text x="340" y="38" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="700" fill="#1A1A2E">Three Layers: One Direction</text>
+<rect x="80" y="80" width="520" height="70" rx="10" fill="#D6EAF8" stroke="#2E86DE" stroke-width="2"/>
+<text x="100" y="108" font-family="sans-serif" font-size="15" font-weight="700" fill="#2E86DE">Layer 1: Your code</text>
+<text x="100" y="130" font-family="sans-serif" font-size="12" fill="#555555">src/ - agent entrypoint, tools, model loading</text>
+<rect x="80" y="170" width="520" height="70" rx="10" fill="#F4ECF7" stroke="#8E44AD" stroke-width="2"/>
+<text x="100" y="198" font-family="sans-serif" font-size="15" font-weight="700" fill="#8E44AD">Layer 2: The contract</text>
+<text x="100" y="220" font-family="sans-serif" font-size="12" fill="#555555">agentcore.json + aws-targets.json - you write by hand</text>
+<rect x="80" y="260" width="520" height="70" rx="10" fill="#ECF0F1" stroke="#95A5A6" stroke-width="2"/>
+<text x="100" y="288" font-family="sans-serif" font-size="15" font-weight="700" fill="#95A5A6">Layer 3: The plumbing</text>
+<text x="100" y="310" font-family="sans-serif" font-size="12" fill="#555555">agentcore/cdk/ - CLI generates on every deploy</text>
+<text x="340" y="360" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#555555">Rule: declare in JSON. Everything generated is regenerable.</text>
+</svg>

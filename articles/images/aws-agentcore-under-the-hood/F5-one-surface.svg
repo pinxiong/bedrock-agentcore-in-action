@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 360" width="680">
+<rect width="680" height="360" fill="#FFFFFF"/>
+<text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="19" font-weight="700" fill="#1A1A2E">One HTTP Surface, Two Hosts</text>
+<rect x="180" y="55" width="320" height="50" rx="8" fill="#D6EAF8" stroke="#2E86DE" stroke-width="2"/>
+<text x="340" y="78" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#2E86DE">GET /ping  +  POST /invocations</text>
+<text x="340" y="96" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#555555">Your code implements these two routes. Nothing else.</text>
+<rect x="40" y="140" width="280" height="140" rx="10" fill="#ECF0F1" stroke="#95A5A6" stroke-width="2"/>
+<text x="180" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#95A5A6">agentcore dev (local)</text>
+<text x="180" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Uvicorn on localhost:8080</text>
+<text x="180" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Hot reload on file save</text>
+<text x="180" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Model calls -> Bedrock (cloud)</text>
+<text x="180" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="#27AE60">No deployment needed</text>
+<rect x="360" y="140" width="280" height="140" rx="10" fill="#FFF3E0" stroke="#FF8C00" stroke-width="2"/>
+<text x="500" y="165" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="#FF8C00">agentcore deploy (cloud)</text>
+<text x="500" y="188" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Serverless microVM per session</text>
+<text x="500" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">IAM role + endpoint + traces</text>
+<text x="500" y="228" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#555555">Scaling handled by platform</text>
+<text x="500" y="255" text-anchor="middle" font-family="sans-serif" font-size="10" font-style="italic" fill="#27AE60">Same code, same routes</text>
+<line x1="340" y1="105" x2="180" y2="140" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="340" y1="105" x2="500" y2="140" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="340" y="345" text-anchor="middle" font-family="sans-serif" font-size="12" font-style="italic" fill="#555555">No shim, no adapter, no second interface to drift.</text>
+</svg>

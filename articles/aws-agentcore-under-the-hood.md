@@ -8,7 +8,15 @@ tags: ["aws", "bedrock", "agentcore", "cdk", "ai-agents"]
 
 Most agent deployment stories end the same way: write a Dockerfile, pick an instance size, hand-roll an IAM role and hope the YAML is right. AWS Bedrock AgentCore takes a different path. The whole deployment contract is one JSON file. A single command turns it into a running, observable endpoint.
 
-I deployed an agent this way, broke it a few times and traced every step between the JSON file and the live endpoint. This article explains what actually happens in between: what the CLI generates, what CDK compiles, what CloudFormation creates and what your code has to promise in return. Everything below comes from a real deployment in us-east-1, not from the docs.
+I deployed an agent this way, broke it a few times and traced every step between the JSON file and the live endpoint. This article is the first in a series of eight. It covers what AgentCore is and how it works under the hood. The next seven articles each tackle one use case, from a first agent to a multi-agent system with a registry. Everything below comes from a real deployment in us-east-1, not from the docs.
+
+## What AgentCore is and what it is not
+
+AgentCore is a family of managed runtimes for AI agents. The family covers 14 capabilities, from the runtime that hosts your code to memory, gateway, identity, policy, web search, browser, code interpreter, observability, evaluations, optimization, payments and a registry. This article lights up only two of those 14: the runtime and observability. The rest come in the later articles.
+
+What it is not matters more than what it is. For example, it is not a new agent framework. You still write your agent in Strands, LangChain, the OpenAI SDK or raw Python. It is not a container orchestration service. The runtime is serverless: each session gets its own microVM and the platform handles scaling. It is not a model router. Your code calls Bedrock the same way it would anywhere else. AgentCore hosts that code and gives it an HTTP endpoint, an IAM role and a trace pipeline.
+
+If you have ever self-managed an agent on ECS or Fargate, the difference is sharp. No Dockerfile, no task definition, no target group, no health check target to configure. The runtime expects two routes from your code and provides everything else.
 
 ## The mental model: three layers
 
@@ -21,6 +29,36 @@ You write agent code. You write two JSON files. The CLI generates everything els
 | The plumbing | a CDK project under `agentcore/cdk/` | the CLI, on every deploy |
 
 One rule explains most of the design. Everything you declare lives in JSON. Everything the CLI generates is regenerable. In short, the rest of this article is that one rule, traced end to end.
+
+## The project anatomy
+
+A single use case directory looks like this:
+
+```
+01-first-agent/                 <- project root (run commands here)
+├── src/                        <- your code
+│   ├── main.py                 <- the entrypoint
+│   ├── model/load.py           <- model selection
+│   ├── model/sanitize.py       <- stream filter
+│   └── pyproject.toml
+├── tests/
+│   ├── smoke.py                <- capability assertions
+│   └── test_sanitize.py
+├── README.md                   <- operational doc
+├── article.md                  <- narrative version
+└── agentcore/                  <- CLI workspace
+    ├── agentcore.json          ★ you write: the contract
+    ├── aws-targets.json        ★ you write: where to deploy
+    ├── .gitignore              ⚙ CLI generates
+    ├── cdk/                     ⚙ CLI generates: vendored CDK app
+    ├── .cli/                    ⚙ CLI runtime state: logs, traces
+    ├── .llm-context/            ⚙ read-only schema reference
+    └── .cache/                  ⚙ build staging
+```
+
+The directory splits into two colours. Files marked ★ are your input: you write them, the CLI reads them. Files marked ⚙ are generated: the CLI creates or regenerates them on every `create`, `deploy` and `dev`. You never edit ⚙ files, because the next command overwrites them.
+
+Project detection is worth knowing. The CLI walks up from your current directory until it finds a folder that contains both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project. The error (`No agentcore project found`) does not tell you which one is missing. Run commands from the directory that contains `agentcore/`, or the CLI refuses with `Please run this command from your project root directory`.
 
 ## The contract: two JSON files
 
@@ -61,8 +99,6 @@ The second file decides where the deployment lands:
 
 Here is the part that surprised me. `create` writes only an empty array. The account and region are filled in by the first `deploy`, which calls STS, learns who you are and writes the target back into the file. There is no `--region` flag on deploy, status or remove. The file is the only source of truth for where your agent lands.
 
-One more discovery about project detection. The CLI walks up from your current directory until it finds a folder that contains both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project, which is why the error (`No agentcore project found`) does not tell you which one is missing. Run commands from the directory that contains `agentcore/`, or the CLI refuses with `Please run this command from your project root directory`.
-
 ## What deploy actually does
 
 Six steps happen between `agentcore deploy` and a READY runtime:
@@ -101,7 +137,37 @@ My stack was `AgentCore-aiauc01-default`. I grepped the generated project for ha
 
 Timings, because every tutorial skips them. A first deploy on a cold account took 9 minutes 49 seconds, mostly `npm install` for the CDK project (221 packages), the asset upload and the CloudFormation create. A code-only redeploy took 26 seconds, because the stack already exists and only the asset hash changes.
 
-## The code side: an HTTP contract, not magic
+## Running it: local and cloud share one surface
+
+`agentcore dev` starts the same app under Uvicorn on `localhost:8080` with the same two routes. Model calls still go to Bedrock, so you need credentials but no deployment. I edited `main.py` while the server ran and watched the reloader pick the change up without a restart. The exact same prompt then worked against the deployed runtime through the data plane, because the contract does not change between the two:
+
+```python
+import boto3, json
+
+agentcore = boto3.client("bedrock-agentcore")
+resp = agentcore.invoke_agent_runtime(
+    agentRuntimeArn="arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-EXAMPLE",
+    payload=json.dumps({"prompt": "What is 17 plus 25? Use the tool."}).encode(),
+    contentType="application/json",
+)
+print(resp["response"].read().decode())
+```
+
+The response is a server-sent-event stream, and the tool call is not hidden inside it:
+
+```
+contentBlockStart:  toolUse  name=add_numbers  input={"a": 17, "b": 25}
+messageStop:        stopReason=tool_use      # the loop stops to run the tool
+contentBlockDelta:  "17 plus 25 equals 42."  # the second message, after the tool result
+```
+
+Tool calls ride on native Bedrock `toolUse` protocol blocks, both locally and in the cloud. Nothing in AgentCore invents a new tool protocol for you to learn.
+
+## What it costs
+
+DeepSeek V3.2 in us-east-1 costs $0.62 per million input tokens and $1.85 per million output. The two-cycle invoke in the trace above used 846 input and 82 output tokens: about $0.0007 of model calls plus roughly $0.0002 of runtime compute. The infrastructure bill for a tutorial-grade agent rounds to zero. The engineering cost is all in reading the trace.
+
+## The HTTP contract: not magic
 
 Strip away the tooling. The runtime makes exactly two requests to your code: `GET /ping` for health checks and `POST /invocations` for work. `BedrockAgentCoreApp` is a thin adapter that maps those routes onto an async generator you write:
 
@@ -130,32 +196,6 @@ The real file also filters every text delta through a stream sanitizer, which th
 - `context.session_id` is how you shard state. The runtime is serverless: each session runs in its own microVM and the platform handles scaling. Your only job is keying state by session.
 - The model is a parameter. `MODEL_ID` arrives as an environment variable declared in `agentcore.json`, and a 40-line module turns it into a Strands `BedrockModel`. Changing models means changing one JSON value.
 
-## Local and cloud: one surface
-
-`agentcore dev` starts the same app under Uvicorn on `localhost:8080` with the same two routes. Model calls still go to Bedrock, so you need credentials but no deployment. I edited `main.py` while the server ran and watched the reloader pick the change up without a restart. The exact same prompt then worked against the deployed runtime through the data plane, because the contract does not change between the two:
-
-```python
-import boto3, json
-
-agentcore = boto3.client("bedrock-agentcore")
-resp = agentcore.invoke_agent_runtime(
-    agentRuntimeArn="arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-EXAMPLE",
-    payload=json.dumps({"prompt": "What is 17 plus 25? Use the tool."}).encode(),
-    contentType="application/json",
-)
-print(resp["response"].read().decode())
-```
-
-The response is a server-sent-event stream, and the tool call is not hidden inside it:
-
-```
-contentBlockStart:  toolUse  name=add_numbers  input={"a": 17, "b": 25}
-messageStop:        stopReason=tool_use      # the loop stops to run the tool
-contentBlockDelta:  "17 plus 25 equals 42."  # the second message, after the tool result
-```
-
-Tool calls ride on native Bedrock `toolUse` protocol blocks, both locally and in the cloud. Nothing in AgentCore invents a new tool protocol for you to learn.
-
 ## The trace: what observability actually records
 
 A deployed invoke produces this span tree in X-Ray. The output is real, including the token counts:
@@ -182,11 +222,7 @@ Four failures are worth passing on:
 - **The model leaks scaffolding into the text channel.** `deepseek.v3.2` emitted fragments of its internal chat-template markers as ordinary text, and the Nova models emitted `<thinking>` blocks. I proved this was model behavior rather than a framework bug by calling Bedrock's `converse_stream` directly with Strands removed from the picture. All four models I tried leaked something. The fix lives in the entrypoint: a stream-safe filter that holds back marker prefixes and resets once per assistant message, because one tool-using turn is several messages and a cut in one must not silence the next.
 - **The region is not a flag.** Every guess at `--region` fails with `unknown option`. The targets file decides, and it fills itself in on first deploy.
 
-## What it costs
-
-DeepSeek V3.2 in us-east-1 costs $0.62 per million input tokens and $1.85 per million output. The two-cycle invoke in the trace above used 846 input and 82 output tokens: about $0.0007 of model calls plus roughly $0.0002 of runtime compute. The infrastructure bill for a tutorial-grade agent rounds to zero, while the engineering cost is all in reading the trace.
-
-## Takeaways
+## Takeaways and what comes next
 
 1. **The JSON file is the interface.** Everything else (the CDK project, the template, the stack) is regenerable plumbing driven by it.
 2. **CDK appears here as a vendored compiler.** You never write constructs and you never edit the generated project. Change the schema and the same code compiles a different stack.
@@ -194,6 +230,20 @@ DeepSeek V3.2 in us-east-1 costs $0.62 per million input tokens and $1.85 per mi
 4. **Observability is real but asynchronous.** The tool call gets its own span in the cloud. Spans need minutes to become queryable, so write your tests accordingly.
 
 One sentence to take away: in AgentCore your infrastructure is not code you maintain. It is code that compiles.
+
+This article covered the runtime and observability. The rest of the series lights up the remaining 12 capabilities, one use case at a time:
+
+| # | Article | Use case | New capabilities |
+|---|---|---|---|
+| A1 | Your First Bedrock AgentCore Agent | First agent (D1) | runtime, observability |
+| A2 | Giving Your Agent a Memory | Memory (D2) | memory |
+| A3 | One MCP Gateway for Every Tool | Gateway + Identity (D3) | gateway, identity |
+| A4 | Least Privilege for Agents | Policy (D3) | policy |
+| A5 | A Research Agent | Research agent (D4) | web search, browser, code interpreter, harness |
+| A6 | Agents That Grade Themselves | Quality loop (D4) | evaluations, optimization |
+| A7 | Multi-Agent with a Registry | Multi-agent (D5) | multi-agent coordination, registry |
+
+Each article follows the same pattern: a real deployment, measured outputs and every failure that taught something. The difficulty rises from one use case to the next, but each one stands alone.
 
 ## The setup behind the numbers
 
