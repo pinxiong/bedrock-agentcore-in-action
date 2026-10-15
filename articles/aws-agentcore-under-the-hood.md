@@ -359,7 +359,7 @@ This article reserves six spots for your own terminal captures. Fill them in aft
 | Spot | After which step | What to capture | What the text above cannot show |
 |---|---|---|---|
 | 1 | environment checks | one full terminal screen, prompt and clock included | that this ran on a real machine, with real paths |
-| 2 | Step 1 | the tree in the editor sidebar | folders vs files, and what you will actually edit |
+| 2 | Step 1 | the tree in the editor sidebar | folders vs files and what you will actually edit |
 | 3 | Step 3 | progress lines with timestamps | how long the cold start actually takes |
 | 4 | Step 4 | dev boot banner plus a hot-reload line | the reloader reacting to a save |
 | 5 | Step 5 | invoke screen with ARN and session ID | that the call hit the endpoint, not localhost |
