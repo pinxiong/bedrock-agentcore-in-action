@@ -463,15 +463,23 @@ def cmd_new(args: argparse.Namespace) -> int:
         "{{PROJECT_NAME}}": f"aia{uc_id}",
         "{{AWS_ACCOUNT_ID}}": detect_account(),
     }
-    for sub in ("src", "src/model", "tests", "agentcore", "diagrams"):
+    agent_dir = f"app/{subs['{{AGENT_NAME}}']}"
+    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "diagrams"):
         (target / sub).mkdir(parents=True, exist_ok=True)
 
-    # agent code + its IaC source of truth
-    for name in ("src/main.py", "src/model/__init__.py", "src/model/load.py",
-                 "src/model/sanitize.py", "pyproject.toml",
-                 "agentcore/agentcore.json", "agentcore/aws-targets.json"):
-        src = BASELINE / name
-        (target / name).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
+    # Agent code first. The agent code sits in app/<AgentName>/, which is the
+    # layout `agentcore create` itself produces and the directory that
+    # `codeLocation` points at. The template keeps the literal {{AGENT_NAME}}
+    # in the path; only the rendered copy carries the real name.
+    for rel in ("main.py", "model/__init__.py", "model/load.py", "model/sanitize.py",
+                "pyproject.toml"):
+        src = BASELINE / "app" / "{{AGENT_NAME}}" / rel
+        (target / agent_dir / rel).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
+
+    # IaC source of truth: the contract and the targets file
+    for rel in ("agentcore/agentcore.json", "agentcore/aws-targets.json"):
+        src = BASELINE / rel
+        (target / rel).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
 
     for src in sorted((BASELINE / "tests").glob("*.py")):
         (target / "tests" / src.name).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")

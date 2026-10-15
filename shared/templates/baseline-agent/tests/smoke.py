@@ -88,7 +88,7 @@ def run() -> int:
 
 
 def _use_case_python() -> Path | None:
-    for rel in ("src/.venv/bin/python", "src/.venv/Scripts/python.exe"):
+    for rel in ("app/{{AGENT_NAME}}/.venv/bin/python", "app/{{AGENT_NAME}}/.venv/Scripts/python.exe"):
         candidate = USE_CASE_DIR / rel
         if candidate.exists():
             return candidate
@@ -110,14 +110,14 @@ def _reexec_with_use_case_python() -> None:
     if os.environ.get("AIA_SMOKE_REEXEC") == "1":
         raise AssertionError(
             "boto3 is not importable from the use case venv either. "
-            "fix: cd src && uv sync  (or `pip install boto3`), then re-run"
+            "fix: cd app/{{AGENT_NAME}} && uv sync  (or `pip install boto3`), then re-run"
         )
 
     python = _use_case_python()
     if python is None:
         raise AssertionError(
-            "no virtualenv at src/.venv, and boto3 is not installed here. "
-            "fix: cd src && uv sync, then re-run"
+            "no virtualenv at app/{{AGENT_NAME}}/.venv, and boto3 is not installed here. "
+            "fix: cd app/{{AGENT_NAME}} && uv sync, then re-run"
         )
 
     os.environ["AIA_SMOKE_REEXEC"] = "1"

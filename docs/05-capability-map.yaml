@@ -5,8 +5,8 @@
 #   [覆盖] 14 项 capability 每项至少在一个 usecase 里 depth: deep
 #   [实证] usecase 声明 deep 的能力，必须在 usecases/<dir>/tests/smoke.py 里有对应断言
 #   [独立] (a) difficulty 序列在阶梯顺序上单调不减
-#          (b) usecases/<dir>/iac 存在且不含对其他 usecase 的引用
-#          (c) usecases/<dir>/src 不 import 其他 usecase
+#          (b) usecases/<dir>/agentcore 存在且不含对其他 usecase 的引用
+#          (c) usecases/<dir>/ 的 codeLocation（= app/aia_ucNN/）不 import 其他 usecase
 #
 # 结构：7 个相互独立的用例 + 1 个番外分支（bonus 不参与难度阶梯）。
 
@@ -50,7 +50,7 @@ independence_contract:
   I1_deploys_alone: "python aia.py up 0X succeeds with no other use case ever deployed"
   I2_cleans_up_alone: "python aia.py down 0X zeroes its cost and touches no other use case"
   I3_own_iac_stack: "no cross-stack references, no shared state, no reading another use case's outputs"
-  I4_own_source_tree: "usecases/NN-*/src never imports another use case"
+  I4_own_source_tree: "the codeLocation directory (app/aia_ucNN/) never imports another use case"
   I5_own_documentation: "README starts from zero; prerequisites are knowledge, never deployed resources"
 
 # ── 14 项 AgentCore 能力 ─────────────────────────────────────────────

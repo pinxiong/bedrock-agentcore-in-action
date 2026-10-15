@@ -30,7 +30,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管
 
 | 层 | 放什么 | 谁维护 |
 |---|---|---|
-| 你的代码 | `src/` 里的 Agent 入口 | 你 |
+| 你的代码 | `app/<AgentName>/` 里的 Agent 入口 | 你 |
 | 契约 | `agentcore.json` + `aws-targets.json` | 你，手写 |
 | 管道 | `agentcore/cdk/` 下的 CDK 工程 | CLI，每次 deploy 重新生成 |
 
@@ -47,7 +47,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，14 项能力覆盖托管
 | AWS CLI | 2.x | 任意近期版本 | `aws --version` |
 | uv | 0.11.9 | CLI 用它给模板 agent 建 Python 环境 | `uv --version` |
 | Git | 2.39 | `create` 会在新项目里跑 `git init` | `git --version` |
-| Python | 本地 3.11 | CodeZip 支持 3.10–3.13 | `python3 -V` |
+| Python | 本地 3.11 | CodeZip 支持 3.10–3.14 | `python3 -V` |
 | AWS 账号 | 任意 | 权限见下 | `aws sts get-caller-identity` |
 | 区域 | us-east-1 | 全系列统一 | `aws configure get region` |
 | Docker | 不需要 | 本系列统一 CodeZip 构建 | 不适用 |
@@ -97,49 +97,50 @@ aws bedrock list-foundation-models --region us-east-1 \
 
 ## 四、Step 1 · 生成项目骨架
 
-`agentcore create` 负责搭骨架。官方 getting-started 示例用的是完整形态，会连示例 Agent 一起生成：
+一条命令生成整个项目，这就是官方 getting-started 用的完整形态（换成本文的名字）：
 
 ```bash
-agentcore create --name CustomerSupport --framework Strands \
-  --model-provider Bedrock --memory none --defaults
-```
-
-我这里用的是最小形态，因为本文的 Agent 代码放在 `src/` 里、由我自己写：
-
-```bash
-mkdir demo && cd demo
-agentcore create --name demo_proj --project-name demoproj --no-agent --build CodeZip
+agentcore create --name aia_uc01 --project-name aiauc01 \
+  --framework Strands --model-provider Bedrock --memory none --defaults
 ```
 
 实测输出：
 
 ```text
-[done]  Create demoproj/ project directory
+[done]  Create aiauc01/ project directory
 [done]  Prepare agentcore/ directory
 [done]  Initialize git repository
+[done]  Add agent to project
+[done]  Set up Python environment
 
 Created:
-  demoproj/
-    agentcore/  Config and CDK project
+  aiauc01/
+    app/aia_uc01/  Python agent (Strands)
+    agentcore/     Config and CDK project
 
 Project created successfully!
+
+To continue, navigate to your new project:
+
+  cd aiauc01
+  agentcore
 ```
 
-真正值得看的是磁盘上多了什么：
+五步跑完，真正值得看的是磁盘上多了什么：
 
-![项目解剖：CLI 写的 vs 你加的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
+![项目解剖：create 写的 vs 归你所有的](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，以及整个 `agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程。但它不写你的代码：`--no-agent` 连代码目录都不建；加上 Agent 后同一条命令会多两步（`Add agent to project`、`Set up Python environment`），并生成 `app/<name>/` 与里面的 starter agent。
+`create` 一次写三样东西。项目根：`AGENTS.md`（给 AI 助手看的工程上下文）、`README.md`，外加一次 `git init`；`agentcore/` 目录：契约、部署目标、放密钥的 `.env.local`、给 AI 助手用的 `.llm-context/` 类型定义、记状态和日志的 `.cli/`，还有内置的 `cdk/` 工程；`app/aia_uc01/`：一个 starter agent，`main.py` 里 `BedrockAgentCoreApp` 的接线和 `@tool` 示例都已就位，`model/load.py` 负责装配模型，`pyproject.toml` 由 CLI 用 uv 建好环境。契约如实记录这个位置（`codeLocation: "app/aia_uc01/"`、`entrypoint: "main.py"`），这正是官方文档写的 App Structure。
 
-**代码到底写在哪**，两条路径长得不一样，值得说清：让 CLI 生成 Agent，代码就在 `app/<agent-name>/`，契约如实记录（`codeLocation: "app/demo_a/"`、`entrypoint: "main.py"`）——这正是官方文档写的 App Structure：`app/<AgentName>/` 下放 `main.py`、`pyproject.toml` 和 `model/`。自带代码（BYO）的话，把这两个字段指向任何目录即可。本文走第二条路：用例代码放在 `src/`，便于单独测试。**`codeLocation` 指向哪里，哪里就是被打包、被部署、被 `agentcore dev` 启动的东西。** 关于这个布局，两个事实值得记住：
+starter 不是用完就扔的玩具。它的 `main.py` 已经是 Runtime 要的形状，所以本文的 agent 保留了脚手架，只换上自己的系统提示词、工具和模型装配。无论你的 agent 代码最终放哪，规则只有一条：**`codeLocation` 指向哪里，哪里就是被打包、被部署、被 `agentcore dev` 启动的东西。**（已经有一份 agent 代码不想搬？`agentcore add agent --type byo --code-location <目录> --entrypoint <文件>` 把同样两个字段指过去即可。）关于这个布局，两个事实值得记住：
 
-- **真正属于你编辑的只有两个文件**：`agentcore.json` 和 `aws-targets.json`。`agentcore/` 里其余一切都是可再生的，下一条命令就会覆盖；
+- **`agentcore/` 里真正属于你编辑的只有两个文件**：`agentcore.json` 和 `aws-targets.json`。其余一切都是可再生的，下一条命令就会覆盖；
 - 项目根检测很严格：CLI 从当前目录逐级向上，找到同时包含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层。两者缺一都不算项目，而报错 `No agentcore project found` 不会告诉你缺的是哪个。
 
-打开生成的契约文件看一眼，设计的形态一目了然：`agentcore.json` 带 15 个资源数组、全部为空；`aws-targets.json` 里只有一个 `[]`。接下来就轮到你来填了。
+打开生成的契约文件看一眼，设计的形态一目了然：`agentcore.json` 声明了 14 个资源数组，其中 13 个为空；`aws-targets.json` 里只有一个 `[]`。接下来就轮到你来填了。
 
 > **📸 截图位 2 · 项目骨架**
-> 截编辑器里的目录树（侧边栏展开 `agentcore/` 和 `src/`），不要截终端里的纯文本列表。目的是让人看清哪些是目录、哪些是文件、哪些是你以后要改的。
+> 截编辑器里的目录树（侧边栏展开 `agentcore/` 和 `app/`），不要截终端里的纯文本列表。目的是让人看清哪些是目录、哪些是文件、哪些是你以后要改的。
 
 ## 五、Step 2 · 写契约：两个 JSON 文件
 
@@ -153,15 +154,18 @@ CLI 写了项目根目录下的 `AGENTS.md`（给 AI 助手看的工程上下文
     "name": "aia_uc01",
     "build": "CodeZip",
     "entrypoint": "main.py",
+    "codeLocation": "app/aia_uc01/",
     "runtimeVersion": "PYTHON_3_13",
+    "networkMode": "PUBLIC",
+    "protocol": "HTTP",
     "envVars": [{ "name": "MODEL_ID", "value": "deepseek.v3.2" }]
   }]
 }
 ```
 
-`create` 生成这个文件时所有资源数组都是空的，`agentcore add` 家族的子命令往里塞条目。允许手编，但以官方 schema 为准，CLI 逐字段校验。
+`create` 生成这个文件时，除 `runtimes` 外的 13 个资源数组都是空的，`agentcore add` 家族的子命令往里塞条目。允许手编，但以官方 schema 为准，CLI 逐字段校验。
 
-runtime 块里有四个字段错一个就部署失败：`entrypoint`、`codeLocation`（`src/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，所以换模型是改 JSON，不是改代码。
+runtime 块里有四个字段错一个就部署失败：`entrypoint`、`codeLocation`（`app/aia_uc01/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，所以换模型是改 JSON，不是改代码。
 
 命名也有个坑：项目名是 `aiauc01`（顶层 `name`），runtime 名是 `aia_uc01`（`runtimes[].name`）。CloudFormation 用两者一起命名，线上 runtime ID 因此长成 `aiauc01_aia_uc01-LH8zQV86C2`。
 
@@ -210,7 +214,7 @@ agentcore deploy -y --target default
 
 ![部署六步流水线，附实测耗时](images/aws-agentcore-under-the-hood/F4-deploy-pipeline.png)
 
-1. **打包代码**：`src/` 加平台依赖压成一个资产包，我的 Hello World 是 41 MB，本地 `.venv` 被排除，全程没有镜像构建；
+1. **打包代码**：`codeLocation` 指向的目录加平台依赖压成一个资产包，我的 Hello World 是 41 MB，本地 `.venv` 被排除，全程没有镜像构建；
 2. **合成**：CLI 跑内置的 CDK app，读两个 JSON，把模板产出到 `cdk.out/`；
 3. **上传资产**：zip 进 S3 桶，那是 `cdk bootstrap` 一次性建好的；
 4. **建栈**：CloudFormation 只建 4 个资源：Runtime 本体、IAM 角色、Bedrock 模型访问策略、元信息；

@@ -14,7 +14,7 @@
       "description": "UC01 First Agent: the deploy loop end to end",
       "build": "CodeZip",
       "entrypoint": "main.py",
-      "codeLocation": "src/",
+      "codeLocation": "app/aia_uc01/",
       "runtimeVersion": "PYTHON_3_13",
       "networkMode": "PUBLIC",
       "protocol": "HTTP",

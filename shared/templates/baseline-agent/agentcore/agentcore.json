@@ -14,7 +14,7 @@
       "description": "{{UC_ID}} {{UC_TITLE}}",
       "build": "CodeZip",
       "entrypoint": "main.py",
-      "codeLocation": "src/",
+      "codeLocation": "app/{{AGENT_NAME}}/",
       "runtimeVersion": "PYTHON_3_13",
       "networkMode": "PUBLIC",
       "protocol": "HTTP",

@@ -52,7 +52,7 @@
 | I1 | 部署独立 | `python aia.py up 01`（仓库根执行）即可完成，不读取任何其他用例的 stack 输出 |
 | I2 | 清理独立 | 所有资源带 `UseCase=01` 标签，`python aia.py down 01` 只销毁本用例 |
 | I3 | IaC 独立 | `agentcore/agentcore.json` 是本例唯一的资源声明，各例独立合成栈，无跨栈引用 |
-| I4 | 代码独立 | `src/` 不 import 任何其他用例 |
+| I4 | 代码独立 | `codeLocation`（本用例 `app/aia_uc01/`）不 import 任何其他用例 |
 | I5 | 文档独立 | 本节以上即为全部前置 |
 
 ---
@@ -71,7 +71,7 @@
 
 | 组件 | 职责 | AgentCore 托管？ |
 |---|---|---|
-| Agent 代码（`src/main.py`） | Strands agent：系统提示词 + `add_numbers` 工具 | 否，你写的 |
+| Agent 代码（`app/aia_uc01/main.py`） | Strands agent：系统提示词 + `add_numbers` 工具 | 否，你写的 |
 | Runtime | 跑 agent 的 serverless 计算单元，每 session 一个独立 microVM | **是** |
 | 模型接入 | 通过 `BedrockModel` 调 Bedrock 上的 `deepseek.v3.2` | 部分（Bedrock 托管模型） |
 | 执行角色 | Runtime 用来调 Bedrock、写日志、上报 trace 的 IAM 角色 | **是**（CLI 生成） |
@@ -90,7 +90,7 @@
 
 调模型和调工具发生在受管 microVM 里；可见性来自同一进程导出的 span。
 
-**为什么这样设计**：Runtime 是 serverless 的，**不涉及 ECS / EKS / Kubernetes**，也不需要你写 Dockerfile（本系列统一用 `CodeZip`，CLI 会把 `src/` 打成一个 zip 资产）。你要负责的只有 `src/` 里的 Python 与 `agentcore/agentcore.json` 里的声明。
+**为什么这样设计**：Runtime 是 serverless 的，**不涉及 ECS / EKS / Kubernetes**，也不需要你写 Dockerfile（本系列统一用 `CodeZip`，CLI 会把 `app/aia_uc01/` 打成一个 zip 资产）。你要负责的只有 `app/aia_uc01/` 里的 Python 与 `agentcore/agentcore.json` 里的声明。
 
 ---
 
@@ -166,6 +166,23 @@ python aia.py down 01      # 在仓库根执行
 
 > 下面所有 `agentcore` 命令都必须在**用例根目录** `usecases/01-first-agent/` 执行。
 > 在 `agentcore/` 子目录里执行会直接报 `Please run this command from your project root directory.`
+
+### 7.0 这套目录是怎么来的（官方布局）
+
+本用例**完全沿用 CLI 官方布局**，没有自造目录。项目由官方完整形态生成：
+
+```bash
+agentcore create --name aia_uc01 --project-name aiauc01 \
+  --framework Strands --model-provider Bedrock --memory none --defaults
+```
+
+`create` 一次写三样东西：项目根的 `AGENTS.md` / `README.md` 并执行 `git init`；`agentcore/`（契约 + 生成的 CDK 工程）；`app/aia_uc01/`（Strands starter agent，含 `main.py`、`model/load.py`、`mcp_client/`、`skills/`、`pyproject.toml`，并用 uv 建好 `.venv`）。
+
+`agentcore.json` 的 `codeLocation` 指向 `app/aia_uc01/`，**这个目录就是被打包、部署、`agentcore dev` 启动的东西**，`entrypoint: main.py` 相对它解析。你要改的只有三处：`agentcore/agentcore.json`、`agentcore/aws-targets.json` 和 `app/aia_uc01/` 里的 Python。starter 自带的 `main.py` 已经是对的形状（`BedrockAgentCoreApp` + `@app.entrypoint` 异步生成器 + 一个 `@tool` 例子），本用例把它替换成下面 §4 里那份带输出过滤层的实现。
+
+> 已经有一份 agent 代码不想搬？官方另给了一条 BYO 入口：
+> `agentcore add agent --type byo --code-location <目录> --entrypoint <文件>`，
+> 把 `codeLocation` 指到任何已有目录即可。本系列不用这条，读者按官方默认路径走。
 
 ### 7.1 自检环境
 
@@ -310,7 +327,7 @@ data: {"event": {"metadata": {"usage": {"inputTokens": 471, "outputTokens": 9, "
 | 如果失败 | 原因 | 修复 |
 |---|---|---|
 | `Runtime is not READY` | 刚部署完还在 rollout | 等 30–60 s 后 `agentcore status` 再看 |
-| 回复里混进 `<｜DSML｜function_calls` | 你的 `src/` 里没有输出过滤层 | 见 §9 与 `src/model/sanitize.py` |
+| 回复里混进 `<｜DSML｜function_calls` | 你的 `app/aia_uc01/` 里没有输出过滤层 | 见 §9 与 `app/aia_uc01/model/sanitize.py` |
 | 超时 | 冷启动 | 重试一次，冷启动通常 10–20 s |
 
 ---
@@ -449,12 +466,12 @@ python aia.py verify 01     # test + 覆盖 + 独立性三类校验
 ```text
 [EVID] every declared deep capability is asserted in smoke.py
 
-[INDEP] (a) difficulty ladder, (b) own iac stack, (c) own source tree
+[INDEP] (a) difficulty ladder, (b) own agentcore stack, (c) own source tree
 
   PASS  uc01: all 2 deep capabilities are asserted
   PASS  difficulty sequence is non-decreasing: [1, 2, 3, 3, 4, 4, 5]
   PASS  uc01: agentcore/ is self-contained
-  PASS  uc01: src/ does not import another use case
+  PASS  uc01: app/aia_uc01/ does not import another use case
 
 4 passed, 0 warned, 0 failed
 ```
@@ -495,12 +512,12 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 
 实测发现：DeepSeek v3.2 会在 text 通道里额外吐出 `<｜DSML｜function_calls`，Nova 三个型号会吐出完整的 `<thinking>...</thinking>`——**绕开 Strands 用 boto3 直连 `converse_stream` 也一样**，所以这不是框架的问题，是模型/服务端行为。
 
-本用例在 `src/model/sanitize.py` 里做了一层流式安全的过滤：按 `messageStart` 为每个 assistant message 重建过滤器（一次调用其实有多个 assistant message，工具调用前后各一个），剥掉配对的 `<thinking>...</thinking>`，并从 `<｜DSML｜` 处截断。因为标记不是原子 token、流式时会跨分片到达（实测被拆成 `<` / `｜DSML｜` / `function_c` / `alls` 四片），过滤器会 hold back 可能是标记前缀的尾巴。
+本用例在 `app/aia_uc01/model/sanitize.py` 里做了一层流式安全的过滤：按 `messageStart` 为每个 assistant message 重建过滤器（一次调用其实有多个 assistant message，工具调用前后各一个），剥掉配对的 `<thinking>...</thinking>`，并从 `<｜DSML｜` 处截断。因为标记不是原子 token、流式时会跨分片到达（实测被拆成 `<` / `｜DSML｜` / `function_c` / `alls` 四片），过滤器会 hold back 可能是标记前缀的尾巴。
 
 单元测试在 `tests/test_sanitize.py`，用真实分片形态做断言：
 
 ```bash
-cd usecases/01-first-agent && src/.venv/bin/python tests/test_sanitize.py
+cd usecases/01-first-agent && app/aia_uc01/.venv/bin/python tests/test_sanitize.py
 ```
 
 > 通用故障（配额、区域、凭证、`agentcore` 命令冲突）见 [`docs/99-troubleshooting.md`](../../docs/99-troubleshooting.md)。
@@ -543,8 +560,8 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 
 | 内嵌内容 | 规模 | 为什么不能共享 |
 |---|---|---|
-| 最小 agent 骨架 `src/main.py` + `src/model/` | 4 个文件 | 共享即会破坏 I4（代码独立） |
-| 输出过滤层 `src/model/sanitize.py` | 1 个文件 | 同上；每个用例必须能独立演进自己的输出处理 |
+| 最小 agent 骨架 `app/aia_uc01/main.py` + `app/aia_uc01/model/` | 4 个文件 | 共享即会破坏 I4（代码独立） |
+| 输出过滤层 `app/aia_uc01/model/sanitize.py` | 1 个文件 | 同上；每个用例必须能独立演进自己的输出处理 |
 | IaC 声明 `agentcore/agentcore.json` + `aws-targets.json` | 2 个文件 | 共享即会破坏 I3（栈独立） |
 | 冒烟测试骨架 `tests/smoke.py` + `resourcegroupstaggingapi_check.py` | 2 个文件 | 共享即会破坏 I4；独立性断言必须每个用例自带 |
 | 会话缓存 / 提示词提取等样板 | 约 30 行 | 同上 |
@@ -559,7 +576,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 - 延伸实验：
   1. 把 `NullConversationManager` 换成 `SlidingWindowConversationManager`，观察同一 session 第二次调用时输入 token 是否变大——这就是 UC02 要解决的问题。
   2. 再 `agentcore deploy` 一次，让 runtime 升到 v3，然后用 `agentcore traces list` 对比两次版本的行为差异（对应附带的 `versioning-and-endpoints`）。
-  3. 把 `codeLocation` 从 `src/` 改成一份含 `Dockerfile` 的目录，切到 Container 构建，对比打包体积与冷启动（对应 `codezip-vs-container`）。
+  3. 把 `codeLocation` 从 `app/aia_uc01/` 改成一份含 `Dockerfile` 的目录，切到 Container 构建，对比打包体积与冷启动（对应 `codezip-vs-container`）。
 - 官方文档：<https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime.html>
 - 难度阶梯上的位置：本用例是第 1 档。下一档是 UC02 Memory（把「agent 记不住事」这件事解决掉）
 - 文章版：`article.md`

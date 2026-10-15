@@ -97,12 +97,24 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 ```
 <project>/
 ├── AGENTS.md                      # 官方约定：JSON 是唯一真相源
+├── README.md                      # create 生成的项目说明
+├── .git/                          # create 会执行 git init
 ├── agentcore/agentcore.json       # ★ 所有资源在这里声明
 ├── agentcore/aws-targets.json     # 部署目标（account + region）
 ├── agentcore/.llm-context/*.ts    # 权威 schema，字段级约束写在这里
 ├── agentcore/cdk/                 # CLI 生成的 CDK 应用（明令不可手改）
-└── src/                           # agent 代码，agentcore.json 的 codeLocation 指向它
+└── app/<AgentName>/               # agent 代码（create 生成的 starter），codeLocation 指向它
 ```
+
+`create` 的完整形态（带 agent 脚手架）：
+
+```bash
+agentcore create --name <AgentName> --framework Strands \
+  --model-provider Bedrock --memory none --defaults
+```
+
+`--name` 同时决定项目目录名、runtime 名和 `app/<AgentName>/` 的目录名；加
+`--project-name` 可以只改项目目录名。只想要空项目时用 `--no-agent`（不生成 app/ 代码目录）。
 
 三条官方不变量，直接影响我们的文档写法：
 
@@ -113,7 +125,14 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 `agentcore.json` 的顶层字段**就是能力清单本身**：
 `runtimes / memories / knowledgeBases / credentials / evaluators / onlineEvalConfigs / agentCoreGateways / policyEngines / configBundles / abTests / harnesses / datasets / capacityProviders / payments`。
 
-本仓库的取舍：**`codeLocation: "src/"`**，不采用 CLI 默认的 `app/<agent_name>/`，让七个用例的目录命名保持一致（已 `agentcore validate` 通过）。
+本仓库的取舍：**完全对齐 CLI 官方布局**，`codeLocation: "app/<AgentName>/"`（本系列即
+`app/aia_uc01/` … `app/aia_uc07/`），不另造 `src/`。理由是"照抄就能做"：读者按官方命令
+跑出来的目录必须和文档/图片里画的一致。带自己的代码时官方另有 BYO 入口
+（`agentcore add agent --type byo --code-location <dir> --entrypoint <file>`），这条只在
+文档里作为脚注提一句。
+
+> 2026-10-15 修订：此前本仓库用 `codeLocation: "src/"`（自造目录），导致读者按官方命令
+> 生成的 `app/<AgentName>/` 与文档不一致，已全量改回官方路径。
 
 **模型选型（全部实测，2026-10-14）**
 
@@ -127,7 +146,7 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 | `deepseek.r1-v1:0` | ❌ | 不支持 on-demand，需 inference profile |
 | `amazon.nova-2-lite-v1:0` | ❌ | 同上 |
 
-切换方式：`MODEL_ID` 环境变量（`src/model/load.py`，默认 `deepseek.v3.2`）。
+切换方式：`MODEL_ID` 环境变量（`app/aia_ucNN/model/load.py`，默认 `deepseek.v3.2`）。
 
 **其余实测约束**
 
@@ -152,7 +171,7 @@ agentcore remove all             # 清空配置，再 deploy 即销毁资源
 | **I1** | **部署独立** | 在干净账号里 `python aia.py up 05` 成功，此时 UC01–04 **从未部署过** |
 | **I2** | **清理独立** | `python aia.py down 05` 后，该用例资源与账单归零，且**不影响**其他用例 |
 | **I3** | **IaC 独立** | 每例一个独立栈、独立资源命名空间；**无跨栈 export/import**，不读别的用例的参数 |
-| **I4** | **代码独立** | `usecases/NN-*/src/` **不 import** 其他用例的模块；共享代码只能以"生成器模板"形式**复制**进来后各自演进 |
+| **I4** | **代码独立** | 每例的 `codeLocation`（= `usecases/NN-*/app/aia_ucNN/`）**不 import** 其他用例的模块；共享代码只能以"生成器模板"形式**复制**进来后各自演进 |
 | **I5** | **文档独立** | README 从零讲起；前置条件只写**知识**，绝不写"你必须先跑完 UC0X" |
 
 **回归测试（每条用例的 DoD 之一）**
@@ -414,7 +433,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 
 仓库名：**`bedrock-agentcore-in-action`**
 
-> 与 v2 的关键差别：**`stages/` 换成 `usecases/`**。每例是一个自包含目录（`src` + `iac` + `tests` + 文档 + 文章），不是同一个项目的某个 commit。
+> 与 v2 的关键差别：**`stages/` 换成 `usecases/`**。每例是一个自包含目录（`app/` + `agentcore/` + `tests/` + 文档 + 文章），不是同一个项目的某个 commit。
 
 ```
 bedrock-agentcore-in-action/
@@ -426,9 +445,7 @@ bedrock-agentcore-in-action/
 ├── usecases/                    # ★ 每例一个自包含目录，互不 import
 │   ├── 01-first-agent/
 │   │   ├── README.md            #   十二节可操作文档
-│   │   ├── ARCHITECTURE.md
-│   │   ├── diagrams/
-│   │   ├── src/                 #   自带 agent（生成器生成后自行演进）；agentcore.json 的 codeLocation 指向这里
+│   │   ├── app/aia_uc01/        #   ★ 自带 agent（CLI 官方布局）；agentcore.json 的 codeLocation 指向这里
 │   │   ├── agentcore/           #   ★ 本用例的 IaC：agentcore.json 是唯一真相源 + CLI 生成的 CDK 应用
 │   │   ├── tests/smoke.py       #   本例断言，与 capability-map 一一对应
 │   │   └── article.md           #   发表稿（英文）
@@ -461,9 +478,9 @@ bedrock-agentcore-in-action/
 │       ├── usecase-doc.template.md
 │       ├── article.template.md
 │       └── baseline-agent/      # ★ 最小独立 agent 骨架（被生成器复制）
-│           ├── src/main.py
-│           ├── src/model/load.py
-│           ├── pyproject.toml
+│           ├── app/{{AGENT_NAME}}/main.py
+│           ├── app/{{AGENT_NAME}}/model/load.py
+│           ├── app/{{AGENT_NAME}}/pyproject.toml
 │           ├── tests/smoke.py
 │           └── agentcore/agentcore.json
 │
@@ -478,7 +495,7 @@ bedrock-agentcore-in-action/
 
 | | v2（阶段 / git tag） | v3（独立用例） |
 |---|---|---|
-| 代码位置 | `app/Emma/` 一个 agent 逐阶段长大 | `usecases/NN-*/src/` 每例自带 agent |
+| 代码位置 | `app/Emma/` 一个 agent 逐阶段长大 | `usecases/NN-*/app/aia_ucNN/` 每例自带 agent（CLI 官方布局） |
 | IaC | `agentcore/agentcore.json` 一份配置叠加 | 每例一个独立 `agentcore/agentcore.json`（各自合成独立栈） |
 | 独立性载体 | git tag | **目录 + 独立栈** |
 | 从中间切入 | `git checkout stage-04` 后拿到的仍是那一个项目的状态 | 直接 `python aia.py up 04` |
@@ -534,8 +551,10 @@ bedrock-agentcore-in-action/
 | **区域** | 全系列 `us-east-1`；**每条命令显式带 `--region`**（本机默认区是 ap-southeast-1） |
 | **构建方式** | `CodeZip`（**不需要 Docker**）；文档注明何时该换 `Container` |
 | **框架** | 主力 **Strands Agents**；UC03 / UC07 各留一个 **LangGraph** 变体证明框架无关 |
-| **Python** | 3.10–3.13（CodeZip 支持范围），本系列用 3.11 + `uv` |
+| **Python** | 3.10–3.14（CodeZip 支持范围，2026-10-15 按官方 schema `.llm-context/agentcore.ts` 修正），本系列用 3.11 + `uv` |
 | **Node** | 20+（AgentCore CLI 要求） |
+| **代码布局** | **CLI 官方布局**：agent 代码在 `app/<AgentName>/`，`codeLocation` 指向它；不自造 `src/`（2026-10-15 用户裁定，此前自造 `src/` 导致读者产物与文档不一致） |
+| **图文同步（硬规则）** | **正文一改，图片必改**：任何正文改动（命令、数字、名称、结论、结构）收尾时必须 ① grep `gen_figures.py` 里正文出现过的关键数字/命令/术语（只 grep markdown 会漏掉画在 SVG 里的字符串）② 逐图对照正文 ③ 重出 PNG ④ 重生成 PPT ⑤ 目检渲染图 |
 | **清理** | `agentcore remove all && agentcore deploy`（官方路径）+ `python aia.py down 0X` 封装；手动核对 S3 / 日志组 / Secrets Manager / token vault |
 | **幂等** | `aia up` / `aia down` 可重复执行 |
 | **跨平台** | 仓库内全部命令只依赖 Python 与已装 CLI；`aia.py` 无 Make / bash / WSL 依赖，Windows 原生可跑 |

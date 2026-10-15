@@ -40,7 +40,7 @@
 <circle cx="75.0" cy="152" r="15" fill="url(#g-blue)"/>
 <text x="75.0" y="157" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12" font-weight="800" fill="white">1</text>
 <text x="75.0" y="184" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="800" fill="#2563EB">Package</text>
-<text x="75.0" y="203" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" fill="#475569">zip src/ + deps</text>
+<text x="75.0" y="203" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" fill="#475569">zip codeLocation</text>
 <text x="75.0" y="216" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" fill="#475569">41 MB asset</text>
 <path d="M 125 179.0 L 131 184.0 L 125 189.0 Z" fill="#64748B"/>
 <rect x="132" y="126" width="98" height="116" rx="12" fill="white" stroke="#7C3AED" stroke-width="2" filter="url(#ds)"/>
@@ -80,7 +80,7 @@
 <text x="40" y="270" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#0F172A">Measured wall-clock, cold account vs warm redeploy</text>
 <rect x="40" y="278" width="480" height="26" rx="8" fill="white" stroke="#EA580C" stroke-width="1.5" filter="url(#ds)"/>
 <rect x="42" y="280" width="476" height="22" rx="6" fill="url(#g-orange)"/>
-<text x="280.0" y="295" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="white">first deploy, cold: 9 min 49 s (mostly npm install, 221 packages)</text>
+<text x="280.0" y="295" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="white">first deploy, cold: 9 min 49 s (npm install dominates)</text>
 <rect x="40" y="314" width="480" height="26" rx="8" fill="white" stroke="#059669" stroke-width="1.5" filter="url(#ds)"/>
 <rect x="42" y="316" width="30" height="22" rx="6" fill="url(#g-green)"/>
 <text x="80" y="331" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10.5" font-weight="700" fill="#047857">redeploy, code only: 26 s</text>

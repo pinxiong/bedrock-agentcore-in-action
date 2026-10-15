@@ -9,7 +9,7 @@ The entrypoint contract below was verified against agentcore CLI 0.31.1 on
     async def invoke(payload, context):   # async, yields streamed events
 
 It is deliberately small. Its job is to make this use case deployable on its
-own; the capability under test lives in the rest of src/. See the
+own; the capability under test lives in the rest of app/{{AGENT_NAME}}/. See the
 "What you repeated" section of this use case's README.
 """
 

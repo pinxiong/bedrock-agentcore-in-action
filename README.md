@@ -40,7 +40,7 @@ checkable, and the last one runs in CI.
 | **I1** | Deploys alone | `python aia.py up 05` succeeds in a clean account where UC01 to UC04 were never deployed |
 | **I2** | Cleans up alone | `python aia.py down 05` zeroes its cost and touches no other use case |
 | **I3** | Own IaC stack | No cross-stack references, no shared state, no reading another use case's outputs |
-| **I4** | Own source tree | `usecases/NN-*/src/` never imports another use case |
+| **I4** | Own source tree | the directory each use case deploys (`codeLocation`, i.e. `usecases/NN-*/app/aia_ucNN/`) never imports another use case |
 | **I5** | Own documentation | The README starts from zero and lists only *knowledge* prerequisites, never "you must deploy UC0X first" |
 
 ```bash
@@ -192,7 +192,7 @@ Then pick any other use case. Order is suggested, not required.
 ## Repository layout
 
 ```
-usecases/       7 self-contained use cases, each with src, iac, tests, README and article
+usecases/       7 self-contained use cases, each with app, agentcore, tests, README and article
 bonus/payments/ the standalone payments branch
 docs/           series-wide guides, the machine-readable capability map, the difficulty rubric
 shared/         scripts and templates, including the use case generator and the baseline agent

@@ -34,51 +34,63 @@
 
 <rect x="40" y="24" width="137" height="21" rx="10.5" fill="#2563EB"/>
 <text x="108" y="38.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">PROJECT ANATOMY</text>
-<text x="40" y="80" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">What create writes, what you write</text>
-<text x="40" y="102" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12.5" fill="#475569">agentcore create --no-agent --project-name demoproj --build CodeZip</text>
+<text x="40" y="80" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">What create writes, what you own</text>
+<text x="40" y="102" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12.5" fill="#475569">agentcore create --framework Strands --model-provider Bedrock --memory none --defaults</text>
 <rect x="40" y="126" width="296" height="372" rx="12" fill="white" stroke="#CBD5E1" stroke-width="1.5" filter="url(#ds)"/>
 <path d="M 40 162 L 40 140 Q 40 126 54 126 L 322 126 Q 336 126 336 140 L 336 162 Z" fill="#F1F5F9"/>
 <rect x="56" y="135" width="112" height="17" rx="8.5" fill="#F1F5F9" opacity="1"/><text x="112" y="146.9" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#475569">CREATE WRITES IT</text>
-<text x="60" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">demoproj/</text>
+<text x="60" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">aiauc01/</text>
 <text x="318" y="184" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">the project root</text>
 <text x="76" y="205" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">AGENTS.md</text>
 <text x="318" y="205" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">AI assistant context</text>
 <text x="76" y="226" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">README.md</text>
 <text x="318" y="226" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">from the CLI</text>
-<text x="76" y="247" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">agentcore/</text>
-<text x="318" y="247" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">config + CDK</text>
-<text x="92" y="268" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#1D4ED8">agentcore.json</text>
-<rect x="268" y="257" width="50" height="14" rx="7" fill="#DBEAFE"/>
-<text x="293" y="267" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#1D4ED8">you edit</text>
-<text x="92" y="289" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#1D4ED8">aws-targets.json</text>
+<text x="76" y="247" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.git/</text>
+<text x="318" y="247" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">create runs git init</text>
+<text x="76" y="268" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">agentcore/</text>
+<text x="318" y="268" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">config + CDK</text>
+<text x="92" y="289" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#1D4ED8">agentcore.json</text>
 <rect x="268" y="278" width="50" height="14" rx="7" fill="#DBEAFE"/>
 <text x="293" y="288" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#1D4ED8">you edit</text>
-<text x="92" y="310" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.env.local</text>
-<text x="92" y="331" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.llm-context/</text>
-<text x="92" y="352" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.cli/</text>
-<text x="92" y="373" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">cdk/</text>
-<text x="318" y="373" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">vendored app</text>
-<text x="60" y="404" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#64748B">agentcore.json starts with 15 empty resource arrays.</text>
-<text x="60" y="424" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#64748B">Everything here is regenerable, except the two files you edit.</text>
+<text x="92" y="310" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#1D4ED8">aws-targets.json</text>
+<rect x="268" y="299" width="50" height="14" rx="7" fill="#DBEAFE"/>
+<text x="293" y="309" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#1D4ED8">you edit</text>
+<text x="92" y="331" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.env.local</text>
+<text x="92" y="352" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.llm-context/</text>
+<text x="92" y="373" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.cli/</text>
+<text x="92" y="394" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">cdk/</text>
+<text x="318" y="394" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">vendored app</text>
+<text x="76" y="415" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">app/</text>
+<text x="92" y="436" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#2563EB">aia_uc01/</text>
+<rect x="248" y="425" width="70" height="14" rx="7" fill="#DBEAFE"/>
+<text x="283" y="435" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8.5" font-weight="700" fill="#1D4ED8">codeLocation</text>
+<text x="60" y="456.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#64748B">create runs five steps. Only two files</text>
+<text x="60" y="476.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#64748B">inside agentcore/ are yours to edit.</text>
 <rect x="354" y="126" width="296" height="372" rx="12" fill="white" stroke="#CBD5E1" stroke-width="1.5" filter="url(#ds)"/>
 <path d="M 354 162 L 354 140 Q 354 126 368 126 L 636 126 Q 650 126 650 140 L 650 162 Z" fill="#DBEAFE"/>
-<rect x="370" y="135" width="77" height="17" rx="8.5" fill="#DBEAFE" opacity="1"/><text x="408" y="146.9" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563EB">YOU ADD IT</text>
-<text x="374" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#1D4ED8">src/</text>
+<rect x="370" y="135" width="106" height="17" rx="8.5" fill="#DBEAFE" opacity="1"/><text x="423" y="146.9" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.5" font-weight="700" fill="#2563EB">YOUR AGENT CODE</text>
+<text x="374" y="184" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="700" fill="#0F172A">app/aia_uc01/</text>
 <text x="632" y="184" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">codeLocation</text>
 <text x="390" y="205" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">main.py</text>
 <text x="632" y="205" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">entrypoint</text>
 <text x="390" y="226" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">model/load.py</text>
 <text x="632" y="226" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">model wiring</text>
 <text x="390" y="247" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">model/sanitize.py</text>
-<text x="632" y="247" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">stream filter</text>
-<text x="374" y="268" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#2563EB">tests/smoke.py</text>
-<text x="632" y="268" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">assertions</text>
-<text x="374" y="308.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Two legitimate paths. Scaffold an agent with the</text>
-<text x="374" y="328.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">CLI and your code lands in app/&lt;name&gt;/. Bring your</text>
-<text x="374" y="348.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">own and point codeLocation anywhere - here: src/.</text>
-<text x="374" y="376.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Whatever it names is what gets zipped, deployed</text>
-<text x="374" y="396.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">and started by agentcore dev.</text>
+<text x="632" y="247" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">output filter</text>
+<text x="390" y="268" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">mcp_client/</text>
+<text x="390" y="289" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">skills/</text>
+<text x="390" y="310" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">pyproject.toml</text>
+<text x="632" y="310" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">uv builds .venv</text>
+<text x="390" y="331" font-family="'SF Mono', Menlo, Consolas, monospace" font-size="11.2" font-weight="500" fill="#475569">.venv/</text>
+<text x="632" y="331" text-anchor="end" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9" font-style="italic" fill="#64748B">from create</text>
+<text x="374" y="356.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">create scaffolds a working starter here.</text>
+<text x="374" y="376.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">main.py already has the right shape:</text>
+<text x="374" y="396.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">BedrockAgentCoreApp, an async</text>
+<text x="374" y="416.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">@app.entrypoint generator, one @tool.</text>
+<text x="374" y="444.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">Already have agent code? add agent</text>
+<text x="374" y="464.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">--type byo --code-location</text>
+<text x="374" y="484.0" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="9.6" fill="#475569">&lt;dir&gt; --entrypoint &lt;file&gt;.</text>
 <rect x="40" y="514" width="600" height="46" rx="10" fill="#FFE4E6" stroke="#E11D48" stroke-width="1.5" filter="url(#ds)"/>
-<text x="340" y="533" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="800" fill="#E11D48">Never hand-edit a generated file: the next command overwrites it.</text>
+<text x="340" y="533" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11.5" font-weight="800" fill="#E11D48">Never hand-edit anything under agentcore/ that you did not put there.</text>
 <text x="340" y="550" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" fill="#475569">Project root = the nearest folder up from cwd holding agentcore/ and agentcore/agentcore.json.</text>
 </svg>

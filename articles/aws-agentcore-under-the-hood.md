@@ -34,7 +34,7 @@ You write agent code. You write two JSON files. The CLI generates everything els
 
 | Layer | What lives there | Who maintains it |
 |---|---|---|
-| Your code | `src/` with the agent entrypoint | you |
+| Your code | `app/<AgentName>/` with the agent entrypoint | you |
 | The contract | `agentcore.json` and `aws-targets.json` | you, by hand |
 | The plumbing | a CDK project under `agentcore/cdk/` | the CLI, on every deploy |
 
@@ -51,7 +51,7 @@ Before touching AgentCore, make sure your machine and account match this table. 
 | AWS CLI | 2.x | any recent build | `aws --version` |
 | uv | 0.11.9 | the CLI builds the Python environment for template agents with it | `uv --version` |
 | Git | 2.39 | `create` runs `git init` in the new project | `git --version` |
-| Python | 3.11 local | 3.10 to 3.13 supported by CodeZip | `python3 -V` |
+| Python | 3.11 local | 3.10 to 3.14 supported by CodeZip | `python3 -V` |
 | AWS account | any | with permissions below | `aws sts get-caller-identity` |
 | Region | us-east-1 | the whole series uses it | `aws configure get region` |
 | Docker | not needed | this series uses CodeZip builds | n/a |
@@ -101,47 +101,50 @@ One trap worth five seconds: if `agentcore --version` errors but the command exi
 
 ## Step 1 · Scaffold the project
 
-`agentcore create` builds the project skeleton. The CLI's own getting-started sample uses the full form, which scaffolds a starter agent as well:
+One command builds the whole project. This is the CLI's own getting-started form, with this article's names:
 
 ```bash
-agentcore create --name CustomerSupport --framework Strands \
-  --model-provider Bedrock --memory none --defaults
-```
-
-I ran the minimal form instead, because this article's agent code lives in `src/` and I write it by hand:
-
-```bash
-mkdir demo && cd demo
-agentcore create --name demo_proj --project-name demoproj --no-agent --build CodeZip
+agentcore create --name aia_uc01 --project-name aiauc01 \
+  --framework Strands --model-provider Bedrock --memory none --defaults
 ```
 
 ```text
-[done]  Create demoproj/ project directory
+[done]  Create aiauc01/ project directory
 [done]  Prepare agentcore/ directory
 [done]  Initialize git repository
+[done]  Add agent to project
+[done]  Set up Python environment
 
 Created:
-  demoproj/
-    agentcore/  Config and CDK project
+  aiauc01/
+    app/aia_uc01/  Python agent (Strands)
+    agentcore/     Config and CDK project
 
 Project created successfully!
+
+To continue, navigate to your new project:
+
+  cd aiauc01
+  agentcore
 ```
 
-The interesting part is what lands on disk:
+Five steps, and the interesting part is what lands on disk:
 
-![Project anatomy: what the CLI writes vs what you add](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
+![Project anatomy: what create writes vs what you own](images/aws-agentcore-under-the-hood/F3-directory-anatomy.png)
 
-The CLI writes the project root (`AGENTS.md`, a `README.md`) and the whole `agentcore/` directory: the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. It writes no code. `--no-agent` ships no code folder at all. Add an agent and the same command reports two more steps (`Add agent to project`, `Set up Python environment`) and creates `app/<name>/` with a starter agent in it.
+`create` writes three things. The project root gets `AGENTS.md`, a `README.md` and a `git init`. The `agentcore/` directory gets the contract, the targets file, `.env.local` for secrets, `.llm-context/` type definitions for AI assistants, `.cli/` state, and the vendored `cdk/` app. And `app/aia_uc01/` gets a starter agent: `main.py` with the `BedrockAgentCoreApp` wiring and a `@tool` example, `model/load.py` for model instantiation, `pyproject.toml`, and a Python environment the CLI builds with uv. The contract records precisely that location (`codeLocation: "app/aia_uc01/"`, `entrypoint: "main.py"`), which is also the CLI's documented App Structure.
 
-A word on where your code goes, because the two paths look different. Let the CLI scaffold an agent and your code lives in `app/<agent-name>/`, and the contract records exactly that (`codeLocation: "app/demo_a/"`, `entrypoint: "main.py"`). The template path is precisely the CLI's documented App Structure: `app/<AgentName>/` holding `main.py`, `pyproject.toml` and `model/`. Bring your own code and you point the same two fields anywhere. This article takes the second path: the use-case code sits in `src/`, which keeps it testable on its own. Whatever `codeLocation` names is what gets zipped, deployed and started by `agentcore dev`. Two facts about this layout will save you an hour someday:
+The starter is not a toy you throw away. Its `main.py` already has the shape the runtime wants, so this article's agent keeps the scaffolding and swaps in its own system prompt, tool and model loader. Wherever your agent code ends up living, one rule holds: whatever `codeLocation` names is what gets zipped, deployed and started by `agentcore dev`. (Already have agent code elsewhere? `agentcore add agent --type byo --code-location <dir> --entrypoint <file>` points the same two fields at it.)
 
-- Only two files are truly yours to edit: `agentcore.json` and `aws-targets.json`. Everything else in `agentcore/` is regenerable, and the next command overwrites it.
+Two facts about this layout will save you an hour someday:
+
+- Inside `agentcore/`, only two files are truly yours to edit: `agentcore.json` and `aws-targets.json`. Everything else there is regenerable, and the next command overwrites it.
 - Project detection is strict: the CLI walks up from your current directory until it finds a folder holding both `agentcore/` and `agentcore/agentcore.json`. Either one alone is not a project, and the error (`No agentcore project found`) does not say which is missing.
 
-Peek inside the generated contract and you will see the shape of the design: `agentcore.json` with fifteen empty resource arrays, `aws-targets.json` with just `[]`. You are about to fill both in.
+Peek inside the generated contract and you will see the shape of the design: `agentcore.json` declares fourteen resource arrays, thirteen of them empty, and `aws-targets.json` is just `[]`. You are about to fill both in.
 
 > **📸 Screenshot spot 2 · Project scaffold**
-> Capture the tree in your editor (the `agentcore/` and `src/` folders expanded in the sidebar), not a plain terminal listing. The point is to show which entries are folders, which are files, and which ones you will edit.
+> Capture the tree in your editor (the `agentcore/` and `app/` folders expanded in the sidebar), not a plain terminal listing. The point is to show which entries are folders, which are files, and which ones you will edit.
 
 ## Step 2 · Write the contract: two JSON files
 
@@ -158,8 +161,9 @@ Here is the whole deployment definition for my test agent, trimmed to the fields
       "name": "aia_uc01",
       "build": "CodeZip",
       "entrypoint": "main.py",
-      "codeLocation": "src/",
+      "codeLocation": "app/aia_uc01/",
       "runtimeVersion": "PYTHON_3_13",
+      "networkMode": "PUBLIC",
       "protocol": "HTTP",
       "envVars": [{ "name": "MODEL_ID", "value": "deepseek.v3.2" }]
     }
@@ -172,7 +176,7 @@ Here is the whole deployment definition for my test agent, trimmed to the fields
 
 `create` writes this file with every resource array empty. The `agentcore add` family (`add agent`, `add memory`, `add gateway`) then pushes entries in. Hand edits are allowed, but the published schema is the authority because the CLI validates every field against it.
 
-Four fields in that runtime block are the ones you cannot get wrong without a failed deploy: `entrypoint` (the file the platform calls), `codeLocation` (`src/`), `build` (`CodeZip`, which means no container) and `protocol` (`HTTP`). The rest have defaults. `envVars` is how `MODEL_ID` reaches your code, so switching models is a JSON edit rather than a code change.
+Four fields in that runtime block are the ones you cannot get wrong without a failed deploy: `entrypoint` (the file the platform calls), `codeLocation` (`app/aia_uc01/`), `build` (`CodeZip`, which means no container) and `protocol` (`HTTP`). The rest have defaults. `envVars` is how `MODEL_ID` reaches your code, so switching models is a JSON edit rather than a code change.
 
 One naming detail confused me for a while: the project is `aiauc01` (the top-level `name` field) and the runtime is `aia_uc01` (`runtimes[].name`). CloudFormation names things after both, which is why the deployed runtime ID came out as `aiauc01_aia_uc01-LH8zQV86C2`.
 
@@ -224,7 +228,7 @@ Between the command and the last checkmark, six things happen:
 
 ![Deploy: six steps to READY, with measured timings](images/aws-agentcore-under-the-hood/F4-deploy-pipeline.png)
 
-1. **Package the code.** The CLI zips `src/` with platform dependencies into one asset. My hello-world agent produced a 41 MB zip; the local `.venv` is excluded. No image is built anywhere in the project.
+1. **Package the code.** The CLI zips whatever `codeLocation` names, with platform dependencies, into one asset. My hello-world agent produced a 41 MB zip; the local `.venv` is excluded. No image is built anywhere in the project.
 2. **Synthesize.** The vendored CDK app (`node dist/bin/cdk.js`) reads both JSON files and emits a CloudFormation template into `cdk.out/`.
 3. **Upload the asset.** The zip lands in the S3 bucket that `cdk bootstrap` created once per account and region. Without that one-time bootstrap, no CDK deployment can store an asset.
 4. **Create the stack.** CloudFormation provisions four resources: the runtime, an IAM role for it, a Bedrock model-access policy and a CDK metadata resource.

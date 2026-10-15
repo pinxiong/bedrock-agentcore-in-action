@@ -40,7 +40,7 @@
 <circle cx="94" cy="163.0" r="18" fill="url(#g-blue)"/>
 <text x="94" y="168.0" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14" font-weight="800" fill="white">1</text>
 <text x="126" y="156" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="14.5" font-weight="800" fill="#2563EB">YOUR CODE</text>
-<text x="126" y="178" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#475569">src/ - agent entrypoint, tools, model loading</text>
+<text x="126" y="178" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#475569">app/&lt;AgentName&gt;/ - entrypoint, tools, model loading</text>
 <rect x="442" y="138" width="76" height="16" rx="8" fill="white" stroke="#2563EB" stroke-width="1.2"/>
 <text x="480" y="149.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="8" font-weight="700" letter-spacing="0.5" fill="#2563EB">YOU MAINTAIN</text>
 <rect x="60" y="220" width="470" height="74" rx="12" fill="#EDE9FE" stroke="#7C3AED" stroke-width="2" filter="url(#ds)"/>

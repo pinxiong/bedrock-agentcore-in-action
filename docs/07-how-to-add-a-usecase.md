@@ -44,14 +44,16 @@ This reads `deep` from the map, then generates:
 
 ```
 usecases/08-your-idea/
-├── README.md      from the twelve-section template
-├── article.md     from the article template
-├── .env.example   placeholders only
-├── src/main.py    the baseline agent, verified entrypoint contract
-├── tests/         smoke.py plus the independence helper
-├── agentcore/     agentcore.json is yours to fill; cdk/ is generated
-├── diagrams/
-└── scripts/
+├── README.md               from the twelve-section template
+├── article.md              from the article template
+├── .env.example            placeholders only
+├── app/aia_uc08/           the baseline agent, verified entrypoint contract
+│   ├── main.py
+│   ├── model/
+│   └── pyproject.toml
+├── tests/                  smoke.py plus the independence helper
+├── agentcore/              agentcore.json is yours to fill; cdk/ is generated
+└── diagrams/
 ```
 
 Pass `--capabilities a,b` to override the map, and `--dry-run` to see what would
@@ -66,7 +68,7 @@ Three rules while you work, matching the contract:
 | Rule | Means |
 |---|---|
 | **I3** own stack | `agentcore/agentcore.json` must not reference another use case's stack. No `Fn.import_value`, no `terraform_remote_state`, no `Outputs` from a sibling. The verifier greps for all of these. |
-| **I4** own source | `src/` must not import another use case. If you need a helper, copy it in. |
+| **I4** own source | The directory `codeLocation` points at (the CLI's `app/<AgentName>/`) must not import another use case. If you need a helper, copy it in. |
 | **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `python aia.py down`. |
 
 The trade-off is duplication, and it is deliberate. Say so out loud in the

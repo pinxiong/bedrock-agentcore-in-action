@@ -333,7 +333,7 @@ vers = [
     ("AWS CLI", "2.x"),
     ("uv", "0.11.9 (template agents)"),
     ("Git", "2.39 (create runs git init)"),
-    ("Python", "3.11 local, CodeZip allows 3.10-3.13"),
+    ("Python", "3.11 local, CodeZip allows 3.10-3.14"),
     ("Region", "us-east-1 (whole series)"),
     ("Docker", "not needed - CodeZip builds"),
 ]
@@ -357,7 +357,7 @@ s = add_slide()
 title_block(s, "step 1 · scaffold", "agentcore create builds the skeleton", BLUE)
 num_badge(s, 11.85, 0.55, 0.75, 1, BLUE, BLUE_D)
 pic(s, "F3-directory-anatomy.png", 4.15, 2.05, w=5.6)
-txt(s, 0.6, 2.05, 3.4, 4.25, "create writes the whole\nagentcore/ tree - but only\ntwo files are yours to edit:\nagentcore.json and\naws-targets.json.\n\nEverything else is\nregenerable. --no-agent\nships no code folder.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
+txt(s, 0.6, 2.05, 3.4, 4.25, "create writes three things:\nthe project root, the\nagentcore/ tree, and a\nstarter agent in\napp/<AgentName>/.\n\ncodeLocation points there.\nThat folder is what gets\nzipped, deployed and\ndev-started.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 2 contract
@@ -373,7 +373,9 @@ dark_code(s, 0.6, 2.2, 6.9, 4.1, [
     ('  "runtimes": [{', CODE_TX),
     ('    "build": "CodeZip",', CODE_TX),
     ('    "entrypoint": "main.py",', CODE_TX),
+    ('    "codeLocation": "app/aia_uc01/",', CODE_TX),
     ('    "runtimeVersion": "PYTHON_3_13",', CODE_TX),
+    ('    "protocol": "HTTP",', CODE_TX),
     ('    "envVars": [{ "name": "MODEL_ID",', CODE_TX),
     ('      "value": "deepseek.v3.2" }]', CODE_TX),
     ("  }]", CODE_TX),
@@ -469,7 +471,7 @@ title_block(s, "cost", "One invoke costs about $0.0009", GREEN)
 cards = [
     ("$0.0007", "model tokens", "846 in + 82 out\ndeepseek.v3.2 @$0.62/$1.85 per M", BLUE, BLUE_B),
     ("$0.0002", "runtime compute", "≈ 7 s active compute\nidle sessions are free", TEAL, TEAL_B),
-    ("9m49s / 26s", "first deploy / redeploy", "cold = npm install (221 pkgs)\nwarm = asset hash only", ORANGE, ORANGE_B),
+    ("9m49s / 26s", "first deploy / redeploy", "cold = npm install dominates\nwarm = asset hash only", ORANGE, ORANGE_B),
 ]
 for i, (big, label, d, c, cb) in enumerate(cards):
     x = 0.6 + i * 4.15

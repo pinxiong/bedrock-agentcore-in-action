@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit checks for the streaming sanitizer in src/model/sanitize.py.
+"""Unit checks for the streaming sanitizer in app/{{AGENT_NAME}}/model/sanitize.py.
 
 The chunk lists below are the shapes actually measured against Bedrock on
 2026-10-14, including the case that matters most: the DeepSeek marker arrives
@@ -13,7 +13,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "app" / "{{AGENT_NAME}}"))
 
 from model.sanitize import StreamSanitizer  # noqa: E402
 

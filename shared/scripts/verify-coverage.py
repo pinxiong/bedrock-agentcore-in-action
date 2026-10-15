@@ -8,9 +8,10 @@ Reads docs/05-capability-map.yaml and enforces three classes of rules.
             usecases/<dir>/tests/smoke.py via a CAPABILITY_ASSERTIONS dict
   [INDEP]   (a) difficulty is declared, inside the scale bounds, and the sequence
                 over the ladder is non-decreasing
-            (b) every use case has its own iac/ directory and no cross-stack
+            (b) every use case has its own agentcore/ directory and no cross-stack
                 reference (ImportValue / remote_state / another use case's name)
-            (c) usecases/<dir>/src never imports another use case
+            (c) the directory a use case deploys (codeLocation in
+                agentcore/agentcore.json) never imports another use case
 
 Exit code 0 = all checks pass, 1 = at least one FAIL.
 
@@ -25,6 +26,7 @@ Requires PyYAML:  pip install pyyaml
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -277,26 +279,45 @@ def check_independence(root: Path, spec: dict, only: str | None, allow_missing: 
             else:
                 rep.ok(f"{uc['id']}: agentcore/ is self-contained")
 
-        src = uc_dir / "src"
-        if not src.exists():
-            rep.fail(f"{uc['id']}: no src/ directory (violates I4)")
-        else:
-            hits = []
-            for f in walk_files(src, suffix=".py"):
-                text = f.read_text(encoding="utf-8", errors="ignore")
-                for pattern in IMPORT_PATTERNS:
-                    if re.search(pattern, text, re.M):
-                        hits.append(f"{f.name}: {pattern}")
-                for other in all_dirs:
-                    if other == uc["dir"]:
-                        continue
-                    mod = Path(other).name.replace("-", "_")
-                    if re.search(rf"^\s*(from|import)\s+{re.escape(mod)}\b", text, re.M):
-                        hits.append(f"{f.name}: imports {other}")
-            if hits:
-                rep.fail(f"{uc['id']}: cross-use-case import -> {'; '.join(hits)}")
+        # I4 lives on the codeLocation directory, not on a hard-coded src/.
+        # The official layout is app/<AgentName>/; a BYO project can point the
+        # same field anywhere. Read it from the contract so both paths pass.
+        contract = iac / "agentcore.json"
+        code_location = None
+        if contract.exists():
+            try:
+                project_spec = json.loads(contract.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                rep.fail(f"{uc['id']}: agentcore/agentcore.json is not valid JSON ({exc})")
+                project_spec = {}
+            runtimes = project_spec.get("runtimes") or []
+            if runtimes:
+                code_location = runtimes[0].get("codeLocation")
+                if not code_location:
+                    rep.fail(f"{uc['id']}: runtimes[0] declares no codeLocation")
             else:
-                rep.ok(f"{uc['id']}: src/ does not import another use case")
+                rep.warn(f"{uc['id']}: contract declares no runtime yet, so I4 has nothing to check")
+        if code_location:
+            src = uc_dir / code_location
+            if not src.is_dir():
+                rep.fail(f"{uc['id']}: codeLocation '{code_location}' does not exist (violates I4)")
+            else:
+                hits = []
+                for f in walk_files(src, suffix=".py"):
+                    text = f.read_text(encoding="utf-8", errors="ignore")
+                    for pattern in IMPORT_PATTERNS:
+                        if re.search(pattern, text, re.M):
+                            hits.append(f"{f.name}: {pattern}")
+                    for other in all_dirs:
+                        if other == uc["dir"]:
+                            continue
+                        mod = Path(other).name.replace("-", "_")
+                        if re.search(rf"^\s*(from|import)\s+{re.escape(mod)}\b", text, re.M):
+                            hits.append(f"{f.name}: imports {other}")
+                if hits:
+                    rep.fail(f"{uc['id']}: cross-use-case import -> {'; '.join(hits)}")
+                else:
+                    rep.ok(f"{uc['id']}: {code_location} does not import another use case")
     print()
 
 
