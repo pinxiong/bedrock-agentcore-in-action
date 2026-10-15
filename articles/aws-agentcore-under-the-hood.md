@@ -26,7 +26,7 @@ What it is not matters more than what it is:
 
 If you have ever self-managed an agent on ECS or Fargate, the difference is sharp. No Dockerfile, no task definition, no target group, no health check target to configure. The runtime expects two routes from your code and provides everything else.
 
-## The mental model: three layers
+## Three layers, one direction
 
 You write agent code. You write two JSON files. The CLI generates everything else. AWS runs a CloudFormation stack that you never have to look at.
 

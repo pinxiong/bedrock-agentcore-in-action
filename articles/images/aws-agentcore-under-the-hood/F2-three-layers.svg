@@ -32,8 +32,8 @@
   </linearGradient>
 </defs>
 
-<rect x="40" y="24" width="114" height="21" rx="10.5" fill="#7C3AED"/>
-<text x="97" y="38.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">MENTAL MODEL</text>
+<rect x="40" y="24" width="90" height="21" rx="10.5" fill="#7C3AED"/>
+<text x="85" y="38.5" text-anchor="middle" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.2" fill="white">STRUCTURE</text>
 <text x="40" y="80" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="23" font-weight="800" fill="#0F172A">Three Layers, One Direction</text>
 <text x="40" y="102" font-family="'Helvetica Neue', 'PingFang SC', Arial, sans-serif" font-size="12.5" fill="#475569">You write code and JSON. The CLI generates everything else. AWS runs the stack.</text>
 <rect x="60" y="126" width="470" height="74" rx="12" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" filter="url(#ds)"/>

@@ -217,7 +217,7 @@ def fig2():
     W, H = 680, 496
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
              f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
-    hp, y = header("mental model", "Three Layers, One Direction",
+    hp, y = header("structure", "Three Layers, One Direction",
                    "You write code and JSON. The CLI generates everything else. AWS runs the stack.", PURPLE)
     parts += hp
     layers = [

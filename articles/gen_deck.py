@@ -254,7 +254,7 @@ n += 1
 s = add_slide()
 title_block(s, "agenda", "One walkthrough, three acts", PURPLE)
 acts = [
-    ("ACT I · KNOW IT", "What AgentCore is, and the three-layer mental model", PURPLE, PURPLE_B,
+    ("ACT I · KNOW IT", "What AgentCore is, and the three layers you own", PURPLE, PURPLE_B,
      ["What it is / what it is not", "Three layers, one direction"]),
     ("ACT II · RUN IT", "Environment, then five hands-on steps with real output", ORANGE, ORANGE_B,
      ["Environment checklist", "Step 1-5: scaffold, contract, deploy, local, invoke"]),
@@ -292,7 +292,7 @@ footer(s)
 # ACT I
 act_divider("I", "Know it", [
     ("What AgentCore is (and is not)", "a family of managed runtimes, 14 capabilities"),
-    ("The mental model", "you write code + JSON; the CLI generates the rest"),
+    ("Three layers, one direction", "you write code + JSON; the CLI generates the rest"),
 ], PURPLE)
 
 # S · F1
@@ -306,7 +306,7 @@ footer(s)
 # S · F2
 n += 1
 s = add_slide()
-title_block(s, "mental model", "You write code and JSON. The CLI generates the rest.", PURPLE)
+title_block(s, "structure", "You write code and JSON. The CLI generates the rest.", PURPLE)
 pic(s, "F2-three-layers.png", 3.22, 2.15, w=6.9)
 footer(s)
 

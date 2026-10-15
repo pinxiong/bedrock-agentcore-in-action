@@ -22,7 +22,7 @@ AgentCore 是一组面向 AI Agent 的托管运行时，全家桶共 14 项能�
 
 自管过 ECS 或 Fargate 的话，体感差异非常直接：没有 Dockerfile、没有任务定义、没有 target group、没有健康检查配置。Runtime 只要求你的代码提供两个路由，其他全是平台的。
 
-## 二、三层心智模型
+## 二、三层结构，一个方向
 
 **你写 Agent 代码，写两个 JSON 文件，CLI 生成其余一切，AWS 跑一个你永远不用看的 CloudFormation 栈。**
 
