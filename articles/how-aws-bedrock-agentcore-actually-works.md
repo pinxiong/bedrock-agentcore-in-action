@@ -280,10 +280,11 @@ async def invoke(payload, context):
         yield event
 ```
 
-Three design details (a production entrypoint also filters text deltas through a stream sanitizer; this demo runs without one, so the leak is visible in the invoke screenshot, see Troubleshooting):
+Three design details:
 
 - The entrypoint is an async generator. Every yielded dict becomes one server-sent event, so streaming is the platform's default shape, not an add-on.
 - `context.session_id` is the only state key you manage. Each session runs in its own microVM; the platform handles scaling.
+- A production entrypoint also filters text deltas through a stream sanitizer; this demo runs without one, so the leak is visible in the invoke screenshot (see Troubleshooting).
 
 ## Under the hood II: what observability records
 
