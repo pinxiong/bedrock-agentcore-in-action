@@ -1,6 +1,6 @@
 # 拆解 AWS Bedrock AgentCore 的底层机制
 
-> 本文是 AgentCore 系列第 0 篇。英文原版（canonical）：*How AWS Bedrock AgentCore Actually Works*，发布于 xiongpin.dev。
+> 本文是 AgentCore 系列第 0 篇。英文原版（canonical）：*How AWS Bedrock AgentCore Actually Works*，https://xiongpin.dev/posts/how-aws-bedrock-agentcore-actually-works/
 
 AWS Bedrock AgentCore 用一个 JSON 文件替代 Dockerfile、实例选型和手工 IAM。一条命令把这个文件变成一个可运行、可观测的线上 endpoint。本文按真实操作顺序走完全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。
 
@@ -14,9 +14,9 @@ AgentCore 是一组面向 AI Agent 的托管运行时，九项托管服务覆盖
 
 不是什么：
 
-- 不是新的 Agent 框架。 照旧用 Strands、LangChain、OpenAI SDK 或裸 Python 写 Agent。
-- 不是容器编排服务。 Runtime 是 serverless 的，每个 session 一个 microVM，扩缩容平台处理。
-- 不是模型路由器。 代码调 Bedrock 的方式和其他任何地方一样。
+- 不是新的 Agent 框架。照旧用 Strands、LangChain、OpenAI SDK 或裸 Python 写 Agent。
+- 不是容器编排服务。Runtime 是 serverless 的，每个 session 一个 microVM，扩缩容平台处理。
+- 不是模型路由器。代码调 Bedrock 的方式和其他任何地方一样。
 
 AgentCore 托管你的代码，加上一个 HTTP endpoint、一个 IAM 角色和一条 trace 管道。用过 ECS 或 Fargate 的读者会立刻感到差异：没有 Dockerfile、没有任务定义、没有 target group。
 
@@ -87,7 +87,7 @@ aws bedrock list-foundation-models --region us-east-1 \
 
 Runtime 的 IAM 角色。CLI 为 Runtime 自动生成 IAM 角色，策略含三组权限：`bedrock:InvokeModel*`（调模型）、`logs:*`（写 `/aws/bedrock-agentcore/runtimes/` 下日志组）、`xray:PutTraceSegments`（上报 trace）。这是一份最小权限模板，可供后续复用。
 
-已知问题： `agentcore --version` 报错但命令存在时，通常是被旧的 Python 包 `bedrock-agentcore-starter-toolkit` 遮蔽。`pip uninstall bedrock-agentcore-starter-toolkit` 解决。
+已知问题：`agentcore --version` 报错但命令存在时，通常是被旧的 Python 包 `bedrock-agentcore-starter-toolkit` 遮蔽。`pip uninstall bedrock-agentcore-starter-toolkit` 解决。
 
 ## Step 1 · 生成项目骨架
 
@@ -132,6 +132,7 @@ To continue, navigate to your new project:
 
 ```json
 {
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
   "name": "helloagent",
   "version": 1,
   "managedBy": "CDK",
@@ -196,10 +197,10 @@ agentcore deploy -y --target default
 ![部署六步流水线，附实测耗时](/images/how-aws-bedrock-agentcore-actually-works/F4-deploy-pipeline.png)
 
 1. 打包代码：`codeLocation` 指向的目录加平台依赖压成一个资产包。Hello World 41 MB，本地 `.venv` 被排除，全程无镜像构建。
-2. 合成：CLI 跑内置的 CDK app，读两个 JSON，把模板产出到 `cdk.out/`。
-3. 上传资产：zip 进 S3 桶，由 `cdk bootstrap` 一次性建好。
+2. 合成：CLI 跑内置的 CDK 工程（`node dist/bin/cdk.js`），读两个 JSON，把模板产出到 `cdk.out/`。
+3. 上传资产：zip 进 S3 桶，桶由 `cdk bootstrap` 每账号每区域一次性建好；没有这次 bootstrap，CDK 部署无处存放资产。
 4. 建栈：CloudFormation 建 4 个资源：Runtime、IAM 角色、Bedrock 模型访问策略、元信息。
-5. 记录状态：ARN 和 endpoint 写进 `deployed-state.json`。
+5. 记录状态：ARN 和 endpoint 写进 `agentcore/.cli/deployed-state.json`。
 6. 打印 endpoint。
 
 合成这步最能体现 schema-first 的本质。生成的 CDK app 没有任何项目知识：
@@ -222,7 +223,7 @@ async function main() {
 
 ## Step 4 · 本地先跑一遍
 
-`agentcore dev -l` 在本地运行同一个 app。模型调用仍走 Bedrock，需要凭证但不用部署。编辑 `main.py` 后热重载自动生效，无需重启。
+`agentcore dev -l` 在本地 `localhost:8080` 跑同一个 app。模型调用仍走 Bedrock，需要凭证但不用部署。编辑 `main.py` 后热重载自动生效，无需重启。
 
 ![agentcore dev -l 启动横幅：Uvicorn 跑在 localhost:8080，reloader 盯着 app/hello_agent/](/images/how-aws-bedrock-agentcore-actually-works/screenshot-4-local-run.png)
 
@@ -270,7 +271,7 @@ async def invoke(payload, context):
 三个设计要点：
 
 - 入口是异步生成器。每个 yield 的 dict 变成一个 SSE 事件，流式是平台的默认形态，不是附加项。
-- `context.session_id` 是状态分片键。每个 session 独立 microVM，扩缩容平台管。
+- `context.session_id` 是唯一需要你管理的状态键。每个 session 独立 microVM，扩缩容平台管。
 - 生产级入口还会给文本增量过一层流式过滤器；本演示未装，所以调用截图里泄漏可见（见「故障排查」）。
 
 ## 原理深挖 II：trace 记了什么
@@ -300,7 +301,7 @@ invoke_agent Strands Agents              gen_ai.agent.tools=["add_numbers"]  tok
 两个实测出来的坑：
 
 - span 是异步的。Transaction Search 约 10 分钟才能查到，invoke 完立刻 grep CloudWatch 必然失败。
-- 本地 dev 的 trace 没有独立 tool span，工具调用只记在日志里。要在 trace 里断言工具 span，必须打线上。
+- 本地 dev 的 trace 没有独立 tool span，工具调用只记在日志里；`execute_tool` span 只有线上 Runtime 会产出，要断言它必须打线上。
 
 ## 清理
 
@@ -318,7 +319,7 @@ agentcore status            # 应列不出任何已部署资源
 
 - 陈旧的 `cdk.out` 弄挂下一次 deploy。CLI 每次 synth 前删 `cdk.out`，残留状态导致 synth 报 `Subprocess exited with error 1`。手动跑 `cdk synth` 是通的，说明工程没坏。`rm -rf agentcore/cdk/cdk.out` 解决。
 - 改名即销毁。`name` 字段变成 CloudFormation 的 Logical ID，改名不是重命名，是删旧建新。
-- 模型往文本通道漏脚手架。DeepSeek 漏内部模板标记碎片（调用截图里可见），Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：是模型行为不是框架 bug。修复是在入口加流式安全过滤器，按 `messageStart` 为每个 assistant message 重建；官方 `01-features/06-observe` 样例有参考实现。
+- 模型往文本通道漏脚手架。DeepSeek 漏内部模板标记碎片（调用截图里可见），Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：是模型行为不是框架 bug。修复是在入口加流式安全过滤器：拦下标记前缀，收到 `messageStart` 就对每条 assistant 消息重置一次；官方 `01-features/06-observe` 样例有参考实现。
 - 区域不是 flag。所有 `--region` 猜测都报 `unknown option`，targets 文件说了算。
 - 模型回退到 Claude 触发地区限制。如果 `MODEL_ID` 没有正确从 envVars 加载，Strands SDK 默认使用 Claude 模型。不支持 Anthropic 模型的地区会报 `Access to Anthropic models is not allowed from unsupported countries`。检查 `agentcore.json` 的 envVars 是否包含 `MODEL_ID`，以及 `model/load.py` 是否将其显式传给 `BedrockModel` 构造函数，不要依赖 SDK 默认值。
 
