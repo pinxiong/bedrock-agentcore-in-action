@@ -274,7 +274,12 @@ async def invoke(payload, context):
 
 ## 原理深挖 II：trace 记了什么
 
-一次线上 invoke 在 X-Ray 里的 span 树（`agentcore traces list` 在调用后约 2 至 3 分钟能查到）：
+一次线上 invoke 在 X-Ray 里产生这棵 span 树，token 数也是实测的：
+
+```bash
+agentcore traces list          # 调用后 2 至 3 分钟能查到最近几次 trace
+agentcore traces get <trace-id>
+```
 
 ![agentcore traces list 与 traces get：上面那次 invoke 的 trace 排在列表第一行](/images/how-aws-bedrock-agentcore-actually-works/screenshot-6-observability.png)
 
