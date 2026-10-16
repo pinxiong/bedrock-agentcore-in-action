@@ -1,6 +1,6 @@
 # 内容规划：1 篇入门 + 7 篇用例，每篇三件套（中/英文章 + PPT）
 
-> 状态：规划稿，待用户确认结构后动工。入门篇英文初稿已成（`aws-agentcore-under-the-hood.md`，
+> 状态：规划稿，待用户确认结构后动工。入门篇英文初稿已成（`how-aws-bedrock-agentcore-actually-works.md`，
 > commit `83ea749`），作为 A0 的底稿。
 > 台账：待拍板事项见 `OPEN-DECISIONS.md`。
 
@@ -8,7 +8,7 @@
 
 | # | slug（图片目录同名） | 对应 | 英文标题（暂定，发布前按张力风格再出选项） | 核心卖点 | 状态 |
 |---|---|---|---|---|---|
-| A0 | `aws-agentcore-under-the-hood` | 入门（无用例绑定） | How AWS Bedrock AgentCore Actually Works: One JSON File In, Four CloudFormation Resources Out | schema-first 全景 + 底层机制 | 英文初稿 ✅ |
+| A0 | `how-aws-bedrock-agentcore-actually-works` | 入门（无用例绑定） | How AWS Bedrock AgentCore Actually Works: One JSON File In, Four CloudFormation Resources Out | schema-first 全景 + 底层机制 | 英文初稿 ✅ |
 | A1 | `agentcore-first-agent` | UC01 | Your First Bedrock AgentCore Agent: Deployed in 10 Minutes, No Docker | deploy 循环 + 观测闭环 | 计划 |
 | A2 | `agentcore-memory` | UC02 | Giving Your Agent a Memory That Survives Cold Starts | Memory | 计划 |
 | A3 | `agentcore-gateway-identity` | UC03 | One MCP Gateway for Every Tool Your Agent Does Not Own | Gateway + Identity | 计划 |

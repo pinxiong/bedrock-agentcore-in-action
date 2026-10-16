@@ -165,17 +165,17 @@ def fig0():
 def fig1():
     W = 680
     caps = [
-        ("Runtime", "lit"), ("Memory", PURPLE), ("Gateway", BLUE), ("Identity", BLUE), ("Policy", BLUE),
-        ("Harness", TEAL), ("Web Search", TEAL), ("Browser", TEAL), ("Code Interpreter", TEAL), ("Observability", "lit"),
-        ("Evaluations", YELLOW), ("Optimization", YELLOW), ("Payments", PINK), ("Registry", PINK),
+        ("Runtime", "lit"), ("Memory", PURPLE), ("Gateway", BLUE),
+        ("Identity", BLUE), ("Policy", BLUE), ("Code Interpreter", TEAL),
+        ("Browser", TEAL), ("Observability", "lit"), ("Evaluations", YELLOW),
     ]
-    cell_w, cell_h, gap = 120, 88, 10
-    cols = 5
+    cell_w, cell_h, gap = 150, 96, 12
+    cols = 3
     grid_w = cols * cell_w + (cols - 1) * gap
     ox = (W - grid_w) // 2
-    hp, oy = header("what it is", "AgentCore: 14 Managed Capabilities",
-                    "This article puts two of the 14 to work: Runtime and Observability.", GREEN)
-    H = oy + 3 * (cell_h + gap) + 64
+    hp, oy = header("what it is", "AgentCore: 9 Managed Services",
+                    "This article uses two of the nine: Runtime and Observability.", GREEN)
+    H = oy + 3 * (cell_h + gap) + 96
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}">',
              f'<rect width="{W}" height="{H}" fill="white"/>', DEFS]
     parts += hp
@@ -195,14 +195,15 @@ def fig1():
             parts.append(f'<rect x="{x}" y="{y}" width="{cell_w}" height="5" rx="2.5" fill="{kind}" opacity="0.9"/>')
             fs = 12 if len(name) <= 12 else 10.5
             parts.append(f'<text x="{x+cell_w/2}" y="{y+cell_h/2+4}" text-anchor="middle" font-family="{SANS}" font-size="{fs}" font-weight="700" fill="{kind}">{esc(name)}</text>')
-    # legend (two rows of three)
+    # legend (two rows)
     ly = oy + 3 * (cell_h + gap) + 24
-    legend = [("Runtime + Observability", GREEN), ("Access: gateway, identity, policy", BLUE),
-              ("Tools: search, browser, code, harness", TEAL), ("Memory", PURPLE),
-              ("Quality: evaluations, optimization", YELLOW), ("Business: payments, registry", PINK)]
+    legend = [("Runtime + Observability - this article", GREEN),
+              ("Access & tools: Gateway, Policy, Identity", BLUE),
+              ("Execution: Code Interpreter, Browser", TEAL),
+              ("Memory", PURPLE), ("Quality: Evaluations", YELLOW)]
     for k, (label, color) in enumerate(legend):
-        row, col = divmod(k, 3)
-        lx = 70 + col * 200
+        row, col = divmod(k, 2)
+        lx = 70 + col * 290
         lyk = ly + row * 20
         parts.append(f'<circle cx="{lx+5}" cy="{lyk-4}" r="4.5" fill="{color}"/>')
         parts.append(f'<text x="{lx+15}" y="{lyk}" font-family="{SANS}" font-size="10" fill="{SLATE}">{esc(label)}</text>')
@@ -221,7 +222,7 @@ def fig2():
                    "You write code and JSON. The CLI generates everything else. AWS runs the stack.", PURPLE)
     parts += hp
     layers = [
-        ("1", "YOUR CODE", "app/<AgentName>/ - entrypoint, tools, model loading", "YOU MAINTAIN", BLUE, BLUE_B, "g-blue"),
+        ("1", "BUSINESS CODE", "app/<AgentName>/ - entrypoint, tools, model loading", "YOU MAINTAIN", BLUE, BLUE_B, "g-blue"),
         ("2", "THE CONTRACT", "agentcore.json + aws-targets.json - written by hand", "YOU MAINTAIN", PURPLE, PURPLE_B, "g-purple"),
         ("3", "THE PLUMBING", "agentcore/cdk/ - a CDK project regenerated on every deploy", "CLI REGENERATES", ORANGE, ORANGE_B, "g-orange"),
     ]
@@ -250,7 +251,7 @@ def fig2():
     ry = y + 3 * (bh + bg_) + 6
     parts.append(f'<rect x="60" y="{ry}" width="560" height="52" rx="12" fill="url(#g-ink)" filter="url(#ds)"/>')
     parts.append(f'<text x="340" y="{ry+22}" text-anchor="middle" font-family="{SANS}" font-size="14" font-weight="800" fill="white">Declare in JSON. Everything generated is regenerable.</text>')
-    parts.append(f'<text x="340" y="{ry+41}" text-anchor="middle" font-family="{SANS}" font-size="10.5" fill="#93C5FD">The rest of this article is that one rule, traced end to end.</text>')
+    parts.append(f'<text x="340" y="{ry+41}" text-anchor="middle" font-family="{SANS}" font-size="10.5" fill="#93C5FD">Two files are yours; everything else is regenerated.</text>')
     parts.append('</svg>')
     svg = "\n".join(parts)
     return save_svg(svg, "F2-three-layers"), "F2-three-layers"
@@ -316,12 +317,11 @@ def fig3():
     note_line(lx, 14.6, "inside agentcore/ are yours to edit.", MUTED)
 
     # ---- right: the agent directory, which is yours from now on ----
-    panel(rx, BLUE, BLUE_B, "YOUR AGENT CODE")
+    panel(rx, BLUE, BLUE_B, "BUSINESS CODE")
     right = [
         (0, "app/hello_agent/", INK, True, "codeLocation", None),
         (1, "main.py", BLUE, False, "entrypoint", None),
         (1, "model/load.py", BLUE, False, "model wiring", None),
-        (1, "model/sanitize.py", BLUE, False, "output filter", None),
         (1, "mcp_client/", SLATE, False, "", None),
         (1, "skills/", SLATE, False, "", None),
         (1, "pyproject.toml", SLATE, False, "uv builds .venv", None),

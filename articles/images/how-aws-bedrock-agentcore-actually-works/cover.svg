@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-labelledby="cvTitle">
+  <title id="cvTitle">Cover: How AWS Bedrock AgentCore actually works. One JSON file in, four CloudFormation resources out, measured on a real deploy.</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a1024"/>
+      <stop offset="1" stop-color="#0d1c3a"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.12" cy="0.05" r="0.75">
+      <stop offset="0" stop-color="#f59e0b" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.95" cy="0.9" r="0.8">
+      <stop offset="0" stop-color="#2563eb" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0.45" cy="1.15" r="0.6">
+      <stop offset="0" stop-color="#14b8a6" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#14b8a6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#463414"/>
+      <stop offset="1" stop-color="#1b2236"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d403c"/>
+      <stop offset="1" stop-color="#1b2236"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#173561"/>
+      <stop offset="1" stop-color="#1b2236"/>
+    </linearGradient>
+    <clipPath id="c1"><rect x="72" y="392" width="336" height="204" rx="18"/></clipPath>
+    <clipPath id="c2"><rect x="432" y="392" width="336" height="204" rx="18"/></clipPath>
+    <clipPath id="c3"><rect x="792" y="392" width="336" height="204" rx="18"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect width="1200" height="675" fill="url(#glowA)"/>
+  <rect width="1200" height="675" fill="url(#glowB)"/>
+  <rect width="1200" height="675" fill="url(#glowC)"/>
+
+  <g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+
+    <rect x="72" y="78" width="42" height="5" rx="2.5" fill="#fbbf24"/>
+    <text x="130" y="87" font-size="20" font-weight="700" letter-spacing="3" fill="#fbbf24">RUNTIME + OBSERVABILITY · MEASURED</text>
+
+    <text x="72" y="214" font-size="86" font-weight="800" fill="#ffffff">HOW BEDROCK</text>
+    <text x="72" y="308" font-size="86" font-weight="800" fill="#ffffff">AGENTCORE <tspan fill="#38bdf8">WORKS</tspan></text>
+    <text x="72" y="354" font-size="23" fill="#a6b6cd">One JSON file in, four CloudFormation resources out</text>
+
+    <rect x="1046" y="297" width="88" height="19" rx="9.5" fill="#fbbf24" opacity="0.22"/>
+    <rect x="1052" y="300" width="76" height="13" rx="6.5" fill="#fbbf24"/>
+    <rect x="1006" y="315" width="128" height="19" rx="9.5" fill="#fb923c" opacity="0.22"/>
+    <rect x="1012" y="318" width="116" height="13" rx="6.5" fill="#fb923c"/>
+    <rect x="966" y="333" width="168" height="19" rx="9.5" fill="#2dd4bf" opacity="0.22"/>
+    <rect x="972" y="336" width="156" height="13" rx="6.5" fill="#2dd4bf"/>
+    <rect x="926" y="351" width="208" height="19" rx="9.5" fill="#60a5fa" opacity="0.22"/>
+    <rect x="932" y="354" width="196" height="13" rx="6.5" fill="#60a5fa"/>
+
+    <rect x="72" y="392" width="336" height="204" rx="18" fill="url(#g1)" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>
+    <g clip-path="url(#c1)"><rect x="72" y="392" width="336" height="7" fill="#f59e0b"/></g>
+    <text x="98" y="470" font-size="36" font-weight="800" fill="#fbbf24">ONE FILE</text>
+    <text x="98" y="502" font-size="19" fill="#cbd5e1">the JSON is the interface</text>
+    <line x1="98" y1="528" x2="382" y2="528" stroke="#f59e0b" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="98" y="558" font-size="15.5" fill="#fcd34d">Everything else is regenerable</text>
+
+    <rect x="432" y="392" width="336" height="204" rx="18" fill="url(#g2)" stroke="#14b8a6" stroke-opacity="0.6" stroke-width="1.5"/>
+    <g clip-path="url(#c2)"><rect x="432" y="392" width="336" height="7" fill="#14b8a6"/></g>
+    <text x="458" y="470" font-size="36" font-weight="800" fill="#2dd4bf">ONE COMMAND</text>
+    <text x="458" y="502" font-size="19" fill="#cbd5e1">six steps to READY</text>
+    <line x1="458" y1="528" x2="742" y2="528" stroke="#14b8a6" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="458" y="558" font-size="15.5" fill="#5eead4">Measured: 3 min 29 s</text>
+
+    <rect x="792" y="392" width="336" height="204" rx="18" fill="url(#g3)" stroke="#3b82f6" stroke-opacity="0.6" stroke-width="1.5"/>
+    <g clip-path="url(#c3)"><rect x="792" y="392" width="336" height="7" fill="#3b82f6"/></g>
+    <text x="818" y="470" font-size="36" font-weight="800" fill="#60a5fa">ONE TRACE</text>
+    <text x="818" y="502" font-size="19" fill="#cbd5e1">the agent loop, visible</text>
+    <line x1="818" y1="528" x2="1102" y2="528" stroke="#3b82f6" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="818" y="558" font-size="15.5" fill="#93c5fd">902 tokens, tool span</text>
+  </g>
+</svg>

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Generate the A0 intro deck (v2, 23 slides, 16:9).
+"""Generate the A0 intro deck (22 slides, 16:9).
 
-Design v2 (2026-10-15) - answers "太素了":
+Design:
 - dark gradient title / act-divider / closing slides for rhythm and depth
 - every content slide: kicker chip + big bold title + gradient accent underline
 - left accent stripe on content slides
 - rounded cards, gradient number badges, dark code panels with colored lines
 - LIVE DEMO chips on terminal slides (video recording cues)
+- SCREENSHOT chips + speaker notes on slides where real screenshots should
+  replace AI-generated figures or text output panels (6 spots, matching the article)
 - figures reuse the article PNGs verbatim (white-bg, vivid) so all three
   deliverables (EN article / ZH article / deck) share one visual system.
 """
@@ -19,7 +21,7 @@ from pptx.enum.shapes import MSO_SHAPE
 from pptx.oxml.ns import qn
 
 OUT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "decks"))
-IMG = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "images", "aws-agentcore-under-the-hood"))
+IMG = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "images", "how-aws-bedrock-agentcore-actually-works"))
 
 # ---- palette (matches the figures) ----
 INK     = RGBColor(0x0F, 0x17, 0x2A)
@@ -214,6 +216,30 @@ def live_chip(slide, x, y):
     p.font.name = "Helvetica Neue"
     return c
 
+def screenshot_chip(slide, x, y, num):
+    c = card(slide, x, y, 2.0, 0.34, fill=BLUE, line_color=None, radius=0.5)
+    tf = c.text_frame
+    tf.word_wrap = False
+    p = tf.paragraphs[0]
+    p.text = f"📷 SCREENSHOT {num}"
+    p.alignment = PP_ALIGN.CENTER
+    p.font.size = Pt(11)
+    p.font.bold = True
+    p.font.color.rgb = WHITE
+    p.font.name = "Helvetica Neue"
+    return c
+
+def screenshot_note(slide, num, command, capture, replace_on_slide):
+    """Add speaker notes instructing where to insert a real screenshot."""
+    notes_slide = slide.notes_slide
+    tf = notes_slide.notes_text_frame
+    tf.text = (
+        f"SCREENSHOT {num}\n\n"
+        f"Run: {command}\n\n"
+        f"Capture: {capture}\n\n"
+        f"Replace on this slide: {replace_on_slide}"
+    )
+
 def pic(slide, name, x, y, w=None, h=None):
     path = os.path.join(IMG, name)
     if w and h:
@@ -244,8 +270,8 @@ n += 1
 s = add_slide(); dark_bg(s)
 grad_rect(s, 0.9, 2.02, 1.7, 0.1, ORANGE_O, ORANGE, angle=0)
 txt(s, 0.9, 2.3, 11.5, 2.0, "How AWS Bedrock AgentCore\nActually Works", size=44, color=WHITE, bold=True, spacing=1.02)
-txt(s, 0.9, 4.35, 11.5, 0.6, "One JSON File In, Four CloudFormation Resources Out", size=21, color=CODE_BLU, bold=True)
-txt(s, 0.9, 5.55, 11.5, 0.5, "AgentCore in Action · measured on a real deployment in us-east-1", size=14, color=CODE_GR)
+txt(s, 0.9, 4.35, 11.5, 0.6, "From one JSON file to a running, observable agent", size=21, color=CODE_BLU, bold=True)
+txt(s, 0.9, 5.55, 11.5, 0.5, "AgentCore in Action · measured in us-east-1", size=14, color=CODE_GR)
 txt(s, 0.9, 6.15, 11.5, 0.4, "xiongpin.dev", size=13, color=CODE_GR)
 
 # =====================================================================
@@ -285,13 +311,13 @@ txt(s, 1.0, 3.0, 5.1, 3.2, "Write a Dockerfile\nPick an instance size\nHand-roll
 card(s, 6.9, 2.3, 5.85, 4.1, fill=GREEN_B, line_color=GREEN, edge=GREEN, radius=0.06)
 txt(s, 7.3, 2.65, 5.0, 0.5, "AgentCore", size=17, color=GREEN_D, bold=True)
 txt(s, 7.3, 3.0, 5.1, 3.2, "One JSON file\nOne command\n\nA running, observable endpoint", size=17, color=INK, spacing=1.5, anchor=MSO_ANCHOR.MIDDLE)
-txt(s, 0.6, 6.6, 12.13, 0.4, "Everything between them is this article.", size=13, color=MUTED, italic=True, align=PP_ALIGN.CENTER)
+txt(s, 0.6, 6.6, 12.13, 0.4, "One JSON file replaces all of it.", size=13, color=MUTED, italic=True, align=PP_ALIGN.CENTER)
 footer(s)
 
 # =====================================================================
 # ACT I
 act_divider("I", "Know it", [
-    ("What AgentCore is (and is not)", "a family of managed runtimes, 14 capabilities"),
+    ("What AgentCore is (and is not)", "a family of managed runtimes, 9 managed services"),
     ("Three layers, one direction", "you write code + JSON; the CLI generates the rest"),
 ], PURPLE)
 
@@ -300,14 +326,14 @@ n += 1
 s = add_slide()
 title_block(s, "what it is", "A family of managed runtimes, not a new framework", GREEN,
             sub="Not a framework · not container orchestration · not a model router. Serverless microVM per session.")
-pic(s, "F1-capability-map.png", 3.37, 2.3, w=6.6)
+pic(s, "F1-capability-map.png", 3.65, 2.3, w=6.0)
 footer(s)
 
 # S · F2
 n += 1
 s = add_slide()
 title_block(s, "structure", "You write code and JSON. The CLI generates the rest.", PURPLE)
-pic(s, "F2-three-layers.png", 3.22, 2.15, w=6.9)
+pic(s, "F2-three-layers.png", 3.45, 2.15, w=6.4)
 footer(s)
 
 # =====================================================================
@@ -326,14 +352,14 @@ s = add_slide()
 title_block(s, "environment", "Before step 1: align the toolchain", TEAL)
 # left: versions card
 card(s, 0.6, 2.25, 6.1, 4.15, fill=WHITE, line_color=LINE, edge=TEAL, radius=0.05)
-txt(s, 0.95, 2.5, 5.4, 0.4, "Versions (verified 2026-10-14)", size=15, color=TEAL, bold=True)
+txt(s, 0.95, 2.5, 5.4, 0.4, "Versions", size=15, color=TEAL, bold=True)
 vers = [
-    ("Node.js", "22.x (CLI needs 20+)"),
+    ("Node.js", "24.x (CLI needs 20+)"),
     ("AgentCore CLI", "0.31.1"),
     ("AWS CLI", "2.x"),
     ("uv", "0.11.9 (template agents)"),
     ("Git", "2.39 (create runs git init)"),
-    ("Python", "3.11 local, CodeZip allows 3.10-3.14"),
+    ("Python", "3.12 app venv, CodeZip allows 3.10-3.14"),
     ("Region", "us-east-1 (whole series)"),
     ("Docker", "not needed - CodeZip builds"),
 ]
@@ -344,20 +370,23 @@ for k, v in vers:
     yy += 0.42
 # right: permissions card
 card(s, 7.0, 2.25, 5.75, 4.15, fill=WHITE, line_color=LINE, edge=BLUE, radius=0.05)
-txt(s, 7.35, 2.5, 5.0, 0.4, "Two identities, two permission sets", size=15, color=BLUE, bold=True)
-txt(s, 7.35, 3.1, 5.1, 1.1, "You (deployer): create CFN stacks, upload to the bootstrap bucket, manage AgentCore resources.", size=14, color=SLATE, spacing=1.12)
-txt(s, 7.35, 4.25, 5.1, 1.4, "The runtime (generated role): bedrock:InvokeModel* + logs:* + xray:PutTraceSegments. A least-privilege template for free.", size=14, color=SLATE, spacing=1.12)
+txt(s, 7.35, 2.5, 5.0, 0.4, "Runtime IAM role", size=15, color=BLUE, bold=True)
+txt(s, 7.35, 3.1, 5.1, 2.0, "The CLI generates the runtime role: bedrock:InvokeModel* + logs:* + xray:PutTraceSegments. A least-privilege template for free.", size=14, color=SLATE, spacing=1.12)
 card(s, 7.35, 5.7, 5.05, 0.55, fill=RED_B, line_color=RED, radius=0.3)
 txt(s, 7.55, 5.78, 4.8, 0.4, "Trap: old Python CLI shadows npm one - pip uninstall it", size=11.5, color=RED_D, bold=True)
+screenshot_note(s, 1,
+    "node --version && uv --version && git --version && agentcore --version && aws sts get-caller-identity --query '[Account,Arn]' --output text && aws configure get region && aws bedrock list-foundation-models --region us-east-1 --query 'modelSummaries[?modelId==`deepseek.v3.2`].modelId' --output text",
+    "One full terminal screen showing the prompt, all version-check commands, their output, and the clock",
+    "This screenshot is optional for the deck; the version table above already conveys the information")
 footer(s)
 
-# S · step 1 (F3)
+# S · step 1 (screenshot 2 - directory tree)
 n += 1
 s = add_slide()
 title_block(s, "step 1 · scaffold", "agentcore create builds the skeleton", BLUE)
 num_badge(s, 11.85, 0.55, 0.75, 1, BLUE, BLUE_D)
-pic(s, "F3-directory-anatomy.png", 4.15, 2.05, w=5.6)
-txt(s, 0.6, 2.05, 3.4, 4.25, "create writes three things:\nthe project root, the\nagentcore/ tree, and a\nstarter agent in\napp/<AgentName>/.\n\ncodeLocation points there.\nThat folder is what gets\nzipped, deployed and\ndev-started.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
+pic(s, "screenshot-2-directory-tree.png", 7.3, 2.0, h=4.7)
+txt(s, 0.6, 2.05, 5.7, 4.25, "create writes three things:\nthe project root, the\nagentcore/ tree, and a\nstarter agent in\napp/<AgentName>/.\n\ncodeLocation points there.\nThat folder is what gets\nzipped, deployed and\ndev-started.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 2 contract
@@ -402,20 +431,8 @@ n += 1
 s = add_slide()
 title_block(s, "step 3 · deploy", "What success looks like", ORANGE)
 live_chip(s, 10.9, 1.62)
-dark_code(s, 0.6, 2.2, 12.15, 4.15, [
-    ("$ agentcore deploy -y --target default", CODE_GRN),
-    ("✓ Load deployment target", CODE_TX),
-    ("✓ Validate project", CODE_TX),
-    ("✓ Sync CDK dependencies", CODE_TX),
-    ("✓ Build CDK project", CODE_TX),
-    ("✓ Synthesize CloudFormation", CODE_TX),
-    ("✓ Deploy to AWS", CODE_TX),
-    ("✓ Deployed to 'default' (stack: AgentCore-helloagent-default)", CODE_TX),
-    ("  Runtime ARN: arn:aws:bedrock-agentcore:us-east-1:123456789012:", CODE_BLU),
-    ("               runtime/helloagent_hello_agent-nxpWmb7y9F", CODE_BLU),
-    ("", CODE_TX),
-    ("# this deploy: 3 min 29 s   ·   code-only redeploy: 1 min 26 s", CODE_GR),
-], size=16)
+pic(s, "screenshot-3-first-deploy.png", 3.25, 1.95, w=6.8)
+txt(s, 0.6, 6.55, 12.1, 0.4, "this deploy 3 min 29 s · code-only redeploy 1 min 26 s · first ever in account 9 min 49 s", size=13, color=MUTED, align=PP_ALIGN.CENTER)
 footer(s)
 
 # S · CDK is a compiler
@@ -430,7 +447,7 @@ dark_code(s, 0.6, 2.2, 7.7, 3.0, [
     ("const spec    = await configIO.readProjectSpec();", CODE_TX),
     ("const targets = await configIO.readAWSDeploymentTargets();", CODE_TX),
 ], size=14)
-txt(s, 0.6, 5.5, 7.7, 0.8, "Zero hard-coded names in the generated project (grepped).\nStack name = AgentCore-<projectName>-<targetName>, both from the JSON.", size=14, color=SLATE, spacing=1.15)
+txt(s, 0.6, 5.5, 7.7, 0.8, "The CDK app reads agentcore.json and aws-targets.json by path.\nNo project-specific logic: a compiler driven by the two files.", size=14, color=SLATE, spacing=1.15)
 card(s, 8.7, 2.2, 4.05, 4.1, fill=PURPLE_B, line_color=PURPLE, edge=PURPLE, radius=0.07)
 txt(s, 9.05, 2.2, 3.4, 4.1, "Same TypeScript,\ndifferent JSON\n→ different stack.\n\nChange the schema,\nnot the plumbing.\n\nThat is what\nschema-first means\nin practice.", size=15, color=INK, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
@@ -441,17 +458,13 @@ s = add_slide()
 title_block(s, "step 4 · run it locally", "Same app, same routes, no deployment", TEAL)
 num_badge(s, 11.85, 0.55, 0.75, 4, TEAL, TEAL_D)
 live_chip(s, 9.15, 1.62)
-dark_code(s, 0.6, 2.2, 6.6, 2.4, [
+dark_code(s, 0.6, 2.2, 6.6, 1.3, [
     ("$ agentcore dev -l", CODE_GRN),
     ("Server: http://localhost:8080/invocations", CODE_TX),
     ("(GET /ping + POST /invocations - same two routes)", CODE_GR),
 ], size=14)
-dark_code(s, 0.6, 4.85, 6.6, 1.5, [
-    ("$ curl -s -X POST localhost:8080/invocations \\", CODE_GRN),
-    ('   -d \'{"prompt":"What is 128 plus 256?"}\'', CODE_TX),
-    ("→ SSE stream, toolUse add_numbers, answer 384", CODE_BLU),
-], size=13)
-txt(s, 7.6, 2.2, 5.1, 4.15, "Uvicorn + hot reload.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nFlags worth knowing:\n-p port, -b TUI, --skip-deploy.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
+pic(s, "screenshot-4-local-run.png", 0.6, 3.7, w=6.6)
+txt(s, 7.6, 2.2, 5.1, 4.15, "Local server on localhost:8080.\nModel calls still go to Bedrock:\ncredentials needed, deployment not.\n\nEdit main.py while it runs:\nthe reloader picks it up\nwithout a restart.", size=15, color=SLATE, spacing=1.2, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
 # S · step 5 cloud invoke (F5)
@@ -459,9 +472,14 @@ n += 1
 s = add_slide()
 title_block(s, "step 5 · invoke", "The deployed runtime answers through the data plane", GREEN)
 num_badge(s, 11.85, 0.55, 0.75, 5, GREEN, GREEN_D)
+screenshot_chip(s, 7.0, 0.5, 5)
 live_chip(s, 9.15, 1.62)
 pic(s, "F5-one-surface.png", 3.72, 2.05, w=5.9)
 txt(s, 0.6, 6.5, 12.1, 0.45, "agentcore invoke = a CLI client for the hosted /invocations endpoint, not a third interface.", size=13, color=MUTED, align=PP_ALIGN.CENTER)
+screenshot_note(s, 5,
+    "agentcore invoke --prompt \"What is 17 plus 25? Use the tool.\"",
+    "The invoke screen with runtime ARN and session ID visible, confirming this hit the deployed endpoint",
+    "This screenshot can be added as a small inset or replace the F5 figure on the right side")
 footer(s)
 
 # S · cost
@@ -508,29 +526,30 @@ card(s, 8.5, 2.2, 4.25, 4.1, fill=BLUE_B, line_color=BLUE, edge=BLUE, radius=0.0
 txt(s, 8.85, 2.2, 3.6, 4.1, "GET  /ping\nPOST /invocations\n\nyield → one SSE event\n\nsession_id = your\nstate key. The platform\nhandles the microVMs.\n\nMODEL_ID = an env var\nfrom agentcore.json.", size=14.5, color=INK, spacing=1.18, anchor=MSO_ANCHOR.MIDDLE)
 footer(s)
 
-# S · trace (F6)
+# S · trace (screenshot 6 - observability)
 n += 1
 s = add_slide()
 title_block(s, "under the hood ii", "The trace teaches the agent loop without reading source", GREEN)
-pic(s, "F6-span-tree.png", 3.47, 1.95, w=6.4)
-txt(s, 0.6, 6.5, 12.1, 0.5, "Caveats: spans need ~10 min to query · local dev records no tool span - assert against the deployment.", size=13.5, color=RED_D, bold=True, align=PP_ALIGN.CENTER)
+pic(s, "screenshot-6-observability.png", 2.65, 1.95, w=8.0)
+txt(s, 0.6, 6.15, 12.1, 0.5, "Caveats: spans need ~10 min to query · local dev records no tool span - assert against the deployment.", size=13.5, color=RED_D, bold=True, align=PP_ALIGN.CENTER)
 footer(s)
 
 # S · four failures
 n += 1
 s = add_slide()
-title_block(s, "what broke", "Four failures worth passing on", RED)
+title_block(s, "what broke", "Common failures", RED)
 fails = [
     ("Stale cdk.out fails the next deploy", "CLI deletes it before synth; leftover state kills synth. rm -rf agentcore/cdk/cdk.out fixes it.", RED),
-    ("Renaming is destroying", "name → CloudFormation logical ID. Rename = delete old runtime + create new.", ORANGE),
+    ("Renaming is destroying", "name = CloudFormation logical ID. Rename = delete old runtime + create new.", ORANGE),
     ("Models leak scaffolding into text", "DSML markers, <thinking> blocks. Verified with Strands removed. Stream-safe filter at the entrypoint.", PURPLE),
-    ("Region is not a flag", "--region → unknown option. The targets file decides; it fills itself in on first deploy.", BLUE),
+    ("Region is not a flag", "--region = unknown option. The targets file decides; it fills itself in on first deploy.", BLUE),
+    ("Model fallback triggers geo-restriction", "SDK defaults to Claude if MODEL_ID isn't loaded. Unsupported regions see Anthropic access error. Check envVars + model/load.py.", TEAL),
 ]
-pos = [(0.6, 2.2), (6.75, 2.2), (0.6, 4.5), (6.75, 4.5)]
+pos = [(0.6, 2.0), (6.75, 2.0), (0.6, 3.73), (6.75, 3.73), (3.69, 5.46)]
 for (t, d, c), (x, y) in zip(fails, pos):
-    card(s, x, y, 5.95, 2.05, fill=WHITE, line_color=LINE, edge=c, radius=0.07)
-    txt(s, x + 0.35, y + 0.2, 5.3, 0.55, t, size=16.5, color=INK, bold=True)
-    txt(s, x + 0.35, y + 0.85, 5.35, 1.1, d, size=13.5, color=SLATE, spacing=1.12)
+    card(s, x, y, 5.95, 1.53, fill=WHITE, line_color=LINE, edge=c, radius=0.07)
+    txt(s, x + 0.3, y + 0.1, 5.3, 0.45, t, size=14.5, color=INK, bold=True)
+    txt(s, x + 0.3, y + 0.55, 5.35, 0.9, d, size=12, color=SLATE, spacing=1.1)
 footer(s)
 
 # S · takeaways
@@ -561,6 +580,6 @@ grad_rect(s, 0.95, 4.55, 1.7, 0.09, ORANGE_O, ORANGE, angle=0)
 txt(s, 0.9, 4.95, 11.5, 0.5, "AgentCore in Action · Article 0 · xiongpin.dev", size=17, color=CODE_BLU, bold=True)
 
 # ---- save ----
-out_path = os.path.abspath(os.path.join(OUT, "aws-agentcore-under-the-hood.pptx"))
+out_path = os.path.abspath(os.path.join(OUT, "how-aws-bedrock-agentcore-actually-works.pptx"))
 prs.save(out_path)
 print(f"saved: {out_path}  ({n} slides)")

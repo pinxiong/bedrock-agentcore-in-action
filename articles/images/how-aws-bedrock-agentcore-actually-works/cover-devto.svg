@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img" aria-labelledby="cvTitle">
+  <title id="cvTitle">Cover (Dev.to): How AWS Bedrock AgentCore actually works. One JSON file in, four CloudFormation resources out.</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a1024"/>
+      <stop offset="1" stop-color="#0d1c3a"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.10" cy="0.02" r="0.85">
+      <stop offset="0" stop-color="#f59e0b" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.98" cy="1.05" r="0.9">
+      <stop offset="0" stop-color="#2563eb" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0.55" cy="1.25" r="0.7">
+      <stop offset="0" stop-color="#14b8a6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#14b8a6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1000" height="420" fill="url(#bg)"/>
+  <rect width="1000" height="420" fill="url(#glowA)"/>
+  <rect width="1000" height="420" fill="url(#glowB)"/>
+  <rect width="1000" height="420" fill="url(#glowC)"/>
+
+  <g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+
+    <rect x="62" y="40" width="34" height="4.5" rx="2.25" fill="#fbbf24"/>
+    <text x="108" y="48" font-size="15" font-weight="700" letter-spacing="2.5" fill="#fbbf24">AWS BEDROCK AGENTCORE · ONE JSON FILE, FOUR RESOURCES</text>
+
+    <text x="62" y="140" font-size="58" font-weight="800" fill="#ffffff">HOW BEDROCK</text>
+    <text x="62" y="204" font-size="58" font-weight="800" fill="#ffffff">AGENTCORE <tspan fill="#38bdf8">WORKS</tspan></text>
+    <text x="62" y="244" font-size="19" fill="#a6b6cd">A step-by-step walkthrough, measured on a real deploy</text>
+
+    <rect x="62" y="330" width="99" height="36" rx="18" fill="#f59e0b" opacity="0.16"/>
+    <text x="111" y="353" font-size="14" font-weight="700" fill="#fbbf24" text-anchor="middle">ONE JSON</text>
+    <rect x="177" y="330" width="124" height="36" rx="18" fill="#14b8a6" opacity="0.16"/>
+    <text x="239" y="353" font-size="14" font-weight="700" fill="#2dd4bf" text-anchor="middle">ONE COMMAND</text>
+    <rect x="317" y="330" width="116" height="36" rx="18" fill="#3b82f6" opacity="0.16"/>
+    <text x="375" y="353" font-size="14" font-weight="700" fill="#60a5fa" text-anchor="middle">REAL TRACE</text>
+    <rect x="449" y="330" width="156" height="36" rx="18" fill="#8b5cf6" opacity="0.16"/>
+    <text x="527" y="353" font-size="14" font-weight="700" fill="#a78bfa" text-anchor="middle">FOUR RESOURCES</text>
+
+    <rect x="928" y="286" width="72" height="4" rx="2" fill="#fbbf24"/>
+    <rect x="888" y="302" width="112" height="4" rx="2" fill="#fb923c"/>
+    <rect x="848" y="318" width="152" height="4" rx="2" fill="#2dd4bf"/>
+    <rect x="808" y="334" width="192" height="4" rx="2" fill="#60a5fa"/>
+  </g>
+</svg>
