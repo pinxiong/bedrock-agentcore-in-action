@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentCore 上手实测：部署 AI Agent 为什么不再需要 Dockerfile</title>
+</head>
+<body style="margin:0;background:#eef1f5;">
+<div style="max-width:678px;margin:0 auto;background:#ffffff;padding:28px 20px 48px;
+            font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB',
+            'Microsoft YaHei',sans-serif;">
+<blockquote style="margin:20px 0;padding:12px 16px;border-left:4px solid #cbd5e1;background:#f8fafc;border-radius:0 8px 8px 0;font-size:15px;color:#64748b;">
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">本文是 AgentCore 系列第 0 篇。英文原版（canonical）：<em>How AWS Bedrock AgentCore Actually Works</em>，https://xiongpin.dev/posts/how-aws-bedrock-agentcore-actually-works/</p>
+</blockquote>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">AWS Bedrock AgentCore 用一个 JSON 文件替代 Dockerfile、实例选型和手工 IAM。一条命令把这个文件变成一个可运行、可观测的线上 endpoint。本文按真实操作顺序走完全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="AgentCore CLI 全生命周期：六条命令" src="images/how-aws-bedrock-agentcore-actually-works/F0-command-map.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">AgentCore CLI 全生命周期：六条命令</figcaption></figure>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">AgentCore 是什么，不是什么</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">AgentCore 是一组面向 AI Agent 的托管运行时，九项托管服务覆盖托管、记忆、访问控制、工具集成、代码执行、浏览器自动化、质量与可观测。本文涉及其中两项：Runtime 和 Observability。</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="AgentCore：9 项托管服务，本文用到 2 项" src="images/how-aws-bedrock-agentcore-actually-works/F1-capability-map.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">AgentCore：9 项托管服务，本文用到 2 项</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">不是什么：</p>
+<ul style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">不是新的 Agent 框架。照旧用 Strands、LangChain、OpenAI SDK 或裸 Python 写 Agent。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">不是容器编排服务。Runtime 是 serverless 的，每个 session 一个 microVM，扩缩容平台处理。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">不是模型路由器。代码调 Bedrock 的方式和其他任何地方一样。</li>
+</ul>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">AgentCore 托管你的代码，加上一个 HTTP endpoint、一个 IAM 角色和一条 trace 管道。用过 ECS 或 Fargate 的读者会立刻感到差异：没有 Dockerfile、没有任务定义、没有 target group。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">三层结构，一个方向</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">你写 Agent 代码，写两个 JSON 文件，CLI 生成其余一切，AWS 跑一个你永远不用看的 CloudFormation 栈。</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="三层模型：业务代码、契约、管道" src="images/how-aws-bedrock-agentcore-actually-works/F2-three-layers.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">三层模型：业务代码、契约、管道</figcaption></figure>
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;">
+<thead>
+<tr>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">层</th>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">放什么</th>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">谁维护</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">业务代码</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">app/&lt;AgentName&gt;/</code> 里的 Agent 入口</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">你</td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">契约</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore.json</code> + <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws-targets.json</code></td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">你，手写</td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">管道</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/cdk/</code> 下的 CDK 工程</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">CLI，每次 deploy 重新生成</td>
+</tr>
+</tbody>
+</table>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">设计遵循一条原则：声明的资源在 JSON 里，CLI 生成的一切都可重新生成。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">环境要求</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">清单：</p>
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;">
+<thead>
+<tr>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">工具</th>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">实测版本</th>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">说明</th>
+<th style="border:1px solid #dbe3ee;background:#eff6ff;color:#1e3a8a;padding:8px 10px;text-align:left;font-weight:600;">自检</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">Node.js</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">24.x</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">CLI 要求 20+</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">node --version</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">AgentCore CLI</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">0.31.1</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">装法见下</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore --version</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">AWS CLI</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">2.x</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">任意近期版本</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws --version</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">uv</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">0.11.9</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">CLI 用它给模板 agent 建 Python 环境</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">uv --version</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">Git</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">2.39</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">create</code> 会在新项目里跑 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">git init</code></td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">git --version</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">Python</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">app venv 里是 3.12</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">CodeZip 支持 3.10 至 3.14；runtime 目标版本是 CLI 的默认值，与本机解释器无关</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">python3 -V</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">AWS 账号</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">任意</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">权限见下</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws sts get-caller-identity</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">区域</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">us-east-1</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">全系列统一</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws configure get region</code></td>
+</tr>
+<tr>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">Docker</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">不需要</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">本系列统一 CodeZip 构建</td>
+<td style="border:1px solid #e5e7eb;padding:7px 10px;color:#374151;">不适用</td>
+</tr>
+</tbody>
+</table>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">安装 CLI 并设置区域：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">npm install -g @aws/agentcore@latest
+aws configure set region us-east-1
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">自检命令与预期输出：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">node --version
+# v24.14.0
+
+uv --version
+# uv 0.11.9
+
+git --version
+# git version 2.39.5
+
+agentcore --version
+# 0.31.1
+
+aws sts get-caller-identity --query '[Account,Arn]' --output text
+# 123456789012    arn:aws:iam::123456789012:user/yourname
+
+aws configure get region
+# us-east-1
+
+aws bedrock list-foundation-models --region us-east-1 \
+  --query 'modelSummaries[?modelId==`deepseek.v3.2`].modelId' --output text
+# deepseek.v3.2
+</code></pre>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="终端自检实测：工具版本、AWS 身份、区域与模型可用性" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-1-environment-check.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">终端自检实测：工具版本、AWS 身份、区域与模型可用性</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">Runtime 的 IAM 角色。CLI 为 Runtime 自动生成 IAM 角色，策略含三组权限：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">bedrock:InvokeModel*</code>（调模型）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">logs:*</code>（写 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">/aws/bedrock-agentcore/runtimes/</code> 下日志组）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">xray:PutTraceSegments</code>（上报 trace）。这是一份最小权限模板，可供后续复用。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">已知问题：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore --version</code> 报错但命令存在时，通常是被旧的 Python 包 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">bedrock-agentcore-starter-toolkit</code> 遮蔽。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">pip uninstall bedrock-agentcore-starter-toolkit</code> 解决。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">Step 1 · 生成项目骨架</h2>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore create --name hello_agent --project-name helloagent \
+  --framework Strands --model-provider Bedrock --memory none --defaults
+</code></pre>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">[done]  Create helloagent/ project directory
+[done]  Prepare agentcore/ directory
+[done]  Initialize git repository
+[done]  Add agent to project
+[done]  Set up Python environment
+
+Created:
+  helloagent/
+    app/hello_agent/  Python agent (Strands)
+    agentcore/        Config and CDK project
+
+Project created successfully!
+
+To continue, navigate to your new project:
+
+  cd helloagent
+  agentcore
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">命令产出三类文件：</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="编辑器里的项目目录树：agentcore/ 配置与 app/hello_agent/ 代码" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-2-directory-tree.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">编辑器里的项目目录树：agentcore/ 配置与 app/hello_agent/ 代码</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">项目根目录得到 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">AGENTS.md</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">README.md</code> 和一次 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">git init</code>。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/</code> 得到契约（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore.json</code>）、部署目标（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws-targets.json</code>）、放密钥的 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">.env.local</code> 和内置 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk/</code> 工程。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">app/hello_agent/</code> 得到 agent：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">main.py</code>（入口）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">model/</code> 包、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">pyproject.toml</code> 和辅助包（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">mcp_client/</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">skills/</code>）。契约把 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">codeLocation</code> 指向 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">app/hello_agent/</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">entrypoint</code> 指向 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">main.py</code>；平台据此打包、部署和启动。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/</code> 里只有 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore.json</code> 和 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws-targets.json</code> 归你编辑，其余每次 deploy 重新生成。CLI 从当前目录向上查找同时含 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/</code> 目录和 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/agentcore.json</code> 文件的那一层，缺一即报 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">No agentcore project found</code>。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">除 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">runtimes</code> 外的资源数组初始为空，<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws-targets.json</code> 为 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">[]</code>，下一步来填。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">Step 2 · 写契约：两个 JSON 文件</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">部署定义（节选关键字段）：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">{
+  &quot;$schema&quot;: &quot;https://schema.agentcore.aws.dev/v1/agentcore.json&quot;,
+  &quot;name&quot;: &quot;helloagent&quot;,
+  &quot;version&quot;: 1,
+  &quot;managedBy&quot;: &quot;CDK&quot;,
+  &quot;runtimes&quot;: [{
+    &quot;name&quot;: &quot;hello_agent&quot;,
+    &quot;build&quot;: &quot;CodeZip&quot;,
+    &quot;entrypoint&quot;: &quot;main.py&quot;,
+    &quot;codeLocation&quot;: &quot;app/hello_agent/&quot;,
+    &quot;runtimeVersion&quot;: &quot;PYTHON_3_14&quot;,
+    &quot;networkMode&quot;: &quot;PUBLIC&quot;,
+    &quot;protocol&quot;: &quot;HTTP&quot;,
+    &quot;envVars&quot;: [{ &quot;name&quot;: &quot;MODEL_ID&quot;, &quot;value&quot;: &quot;deepseek.v3.2&quot; }]
+  }],
+  &quot;memories&quot;: [],
+  &quot;knowledgeBases&quot;: [],
+  &quot;agentCoreGateways&quot;: []
+}
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">create</code> 生成这个文件时除 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">runtimes</code> 外的资源数组都为空；<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore add</code>（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">add agent</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">add memory</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">add gateway</code>）往里塞条目。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">runtime 块里四个字段错一个就部署失败：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">entrypoint</code>（平台调用的文件）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">codeLocation</code>（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">app/hello_agent/</code>）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">build</code>（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">CodeZip</code>，即不用容器）、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">protocol</code>（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">HTTP</code>），其余有默认值。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">envVars</code> 是 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">MODEL_ID</code> 进代码的通道，换模型改 JSON 即可，不用动代码。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">检查 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">model/load.py</code> 是否从 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">MODEL_ID</code> 环境变量读取模型，而不是写死 ID（生成模板有时默认用 Claude）：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">import os
+from strands.models.bedrock import BedrockModel
+
+def load_model() -&gt; BedrockModel:
+    model_id = os.environ.get(&quot;MODEL_ID&quot;, &quot;deepseek.v3.2&quot;)
+    return BedrockModel(model_id=model_id)
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">部署前校验契约：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore validate
+# Valid
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">第二个文件决定部署位置：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">[{ &quot;name&quot;: &quot;default&quot;, &quot;account&quot;: &quot;123456789012&quot;, &quot;region&quot;: &quot;us-east-1&quot; }]
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">create</code> 只写一个空数组。首次 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">deploy</code> 时 CLI 调 STS 查明身份，把 account 和 region 回写。deploy、status、remove 都没有 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">--region</code> 参数，这个文件是部署位置的唯一真相源。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">Step 3 · 部署：一条命令，六步</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">在项目根目录执行：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore deploy -y --target default
+</code></pre>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="agentcore deploy 进度与栈输出：runtime ID、ARN、角色一应俱全" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-3-first-deploy.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">agentcore deploy 进度与栈输出：runtime ID、ARN、角色一应俱全</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">从命令到最后的勾，六件事顺序发生：</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="部署六步流水线，附实测耗时" src="images/how-aws-bedrock-agentcore-actually-works/F4-deploy-pipeline.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">部署六步流水线，附实测耗时</figcaption></figure>
+<ol style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">打包代码：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">codeLocation</code> 指向的目录加平台依赖压成一个资产包。Hello World 41 MB，本地 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">.venv</code> 被排除，全程无镜像构建。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">合成：CLI 跑内置的 CDK 工程（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">node dist/bin/cdk.js</code>），读两个 JSON，把模板产出到 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk.out/</code>。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">上传资产：zip 进 S3 桶，桶由 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk bootstrap</code> 每账号每区域一次性建好；没有这次 bootstrap，CDK 部署无处存放资产。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">建栈：CloudFormation 建 4 个资源：Runtime、IAM 角色、Bedrock 模型访问策略、元信息。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">记录状态：ARN 和 endpoint 写进 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore/.cli/deployed-state.json</code>。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">打印 endpoint。</li>
+</ol>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">合成这步最能体现 schema-first 的本质。生成的 CDK app 没有任何项目知识：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">// agentcore/cdk/bin/cdk.ts（生成工程原文）
+async function main() {
+  const configRoot = path.resolve(process.cwd(), '..');
+  const configIO = new ConfigIO({ baseDir: configRoot });
+
+  const spec = await configIO.readProjectSpec();             // agentcore.json
+  const targets = await configIO.readAWSDeploymentTargets(); // aws-targets.json
+  ...
+}
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">生成的 CDK app 按路径读取 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore.json</code> 和 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">aws-targets.json</code>，本身不含项目逻辑，完全由这两个文件驱动。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">实测耗时：这次部署端到端 3 分 29 秒。CLI 分步日志：构建 CDK 工程 25 秒、合成 CloudFormation 1 分 03 秒、建栈 1 分 51 秒。账号首次部署 9 分 49 秒，多出的是一次性 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk bootstrap</code> 和首轮 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">npm install</code>。只改代码的重部署 1 分 26 秒，因为栈已存在，变的只有资产哈希。跑完用 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore status</code> 验证，看到 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">Runtime: READY</code> 即可。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">Step 4 · 本地先跑一遍</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore dev -l</code> 在本地 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">localhost:8080</code> 跑同一个 app。模型调用仍走 Bedrock，需要凭证但不用部署。编辑 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">main.py</code> 后热重载自动生效，无需重启。</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="agentcore dev -l 启动横幅：Uvicorn 跑在 localhost:8080，reloader 盯着 app/hello_agent/" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-4-local-run.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">agentcore dev -l 启动横幅：Uvicorn 跑在 localhost:8080，reloader 盯着 app/hello_agent/</figcaption></figure>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">Step 5 · 调用线上 Runtime</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">部署后的 Runtime 走数据面响应。CLI 封装如下：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore invoke --prompt &quot;What is 17 plus 25? Use the tool.&quot;
+</code></pre>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="线上 Runtime 的 agentcore invoke：回复内容、Session ID 与日志路径" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-5-cloud-invoke.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">线上 Runtime 的 agentcore invoke：回复内容、Session ID 与日志路径</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">答案正确、工具确实被调用了，但回复里裹着模型脚手架：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">I'll use the addition tool</code> 前导句和 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">&lt;|DSML|&gt;function_calls</code> 标记出现在正式文本之前。这是模型行为，不是平台问题，「故障排查」一节给出修复办法。</p>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="同一张 HTTP 面孔，两种宿主" src="images/how-aws-bedrock-agentcore-actually-works/F5-one-surface.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">同一张 HTTP 面孔，两种宿主</figcaption></figure>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore dev</code> 和线上 Runtime 是同一个 app 的两种宿主：本地运行在 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">localhost:8080</code>，线上是托管的 microVM，路由挂在 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">https://bedrock-agentcore.&lt;region&gt;.amazonaws.com/runtimes/&lt;runtime-arn&gt;/invocations</code>。两者暴露同一组路由（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">/ping</code>、<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">/invocations</code>）；路由、扩缩容、TLS 都在平台侧，代码无需感知自己跑在哪一侧。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore invoke</code> 是线上 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">/invocations</code> 的 CLI 客户端。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">单次调用成本：DeepSeek V3.2 在 us-east-1 的价格是输入 $0.62/M、输出 $1.85/M token。两轮调用 846 输入 + 82 输出，模型费约 $0.0007，Runtime 计算约 $0.0002。教学级 Agent 的基础设施账单约等于零。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">原理深挖 I：入口契约</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">Runtime 对代码只发两种请求：<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">GET /ping</code> 健康检查，<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">POST /invocations</code> 干活。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">BedrockAgentCoreApp</code> 是薄适配器，把路由接到异步生成器上：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">from bedrock_agentcore.runtime import BedrockAgentCoreApp
+from strands import Agent, tool
+
+app = BedrockAgentCoreApp()
+
+@tool
+def add_numbers(a: int, b: int) -&gt; int:
+    &quot;&quot;&quot;Return the sum of two numbers.&quot;&quot;&quot;
+    return a + b
+
+@app.entrypoint
+async def invoke(payload, context):
+    session_id = getattr(context, &quot;session_id&quot;, &quot;default-session&quot;)
+    agent = get_or_create_agent(session_id)
+    async for event in agent.stream_async(extract_prompt(payload)):
+        yield event
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">三个设计要点：</p>
+<ul style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">入口是异步生成器。每个 yield 的 dict 变成一个 SSE 事件，流式是平台的默认形态，不是附加项。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">context.session_id</code> 是唯一需要你管理的状态键。每个 session 独立 microVM，扩缩容平台管。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">生产级入口还会给文本增量过一层流式过滤器；本演示未装，所以调用截图里泄漏可见（见「故障排查」）。</li>
+</ul>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">原理深挖 II：trace 记了什么</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">一次线上 invoke 在 X-Ray 里产生这棵 span 树，token 数也是实测的：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore traces list          # 调用后 2 至 3 分钟能查到最近几次 trace
+agentcore traces get &lt;trace-id&gt;
+</code></pre>
+<figure style="margin:22px 0;text-align:center;"><p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><img width="100%" alt="agentcore traces list 与 traces get：上面那次 invoke 的 trace 排在列表第一行" src="images/how-aws-bedrock-agentcore-actually-works/screenshot-6-observability.png" /></p><figcaption style="margin-top:8px;font-size:13px;color:#8a94a6;line-height:1.5;text-align:left;">agentcore traces list 与 traces get：上面那次 invoke 的 trace 排在列表第一行</figcaption></figure>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">invoke_agent Strands Agents              gen_ai.agent.tools=[&quot;add_numbers&quot;]  tokens=902
+├── execute_event_loop_cycle  (cycle 1)
+│   ├── execute_tool add_numbers         gen_ai.tool.status=success  span_kind=TOOL
+│   └── chat  deepseek.v3.2 (LLM, 435 tokens)
+│       └── chat deepseek.v3.2 (Bedrock)   finish_reason=tool_use
+└── execute_event_loop_cycle  (cycle 2)
+    └── chat  deepseek.v3.2 (LLM, 467 tokens)
+        └── chat deepseek.v3.2 (Bedrock)   finish_reason=end_turn
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">不用读框架源码，这棵树就讲清了 Agent Loop：每轮模型往返一个 cycle，工具调用是 cycle 内独立的 span，第二个 cycle 消费工具结果。</p>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">两个实测出来的坑：</p>
+<ul style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">span 是异步的。Transaction Search 约 10 分钟才能查到，invoke 完立刻 grep CloudWatch 必然失败。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">本地 dev 的 trace 没有独立 tool span，工具调用只记在日志里；<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">execute_tool</code> span 只有线上 Runtime 会产出，要断言它必须打线上。</li>
+</ul>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">清理</h2>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">在项目根目录执行：</p>
+<pre style="background:#0d1c3a;color:#dbe7ff;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:18px 0;"><code style="font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;">agentcore remove all -y     # 清空 agentcore.json 的资源数组
+agentcore deploy -y         # 栈收敛到空
+agentcore status            # 应列不出任何已部署资源
+</code></pre>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;"><code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">remove all</code> 只改 JSON，不触 AWS。真正删 Runtime、IAM 角色和栈的是后面的 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">deploy</code>。两样东西故意保留：CDK bootstrap 栈（<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">CDKToolkit</code>）和资产桶，后续部署复用；<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">/aws/bedrock-agentcore/runtimes/</code> 下的日志组，装的是刚读的 trace。账号弃用时手动删。AgentCore 按用量计费，项目挂着不动不产生费用。</p>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">故障排查</h2>
+<ul style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">陈旧的 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk.out</code> 弄挂下一次 deploy。CLI 每次 synth 前删 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk.out</code>，残留状态导致 synth 报 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">Subprocess exited with error 1</code>。手动跑 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">cdk synth</code> 是通的，说明工程没坏。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">rm -rf agentcore/cdk/cdk.out</code> 解决。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">改名即销毁。<code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">name</code> 字段变成 CloudFormation 的 Logical ID，改名不是重命名，是删旧建新。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">模型往文本通道漏脚手架。DeepSeek 漏内部模板标记碎片（调用截图里可见），Nova 漏 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">&lt;thinking&gt;</code> 块。绕开 Strands 直调 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">converse_stream</code> 验证过：是模型行为不是框架 bug。修复是在入口加流式安全过滤器：拦下标记前缀，收到 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">messageStart</code> 就对每条 assistant 消息重置一次；官方 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">01-features/06-observe</code> 样例有参考实现。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">区域不是 flag。所有 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">--region</code> 猜测都报 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">unknown option</code>，targets 文件说了算。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">模型回退到 Claude 触发地区限制。如果 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">MODEL_ID</code> 没有正确从 envVars 加载，Strands SDK 默认使用 Claude 模型。不支持 Anthropic 模型的地区会报 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">Access to Anthropic models is not allowed from unsupported countries</code>。检查 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">agentcore.json</code> 的 envVars 是否包含 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">MODEL_ID</code>，以及 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">model/load.py</code> 是否将其显式传给 <code style="background:#eef2f7;color:#b91c1c;padding:2px 6px;border-radius:4px;font-size:15px;font-family:Menlo,Consolas,monospace;">BedrockModel</code> 构造函数，不要依赖 SDK 默认值。</li>
+</ul>
+<h2 style="margin:40px 0 16px;font-size:20px;font-weight:700;color:#111827;border-left:4px solid #2563eb;padding-left:12px;line-height:1.4;">总结</h2>
+<ol style="margin:0 0 16px;padding-left:22px;">
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">JSON 文件就是接口，其余一切是它驱动的可再生管道。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">CDK 在这里是内置编译器：不写 construct、不改生成工程，改 schema，同一份代码编译出不同的栈。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">本地和线上共享一个 HTTP 契约，本地通过的代码上线不需要适配层。</li>
+<li style="margin:8px 0;font-size:17px;line-height:1.8;color:#374151;">可观测是真的，但异步的：写测试时给 span 留几分钟。</li>
+</ol>
+<p style="margin:0 0 16px;font-size:17px;line-height:1.8;color:#374151;">在 AgentCore 里，基础设施不是你维护的代码，而是编译的代码。</p>
+</div>
+</body>
+</html>
