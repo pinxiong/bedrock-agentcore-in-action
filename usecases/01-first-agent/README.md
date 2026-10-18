@@ -522,15 +522,21 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 # 期望：只剩 UseCase=01 的三行 —— evidence/38-independence.txt
 
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
-  --tag-filters Key=Project,Values=agentcore-in-action \
-  Key=UseCase,Values=02 Key=UseCase,Values=03 Key=UseCase,Values=04 \
-  Key=UseCase,Values=05 Key=UseCase,Values=06 Key=UseCase,Values=07 --output text
-# 期望：输出为空，证明本用例没有顺手创建别人的资源 —— evidence/45-independence-others.txt
+  --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=02,03,04,05,06,07 \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+  --output text
+# 期望：只出现别人自己的部署，且这一轮跑完前后行数不变 —— evidence/45-independence-others.txt
 ```
 
-第一条列出账号里所有带 `Project=agentcore-in-action` 的资源，看它们的 `UseCase` 是不是全是
-`01`；第二条直接按其他用例的标签过滤，为空即通过。`agentcore remove all -y` 之后两条都为空
-（`evidence/43-independence-after.txt`）。
+第一条是主力证据：它**不加任何 UseCase 过滤**，把账号里所有带 `Project=agentcore-in-action`
+的资源都列出来，所以只要有别的用例的资源被这一轮碰过，它就会出现在同一张列表里。2026-10-18
+那次跑完，表里只有三行，全是 `UseCase=01`（`evidence/38-independence.txt`）；销毁之后同一条
+命令返回零行（`evidence/43-independence-after.txt`）。
+
+第二条只是换个角度再看一遍，写法有个坑：**一个 `Key=UseCase` 带多个值是 OR，把
+`Key=UseCase` 重复六次是 AND**。一个资源不可能同时是 `UseCase=02` 和 `UseCase=03`，所以重复
+写法永远返回空——它看着像通过，其实什么都没证明（`evidence/45-independence-others.txt`
+记了这次实测：AND 写法零行，OR 写法有行）。
 
 ### 8.3 完整仓库里的额外一层
 
@@ -576,6 +582,8 @@ structure: independent-usecases
 | 部署成功但控制台 trace 是空的 | Transaction search 索引要几分钟 | 等，或先用 `agentcore traces list` |
 | 资源名报错含连字符 | AgentCore 资源名不允许 `-` | 用下划线，例如 `aia_uc01` |
 | 仓库级校验报某文件「points outside the folder」 | 这个目录被人改过，混进了指向外部的路径 | 按报出的行号改回目录内相对路径 |
+| tag 查询「按其他用例过滤」永远返回空 | `--tag-filters` 里重复 `Key=UseCase` 是 AND，一个资源不可能同时是两个用例 | 改成一个 `Key=UseCase` 带多个值（OR），见 §8.2 |
+| `agentcore deploy` 报 `This command requires an interactive terminal` | 命令被重定向到文件或跑在 CI 里 | 加 `-y`；非交互 shell 里它是必填的 |
 
 **关于模型输出里的脚手架标记（本用例踩到的真坑）**
 

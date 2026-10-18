@@ -1,12 +1,27 @@
 RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
-Output of the native independence command, run after the teardown, filtered on the
-other six use cases:
-  aws resourcegroupstaggingapi get-resources --region us-east-1 \
-    --tag-filters Key=Project,Values=agentcore-in-action \
-    Key=UseCase,Values=02 Key=UseCase,Values=03 Key=UseCase,Values=04 \
-    Key=UseCase,Values=05 Key=UseCase,Values=06 Key=UseCase,Values=07 --output text
-It printed nothing: zero resources belonging to another use case exist in this
-account. While uc01 was deployed, evidence/38-independence.txt listed every
-Project=agentcore-in-action resource and all three were UseCase=01.
+Output of the independence query narrowed to the other six use cases, re-run with the
+filter form that actually works:
 
-(no output)
+  aws resourcegroupstaggingapi get-resources --region us-east-1 \
+    --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=02,03,04,05,06,07 \
+    --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+    --output text
+
+One Key=UseCase filter carrying several values is an OR. Repeating Key=UseCase once per
+value is an AND, and a resource cannot be both UseCase=02 and UseCase=03, so that form
+can never return anything: it looks like a pass and proves nothing. This file replaces
+an earlier capture that used the AND form and read empty for exactly that reason
+(checked live: the AND form printed nothing while the OR form printed the rows below).
+
+The four rows are all UseCase=02. They belong to another use case's own deployment, made
+by a separate run later on the same day, not by uc01: while uc01 was deployed,
+evidence/38-independence.txt listed every Project=agentcore-in-action resource with no
+UseCase filter at all and all three rows were UseCase=01, and
+evidence/43-independence-after.txt re-ran that same unfiltered listing after the teardown
+and got zero rows. 38 and 43 are the independence proof; this file records the corrected
+shape of the query and the reason the first shape was worthless.
+
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-iDgX8XA1Bj	02
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc02_aia_uc02-iDgX8XA1Bj	02
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-iDgX8XA1Bj/runtime-endpoint/DEFAULT	02
+arn:aws:bedrock-agentcore:us-east-1:123456789012:memory/aiauc02_aia_uc02_mem-mjWcR3Gk40	02
