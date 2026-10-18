@@ -1,0 +1,54 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Verbatim copy of agentcore/.cli/logs/deploy/deploy-20261018-133429.log, the
+reconciling deploy. Tear down stack took 9.6 s, total 1 m 40 s.
+
+================================================================================
+AGENTCORE DEPLOY LOG
+Command: deploy
+Started: 2026-10-18T05:34:29.562Z
+================================================================================
+
+[13:34:29] STEP: Load deployment target
+[13:34:29] Status: SUCCESS
+[13:34:29] Duration: 48ms
+
+[13:34:29] STEP: Validate project
+[13:34:29] Status: SUCCESS
+[13:34:29] Duration: 44ms
+
+[13:34:29] STEP: Validate AWS credentials
+[13:34:30] Status: SUCCESS
+[13:34:30] Duration: 934ms
+
+[13:34:30] STEP: Sync CDK dependencies
+[13:34:30] Status: SUCCESS
+[13:34:30] Duration: 36ms
+
+[13:34:30] STEP: Build CDK project
+[13:35:07] Status: SUCCESS
+[13:35:07] Duration: 37.2s
+
+[13:35:07] STEP: Synthesize CloudFormation
+[13:35:11] Status: SUCCESS
+[13:35:11] Duration: 3.0s
+
+[13:35:11] STEP: Check bootstrap status
+[13:35:11] Status: SUCCESS
+[13:35:11] Duration: 802ms
+
+[13:35:11] STEP: Check stack status
+[13:35:12] Status: SUCCESS
+[13:35:12] Duration: 834ms
+
+[13:35:12] STEP: Deploy to AWS
+[13:35:59] Status: SUCCESS
+[13:35:59] Duration: 47.2s
+
+[13:35:59] STEP: Tear down stack
+[13:36:09] Status: SUCCESS
+[13:36:09] Duration: 9.6s
+
+================================================================================
+COMPLETED SUCCESSFULLY
+Total Duration: 1m 40s
+================================================================================

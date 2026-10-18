@@ -1,0 +1,1399 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+The trace `agentcore traces get 6ad45817558974710d8c3b6d35f5a089` downloaded to
+agentcore/.cli/traces/, copied here because .cli/ is gitignored. Account id
+redacted to 123456789012, including inside the base64 @ptr fields. The jq command
+in the article reads this file; evidence/37-trace-spans.txt is its output.
+
+[
+  {
+    "@timestamp": "2026-10-18 05:24:45.789",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "bedrock_agentcore.app"
+      },
+      "timeUnixNano": 1792301085789747000,
+      "observedTimeUnixNano": 1792301085790191000,
+      "severityNumber": 9,
+      "severityText": "INFO",
+      "body": "Returning streaming response (generator) (0.000s)",
+      "attributes": {
+        "otelSpanID": "5dd0b71026d7e857",
+        "otelTraceID": "6ad45817558974710d8c3b6d35f5a089",
+        "otelTraceSampled": true,
+        "otelServiceName": "aiauc01_aia_uc01.DEFAULT",
+        "code.file.path": "/var/task/bedrock_agentcore/runtime/app.py",
+        "code.function.name": "_handle_invocation",
+        "code.line.number": 580
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "5dd0b71026d7e857"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.849",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "bedrock_agentcore.app"
+      },
+      "timeUnixNano": 1792301085849249800,
+      "observedTimeUnixNano": 1792301085849478100,
+      "severityNumber": 9,
+      "severityText": "INFO",
+      "body": "uc01 invoke: model_id=deepseek.v3.2 session_id=75596b56-1b64-4c4e-9225-8074940fbb87",
+      "attributes": {
+        "otelSpanID": "5dd0b71026d7e857",
+        "otelTraceID": "6ad45817558974710d8c3b6d35f5a089",
+        "otelTraceSampled": true,
+        "otelServiceName": "aiauc01_aia_uc01.DEFAULT",
+        "code.file.path": "/var/task/main.py",
+        "code.function.name": "invoke",
+        "code.line.number": 109
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "5dd0b71026d7e857"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.865",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "botocore.credentials"
+      },
+      "timeUnixNano": 1792301085865798100,
+      "observedTimeUnixNano": 1792301085865929200,
+      "severityNumber": 9,
+      "severityText": "INFO",
+      "body": "Found credentials from IAM Role: execution_role",
+      "attributes": {
+        "otelSpanID": "5dd0b71026d7e857",
+        "otelTraceID": "6ad45817558974710d8c3b6d35f5a089",
+        "otelTraceSampled": true,
+        "otelServiceName": "aiauc01_aia_uc01.DEFAULT",
+        "code.file.path": "/var/task/botocore/credentials.py",
+        "code.function.name": "load",
+        "code.line.number": 1171
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "5dd0b71026d7e857"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.929",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.instrumentor"
+      },
+      "timeUnixNano": 1792301085929497900,
+      "observedTimeUnixNano": 1792301085929646600,
+      "severityNumber": 13,
+      "severityText": "WARN",
+      "body": "Attempting to instrument while already instrumented",
+      "attributes": {
+        "otelSpanID": "5dd0b71026d7e857",
+        "otelTraceID": "6ad45817558974710d8c3b6d35f5a089",
+        "otelTraceSampled": true,
+        "otelServiceName": "aiauc01_aia_uc01.DEFAULT",
+        "code.file.path": "/var/task/opentelemetry/instrumentation/instrumentor.py",
+        "code.function.name": "instrument",
+        "code.line.number": 92
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "5dd0b71026d7e857"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.933",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.metrics"
+      },
+      "timeUnixNano": 1792301085933927200,
+      "observedTimeUnixNano": 1792301085934038000,
+      "severityNumber": 9,
+      "severityText": "INFO",
+      "body": "Creating Strands MetricsClient",
+      "attributes": {
+        "otelSpanID": "2cd7c4fcffe67ee0",
+        "otelTraceID": "6ad45817558974710d8c3b6d35f5a089",
+        "otelTraceSampled": true,
+        "otelServiceName": "aiauc01_aia_uc01.DEFAULT",
+        "code.file.path": "/var/task/strands/telemetry/metrics.py",
+        "code.function.name": "__init__",
+        "code.line.number": 632
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "2cd7c4fcffe67ee0"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.951",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301085951292700,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "text": "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "3f7f7718755b804c",
+      "eventName": "gen_ai.user.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:45.951",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301085951245000,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "text": "You are the first-line assistant for the Northwind Gear\nsupport desk. Answer in one short sentence.\nWhen a question involves arithmetic, call the add_numbers tool instead of\nworking it out yourself, then state the result in one short sentence.\nYou have no order database, no ticket history and no account lookup. When a\nquestion needs one of those, say you cannot see it instead of guessing."
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "3f7f7718755b804c",
+      "eventName": "gen_ai.system.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.836",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087836918800,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "finish_reason": "tool_use",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "type": "function",
+              "id": "tooluse_yQRSwimsALDrqOXkKpu6iY",
+              "function": {
+                "name": "add_numbers",
+                "arguments": {
+                  "a": 21,
+                  "b": 21
+                }
+              }
+            }
+          ]
+        }
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "3f7f7718755b804c",
+      "eventName": "gen_ai.choice"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.837",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "version": "0.63b1"
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "3f7f7718755b804c",
+      "parentSpanId": "a95e743269c185ce",
+      "flags": 256,
+      "name": "chat deepseek.v3.2",
+      "kind": "CLIENT",
+      "startTimeUnixNano": 1792301085951197000,
+      "endTimeUnixNano": 1792301087837309200,
+      "durationNano": 1886112260,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "rpc.service": "Bedrock Runtime",
+        "aws.remote.resource.identifier": "deepseek.v3.2",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "aws.remote.operation": "ConverseStream",
+        "gen_ai.provider.name": "aws.bedrock",
+        "server.address": "bedrock-runtime.us-east-1.amazonaws.com",
+        "aws.request_id": "10398436-c88a-483f-95ca-c1594ce9bcdb",
+        "aws.local.operation": "UnmappedOperation",
+        "aws.span.kind": "CLIENT",
+        "aws.auth.region": "us-east-1",
+        "rpc.method": "ConverseStream",
+        "gen_ai.response.finish_reasons": [
+          "tool_use"
+        ],
+        "server.port": 443,
+        "gen_ai.request.model": "deepseek.v3.2",
+        "http.response.status_code": 200,
+        "gen_ai.system": "aws.bedrock",
+        "telemetry.extended": "true",
+        "gen_ai.usage.output_tokens": 70,
+        "aws.genai.span_kind": "LLM",
+        "rpc.system": "aws-api",
+        "aws.remote.service": "AWS::BedrockRuntime",
+        "http.status_code": 200,
+        "aws.region": "us-east-1",
+        "aws.remote.resource.type": "AWS::Bedrock::Model",
+        "gen_ai.operation.name": "chat",
+        "gen_ai.usage.input_tokens": 431,
+        "aws.genai.token_count_total": 501,
+        "retry_attempts": 0,
+        "PlatformType": "AWS::BedrockAgentCore",
+        "aws.auth.account.access_key": "REDACTED",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87"
+      },
+      "status": {
+        "code": "UNSET"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.838",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "a95e743269c185ce",
+      "parentSpanId": "56e0ec6874a73358",
+      "flags": 256,
+      "name": "chat",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301085934909200,
+      "endTimeUnixNano": 1792301087838445000,
+      "durationNano": 1903535948,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.usage.prompt_tokens": 431,
+        "gen_ai.usage.output_tokens": 70,
+        "gen_ai.server.request.duration": 1863,
+        "gen_ai.usage.total_tokens": 501,
+        "gen_ai.usage.completion_tokens": 70,
+        "aws.genai.span_kind": "LLM",
+        "gen_ai.event.start_time": "2026-10-18T05:24:45.934928+00:00",
+        "gen_ai.server.time_to_first_token": 705,
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents",
+        "gen_ai.operation.name": "chat",
+        "gen_ai.event.end_time": "2026-10-18T05:24:47.838397+00:00",
+        "gen_ai.usage.input_tokens": 431,
+        "aws.genai.token_count_total": 501,
+        "gen_ai.request.model": "deepseek.v3.2",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents"
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301085934975000,
+          "name": "gen_ai.system.message",
+          "attributes": {
+            "content": "[{\"text\": \"You are the first-line assistant for the Northwind Gear\\nsupport desk. Answer in one short sentence.\\nWhen a question involves arithmetic, call the add_numbers tool instead of\\nworking it out yourself, then state the result in one short sentence.\\nYou have no order database, no ticket history and no account lookup. When a\\nquestion needs one of those, say you cannot see it instead of guessing.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301085934998300,
+          "name": "gen_ai.user.message",
+          "attributes": {
+            "content": "[{\"text\": \"A customer returns two items priced 21 each. What refund total should I quote? Use the tool.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087838387000,
+          "name": "gen_ai.choice",
+          "attributes": {
+            "message": "[{\"text\": \"I'll use the tool to calculate the refund total.\\n\\n<｜DSML｜function_calls\"}, {\"toolUse\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"name\": \"add_numbers\", \"input\": {\"a\": 21, \"b\": 21}}}]",
+            "finish_reason": "tool_use"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.841",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "776d67594faab82e",
+      "parentSpanId": "56e0ec6874a73358",
+      "flags": 256,
+      "name": "execute_tool add_numbers",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301087839346400,
+      "endTimeUnixNano": 1792301087841151200,
+      "durationNano": 1804898,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.tool.status": "success",
+        "gen_ai.tool.call.id": "tooluse_yQRSwimsALDrqOXkKpu6iY",
+        "gen_ai.tool.description": "Return the sum of two numbers.",
+        "gen_ai.tool.json_schema": "{\"properties\": {\"a\": {\"description\": \"Parameter a\", \"type\": \"integer\"}, \"b\": {\"description\": \"Parameter b\", \"type\": \"integer\"}}, \"required\": [\"a\", \"b\"], \"type\": \"object\"}",
+        "aws.genai.span_kind": "TOOL",
+        "gen_ai.event.start_time": "2026-10-18T05:24:47.839382+00:00",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents",
+        "gen_ai.operation.name": "execute_tool",
+        "gen_ai.event.end_time": "2026-10-18T05:24:47.841126+00:00",
+        "gen_ai.tool.name": "add_numbers",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents"
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301087839445200,
+          "name": "gen_ai.tool.message",
+          "attributes": {
+            "content": "{\"a\": 21, \"b\": 21}",
+            "role": "tool",
+            "id": "tooluse_yQRSwimsALDrqOXkKpu6iY"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087841119000,
+          "name": "gen_ai.choice",
+          "attributes": {
+            "message": "[{\"text\": \"42\"}]",
+            "id": "tooluse_yQRSwimsALDrqOXkKpu6iY"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.841",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "56e0ec6874a73358",
+      "parentSpanId": "2cd7c4fcffe67ee0",
+      "flags": 256,
+      "name": "execute_event_loop_cycle",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301085934549200,
+      "endTimeUnixNano": 1792301087841434600,
+      "durationNano": 1906885609,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.operation.name": "execute_event_loop_cycle",
+        "gen_ai.event.end_time": "2026-10-18T05:24:47.841419+00:00",
+        "event_loop.cycle_id": "cab27a04-5fca-438b-9a40-6edbbde40b84",
+        "gen_ai.event.start_time": "2026-10-18T05:24:45.934573+00:00",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents"
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301085934625500,
+          "name": "gen_ai.user.message",
+          "attributes": {
+            "content": "[{\"text\": \"A customer returns two items priced 21 each. What refund total should I quote? Use the tool.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087841413400,
+          "name": "gen_ai.choice",
+          "attributes": {
+            "message": "[{\"text\": \"I'll use the tool to calculate the refund total.\\n\\n<｜DSML｜function_calls\"}, {\"toolUse\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"name\": \"add_numbers\", \"input\": {\"a\": 21, \"b\": 21}}}]",
+            "tool.result": "[{\"toolResult\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"status\": \"success\", \"content\": [{\"text\": \"42\"}]}}]"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.842",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087842966000,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "toolResult": {
+              "content": [
+                {
+                  "text": "42"
+                }
+              ],
+              "toolUseId": "tooluse_yQRSwimsALDrqOXkKpu6iY"
+            }
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.user.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.842",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087842947000,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "id": "tooluse_yQRSwimsALDrqOXkKpu6iY",
+        "content": [
+          {
+            "text": "42"
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.tool.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.842",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087842895400,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "text": "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.user.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.842",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087842851800,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "text": "You are the first-line assistant for the Northwind Gear\nsupport desk. Answer in one short sentence.\nWhen a question involves arithmetic, call the add_numbers tool instead of\nworking it out yourself, then state the result in one short sentence.\nYou have no order database, no ticket history and no account lookup. When a\nquestion needs one of those, say you cannot see it instead of guessing."
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.system.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:47.842",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301087842923500,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "content": [
+          {
+            "text": "I'll use the tool to calculate the refund total.\n\n<｜DSML｜function_calls"
+          },
+          {
+            "toolUse": {
+              "input": {
+                "a": 21,
+                "b": 21
+              },
+              "name": "add_numbers",
+              "toolUseId": "tooluse_yQRSwimsALDrqOXkKpu6iY"
+            }
+          }
+        ],
+        "tool_calls": [
+          {
+            "type": "function",
+            "id": "tooluse_yQRSwimsALDrqOXkKpu6iY",
+            "function": {
+              "name": "add_numbers",
+              "arguments": {
+                "a": 21,
+                "b": 21
+              }
+            }
+          }
+        ]
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.assistant.message"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.360",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "telemetry.sdk.language": "python",
+          "telemetry.sdk.name": "opentelemetry",
+          "telemetry.sdk.version": "1.42.1",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "aws.log.stream.names": "otel-rt-logs",
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "cloud.provider": "aws",
+          "cloud.region": "us-east-1",
+          "telemetry.auto.version": "0.18.0-aws",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "aws.service.type": "gen_ai_agent"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "schemaUrl": "https://opentelemetry.io/schemas/1.30.0"
+      },
+      "timeUnixNano": 0,
+      "observedTimeUnixNano": 1792301088360150500,
+      "severityNumber": 0,
+      "severityText": "",
+      "body": {
+        "finish_reason": "end_turn",
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": [
+            {
+              "text": "The refund total you should quote is $42."
+            }
+          ]
+        }
+      },
+      "attributes": {
+        "gen_ai.system": "aws.bedrock"
+      },
+      "flags": 1,
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "eventName": "gen_ai.choice"
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.360",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.botocore.bedrock-runtime",
+        "version": "0.63b1"
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "09b427f246b2abd0",
+      "parentSpanId": "0257c481734719e3",
+      "flags": 256,
+      "name": "chat deepseek.v3.2",
+      "kind": "CLIENT",
+      "startTimeUnixNano": 1792301087842806800,
+      "endTimeUnixNano": 1792301088360501500,
+      "durationNano": 517694638,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "rpc.service": "Bedrock Runtime",
+        "aws.remote.resource.identifier": "deepseek.v3.2",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "aws.remote.operation": "ConverseStream",
+        "gen_ai.provider.name": "aws.bedrock",
+        "server.address": "bedrock-runtime.us-east-1.amazonaws.com",
+        "aws.request_id": "55f8443d-d350-40f3-b539-04f0f3fb48de",
+        "aws.local.operation": "UnmappedOperation",
+        "aws.span.kind": "CLIENT",
+        "aws.auth.region": "us-east-1",
+        "rpc.method": "ConverseStream",
+        "gen_ai.response.finish_reasons": [
+          "end_turn"
+        ],
+        "server.port": 443,
+        "gen_ai.request.model": "deepseek.v3.2",
+        "http.response.status_code": 200,
+        "gen_ai.system": "aws.bedrock",
+        "telemetry.extended": "true",
+        "gen_ai.usage.output_tokens": 11,
+        "aws.genai.span_kind": "LLM",
+        "rpc.system": "aws-api",
+        "aws.remote.service": "AWS::BedrockRuntime",
+        "http.status_code": 200,
+        "aws.region": "us-east-1",
+        "aws.remote.resource.type": "AWS::Bedrock::Model",
+        "gen_ai.operation.name": "chat",
+        "gen_ai.usage.input_tokens": 524,
+        "aws.genai.token_count_total": 535,
+        "retry_attempts": 0,
+        "PlatformType": "AWS::BedrockAgentCore",
+        "aws.auth.account.access_key": "REDACTED",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87"
+      },
+      "status": {
+        "code": "UNSET"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.361",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "0257c481734719e3",
+      "parentSpanId": "f4069009838ba798",
+      "flags": 256,
+      "name": "chat",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301087842127000,
+      "endTimeUnixNano": 1792301088361377800,
+      "durationNano": 519250773,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.usage.prompt_tokens": 524,
+        "gen_ai.usage.output_tokens": 11,
+        "gen_ai.server.request.duration": 511,
+        "gen_ai.usage.total_tokens": 535,
+        "gen_ai.usage.completion_tokens": 11,
+        "aws.genai.span_kind": "LLM",
+        "gen_ai.event.start_time": "2026-10-18T05:24:47.842144+00:00",
+        "gen_ai.server.time_to_first_token": 516,
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents",
+        "gen_ai.operation.name": "chat",
+        "gen_ai.event.end_time": "2026-10-18T05:24:48.361335+00:00",
+        "gen_ai.usage.input_tokens": 524,
+        "aws.genai.token_count_total": 535,
+        "gen_ai.request.model": "deepseek.v3.2",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents"
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301087842188300,
+          "name": "gen_ai.system.message",
+          "attributes": {
+            "content": "[{\"text\": \"You are the first-line assistant for the Northwind Gear\\nsupport desk. Answer in one short sentence.\\nWhen a question involves arithmetic, call the add_numbers tool instead of\\nworking it out yourself, then state the result in one short sentence.\\nYou have no order database, no ticket history and no account lookup. When a\\nquestion needs one of those, say you cannot see it instead of guessing.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087842210000,
+          "name": "gen_ai.user.message",
+          "attributes": {
+            "content": "[{\"text\": \"A customer returns two items priced 21 each. What refund total should I quote? Use the tool.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087842246400,
+          "name": "gen_ai.assistant.message",
+          "attributes": {
+            "content": "[{\"text\": \"I'll use the tool to calculate the refund total.\\n\\n<｜DSML｜function_calls\"}, {\"toolUse\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"name\": \"add_numbers\", \"input\": {\"a\": 21, \"b\": 21}}}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087842270700,
+          "name": "gen_ai.tool.message",
+          "attributes": {
+            "content": "[{\"toolResult\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"status\": \"success\", \"content\": [{\"text\": \"42\"}]}}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301088361325800,
+          "name": "gen_ai.choice",
+          "attributes": {
+            "message": "[{\"text\": \"The refund total you should quote is $42.\"}]",
+            "finish_reason": "end_turn"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.361",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "f4069009838ba798",
+      "parentSpanId": "2cd7c4fcffe67ee0",
+      "flags": 256,
+      "name": "execute_event_loop_cycle",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301087841720600,
+      "endTimeUnixNano": 1792301088361847800,
+      "durationNano": 520127367,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.operation.name": "execute_event_loop_cycle",
+        "gen_ai.event.end_time": "2026-10-18T05:24:48.361829+00:00",
+        "event_loop.cycle_id": "882175f0-d4e4-4903-9bef-7b4b830baead",
+        "gen_ai.event.start_time": "2026-10-18T05:24:47.841744+00:00",
+        "event_loop.parent_cycle_id": "cab27a04-5fca-438b-9a40-6edbbde40b84",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents"
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301087841790500,
+          "name": "gen_ai.user.message",
+          "attributes": {
+            "content": "[{\"text\": \"A customer returns two items priced 21 each. What refund total should I quote? Use the tool.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087841830700,
+          "name": "gen_ai.assistant.message",
+          "attributes": {
+            "content": "[{\"text\": \"I'll use the tool to calculate the refund total.\\n\\n<｜DSML｜function_calls\"}, {\"toolUse\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"name\": \"add_numbers\", \"input\": {\"a\": 21, \"b\": 21}}}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301087841856300,
+          "name": "gen_ai.tool.message",
+          "attributes": {
+            "content": "[{\"toolResult\": {\"toolUseId\": \"tooluse_yQRSwimsALDrqOXkKpu6iY\", \"status\": \"success\", \"content\": [{\"text\": \"42\"}]}}]"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.362",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "strands.telemetry.tracer",
+        "version": ""
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "2cd7c4fcffe67ee0",
+      "parentSpanId": "5dd0b71026d7e857",
+      "flags": 256,
+      "name": "invoke_agent Strands Agents",
+      "kind": "INTERNAL",
+      "startTimeUnixNano": 1792301085933596000,
+      "endTimeUnixNano": 1792301088362078700,
+      "durationNano": 2428482819,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "gen_ai.usage.prompt_tokens": 955,
+        "gen_ai.usage.output_tokens": 81,
+        "gen_ai.usage.cache_write_input_tokens": 0,
+        "gen_ai.agent.name": "Strands Agents",
+        "gen_ai.usage.total_tokens": 1036,
+        "gen_ai.usage.completion_tokens": 81,
+        "aws.genai.span_kind": "AGENT",
+        "gen_ai.event.start_time": "2026-10-18T05:24:45.933643+00:00",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "gen_ai.provider.name": "strands-agents",
+        "gen_ai.operation.name": "invoke_agent",
+        "gen_ai.event.end_time": "2026-10-18T05:24:48.362048+00:00",
+        "gen_ai.usage.input_tokens": 955,
+        "aws.genai.token_count_total": 1036,
+        "gen_ai.request.model": "deepseek.v3.2",
+        "gen_ai.usage.cache_read_input_tokens": 0,
+        "gen_ai.agent.tools": "[\"add_numbers\"]",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "gen_ai.usage.cache_creation.input_tokens": 0,
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "gen_ai.system": "strands-agents",
+        "gen_ai.usage.cache_read.input_tokens": 0
+      },
+      "events": [
+        {
+          "timeUnixNano": 1792301085933715700,
+          "name": "gen_ai.system.message",
+          "attributes": {
+            "content": "[{\"text\": \"You are the first-line assistant for the Northwind Gear\\nsupport desk. Answer in one short sentence.\\nWhen a question involves arithmetic, call the add_numbers tool instead of\\nworking it out yourself, then state the result in one short sentence.\\nYou have no order database, no ticket history and no account lookup. When a\\nquestion needs one of those, say you cannot see it instead of guessing.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301085933753600,
+          "name": "gen_ai.user.message",
+          "attributes": {
+            "content": "[{\"text\": \"A customer returns two items priced 21 each. What refund total should I quote? Use the tool.\"}]"
+          }
+        },
+        {
+          "timeUnixNano": 1792301088362019800,
+          "name": "gen_ai.choice",
+          "attributes": {
+            "message": "The refund total you should quote is $42.\n",
+            "finish_reason": "end_turn"
+          }
+        }
+      ],
+      "status": {
+        "code": "OK"
+      }
+    },
+    "@ptr":"REDACTED"
+  },
+  {
+    "@timestamp": "2026-10-18 05:24:48.363",
+    "@message": {
+      "resource": {
+        "attributes": {
+          "deployment.environment.name": "bedrock-agentcore:default",
+          "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+          "service.name": "aiauc01_aia_uc01.DEFAULT",
+          "cloud.region": "us-east-1",
+          "aws.log.stream.names": "otel-rt-logs",
+          "telemetry.sdk.name": "opentelemetry",
+          "aws.service.type": "gen_ai_agent",
+          "telemetry.sdk.language": "python",
+          "cloud.provider": "aws",
+          "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT:DEFAULT",
+          "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc01_aia_uc01-XyX3fXF14g-DEFAULT",
+          "telemetry.sdk.version": "1.42.1",
+          "cloud.platform": "aws_bedrock_agentcore",
+          "telemetry.auto.version": "0.18.0-aws"
+        }
+      },
+      "scope": {
+        "name": "opentelemetry.instrumentation.starlette",
+        "version": "0.63b1"
+      },
+      "traceId": "6ad45817558974710d8c3b6d35f5a089",
+      "spanId": "5dd0b71026d7e857",
+      "parentSpanId": "ab65620543bb69e4",
+      "flags": 768,
+      "name": "POST /invocations",
+      "kind": "SERVER",
+      "startTimeUnixNano": 1792301085789083600,
+      "endTimeUnixNano": 1792301088363467800,
+      "durationNano": 2574384160,
+      "attributes": {
+        "aws.local.service": "aiauc01_aia_uc01.DEFAULT",
+        "net.peer.port": 50066,
+        "telemetry.extended": "true",
+        "http.target": "/invocations",
+        "http.flavor": "1.1",
+        "http.url": "http://cell01.us-east-1.prod.arp.kepler-analytics.aws.dev/invocations",
+        "net.peer.ip": "127.0.0.1",
+        "http.host": "127.0.0.1:8080",
+        "aws.local.environment": "bedrock-agentcore:default",
+        "http.status_code": 200,
+        "aws.local.operation": "POST /invocations",
+        "aws.span.kind": "SERVER",
+        "http.server_name": "cell01.us-east-1.prod.arp.kepler-analytics.aws.dev",
+        "net.host.port": 8080,
+        "http.route": "/invocations",
+        "PlatformType": "AWS::BedrockAgentCore",
+        "http.method": "POST",
+        "http.response.status_code": 200,
+        "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87",
+        "http.scheme": "http"
+      },
+      "status": {
+        "code": "UNSET"
+      }
+    },
+    "@ptr":"REDACTED"
+  }
+]

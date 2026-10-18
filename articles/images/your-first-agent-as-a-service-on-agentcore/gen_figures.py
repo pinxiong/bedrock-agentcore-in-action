@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Generate every image for the uc01 article from the run captured on 2026-10-18.
 
-Every number drawn here comes from `usecases/01-first-agent/evidence/`. The
-terminal panels are the captured output with the account id redacted to
-123456789012 and nothing else changed.
+Every line drawn here comes from `usecases/01-first-agent/evidence/`, files
+30 to 44. The terminal panels are the captured output with the account id
+redacted to 123456789012, with the spinner frames and the blank lines between
+progress steps removed, and with lines longer than the panel wrapped. Nothing
+else is changed and nothing is invented.
 
     python3 gen_figures.py            # writes every .svg next to this file
     render.sh                         # svg -> png, see the comment at the bottom
@@ -13,6 +15,7 @@ from __future__ import annotations
 
 import html
 import pathlib
+import textwrap
 
 HERE = pathlib.Path(__file__).resolve().parent
 
@@ -24,23 +27,43 @@ SOFT = "#cbd5e1"
 DIM = "#8ea0bd"
 MONO = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
 
+W, G, O, T, D, S = "#f8fafc", "#34d399", "#fdba74", "#5eead4", "#7c93b5", "#cbd5e1"
+
+PANEL_WIDTH = 112          # characters; everything longer is wrapped
+WRAP_INDENT = "        "
+
 
 # --------------------------------------------------------------------------- #
 # terminal panels                                                             #
 # --------------------------------------------------------------------------- #
 
-def panel(name: str, title: str, lines: list[tuple[str, str]], subtitle: str = "") -> None:
+def wrap(lines: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Break lines that are wider than the panel. Nothing else is touched."""
+    out: list[tuple[str, str]] = []
+    for text, colour in lines:
+        if len(text) <= PANEL_WIDTH:
+            out.append((text, colour))
+            continue
+        parts = textwrap.wrap(
+            text, width=PANEL_WIDTH, break_long_words=True, break_on_hyphens=False
+        )
+        out.append((parts[0], colour))
+        out.extend((WRAP_INDENT + part, colour) for part in parts[1:])
+    return out
+
+
+def shell_box(name: str, title: str, lines: list[tuple[str, str]], subtitle: str = "") -> None:
     """Render captured terminal output as an SVG panel.
 
-    Each line is (text, colour). Nothing is reformatted except that leading
-    spaces are preserved, so what you see is what the terminal printed.
+    Each line is (text, colour). Leading spaces are preserved, so what you see
+    is what the terminal printed, minus the spinner frames.
     """
+    lines = wrap(lines)
     top = 96
     pad = 34
     size = 17.5
     lh = 27
     width = 1440
-    body_w = max(len(t) for t, _ in lines)
     height = top + lh * (len(lines) + 1) + pad + (34 if subtitle else 0)
 
     out = [
@@ -87,93 +110,131 @@ def panel(name: str, title: str, lines: list[tuple[str, str]], subtitle: str = "
     (HERE / f"{name}.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
-W, G, O, T, D, S = "#f8fafc", "#34d399", "#fdba74", "#5eead4", "#7c93b5", "#cbd5e1"
-
-
-def shell_box(name: str, title: str, lines: list[tuple[str, str]], subtitle: str = "") -> None:
-    panel(name, title, lines, subtitle)
-
+# ── the commands the article runs, and what each one printed ─────────────── #
+# Sources: evidence/30-deploy.txt, 32-status.txt, 33-invoke.txt,
+# 35-traces-list.txt, 36-trace-get.txt, 37-trace-spans.txt,
+# 38-independence.txt, 40-remove-all.txt, 41-reconcile-deploy.txt,
+# 42-status-after-down.txt.
 
 DEPLOY: list[tuple[str, str]] = [
-    ("$ python3 run.py deploy                                    # or: make deploy", S),
-    (">> agentcore deploy -y --target default", D),
+    ("$ agentcore deploy -y --target default", S),
+    ("✓ Load deployment target", G),
+    ("✓ Validate project", G),
+    ("✓ Sync CDK dependencies", G),
+    ("✓ Build CDK project", G),
+    ("✓ Synthesize CloudFormation", G),
+    ("✓ Check bootstrap status", G),
+    ("✓ Check stack status", G),
+    ("✓ Deploy to AWS", G),
+    ("✓ Persist deployment state", G),
     ("", S),
-    ("  Load deployment target ............ 1 ms", D),
-    ("  Validate project .................. 641 ms", D),
-    ("  Build CDK project ................. 2.4 s", D),
-    ("  Synthesize CloudFormation ......... 15.4 s", D),
-    ("  Check bootstrap status ............ 732 ms", D),
-    ("  Check stack status ................ 659 ms", D),
-    ("  Deploy to AWS ..................... 1 m 27 s", D),
-    ("  Persist deployment state .......... 724 ms", D),
-    ("", S),
-    ("Total duration: 1 m 51 s", W),
-    ("", S),
-    ("Deployed to 'default' (stack: AgentCore-aiauc01-default)", G),
+    ("✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)", G),
     ("", S),
     ("Outputs:", S),
-    ("  ApplicationAgentAiaUc01RuntimeIdOutput734A07B7", G),
-    ("    aiauc01_aia_uc01-R3MXCi9yld", W),
-    ("  ApplicationAgentAiaUc01RuntimeArnOutput3227EF65", G),
-    ("    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld", W),
-    ("  StackNameOutput", G),
-    ("    AgentCore-aiauc01-default", W),
+    ("  ApplicationAgentAiaUc01RoleArnOutput1102B050: arn:aws:iam::123456789012:role/AgentCore-aiauc01-default-ApplicationAgentAiaUc01Ru-aFroZwTcmDts", W),
+    ("  ApplicationAgentAiaUc01RuntimeIdOutput734A07B7: aiauc01_aia_uc01-XyX3fXF14g", W),
+    ("  ApplicationAgentAiaUc01RuntimeArnOutput3227EF65: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g", W),
+    ("  StackNameOutput: AgentCore-aiauc01-default", W),
+    ("", S),
+    ("Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.", D),
+    ("Next: agentcore invoke | agentcore status", D),
+    ("Log: agentcore/.cli/logs/deploy/deploy-20261018-132205.log", D),
 ]
 
-STATUS_INVOKE: list[tuple[str, str]] = [
-    ("$ python3 run.py status                # or: make status", S),
+STATUS: list[tuple[str, str]] = [
+    ("$ agentcore status", S),
     ("AgentCore Status (target: default, us-east-1)", S),
-    ("Agents", S),
-    ("  aia_uc01: Deployed - Runtime: READY", G),
-    ("    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld", W),
     ("", S),
-    ("$ python3 run.py invoke", S),
-    ("--prompt \"A customer returns two items priced 21 each.", S),
-    ("          What refund total should I quote? Use the tool.\"", S),
+    ("Agents", S),
+    ("  aia_uc01: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g)", G),
+    ("  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-XyX3fXF14g/invocations", W),
+]
+
+INVOKE: list[tuple[str, str]] = [
+    ('$ agentcore invoke --prompt "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."', S),
+    ("", S),
+    ("I'll use the tool to calculate the refund total.", W),
     ("", S),
     ("The refund total you should quote is $42.", W),
     ("", S),
-    ("Session: a99e785c-18e2-4b18-abef-368271019e7e", T),
-    ("Response time: 9 911 ms", D),
+    ("Session: 75596b56-1b64-4c4e-9225-8074940fbb87", T),
+    ("To resume: agentcore invoke --session-id 75596b56-1b64-4c4e-9225-8074940fbb87", D),
+    ("Log: agentcore/.cli/logs/invoke/invoke-aia_uc01-20261018-132438.log", D),
 ]
 
-TRACE: list[tuple[str, str]] = [
-    ("$ agentcore traces get 6ad4087a7220c9ed52be46e901c25cc9", S),
+TRACES_LIST: list[tuple[str, str]] = [
+    ("$ agentcore traces list", S),
+    ("Traces for aia_uc01 (target: default)", S),
     ("", S),
-    ("invoke_agent Strands Agents                      2.50 s   tools=[\"add_numbers\"]", T),
-    ("  execute_event_loop_cycle  cycle 1              0.68 s", S),
-    ("    chat  deepseek.v3.2                          0.68 s   431 in / 60 out tokens", O),
-    ("      BedrockRuntime  ConverseStream             0.67 s", D),
-    ("  execute_event_loop_cycle  cycle 2              1.82 s", S),
-    ("    chat  deepseek.v3.2                          1.82 s   514 in / 11 out tokens", O),
-    ("      BedrockRuntime  ConverseStream             1.80 s", D),
-    ("    execute_tool add_numbers                     success  span_kind=INTERNAL", G),
+    ("Trace ID                     Timestamp          Session ID", D),
+    ("6ad45817558974710d8c3b6d35f5 2026-10-18         75596b56-1b64-4c4e-9225-8074940f", W),
+    ("a089                         05:24:48Z          bb87", W),
     ("", S),
-    ("trace 1-6ad4087a-7220c9ed52be46e901c25cc9   session a99e785c-18e2-4b18-abef-368271019e7e", D),
-    ("invoke_agent total: 945 input tokens, 71 output tokens", D),
+    ("Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-XyX3fXF14g/endpoint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-XyX3fXF14g%2Fruntime-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces", D),
+    ("Note: Traces may take 2-3 minutes to appear in CloudWatch", D),
 ]
 
-SMOKE: list[tuple[str, str]] = [
-    ("$ python3 run.py test                     # or: make test", S),
+TRACE_GET: list[tuple[str, str]] = [
+    ("$ agentcore traces get 6ad45817558974710d8c3b6d35f5a089", S),
+    ("Trace saved to:", S),
+    ("/Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/01-first-agent/agentcore/.cli/traces/aia_uc01-6ad45817558974710d8c3b6d35f5a089.json", W),
+    ("Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-XyX3fXF14g/endpoint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-XyX3fXF14g%2Fruntime-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces", D),
+]
+
+SPANS: list[tuple[str, str]] = [
+    ("""$ jq -r '[.[] ."@message" | select(type == "object" and .name != null)] as $spans""", S),
+    ("""      | ($spans | map({(.spanId): .name}) | add) as $parent""", S),
+    ("""      | $spans | sort_by(.startTimeUnixNano) | .[] | (.attributes // {}) as $a""", S),
+    ("""      | [.name, .kind, (((.durationNano // 0) / 1000000 | floor | tostring) + " ms"),""", S),
+    ("""         (if $a["gen_ai.usage.input_tokens"] then ($a["gen_ai.usage.input_tokens"] | tostring)""", S),
+    ("""            + " in / " + ($a["gen_ai.usage.output_tokens"] | tostring) + " out" else "-" end),""", S),
+    ("""         ($parent[.parentSpanId // ""] // "root")] | @tsv' \\""", S),
+    ("  agentcore/.cli/traces/aia_uc01-6ad45817558974710d8c3b6d35f5a089.json | column -t -s $'\\t'", S),
     ("", S),
-    ("runtime", D),
-    ("  aiauc01_aia_uc01 v1", D),
-    ("    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld", W),
-    ("  PASS assert_runtime_1", G),
-    ("    the runtime exists in the target region and reports status READY", S),
-    ("  session 771b1dec-1664-4e54-9e69-409233cfbd5d - 16 events - tools ['add_numbers']", D),
-    ("  reply 'The refund total should be $42.'", W),
-    ("  PASS assert_runtime_2", G),
-    ("    invoking it answers a tool-using prompt and the reply has no model scaffolding", S),
+    ("POST /invocations            SERVER    2574 ms  -                root", T),
+    ("invoke_agent Strands Agents  INTERNAL  2428 ms  955 in / 81 out  POST /invocations", T),
+    ("execute_event_loop_cycle     INTERNAL  1906 ms  -                invoke_agent Strands Agents", S),
+    ("chat                         INTERNAL  1903 ms  431 in / 70 out  execute_event_loop_cycle", O),
+    ("chat deepseek.v3.2           CLIENT    1886 ms  431 in / 70 out  chat", O),
+    ("execute_tool add_numbers     INTERNAL  1 ms     -                execute_event_loop_cycle", G),
+    ("execute_event_loop_cycle     INTERNAL  520 ms   -                invoke_agent Strands Agents", S),
+    ("chat                         INTERNAL  519 ms   524 in / 11 out  execute_event_loop_cycle", O),
+    ("chat deepseek.v3.2           CLIENT    517 ms   524 in / 11 out  chat", O),
+]
+
+INDEPENDENCE: list[tuple[str, str]] = [
+    ("$ aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=agentcore-in-action \\", S),
+    ("    --region us-east-1 --query 'ResourceTagMappingList[].{arn:ResourceARN,tags:Tags[?Key==`UseCase`].Value|[0]}' --output text", S),
     ("", S),
-    ("observability", D),
-    ("  trace 1-6ad4087a-7220c9ed52be46e901c25cc9   span 'execute_tool add_numbers'", T),
-    ("  PASS assert_observability_1", G),
-    ("    that same invoke left an X-Ray trace whose span tree contains an execute_tool span", S),
+    ("arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT  01", W),
+    ("arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g                          01", W),
+    ("arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc01_aia_uc01-XyX3fXF14g  01", W),
+]
+
+TEARDOWN: list[tuple[str, str]] = [
+    ("$ agentcore remove all -y", S),
+    ("All schemas reset to empty state", O),
+    ("Your source code has not been modified. Run `agentcore deploy` to apply changes to AWS.", O),
     ("", S),
-    ("  PASS independence: no other use case's resources present", G),
+    ("$ agentcore deploy -y --target default", S),
+    ("✓ Load deployment target", G),
+    ("✓ Validate project", G),
+    ("✓ Validate AWS credentials", G),
+    ("✓ Sync CDK dependencies", G),
+    ("✓ Build CDK project", G),
+    ("✓ Synthesize CloudFormation", G),
+    ("✓ Check bootstrap status", G),
+    ("✓ Check stack status", G),
+    ("✓ Deploy to AWS", G),
+    ("✓ Tear down stack", G),
     ("", S),
-    ("4 passed, 0 failed", W),
+    ("✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)", G),
+    ("", S),
+    ("Log: agentcore/.cli/logs/deploy/deploy-20261018-133429.log", D),
+    ("", S),
+    ("$ agentcore status", S),
+    ("AgentCore Status (target: )", S),
+    ("No resources match the given filters.", O),
 ]
 
 
@@ -251,7 +312,7 @@ def figure_architecture() -> None:
              'stroke-dasharray="8 6" marker-end="url(#ah)"/>')
     text(500, 424, "agentcore deploy", 18, "#93c5fd", 700, "middle", mono=True)
     text(500, 482, "CodeZip + CDK synth", 15, DIM, 400, "middle", mono=True)
-    text(500, 504, "1 m 51 s, measured", 15, DIM, 400, "middle", mono=True)
+    text(500, 504, "1 m 31 s, measured", 15, DIM, 400, "middle", mono=True)
 
     # ---------- right: AWS ----------
     zone(600, 210, 780, 470, "AWS  us-east-1", TEAL)
@@ -262,7 +323,7 @@ def figure_architecture() -> None:
     box(624, 288, 432, 356, "#101c36", BLUE, rx=16)
     p.append(f'<rect x="624" y="288" width="432" height="6" rx="3" fill="{BLUE}"/>')
     text(648, 322, "AgentCore Runtime", 20, "#93c5fd", 700)
-    text(648, 346, "aiauc01_aia_uc01", 17, "#ffffff", 600, mono=True)
+    text(648, 346, "aiauc01_aia_uc01-XyX3fXF14g", 17, "#ffffff", 600, mono=True)
     text(648, 372, "one microVM per session, serverless", 14, DIM)
     chip(648, 392, 122, 34, "GET /ping", SOFT, 14)
     chip(780, 392, 158, 34, "POST /invocations", SOFT, 14)
@@ -290,7 +351,7 @@ def figure_architecture() -> None:
     text(1102, 538, "Project=agentcore-in-action", 12.5, SOFT, mono=True)
     text(1102, 562, "UseCase=01", 13, SOFT, mono=True)
     text(1102, 586, "AutoDelete=true", 13, SOFT, mono=True)
-    text(1102, 618, "make down reads these", 13, DIM)
+    text(1102, 618, "get-resources reads these", 13, DIM)
 
     # ---------- two things it talks to ----------
     p.append('<path d="M 840 286 L 840 188" stroke="#5eead4" stroke-width="2.6" marker-end="url(#ah2)"/>')
@@ -307,11 +368,11 @@ def figure_architecture() -> None:
     box(60, 730, 500, 172, "#0b1428", "#233052", rx=16)
     text(88, 766, "measured on this run", 16, ORANGE, 700)
     for i, (k, v) in enumerate([
-        ("deploy, cold stack", "1 m 51 s"),
-        ("invoke, cold session", "9 911 ms"),
-        ("invoke_agent span", "2.50 s"),
-        ("tokens per invoke", "945 in / 71 out"),
-        ("model cost per invoke", "$0.00072"),
+        ("deploy, cold stack", "1 m 31 s"),
+        ("invoke, cold session", "9 954 ms"),
+        ("invoke_agent span", "2.43 s"),
+        ("tokens per invoke", "955 in / 81 out"),
+        ("model cost per invoke", "$0.00074"),
     ]):
         y = 800 + i * 22
         p.append(f'<circle cx="94" cy="{y-5}" r="3.5" fill="{ORANGE}"/>')
@@ -336,12 +397,12 @@ def figure_architecture() -> None:
 
 
 def figure_loop() -> None:
-    """The five commands that make up the loop, with what each one costs you."""
+    """The six native commands that make up the loop, with what each one costs."""
     w, h = 1440, 620
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
-        "<title>The deploy loop: doctor, dev, deploy, invoke, traces, down, with the measured "
-        "output each one returns.</title>",
+        "<title>The deploy loop: deploy, status, invoke, traces list, traces get, remove all, "
+        "with the measured output each one returns.</title>",
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
         f'<stop offset="0" stop-color="{BG0}"/><stop offset="1" stop-color="{BG1}"/></linearGradient>',
@@ -359,12 +420,12 @@ def figure_loop() -> None:
     ]
 
     steps = [
-        ("doctor", "15 passed, 0 warned, 0 failed", "local", "n/a", TEAL),
-        ("dev", "Uvicorn on 127.0.0.1:8080", "real model", "~$0.0007 / call", BLUE),
-        ("deploy", "Runtime: READY", "stack create", "1 m 51 s", PURPLE),
-        ("invoke", "'The refund total should be $42.'", "one session", "9 911 ms", GREEN),
-        ("traces get", "execute_tool add_numbers", "X-Ray", "about 2 min lag", ORANGE),
-        ("down", "0 resources tagged UseCase=01", "stack delete", "1 m 28 s", RED),
+        ("deploy -y", "Runtime: READY", "stack create", "1 m 31 s", PURPLE),
+        ("status", "Deployed - READY", "one read", "under 1 s", BLUE),
+        ("invoke", "quotes $42", "one session", "9 954 ms", GREEN),
+        ("traces list", "1 trace, 1 session", "X-Ray", "about 3 min lag", ORANGE),
+        ("traces get", "execute_tool add_numbers", "one JSON file", "62 kB", TEAL),
+        ("remove all", "0 tagged resources", "then deploy again", "1 m 40 s", RED),
     ]
     x0, y0, cw, ch = 60, 196, 208, 356
     gap = 22
@@ -398,26 +459,29 @@ def figure_loop() -> None:
         if i < len(steps) - 1:
             p.append(f'<text x="{x+cw+gap/2}" y="{y0+ch/2+7}" font-size="20" fill="#3b4a68" '
                      f'text-anchor="middle">&#8250;</text>')
+    p.append(f'<text x="60" y="{h-28}" font-size="15" fill="{DIM}">'
+             "every command above is `agentcore ...` or `aws ...`; this use case ships no script of its own</text>")
     p.append("</g></svg>")
     (HERE / "F2-deploy-loop.svg").write_text("\n".join(p) + "\n", encoding="utf-8")
 
 
 def figure_span_tree() -> None:
-    """The span tree, drawn from the X-Ray trace of the invoke above."""
-    w, h = 1440, 520
+    """The span tree, drawn from the trace of the invoke above."""
+    w, h = 1440, 565
     rows = [
-        (0, "invoke_agent Strands Agents", "2.50 s", "tools=[\"add_numbers\"]  945 in / 71 out", TEAL),
-        (1, "execute_event_loop_cycle  cycle 1", "0.68 s", "the model asks for the tool", SOFT),
-        (2, "chat  deepseek.v3.2", "0.68 s", "431 in / 60 out", ORANGE),
-        (3, "BedrockRuntime  ConverseStream", "0.67 s", "finish_reason=tool_use", DIM),
-        (1, "execute_event_loop_cycle  cycle 2", "1.82 s", "the model reads the tool result", SOFT),
-        (2, "chat  deepseek.v3.2", "1.82 s", "514 in / 11 out", ORANGE),
-        (3, "BedrockRuntime  ConverseStream", "1.80 s", "finish_reason=end_turn", DIM),
-        (2, "execute_tool add_numbers", "success", "gen_ai.tool.name=add_numbers", GREEN),
+        (0, "POST /invocations", "2574 ms", "the runtime accepts the call", TEAL),
+        (1, "invoke_agent Strands Agents", "2428 ms", "tools=[\"add_numbers\"]  955 in / 81 out", TEAL),
+        (2, "execute_event_loop_cycle  cycle 1", "1906 ms", "the model asks for the tool", SOFT),
+        (3, "chat  deepseek.v3.2", "1903 ms", "431 in / 70 out", ORANGE),
+        (4, "chat deepseek.v3.2  ConverseStream", "1886 ms", "finish_reason=tool_use", DIM),
+        (2, "execute_tool add_numbers", "1 ms", "gen_ai.tool.name=add_numbers", GREEN),
+        (2, "execute_event_loop_cycle  cycle 2", "520 ms", "the model reads the tool result", SOFT),
+        (3, "chat  deepseek.v3.2", "519 ms", "524 in / 11 out", ORANGE),
+        (4, "chat deepseek.v3.2  ConverseStream", "517 ms", "finish_reason=end_turn", DIM),
     ]
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
-        "<title>The X-Ray span tree of one invoke: two model round trips and one execute_tool span.</title>",
+        "<title>The span tree of one invoke: two model round trips and one execute_tool span.</title>",
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
         f'<stop offset="0" stop-color="{BG0}"/><stop offset="1" stop-color="{BG1}"/></linearGradient>',
@@ -427,7 +491,7 @@ def figure_span_tree() -> None:
         f'<text x="60" y="62" font-size="17" fill="{ORANGE}" font-weight="700">'
         "WHAT OBSERVABILITY RECORDED</text>",
         f'<text x="60" y="106" font-size="34" fill="#ffffff" font-weight="800">The agent loop, one span per step</text>',
-        f'<text x="60" y="136" font-size="17" fill="{DIM}">trace 1-6ad4087a-7220c9ed52be46e901c25cc9</text>',
+        f'<text x="60" y="136" font-size="17" fill="{DIM}">trace 6ad45817558974710d8c3b6d35f5a089</text>',
     ]
     y = 190
     for depth, name, metric, note, colour in rows:
@@ -442,9 +506,9 @@ def figure_span_tree() -> None:
         p.append(f'<text x="{w-480}" y="{y+14}" font-size="17" fill="#ffffff" font-weight="600" '
                  f'font-family="{MONO}">{html.escape(metric)}</text>')
         p.append(f'<text x="{w-330}" y="{y+14}" font-size="15" fill="{DIM}">{html.escape(note)}</text>')
-        y += 38
+        y += 34
     p.append(f'<text x="70" y="{h-32}" font-size="15" fill="{DIM}">'
-             "spans are asynchronous: they took about two minutes to become queryable in this account</text>")
+             "spans are asynchronous: this trace was queryable about three minutes after the invoke</text>")
     p.append("</g></svg>")
     (HERE / "F3-span-tree.svg").write_text("\n".join(p) + "\n", encoding="utf-8")
 
@@ -497,8 +561,8 @@ def cover() -> None:
     ]
     cards = [
         (72, "#f59e0b", "#fcd34d", "ONE FOLDER", "the support prompt + one tool", "no Dockerfile anywhere", "#f59e0b"),
-        (432, "#14b8a6", "#5eead4", "ONE COMMAND", "1 m 51 s to READY", "9 911 ms per cold invoke", "#14b8a6"),
-        (792, "#3b82f6", "#93c5fd", "ONE TRACE", "execute_tool add_numbers", "945 tokens in, 71 out", "#3b82f6"),
+        (432, "#14b8a6", "#5eead4", "ONE COMMAND", "1 m 31 s to READY", "9 954 ms per cold invoke", "#14b8a6"),
+        (792, "#3b82f6", "#93c5fd", "ONE TRACE", "execute_tool add_numbers", "955 tokens in, 81 out", "#3b82f6"),
     ]
     for x, accent, bright, title, sub1, sub2, edge in cards:
         p.append(f'<rect x="{x}" y="400" width="336" height="196" rx="18" fill="url(#g'
@@ -539,7 +603,7 @@ def cover_devto() -> None:
         f'<text x="56" y="236" font-size="62" font-weight="800" fill="#ffffff">AS A <tspan fill="#38bdf8">SERVICE</tspan></text>',
         f'<text x="56" y="278" font-size="20" fill="#a6b6cd">Deploying a support agent on Bedrock AgentCore</text>',
         f'<text x="56" y="318" font-size="17" fill="{DIM}" font-family="{MONO}">'
-        "deploy 1 m 51 s   invoke 9 911 ms   945 tokens</text>",
+        "deploy 1 m 31 s   invoke 9 954 ms   955 tokens</text>",
     ]
     tags = [("Runtime: READY", GREEN), ("execute_tool add_numbers", TEAL), ("no Dockerfile", PURPLE)]
     x = 56
@@ -554,12 +618,22 @@ def cover_devto() -> None:
 
 
 def main() -> None:
-    shell_box("S1-deploy", "terminal - deploy", DEPLOY, "captured from evidence/06-deploy-raw.txt and the deploy log")
-    shell_box("S2-status-invoke", "terminal - status and invoke", STATUS_INVOKE,
-              "captured from evidence/07-status-after.txt and evidence/08-invoke-raw.txt")
-    shell_box("S3-trace", "terminal - one trace", TRACE,
-              "captured from the X-Ray trace behind evidence/13-span-tree.txt")
-    shell_box("S4-verify", "terminal - the four assertions", SMOKE, "captured from evidence/09-smoke-raw.txt")
+    shell_box("S1-deploy", "terminal - agentcore deploy", DEPLOY,
+              "captured from evidence/30-deploy.txt; step timings in evidence/31-deploy-log.txt")
+    shell_box("S2-status", "terminal - agentcore status", STATUS,
+              "captured from evidence/32-status.txt; long line re-wrapped to this width")
+    shell_box("S3-invoke", "terminal - agentcore invoke", INVOKE,
+              "captured from evidence/33-invoke.txt; the invoke log records 9 954 ms")
+    shell_box("S4-traces-list", "terminal - agentcore traces list", TRACES_LIST,
+              "captured from evidence/35-traces-list.txt, run three minutes after the invoke")
+    shell_box("S5-trace-get", "terminal - agentcore traces get", TRACE_GET,
+              "captured from evidence/36-trace-get.txt")
+    shell_box("S6-trace-spans", "terminal - the spans in that trace", SPANS,
+              "captured from evidence/37-trace-spans.txt; the file is evidence/39-trace-invoke.json")
+    shell_box("S7-independence", "terminal - nothing else in the account", INDEPENDENCE,
+              "captured from evidence/38-independence.txt; three rows, all UseCase=01")
+    shell_box("S8-teardown", "terminal - remove all, then the reconciling deploy", TEARDOWN,
+              "captured from evidence/40, 41 and 42; the stack delete is 9.6 s of a 1 m 40 s run")
     figure_architecture()
     figure_loop()
     figure_span_tree()

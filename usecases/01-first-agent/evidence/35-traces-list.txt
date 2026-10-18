@@ -1,0 +1,15 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore traces list`, run about three minutes after the invoke.
+
+Traces for aia_uc01 (target: default)
+
+Trace ID                     Timestamp          Session ID
+6ad45817558974710d8c3b6d35f5 2026-10-18         75596b56-1b64-4c4e-9225-8074940f
+a089                         05:24:48Z          bb87
+
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-XyX3fXF14g/endp
+oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-XyX3fXF14g%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces
+Note: Traces may take 2-3 minutes to appear in CloudWatch

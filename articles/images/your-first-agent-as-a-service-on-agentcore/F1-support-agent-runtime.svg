@@ -34,7 +34,7 @@
 <path d="M 414 445 L 586 445" stroke="#60a5fa" stroke-width="2.6" stroke-dasharray="8 6" marker-end="url(#ah)"/>
 <text x="500" y="424" font-size="18" fill="#93c5fd" font-weight="700" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">agentcore deploy</text>
 <text x="500" y="482" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">CodeZip + CDK synth</text>
-<text x="500" y="504" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 51 s, measured</text>
+<text x="500" y="504" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 31 s, measured</text>
 <rect x="600" y="210" width="780" height="470" rx="22" fill="#0b1428" fill-opacity="0.55" stroke="#0d9488" stroke-width="1.4" stroke-dasharray="7 7"/>
 <rect x="622" y="197" width="180" height="26" rx="13" fill="#0d1c3a"/>
 <text x="635" y="216" font-size="17" fill="#0d9488" font-weight="700" text-anchor="start" font-family="inherit">AWS  us-east-1</text>
@@ -43,7 +43,7 @@
 <rect x="624" y="288" width="432" height="356" rx="16" fill="#101c36" stroke="#2563eb" stroke-width="1.6" opacity="1.0"/>
 <rect x="624" y="288" width="432" height="6" rx="3" fill="#2563eb"/>
 <text x="648" y="322" font-size="20" fill="#93c5fd" font-weight="700" text-anchor="start" font-family="inherit">AgentCore Runtime</text>
-<text x="648" y="346" font-size="17" fill="#ffffff" font-weight="600" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">aiauc01_aia_uc01</text>
+<text x="648" y="346" font-size="17" fill="#ffffff" font-weight="600" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">aiauc01_aia_uc01-XyX3fXF14g</text>
 <text x="648" y="372" font-size="14" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">one microVM per session, serverless</text>
 <rect x="648" y="392" width="122" height="34" rx="10" fill="#101c36" stroke="#cbd5e1" stroke-width="1.6" opacity="1.0"/>
 <text x="709.0" y="414.0" font-size="14" fill="#cbd5e1" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /ping</text>
@@ -71,7 +71,7 @@
 <text x="1102" y="538" font-size="12.5" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Project=agentcore-in-action</text>
 <text x="1102" y="562" font-size="13" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">UseCase=01</text>
 <text x="1102" y="586" font-size="13" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">AutoDelete=true</text>
-<text x="1102" y="618" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">make down reads these</text>
+<text x="1102" y="618" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">get-resources reads these</text>
 <path d="M 840 286 L 840 188" stroke="#5eead4" stroke-width="2.6" marker-end="url(#ah2)"/>
 <rect x="624" y="118" width="432" height="62" rx="14" fill="#101c36" stroke="#0d9488" stroke-width="1.6" opacity="1.0"/>
 <text x="648" y="148" font-size="19" fill="#5eead4" font-weight="700" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Amazon Bedrock  ·  deepseek.v3.2</text>
@@ -84,19 +84,19 @@
 <text x="88" y="766" font-size="16" fill="#ea580c" font-weight="700" text-anchor="start" font-family="inherit">measured on this run</text>
 <circle cx="94" cy="795" r="3.5" fill="#ea580c"/>
 <text x="108" y="800" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">deploy, cold stack</text>
-<text x="480" y="800" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 51 s</text>
+<text x="480" y="800" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 31 s</text>
 <circle cx="94" cy="817" r="3.5" fill="#ea580c"/>
 <text x="108" y="822" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">invoke, cold session</text>
-<text x="480" y="822" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9 911 ms</text>
+<text x="480" y="822" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9 954 ms</text>
 <circle cx="94" cy="839" r="3.5" fill="#ea580c"/>
 <text x="108" y="844" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">invoke_agent span</text>
-<text x="480" y="844" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">2.50 s</text>
+<text x="480" y="844" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">2.43 s</text>
 <circle cx="94" cy="861" r="3.5" fill="#ea580c"/>
 <text x="108" y="866" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">tokens per invoke</text>
-<text x="480" y="866" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">945 in / 71 out</text>
+<text x="480" y="866" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">955 in / 81 out</text>
 <circle cx="94" cy="883" r="3.5" fill="#ea580c"/>
 <text x="108" y="888" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">model cost per invoke</text>
-<text x="480" y="888" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">$0.00072</text>
+<text x="480" y="888" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">$0.00074</text>
 <rect x="1080" y="730" width="300" height="172" rx="16" fill="#0b1428" stroke="#233052" stroke-width="1.6" opacity="1.0"/>
 <text x="1104" y="766" font-size="16" fill="#e11d48" font-weight="700" text-anchor="start" font-family="inherit">what you never write</text>
 <circle cx="1118" cy="793" r="3.5" fill="#e11d48"/>

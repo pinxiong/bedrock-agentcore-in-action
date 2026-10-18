@@ -1,0 +1,38 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore deploy -y --target default`, run from usecases/01-first-agent.
+Spinner frames removed; every line below is a line the terminal printed.
+Source: the successful deploy whose log is evidence/31-deploy-log.txt.
+
+[K✓ Load deployment target
+
+[K✓ Validate project
+
+[K✓ Sync CDK dependencies
+
+[K✓ Build CDK project
+
+[K✓ Synthesize CloudFormation
+
+[K✓ Check bootstrap status
+
+[K✓ Check stack status
+
+[K✓ Deploy to AWS
+
+[K✓ Persist deployment state
+
+[K✓ Persist deployment state
+
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)
+
+Outputs:
+  ApplicationAgentAiaUc01RoleArnOutput1102B050: arn:aws:iam::123456789012:role/AgentCore-aiauc01-default-ApplicationAgentAiaUc01Ru-aFroZwTcmDts
+  ApplicationAgentAiaUc01RuntimeIdOutput734A07B7: aiauc01_aia_uc01-XyX3fXF14g
+  ApplicationAgentAiaUc01RuntimeArnOutput3227EF65: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g
+  StackNameOutput: AgentCore-aiauc01-default
+
+Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.
+Next: agentcore invoke | agentcore status
+
+Log: agentcore/.cli/logs/deploy/deploy-20261018-132205.log

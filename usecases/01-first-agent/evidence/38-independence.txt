@@ -1,0 +1,9 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of:
+  aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=agentcore-in-action \
+    --region us-east-1 --query 'ResourceTagMappingList[].{arn:ResourceARN,tags:Tags[?Key==`UseCase`].Value|[0]}' --output text
+Three rows, all UseCase=01: nothing from another use case is in the account.
+
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g/runtime-endpoint/DEFAULT	01
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-XyX3fXF14g	01
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc01_aia_uc01-XyX3fXF14g	01

@@ -32,13 +32,13 @@
 <rect x="432" y="400" width="336" height="196" rx="18" fill="url(#g2)" stroke="#14b8a6" stroke-opacity="0.6" stroke-width="1.5"/>
 <g clip-path="url(#c2)"><rect x="432" y="400" width="336" height="7" fill="#14b8a6"/></g>
 <text x="458" y="466" font-size="34" font-weight="800" fill="#5eead4">ONE COMMAND</text>
-<text x="458" y="498" font-size="18" fill="#cbd5e1">1 m 51 s to READY</text>
+<text x="458" y="498" font-size="18" fill="#cbd5e1">1 m 31 s to READY</text>
 <line x1="458" y1="524" x2="742" y2="524" stroke="#14b8a6" stroke-opacity="0.35" stroke-width="1"/>
-<text x="458" y="554" font-size="15.5" fill="#5eead4">9 911 ms per cold invoke</text>
+<text x="458" y="554" font-size="15.5" fill="#5eead4">9 954 ms per cold invoke</text>
 <rect x="792" y="400" width="336" height="196" rx="18" fill="url(#g3)" stroke="#3b82f6" stroke-opacity="0.6" stroke-width="1.5"/>
 <g clip-path="url(#c3)"><rect x="792" y="400" width="336" height="7" fill="#3b82f6"/></g>
 <text x="818" y="466" font-size="34" font-weight="800" fill="#93c5fd">ONE TRACE</text>
 <text x="818" y="498" font-size="18" fill="#cbd5e1">execute_tool add_numbers</text>
 <line x1="818" y1="524" x2="1102" y2="524" stroke="#3b82f6" stroke-opacity="0.35" stroke-width="1"/>
-<text x="818" y="554" font-size="15.5" fill="#93c5fd">945 tokens in, 71 out</text>
+<text x="818" y="554" font-size="15.5" fill="#93c5fd">955 tokens in, 81 out</text>
 </g></svg>

@@ -1,0 +1,15 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of the jq pipeline in the article, run over the file that
+36-trace-get.txt downloaded, piped through `column -t -s $'\t'`.
+Nine spans: one server span, the agent span, two event-loop cycles and the
+execute_tool add_numbers span that proves the tool really ran.
+
+POST /invocations            SERVER    2574 ms  -                root
+invoke_agent Strands Agents  INTERNAL  2428 ms  955 in / 81 out  POST /invocations
+execute_event_loop_cycle     INTERNAL  1906 ms  -                invoke_agent Strands Agents
+chat                         INTERNAL  1903 ms  431 in / 70 out  execute_event_loop_cycle
+chat deepseek.v3.2           CLIENT    1886 ms  431 in / 70 out  chat
+execute_tool add_numbers     INTERNAL  1 ms     -                execute_event_loop_cycle
+execute_event_loop_cycle     INTERNAL  520 ms   -                invoke_agent Strands Agents
+chat                         INTERNAL  519 ms   524 in / 11 out  execute_event_loop_cycle
+chat deepseek.v3.2           CLIENT    517 ms   524 in / 11 out  chat

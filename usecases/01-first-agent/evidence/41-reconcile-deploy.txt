@@ -1,0 +1,28 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore deploy -y --target default` run straight after 40-remove-all.txt.
+This is the deploy that reconciles the stack to nothing. Its log is 44-teardown-log.txt.
+
+[K✓ Load deployment target
+
+[K✓ Validate project
+
+[K✓ Validate AWS credentials
+
+[K✓ Sync CDK dependencies
+
+[K✓ Build CDK project
+
+[K✓ Synthesize CloudFormation
+
+[K✓ Check bootstrap status
+
+[K✓ Check stack status
+
+[K✓ Deploy to AWS
+
+[K✓ Tear down stack
+
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)
+
+Log: agentcore/.cli/logs/deploy/deploy-20261018-133429.log

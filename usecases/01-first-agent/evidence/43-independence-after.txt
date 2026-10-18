@@ -1,0 +1,6 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of the aws resourcegroupstaggingapi command from 38-independence.txt, re-run
+after the teardown. It printed nothing: zero rows, so no resource tagged
+Project=agentcore-in-action is left in us-east-1.
+
+(no output)

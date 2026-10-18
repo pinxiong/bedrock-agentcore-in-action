@@ -1,0 +1,8 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore status` after the teardown, then of:
+  aws cloudformation describe-stacks --region us-east-1 --query "Stacks[?StackName=='AgentCore-aiauc01-default'].StackStatus" --output text
+which printed nothing at all: the stack no longer exists. Status itself answers
+"No resources match the given filters" because aws-targets.json is now empty.
+
+AgentCore Status (target: )
+No resources match the given filters.

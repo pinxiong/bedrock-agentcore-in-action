@@ -1,0 +1,11 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore traces get 6ad45817558974710d8c3b6d35f5a089`.
+
+Trace saved to:
+/Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/01-firs
+t-agent/agentcore/.cli/traces/aia_uc01-6ad45817558974710d8c3b6d35f5a089.json
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-XyX3fXF14g/endp
+oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-XyX3fXF14g%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces

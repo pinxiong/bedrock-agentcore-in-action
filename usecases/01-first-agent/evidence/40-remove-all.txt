@@ -1,0 +1,6 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Output of `agentcore remove all -y`. It resets every schema in agentcore.json to
+empty and leaves aws-targets.json empty; nothing is deleted on AWS yet.
+
+All schemas reset to empty state
+Your source code has not been modified. Run `agentcore deploy` to apply changes to AWS.

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 677" width="1440" height="677" role="img">
+<title>terminal - the spans in that trace</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="677" fill="url(#bg)"/>
+<rect width="1440" height="677" fill="url(#g1)"/>
+<rect width="1440" height="677" fill="url(#g2)"/>
+<rect x="28" y="26" width="1384" height="625" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1384" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1384" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="720" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#8ea0bd" text-anchor="middle">terminal - the spans in that trace</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ jq -r &#x27;[.[] .&quot;@message&quot; | select(type == &quot;object&quot; and .name != null)] as $spans</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">      | ($spans | map({(.spanId): .name}) | add) as $parent</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">      | $spans | sort_by(.startTimeUnixNano) | .[] | (.attributes // {}) as $a</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">      | [.name, .kind, (((.durationNano // 0) / 1000000 | floor | tostring) + &quot; ms&quot;),</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">         (if $a[&quot;gen_ai.usage.input_tokens&quot;] then ($a[&quot;gen_ai.usage.input_tokens&quot;] | tostring)</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">            + &quot; in / &quot; + ($a[&quot;gen_ai.usage.output_tokens&quot;] | tostring) + &quot; out&quot; else &quot;-&quot; end),</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">         ($parent[.parentSpanId // &quot;&quot;] // &quot;root&quot;)] | @tsv&#x27; \</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">  agentcore/.cli/traces/aia_uc01-6ad45817558974710d8c3b6d35f5a089.json | column -t -s $&#x27;\t&#x27;</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#5eead4" xml:space="preserve">POST /invocations            SERVER    2574 ms  -                root</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#5eead4" xml:space="preserve">invoke_agent Strands Agents  INTERNAL  2428 ms  955 in / 81 out  POST /invocations</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">execute_event_loop_cycle     INTERNAL  1906 ms  -                invoke_agent Strands Agents</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">chat                         INTERNAL  1903 ms  431 in / 70 out  execute_event_loop_cycle</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">chat deepseek.v3.2           CLIENT    1886 ms  431 in / 70 out  chat</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">execute_tool add_numbers     INTERNAL  1 ms     -                execute_event_loop_cycle</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">execute_event_loop_cycle     INTERNAL  520 ms   -                invoke_agent Strands Agents</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">chat                         INTERNAL  519 ms   524 in / 11 out  execute_event_loop_cycle</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">chat deepseek.v3.2           CLIENT    517 ms   524 in / 11 out  chat</text>
+<text x="58" y="596" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#8ea0bd">captured from evidence/37-trace-spans.txt; the file is evidence/39-trace-invoke.json</text>
+</svg>
