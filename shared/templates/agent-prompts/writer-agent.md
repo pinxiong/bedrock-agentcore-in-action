@@ -27,8 +27,10 @@ Read these before you touch anything:
 
 Non-negotiable:
 
-1. **Real runs only.** You deploy to AWS account `123456789012` in `us-east-1`
-   (credentials are already active). Every command in your article must have
+1. **Real runs only.** You deploy to whatever AWS account the active credentials
+   belong to, in `us-east-1` (credentials are already active; run
+   `aws sts get-caller-identity` if you need the account id, and never paste it
+   into an article). Every command in your article must have
    been executed by you, and the output you show must be the output you got.
    No estimated numbers, no invented screenshots.
 2. **1000 to 1300 words**, no markdown tables, every fenced block tagged with a

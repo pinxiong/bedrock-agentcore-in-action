@@ -13,7 +13,7 @@
 | D5 | `capability-map.yaml` 的 `resource_prefix: aia-` 与实际不符 | 真实命名是 `aia_uc01` / `aiauc01`，资源名不允许连字符 | 改为 `aia_` 并注明连字符限制 | 待拍板 |
 | D6 | 根 `.gitignore` 未覆盖 `.idea/` | `git add -A` 会把 IDE 文件带进公开仓库；另有 `.idea/{{UC_SLUG}}.iml` 是模板占位符泄漏痕迹 | 补 `.idea/` 并删除已生成的 IDE 文件 | 待拍板 |
 | D7 | uc01 原定两条断言未实现 | 「两个并发 runtimeSessionId 不串上下文」与「命名 endpoint 固定旧版本」在 UC01 近乎恒真或需额外建 endpoint；已把 yaml 对齐为实测实现的三条 + 独立性 | 维持现状，前者留给 UC07、后者视读者价值再定 | 待拍板 |
-| D8 | README 与 `deployed-state.json` 含真实账号 ID `123456789012` | 仓库要公开 | README 换 `<your-account-id>`；`deployed-state.json` 是 CLI 生成物，建议连 `.gitignore` 例外一起取消追踪 | 待拍板 |
+| D8 | 全仓库含真实账号 ID（12 位数字） | 仓库要公开；README、两份 `aws-targets.json`、agent 提示词、PLAN 都有 | 全部替换为 `123456789012`，再用 `git filter-repo` 重写全部历史后 force push；README 已写明「拷来先改 `account`」 | 已定：全库脱敏 + 历史重写（2026-10-18） |
 
 ## 内容生产类（2026-10-15 规划新增）
 
