@@ -49,6 +49,13 @@ Non-negotiable:
    `agentcore traces get <id>` piped through `jq`, and
    `aws resourcegroupstaggingapi get-resources` for the independence proof.
    Name each file after the command that produced it.
+   For independence, the strong form is the unfiltered listing — anything you
+   touched shows up in the same table:
+   `aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=Project,Values=agentcore-in-action --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==\`UseCase\`].Value|[0]}' --output text`
+   If you filter by use case, remember `--tag-filters` is AND across filters and
+   OR within one filter: `Key=UseCase,Values=02,03,04` is right,
+   `Key=UseCase,Values=02 Key=UseCase,Values=03` matches nothing and passes for
+   the wrong reason. The repository check fails that capture.
 6. **English only.** One file: `articles/{{ARTICLE_SLUG}}.md`. No deck, no
    Chinese edition.
 

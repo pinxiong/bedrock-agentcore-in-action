@@ -272,11 +272,31 @@ agentcore traces list            # 它留下了 trace
 
 **tag 层面的独立性**（上面查的是本地声明，这一条查的是 AWS 上的实际资源）：
 
+主力证据是**不加 `UseCase` 过滤**的全量列表——碰了别人的资源就会出现在同一张表里，
+漏不掉：
+
 ```bash
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
-  --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values={{其他用例编号}}
-# 期望：ResourceTagMappingList 为空，证明本用例没有顺手创建别人的资源
+  --tag-filters Key=Project,Values=agentcore-in-action \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+  --output text
+# 期望：表里只有 UseCase=0X 的行。出现任何其他编号，就是本用例碰了别人的资源
 ```
+
+想再缩小范围，就用一个 `Key=UseCase` 带多个值（多值是 OR）：
+
+```bash
+aws resourcegroupstaggingapi get-resources --region us-east-1 \
+  --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values={{其他用例编号，逗号分隔}} \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+  --output text
+# 期望：ResourceTagMappingList 为空
+```
+
+> ⚠️ `--tag-filters` 是**跨 filter 取 AND**。写成
+> `Key=UseCase,Values=01 Key=UseCase,Values=02` 是在要求同一个资源同时属于两个用例，
+> 永远返回空 —— 看起来像通过，其实零信息量。实测确认过：账号里明明有 4 个
+> `UseCase=02` 的资源，那条命令照样返回空。仓库级校验会把这种存档判为失败。
 
 ### 8.3 完整仓库里的额外一层
 
@@ -296,6 +316,7 @@ aws resourcegroupstaggingapi get-resources --region us-east-1 \
 | {{症状}} | {{原因}} | {{修复}} |
 | {{本用例特有的坑}} | {{原因}} | {{修复}} |
 | 独立性校验报某文件 points outside itself | 目录里混进了指向外部的路径 | 按报出的行号改回目录内相对路径 |
+| tag 查询「按其他用例过滤」永远返回空 | `--tag-filters` 里重复 `Key=UseCase` 是 AND，一个资源不可能同时属于两个用例 | 改成一个 `Key=UseCase` 带多个值（OR），见 §8.2 |
 
 > 配额、区域、凭证、`agentcore` 命令冲突等跨用例的通用故障，完整仓库里另有一份汇总
 > （`docs/99-troubleshooting.md`）。单独拷走本目录时不需要它。

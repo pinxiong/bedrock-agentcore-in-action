@@ -344,6 +344,30 @@ def covered_capabilities(evidence_dir: Path, needles_by_cap: dict[str, list[str]
     return found
 
 
+def degenerate_tag_filters(text: str) -> list[str]:
+    """Captured `get-resources` commands that can never match anything.
+
+    `--tag-filters` is AND across filters, so `Key=UseCase,Values=01
+    Key=UseCase,Values=02` asks for a resource that is two use cases at once:
+    it returns empty every time and reads exactly like a pass. The OR form is
+    one filter with comma-separated values.
+    """
+    flat = text.replace("\\\n", " ")
+    problems: list[str] = []
+    for line in flat.splitlines():
+        if "--tag-filters" not in line:
+            continue
+        span = line.split("--tag-filters", 1)[1]
+        span = re.split(r"\s--(?!tag-filters)", span)[0]
+        keys = re.findall(r"Key=([^,\s]+)", span)
+        for key in sorted({k for k in keys if keys.count(k) > 1}):
+            problems.append(
+                f"repeats Key={key} in one --tag-filters: across filters the API is AND, "
+                f"so it matches nothing and passes for the wrong reason"
+            )
+    return problems
+
+
 def check_evidence(root: Path, spec: dict, only: str | None, allow_missing: bool, rep: Report) -> None:
     print("[EVID] every declared deep capability is proven by a capture under evidence/")
     named = {c["id"]: c for c in spec.get("capabilities", []) + spec.get("cross_cutting", [])}
@@ -368,6 +392,17 @@ def check_evidence(root: Path, spec: dict, only: str | None, allow_missing: bool
             continue
 
         found = covered_capabilities(evidence_dir, needles_by_cap)
+
+        # An empty independence listing is worth nothing if the command that
+        # produced it could never have returned anything else.
+        for path in evidence_files(evidence_dir):
+            try:
+                text = path.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            for problem in degenerate_tag_filters(text):
+                rep.fail(f"{uc['id']}: {path.name} {problem}")
+
         gap = sorted(set(needles_by_cap) - set(found))
         if gap:
             rep.fail(

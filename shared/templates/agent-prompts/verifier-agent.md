@@ -47,7 +47,11 @@ published. Be specific and be willing to fail it.
 9. The assertions in `docs/05-capability-map.yaml` for `{{UC_ID}}` are each
    addressed in the article and each is proven by a capture under
    `usecases/{{NN}}-{{SLUG}}/evidence/` of the native command that proves it.
-   An assertion with no evidence file is a blocking defect.
+   An assertion with no evidence file is a blocking defect. So is a capture
+   whose command could never have returned anything else: an independence proof
+   written as `Key=UseCase,Values=01 Key=UseCase,Values=02` is AND across
+   filters, matches nothing, and reads exactly like a pass. The OR form is one
+   filter: `Key=UseCase,Values=01,02`.
 10. Account ids are redacted to `123456789012`. No ARN in the article contains a
     real account id.
 

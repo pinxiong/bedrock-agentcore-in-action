@@ -110,8 +110,16 @@ scoped to this use case:
 
 ```bash
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
-  --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values={{UC_NUM}}
+  --tag-filters Key=Project,Values=agentcore-in-action \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+  --output text
 ```
+
+`--tag-filters` is AND across filters and OR within one filter's `Values`. So
+`Key=UseCase,Values=01 Key=UseCase,Values=02` asks for one resource that is two
+use cases at once: it returns empty every time and looks like a pass. To ask
+for "any of these use cases", use one filter:
+`Key=UseCase,Values=01,02,03`.
 
 `agentcore` must be run from this folder, not from `agentcore/`: inside
 `agentcore/` the CLI answers `Please run this command from your project root

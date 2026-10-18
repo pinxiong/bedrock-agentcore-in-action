@@ -192,6 +192,9 @@ python aia.py up 05 && python aia.py status 05 && python aia.py down 05
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=01,02,03,04,06,07
 # 期望：ResourceTagMappingList 为空
+# 注意：`--tag-filters` 跨 filter 是 AND、单个 filter 的 Values 是 OR。
+# 写成 Key=UseCase,Values=01 Key=UseCase,Values=02 是要求一个资源同时属于两个用例，
+# 永远返回空、假通过。多值必须写在一个 filter 里（如上面这条）。
 
 # 断言 I6 与能力实证（这一步不需要 AWS）
 python aia.py check 05
