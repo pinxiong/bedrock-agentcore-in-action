@@ -2,10 +2,10 @@
 
 Context for an AI coding assistant (or a human) working inside this folder.
 
-This file mirrors `AGENTS.md` as the AgentCore CLI writes it on
-`agentcore create`, trimmed to what is true for this use case. The folder is a
-complete AgentCore project: copy it anywhere and it runs. `make help` lists
-everything you can do from here, and `README.md` is the walkthrough.
+This file mirrors `AGENTS.md` as the AgentCore CLI writes it on `agentcore create`,
+trimmed to what is true for this use case. The folder is a complete AgentCore
+project: copy it anywhere and it runs. Everything you can do from here is an
+`agentcore` or `aws` command; `README.md` is the walkthrough.
 
 ## Mental model
 
@@ -17,6 +17,12 @@ runtime through an environment variable or an SDK call. Tags declared in
 `agentcore.json` flow through to the deployed CloudFormation resources, which is
 how every resource in this series can be traced back to one use case.
 
+Memory itself is two mechanisms wearing one name. Short term is `CreateEvent`:
+an append-only log keyed by (actor, session). Long term is
+`RetrieveMemoryRecords`: records the service extracted out of those events and
+filed under a namespace. Extraction is asynchronous and everything about timing
+follows from that.
+
 ## Critical invariants
 
 1. **The JSON is the source of truth.** Do not change agent behaviour by
@@ -26,24 +32,25 @@ how every resource in this series can be traced back to one use case.
    fields updates it in place.
 3. **Validate before deploying.** `agentcore validate` checks the JSON against
    the types in `agentcore/.llm-context/`.
-4. **Removal is two steps.** `agentcore remove <resource>` empties the local
-   spec; the following `agentcore deploy` reconciles the stack down and does the
-   actual deletion.
+4. **Removal is two steps.** `agentcore remove all -y` empties the local spec;
+   the following `agentcore deploy -y --target default` reconciles the stack
+   down and does the actual deletion. `-y` is mandatory in any non-interactive
+   shell. Restore `agentcore.json` and `aws-targets.json` from git afterwards.
 5. **Validate the runtime payload.** Require the prompt to be a string. Anything
    else is a caller bug that surfaces as a confusing model error.
 6. **Keep this folder self-contained.** No absolute paths, no references to a
-   parent directory, no imports from outside `app/aia_uc02/`. `make check`
-   asserts this, including by copying the folder to a temporary location.
+   parent directory, no imports from outside `app/aia_uc02/`. The repository
+   tooling asserts this; nothing inside the folder does it at runtime.
+7. **Put the actor id inside the namespace.** Isolation is a property of the key
+   space here, not of a filter some code path remembers to apply.
 
 ## Layout
 
 ```
 02-memory/
 ├── AGENTS.md                  # this file
-├── run.py                     # every operation, self-contained and cross-platform
-├── Makefile                   # forwards to run.py; holds no logic
 ├── README.md                  # the walkthrough (start here)
-├── evidence/                  # raw captures from the run this README quotes
+├── evidence/                  # raw captures from the run the article quotes
 ├── agentcore/
 │   ├── agentcore.json         # project spec: what gets deployed
 │   ├── aws-targets.json       # deployment targets, account + region
@@ -59,16 +66,13 @@ how every resource in this series can be traced back to one use case.
 │   ├── pyproject.toml         # dependencies, packaged into the deployment zip
 │   └── uv.lock
 └── tests/
-    ├── doctor.py              # environment self-check
-    ├── copy_check.py          # asserts this folder stands alone
-    ├── smoke.py               # asserts the deployed capabilities
-    ├── test_sanitize.py       # offline unit tests
-    └── resourcegroupstaggingapi_check.py
+    └── test_sanitize.py       # offline unit tests
 ```
 
 `app/aia_uc02/` is the only directory that is packaged and deployed. Its path
 comes from `codeLocation` in `agentcore.json`, and `entrypoint: main.py`
-resolves relative to it.
+resolves relative to it. There is deliberately no script of its own here: every
+operation is a command you type.
 
 ## Key schema fields
 
@@ -81,6 +85,8 @@ resolves relative to it.
 | `runtimes[].networkMode` | `PUBLIC` or `VPC` |
 | `runtimes[].protocol` | `HTTP`, `MCP` or `A2A` |
 | `runtimes[].envVars` | `MODEL_ID` is read by `model/load.py` |
+| `memories[].strategies[].type` | `USER_PREFERENCE`, `SEMANTIC`, `EPISODIC` |
+| `memories[].eventExpiryDuration` | days an event survives in the short-term log |
 | top-level `tags` | `Project`, `UseCase`, `AutoDelete` |
 
 The full type definitions are in `agentcore/.llm-context/agentcore.ts`.
@@ -90,21 +96,32 @@ The full type definitions are in `agentcore/.llm-context/agentcore.ts`.
 From this folder:
 
 ```bash
-python3 run.py help       # list every target (the entry point, cross-platform)
-make help                 # the same, if you have make
-make check                # does this folder stand alone?
-make doctor               # is this machine and this folder ready?
-make deploy               # deploy it
-make invoke               # call it
-make dev                  # run it locally, a real model, no deployment
-make test                 # assert the deployed capabilities
-make down                 # destroy it
+agentcore validate                       # check the JSON against the schema types
+agentcore deploy -y --target default     # deploy it
+agentcore status                         # runtime READY plus the three strategies
+agentcore invoke --prompt "..."          # call it
+agentcore invoke --user-id store_manager_south --session-id <id> --prompt "..."
+agentcore dev -l                         # run it locally, a real model, no deployment
+agentcore traces list                    # recent traces
+agentcore traces get <trace id>          # download one trace
+agentcore remove all -y                  # empty the local spec; follow with a deploy
+agentcore deploy -y --target default     # the reconciling deploy that deletes
+aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=agentcore-in-action --region us-east-1
 ```
-
-`run.py` is the entry point and `Makefile` only forwards to it, so the two can
-never disagree. Use whichever your platform has.
 
 `agentcore` must be run from this folder, not from `agentcore/`: inside
 `agentcore/` the CLI answers `Please run this command from your project root
 directory.` There is no `--region` flag; the region comes from
 `agentcore/aws-targets.json`.
+
+Two things about invoking that matter here:
+
+- `--session-id` decides whether this turn continues a conversation or starts a
+  new one. It is at least 33 characters, so build it from two uuid halves.
+- `--user-id` decides whose memories are read. It arrives as
+  `X-Amzn-Bedrock-AgentCore-Runtime-User-Id` and `main.py` turns it into the
+  namespace key. Passing an actor through `-H "x-amzn-bedrock-agentcore-runtime-
+  custom-actor-id: ..."` does not work on a SigV4 invoke with CLI 0.31.1: the
+  header never reaches the agent, and every invoke silently lands on the default
+  actor. Verify with `aws logs filter-log-events` on the runtime log group,
+  which prints `uc02 invoke: ... actor=<who>` per invoke.

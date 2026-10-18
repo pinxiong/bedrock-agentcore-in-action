@@ -1,0 +1,17 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore invoke --user-id store_manager_north --session-id <nine> --prompt
+"Draft this week's reorder list."`, started 06:30:49 UTC.
+Read together with evidence/27: the northern namespace already carried a conflicting South
+China sentence, written there by the invoke whose actor header never arrived. Two preferences
+under one actor is what a broken actor id looks like from the inside.
+
+ Invoking agent...
+I understand you need a reorder list, but I have conflicting regional preferences in your profile. Your stored preference specifies "Only reorder for the South China region; ignore every other region." However, another fact states you "manage the North China region and want reordering to only cover the North China region."
+Since the stored preference explicitly says "only reorder for the South China region," I'll follow that instruction.
+Here's this week's reorder list for South China following your stored preference:
+1. **Guangzhou Tianhe**: SKU-2001 iced tea bottle, 63 units
+2. **Shenzhen Nanshan**: SKU-2002 cold cup, 29 units
+3. **Dongguan Nancheng**: SKU-2003 straw lid, 11 units
+Session: 26c6ebad50ea46109f01d6a7b6327c56-c947d60c
+To resume: agentcore invoke --session-id 26c6ebad50ea46109f01d6a7b6327c56-c947d60c
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-143054.log

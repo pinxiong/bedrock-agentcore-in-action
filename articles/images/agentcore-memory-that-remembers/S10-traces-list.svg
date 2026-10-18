@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1028" width="1440" height="1028" role="img">
+<title>terminal - agentcore traces list</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="1028" fill="url(#bg)"/>
+<rect width="1440" height="1028" fill="url(#g1)"/>
+<rect width="1440" height="1028" fill="url(#g2)"/>
+<rect x="28" y="26" width="1384" height="976" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1384" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1384" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="720" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - agentcore traces list</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore traces list</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Traces for aia_uc02 (target: default)</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Trace ID                     Timestamp          Session ID</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad4683475bdb02d2a04fd703344 2026-10-18         597e436a5ae1435cb7d6c422c4a936be</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">e7cd                         06:33:35Z          -584aa045</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad468136694dd94585de8e855c0 2026-10-18         8c851910bb66403ca65ef561263c7819</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">2902                         06:33:02Z          -f72bb7fd</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad4679f52e205f213272cdb5066 2026-10-18         26c6ebad50ea46109f01d6a7b6327c56</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">aed3                         06:31:06Z          -c947d60c</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad46781381df402758baa6d42b9 2026-10-18         bf60f433a15444288a1356e9902ba70f</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6dd3                         06:30:35Z          -33438667</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad466704e5eb4fc7333e6fb11e4 2026-10-18         c40ea8a3deea4b6c9efe0755fc784ef3</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">1326                         06:26:02Z          -229cdb2d</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad4661b06264dfc57ae67df0dd1 2026-10-18         961c4f4cc5144f9db5517a7b43615ded</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">aa5d                         06:24:37Z          -59ec0a08</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad464064a02e1366b4955300104 2026-10-18         d0c7a718e8854a38b499494f7d0a1709</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">55d9                         06:15:44Z          -017e33bf</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad463a853956b8f532a775242d3 2026-10-18         f61ff08c8c5d40d593799b9f2f97a6ea</text>
+<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">15ae                         06:14:09Z          -a9dcc540</text>
+<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad463412ef6592f057e39031571 2026-10-18         60fc545dbe8d4aa5a546d47773b26e05</text>
+<text x="58" y="642" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">d866                         06:12:29Z          -4096dcd0</text>
+<text x="58" y="669" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad462de047adc241b08b3a33d3b 2026-10-18         e52f66d7e0ed4d89bfc9b234ec70cc96</text>
+<text x="58" y="696" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">5b0b                         06:10:48Z          -44ce5098</text>
+<text x="58" y="723" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">6ad462bb53fa4dab356ee90c7e5d 2026-10-18         30edb3f9b01d4aa2a9c0722a3b7810df</text>
+<text x="58" y="750" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">92d1                         06:10:14Z          -403477a1</text>
+<text x="58" y="777" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east</text>
+<text x="58" y="804" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">-1#/gen-ai-observability/agent-core/agent-alias/aiauc02_aia_uc02-iDgX8XA1Bj/endp</text>
+<text x="58" y="831" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">oint/DEFAULT/agent/aia_uc02?start=-43200000&amp;resourceId=arn%3Aaws%3Abedrock-agent</text>
+<text x="58" y="858" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc02_aia_uc02-iDgX8XA1Bj%2Fruntim</text>
+<text x="58" y="885" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">e-endpoint%2FDEFAULT%3ADEFAULT&amp;serviceName=aia_uc02.DEFAULT&amp;tabId=traces</text>
+<text x="58" y="912" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">Note: Traces may take 2-3 minutes to appear in CloudWatch</text>
+<text x="58" y="947" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/35-traces-list.txt · one row per invoke of this runtime</text>
+</svg>

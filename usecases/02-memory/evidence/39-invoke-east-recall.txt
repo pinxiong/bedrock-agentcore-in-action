@@ -1,0 +1,11 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore invoke --user-id store_manager_east --session-id <twelve> --prompt
+"Draft this week's reorder list."`, started 06:37:14 UTC, 236 s after the East China
+preference event was written. This session never saw that sentence either.
+
+ Invoking agent...
+Based on your regional preference, I'll prepare the reorder list for East China only.
+Here are this week's low inventory stores in East China: Shanghai Pudong (SKU-3001, 51 units), Hangzhou Xihu (SKU-3002, 22 units), and Nanjing Gulou (SKU-3003, 6 units). I followed your preference to only reorder for East China region.
+Session: 6cb14cbdd21d418795777aada1ba40d0-37ad719d
+To resume: agentcore invoke --session-id 6cb14cbdd21d418795777aada1ba40d0-37ad719d
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-143721.log

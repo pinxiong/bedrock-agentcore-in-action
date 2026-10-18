@@ -40,6 +40,10 @@ REGION = os.environ.get("AWS_REGION", "us-east-1")
 # identity. It is the Identity surface of this use case: the same value becomes
 # the actor id, and therefore the namespace key, on the memory side.
 ACTOR_HEADER = "x-amzn-bedrock-agentcore-runtime-custom-actor-id"
+# `agentcore invoke --user-id` travels as this header. Anything under
+# X-Amzn-Bedrock-AgentCore-Runtime-Custom- reaches agent code, and this one only
+# if it is forwarded; it is tried second, so an explicit actor still wins.
+USER_HEADER = "x-amzn-bedrock-agentcore-runtime-user-id"
 DEFAULT_ACTOR = "store_manager_north"
 
 SYSTEM_PROMPT = """You are the reorder assistant for Northwind Gear, a chain of
@@ -86,25 +90,44 @@ def reorder_candidates(region: str) -> str:
 TOOLS = [reorder_candidates]
 
 
+def _lookup(headers: Any, name: str) -> str:
+    """Read one header whether the mapping is case-insensitive or a plain dict."""
+    if not isinstance(headers, dict):
+        return ""
+    value = headers.get(name) or headers.get(name.title()) or headers.get(name.upper())
+    return value.strip() if isinstance(value, str) else ""
+
+
 def resolve_actor(payload: Any, context: Any) -> str:
     """Who is asking. The actor id is the memory partition key.
 
     Order matters, and it is the order of trust: an explicit field in the
-    payload wins, then the runtime's actor header, then a named default.
-    Falling back to the session id would silently give every session its own
-    memory, which is exactly the bug this use case exists to show, so the
-    default is a fixed name and not a fresh random id.
+    payload wins, then the runtime's actor header, then the runtime user id,
+    then a named default. Falling back to the session id would silently give
+    every session its own memory, which is exactly the bug this use case exists
+    to show, so the default is a fixed name and not a fresh random id.
     """
     if isinstance(payload, dict):
         for key in ("actor_id", "actorId", "user_id"):
             value = payload.get(key)
             if isinstance(value, str) and value.strip():
                 return value.strip()
-    headers = getattr(context, "request_headers", None) or {}
-    if isinstance(headers, dict):
-        header = headers.get(ACTOR_HEADER)
-        if isinstance(header, str) and header.strip():
-            return header.strip()
+
+    # The filtered headers the SDK forwards, then the raw request: the runtime
+    # allowlists X-Amzn-Bedrock-AgentCore-Runtime-Custom-* only, so a caller
+    # identity sent under another name is visible here or nowhere.
+    filtered = getattr(context, "request_headers", None) or {}
+    raw = getattr(getattr(context, "request", None), "headers", None)
+    log.info(
+        "uc02 headers: filtered=%s raw=%s",
+        sorted(str(key).lower() for key in filtered) if isinstance(filtered, dict) else None,
+        sorted(str(key).lower() for key in raw) if isinstance(raw, dict) else None,
+    )
+    for headers in (filtered, raw):
+        for name in (ACTOR_HEADER, USER_HEADER):
+            found = _lookup(headers, name)
+            if found:
+                return found
     return DEFAULT_ACTOR
 
 

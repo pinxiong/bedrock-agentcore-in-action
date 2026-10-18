@@ -13,7 +13,7 @@ How it was cleaned before committing (read this before treating it as verbatim):
    have left the account id recoverable. Nothing else references @ptr.
 2. Every "aws.auth.account.access_key" attribute was REMOVED (6 occurrences). It is
    the id of a short-lived session credential and does not belong in a public repo.
-3. Account id 123456789012 was replaced with 123456789012 in every remaining string.
+3. Account id <real> was replaced with 123456789012 in every remaining string.
 
 So the file is a faithful copy of the spans with three categories removed, not a
 byte-identical copy. The numbers the article quotes are untouched:

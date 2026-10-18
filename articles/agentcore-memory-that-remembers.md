@@ -1,6 +1,6 @@
 ---
 title: "An Agent That Remembers: Short-Term and Long-Term Memory on AgentCore"
-description: "AgentCore Memory tutorial: one memory resource, a preference recalled a session later, two actors kept apart, and an episodic record retrieved by meaning. Measured on us-east-1."
+description: "AgentCore Memory, measured: a preference recalled four minutes later in a new session, three managers kept apart by actor id, and a failed restock quoted seventeen minutes later."
 date: 2026-10-18
 draft: false
 tags: ["ai", "agents", "agentcore", "llm"]
@@ -10,38 +10,29 @@ cover:
   alt: "Cover art: two sessions, one memory resource, a preference stated once and applied later"
 ---
 
-An agent that forgets the moment the reply finishes is the correct default, and the wrong behaviour for a reorder assistant. This article adds memory to that agent and proves it three ways: a preference survives into a new session, a second manager cannot see the first manager's memory, and a failed restock is recalled by what it meant.
-
-Every number below was measured while writing this, in one AWS account, in `us-east-1`.
+An agent that forgets when the reply finishes is the right default and the wrong behaviour for a reorder assistant. This article adds memory to one and proves it three ways: a preference survives into a new session, three managers never see each other's memory, and a failed restock is quoted back seventeen minutes later. Every number was measured in one account, in `us-east-1`.
 
 ## The use case
 
-Northwind Gear runs forty stores and restocks them every Monday. A store manager told the reorder assistant, once, that only the North China region matters to them. The next Monday, in a new session, the assistant asked which region again. Nothing was wrong with the model. The sentence never left the session it was said in, so there was nothing for a later session to find.
+Northwind Gear runs forty stores and restocks them every Monday. A store manager told the reorder assistant, once, that only the North China region matters to them. The next Monday, in a new session, the assistant asked which region again. Nothing was wrong with the model: the sentence never left the session it was said in.
 
 ## What AgentCore does here
 
 Three of the nine capabilities carry this use case.
 
-- Memory: one memory resource holds both halves. Short term is an append-only event log keyed by actor and session; long term is a set of records the service extracts from those events into namespaces. This article goes deep on that split.
-- Runtime: hosts `app/aia_uc02/` as a managed endpoint. Each session gets its own microVM, which is why the session id matters.
-- Identity, lightly: the actor id arrives in the invoke payload or in a runtime header, and becomes the partition key of the memory namespace. There is no Cognito pool here.
+- Memory: one resource holds both halves. Short term is an append-only event log keyed by actor and session; long term is what the service extracts from those events into namespaces. This article goes deep on that split.
+- Runtime: hosts `app/aia_uc02/` as a managed endpoint, one microVM per session, which is why the session id matters.
+- Identity, lightly: the actor id becomes the partition key of the namespace and travels as `--user-id`. No Cognito pool here.
 
-The other six stay off: no Gateway, no Policy, no Evaluations, no Code Interpreter, no Browser, and no Observability work beyond what the runtime emits.
+The other six stay off: no Gateway, no Policy, no Evaluations, no Code Interpreter, no Browser, and no Observability beyond the traces the runtime emits.
 
 ## Requirements
 
-- Node.js 20 or newer (22.22.2 here), AgentCore CLI 0.31.1, AWS CLI 2.x, uv 0.11.9
+- Node.js 20 or newer (22.22.2 here), the AgentCore CLI 0.31.1, AWS CLI 2.x, uv 0.11.9
 - Python 3.10 to 3.14 on the host; the runtime target is PYTHON_3_13, set in the contract
-- An AWS account with Bedrock model access, region `us-east-1`
-- Model `deepseek.v3.2`, passed through the `MODEL_ID` environment variable
-- IAM permissions to create a runtime, its role, and a memory resource with an execution role; the CLI writes both roles for you
-
-```bash
-agentcore --version   # 0.31.1
-aws configure get region   # us-east-1
-aws sts get-caller-identity --query Account --output text
-# 123456789012
-```
+- An AWS account with Bedrock model access; region `us-east-1` for everything
+- Model `deepseek.v3.2`, passed to the code through `MODEL_ID`
+- IAM permissions to create a runtime, its role, and a memory resource with an execution role; the CLI writes both roles
 
 ## The code
 
@@ -49,22 +40,19 @@ https://github.com/pinxiong/bedrock-agentcore-in-action/tree/master/usecases/02-
 
 ```text
 02-memory/
-├── run.py                     # every operation; forwards to tests/ and agentcore
-├── Makefile                   # forwards to run.py, holds no logic
 ├── agentcore/
 │   ├── agentcore.json         # the runtime plus one memory with three strategies
-│   └── aws-targets.json       # deployment target: region us-east-1
+│   └── aws-targets.json       # account 123456789012, region us-east-1
 ├── app/aia_uc02/
 │   ├── main.py                # the agent: prompt, tool, actor resolution, entrypoint
 │   ├── memory.py              # the only file that knows short term from long term
 │   ├── model/load.py          # MODEL_ID -> BedrockModel
 │   └── pyproject.toml         # dependencies packaged into the zip
 └── tests/
-    ├── smoke.py               # the four assertions, run against the deployment
-    └── doctor.py              # toolchain, credentials, memory contract
+    └── test_sanitize.py       # offline unit tests for the sanitizer, no AWS
 ```
 
-`memory.py` is the whole subject of the article, and `agentcore.json` is where the namespace layout is decided.
+`memory.py` is the subject of the article; `agentcore.json` decides the namespace layout.
 
 ## How it works
 
@@ -83,9 +71,9 @@ The memory resource is declared once, and the strategies decide what long-term r
 }]
 ```
 
-The actor id is inside the namespace, so isolation is a property of the key space rather than a filter some code path has to remember. The reflection namespace sits one level above the per-session one, so a prefix read of `/episodes/{actorId}/` reaches both a single episode and the lessons written across all of them.
+The actor id sits inside the namespace, so isolation is a property of the key space rather than a filter some code path has to remember. The reflection namespace sits one level up, so a prefix read of `/episodes/{actorId}/` reaches a single episode and the lessons written across all of them.
 
-The agent itself never stores a preference. It appends the turn and asks a question:
+The agent never stores a preference itself. It appends the turn and asks a question:
 
 ```python
 def remember(self, actor, session_id, turns):
@@ -112,9 +100,9 @@ def recall(self, actor, query):
     return found
 ```
 
-Writing the event is also what starts extraction, which is why the second session can find a sentence the first session said. Extraction is not part of the invoke: the CLI returned in 19 seconds (12,117 ms of it the model call), and the records arrived later.
+Writing the event starts extraction, which is how a later session finds a sentence the earlier one said. It is not part of the invoke: the call returned in 17 seconds, the record arrived later.
 
-Retrieval happens before the model is called, because the records become part of the system prompt:
+Retrieval runs before the model, because the records become part of the system prompt:
 
 ```python
 records = store.recall(actor, prompt) if store else []
@@ -125,201 +113,148 @@ agent = Agent(
 )
 ```
 
-A fresh Agent per invoke, not one per session. A cached agent would keep serving the first turn's memories, and a retrieval failure is logged and swallowed: an agent that cannot remember is still useful.
+A fresh `Agent` per invoke: a cached one would keep serving the first turn's memories. A retrieval failure is logged and swallowed.
 
 ## Deploy it
 
 From the use case folder:
 
 ```bash
-make doctor
+agentcore deploy -y --target default
 ```
 
-```text
-toolchain
-  ... four checks: python 3.14.0, node v22.22.2, aws cli 2.15.6, uv 0.11.9 ...
+![Terminal capture: the deploy steps and the two resource ids](/images/agentcore-memory-that-remembers/S1-deploy.png)
 
-agentcore cli
-  PASS  agentcore 0.31.1
-
-this folder
-  PASS  codeLocation 'app/aia_uc02' exists
-  PASS  app environment present at app/aia_uc02/.venv
-  PASS  run.py present
-  ... four more folder checks ...
-
-memory contract
-  PASS  memory 'aia_uc02_mem' declared, events expire in 30d
-  PASS  strategy USER_PREFERENCE present (the regional preference the second session has to recall)
-  PASS  strategy EPISODIC present (the failed restock a later session has to recall)
-  PASS  every strategy namespaces on {actorId}, so actors are isolated by key
-
-aws environment
-  ... three checks: credentials work, region is us-east-1, model available ...
-
-19 passed, 0 warned, 0 failed
-next: make deploy
-```
-
-The memory contract check exists because a deployment missing the EPISODIC strategy would succeed and then fail an assertion much later.
+Wall clock: 4 minutes 20 seconds, ending in a memory id and a runtime ARN.
 
 ```bash
-make deploy
+agentcore status
 ```
 
-```text
-  Load deployment target ............ 1 ms
-  Validate project .................. 682 ms
-  Sync CDK dependencies ............. 2 ms
-  Build CDK project ................. 2.4 s
-  Synthesize CloudFormation ......... 7.1 s
-  Check bootstrap status ............ 665 ms
-  Check stack status ................ 1.4 s
-  Deploy to AWS ..................... 4 m 7 s
-  Persist deployment state .......... 715 ms
+![Terminal capture: one runtime READY and one memory with three strategies](/images/agentcore-memory-that-remembers/S2-status.png)
 
-Total Duration: 4m 23s
-
-Deployed to 'default' (stack: AgentCore-aiauc02-default)
-Outputs:
-  ApplicationMemoryAiaUc02MemIdOutput7F0802F1: aiauc02_aia_uc02_mem-y7Ql9N3D59
-  ApplicationAgentAiaUc02RuntimeArnOutput9F81CB35:
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-ACujAB8uYJ
-```
-
-![Terminal capture: the deploy step timings, the memory id and the runtime ARN](/images/agentcore-memory-that-remembers/S1-deploy.png)
-
-Step timings are the first deploy's, the Outputs a minutes-later re-deploy of the same stack.
-
-Two sessions, two different session ids. The first only states a preference:
+One contract, so one deploy creates both halves, and the memory names its three strategies: the cheapest proof the extraction was requested.
 
 ```bash
-python3 run.py invoke --session b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8 \
-  --prompt "From now on, only reorder for the North China region. Ignore every other region."
+agentcore invoke --user-id store_manager_south --session-id 7d1f4a0c9b2e4d38a5c6e7f801234567-229cdb2d \
+  --prompt "From now on, only reorder for the South China region. Ignore every other region."
 ```
 
-```text
-Based on your explicit instruction, I'll only reorder for the North China region.
-The North China region needs reorders at three stores: Beijing Haidian (42 thermal
-flasks), Tianjin Heping (17 insulated mugs), and Shijiazhuang Qiaoxi (8 lunch boxes). ...
-```
+![Terminal capture: the preference is accepted and applied immediately](/images/agentcore-memory-that-remembers/S3-preference-south.png)
 
-The second one is a new session and says nothing about regions:
+A new session, four minutes later:
 
 ```bash
-python3 run.py invoke --session 03fd411e-293b-4aa2-a219-bd996c7e3481-6b0df16e \
+agentcore invoke --user-id store_manager_south --session-id 8b2c5d1e0f3a4b6c9d8e7f6054321098-33438667 \
   --prompt "Draft this week's reorder list."
 ```
 
-```text
-I'll create the reorder list for the North China region as specified in your preferences. ...
-Here's this week's reorder list for the North China region:
-Store: Beijing Haidian, SKU: SKU-1001, ... Reorder Quantity: 42 units
-Store: Tianjin Heping, SKU: SKU-1002, ... Reorder Quantity: 17 units
-Store: Shijiazhuang Qiaoxi, SKU: SKU-1003, ... Reorder Quantity: 8 units
-Note: I've applied your documented preference to only reorder for North China region, ...
-```
+![Terminal capture: the new session reorders for South China without being told](/images/agentcore-memory-that-remembers/S4-recall-south.png)
 
-Both captures are trimmed, and `...` marks every cut; the store lines also lose the bold markers the model emitted, which this page would render as bold. The second session had never seen the sentence about North China. The only place it could have come from is the memory resource.
-
-![Terminal capture: a preference written in one session and applied in the next](/images/agentcore-memory-that-remembers/S2-cross-session-recall.png)
-
-The assertions run against the deployment:
+255 seconds separate the event from the answer, and this session never saw the sentence. Only the memory resource could have supplied it.
 
 ```bash
-make test
+agentcore invoke --user-id store_manager_east --session-id 9c3d6e2f1a4b5c7d8e9f0a1b23456789-584aa045 \
+  --prompt "From now on, only reorder for the East China region. Ignore every other region."
 ```
 
-```text
-memory
-       session 1 e9f9d728131040b1ad532866e69b4981-cd9243d4
-       extraction visible after 1.5s · 1 record(s)
-       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b · tools ['reorder_candidates']
-       reply "Based on your preference for North China region, here is this
-       week's reorder list: ..."
-  PASS assert_memory_1: a second session retrieves a preference written in the first
-       actor store_manager_north sees '{"context":"Inventory reordering and restocking operations for North China region, including historical restoc ...
-       actor store_manager_south sees '{"context":"Managing inventory reorder operations","preference":"Only reorder for the South China region; igno ...
-       actor store_manager_south reply "Based on your preference for South China
-       region only, here's this week's reorder list: ..."
-  PASS assert_memory_2: actor A cannot retrieve actor B memories
-       episodic extraction visible after 959s
-       reply "... Remember: the Guangzhou warehouse must not be used for North
-       China restocks."
-  PASS assert_memory_3: episodic strategy recalls a previously failed approach
-
-  PASS independence: no other use case's resources present
-
-4 passed, 0 failed
-```
-
-The 1.5 seconds needs explaining: that preference had already been extracted by an earlier run against the same resource. The episode was new, and took 959.
-
-![Terminal capture: the three memory assertions and the independence check](/images/agentcore-memory-that-remembers/S3-verify.png)
-
-Teardown is two steps, and the second one deletes:
+![Terminal capture: the eastern manager's first turn, before extraction has run](/images/agentcore-memory-that-remembers/S5-preference-east.png)
 
 ```bash
-make down
-aia.py status 02
+agentcore invoke --user-id store_manager_east --session-id 0d4e7f3a2b5c6d8e9f0a1b2c34567890-37ad719d \
+  --prompt "Draft this week's reorder list."
 ```
 
-```text
->> agentcore remove all -y
-All schemas reset to empty state
->> agentcore deploy -y --target default
-Deploy to AWS...
-Tear down stack...
-Total Duration: 4m 11s
+![Terminal capture: East China, from a session that never mentioned a region](/images/agentcore-memory-that-remembers/S6-recall-east.png)
 
-$ aia.py status 02
-AgentCore Status (target: default, us-east-1)
+236 seconds after its own event, the eastern manager is answered for East China. Now the same question to the southern one, seconds later:
 
-Agents
-  aia_uc02: Local only
-
-Memories
-  aia_uc02_mem: Local only (USER_PREFERENCE, EPISODIC, SEMANTIC)
+```bash
+agentcore invoke --user-id store_manager_south --session-id 1e5f8a4b3c6d7e9f0a1b2c3d45678901-4a0d1bea \
+  --prompt "Draft this week's reorder list."
 ```
 
-The Total Duration is from the deploy log this step writes (`evidence/18-down-deploy.txt`); the rest is the console output (`evidence/12-down-raw.txt`).
+![Terminal capture: the same prompt, the other manager, the other region](/images/agentcore-memory-that-remembers/S7-isolation.png)
 
-![Terminal capture: remove all, the reconciling deploy, and both resources reporting Local only](/images/agentcore-memory-that-remembers/S4-teardown.png)
+Two actors, one prompt, two answers, no overlap: the actor id is part of the key.
 
-Removal only empties the local contract; the reconciling deploy destroys the stack. One thing survives on purpose: the CDK bootstrap stack and its asset bucket. The memory resource does not survive, so a re-deploy starts empty and re-earns every assertion.
+```bash
+agentcore invoke --user-id store_manager_east --session-id 2f6a9b5c4d7e8f0a1b2c3d4e56789012-0fa33c38 \
+  --prompt "I tried restocking my stores from the Guangzhou warehouse last month. It failed: the lead time was 9 days and three stores stocked out. Make a note of it."
+```
+
+![Terminal capture: a failed restock noted in one session](/images/agentcore-memory-that-remembers/S8-episode.png)
+
+Seventeen minutes later, nobody re-sends that sentence:
+
+```bash
+agentcore invoke --user-id store_manager_east --session-id 3a7b0c6d5e8f9a1b2c3d4e5f67890123-31527d8a \
+  --prompt "Is it a good idea to ship this week's East China restock from the Guangzhou warehouse?"
+```
+
+![Terminal capture: the answer quotes the 9-day lead time nobody mentioned](/images/agentcore-memory-that-remembers/S9-episode-recall.png)
+
+1,022 seconds after the episode was written, the answer recommends against Guangzhou and names the 9-day lead time: the episodic strategy recalling an event by meaning.
+
+Every invoke left a trace:
+
+```bash
+agentcore traces list
+```
+
+![Terminal capture: one row per invoke of this runtime](/images/agentcore-memory-that-remembers/S10-traces-list.png)
+
+```bash
+agentcore traces get 6ad46781381df402758baa6d42b96dd3
+```
+
+![Terminal capture: the trace is written to a local JSON file](/images/agentcore-memory-that-remembers/S11-trace-get.png)
+
+![Terminal capture: the span table, three memory reads before one model call](/images/agentcore-memory-that-remembers/S12-trace-spans.png)
+
+Three `RetrieveMemoryRecords` calls at 349, 268 and 262 milliseconds, one per namespace, then `invoke_agent` at 2,228 milliseconds with 1,400 input and 94 output tokens. Memory work happens before the model runs, which is what the code promises.
+
+```bash
+aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=agentcore-in-action --region us-east-1
+```
+
+![Terminal capture: four resources, every one tagged UseCase=02](/images/agentcore-memory-that-remembers/S13-independence.png)
+
+Four resources, all this use case.
+
+Teardown is two commands, and the second one deletes:
+
+```bash
+agentcore remove all -y
+agentcore deploy -y --target default
+agentcore status
+```
+
+![Terminal capture: remove all, the reconciling deploy, an empty account](/images/agentcore-memory-that-remembers/S14-teardown.png)
+
+`remove all` empties the local contract and deletes nothing on AWS; the deploy after it reconciles the stack to nothing in 4 minutes 13 seconds, and the tag query then returns zero rows. Both JSON files are emptied, so restore them from git.
 
 ## What it produced
 
 ![The memory resource as two halves: an event log and three namespaces keyed by actor id](/images/agentcore-memory-that-remembers/F1-memory-architecture.png)
 
-The measured loop, one actor, two sessions:
-
 ![The cross-session loop: an event, its extracted record, and a second session reading the record](/images/agentcore-memory-that-remembers/F2-two-sessions.png)
 
-The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model "Draft this week's reorder list." produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
+Three actors, three namespaces, one prompt producing two different lists. Extraction lag was 255 seconds for a preference and 1,022 for an episode, which decides every deadline you write.
 
-The third assertion taught me something. Episodic extraction is slow: episodes were written about fifteen minutes after the events they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only fail against it.
-
-A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a `BASE` episode filed under the session that produced it, and a `REFLECTION` written one level up, over all of them. Hence the `{sessionId}` in one template and not the other:
-
-```text
-BASE        /episodes/store_manager_north/195f957a...-78cd451f/
-            {"situation":"The user reported a failed restocking attempt ... 9-day lead time"}
-REFLECTION  /episodes/store_manager_north/
-            {"title":"Structured Output Format for Reorder and Inventory Lists"}
-```
-
-Cost, measured on one traced invoke: 3,433 input and 210 output tokens across two model calls, which at 0.62 and 1.85 USD per million tokens is 0.0025 USD. Memory storage and the extraction calls bill separately; I did not measure that line.
+A prefix read of `/episodes/store_manager_east/` returns a `BASE` episode filed under its session and a `REFLECTION` written one level up, hence the `{sessionId}` in one template and not the other.
 
 ## Troubleshooting
 
-- `Invalid length for parameter runtimeSessionId, value: 22, valid min length: 33`. Short readable session ids look fine and fail before they are sent. The smoke test now builds ids from two uuid4 halves, because one hex uuid is 32 characters, one short of the minimum.
-- `no episodic record ... within 1500s`. Not a broken strategy, just a slow queue: raise the deadline past the observed fifteen minutes, and print how long the wait actually took so the number in the article is a measurement.
+- `Invalid length for parameter runtimeSessionId, value: 22, valid min length: 33`. Short readable session ids fail before they are sent. Build them from two uuid4 halves, because one hex uuid is 32 characters, one short of the minimum.
+- The actor id sent as `-H x-amzn-bedrock-agentcore-runtime-custom-actor-id: ...` never reached the agent, and the reply described the northern manager's memory because the code fell back to its default actor. Send it as `--user-id`, which arrives as `x-amzn-bedrock-agentcore-runtime-user-id`, and log the header names you receive once. This cost one deploy to find and is kept in `evidence/27`.
+- Episodic extraction took 17 minutes, so a 300-second deadline can only fail. Choose the deadline from a measurement.
+- `remove all` needs `-y` in any non-interactive shell, and it empties `agentcore.json` and `aws-targets.json`. Restore both from git before deploying again.
 
 ## Takeaways
 
-- Memory is two mechanisms, not one: an event log you write, and records the service extracts. Only the second one survives a new session.
+- Memory is two mechanisms: an event log you write, and records the service extracts. Only the second reaches a new session.
 - Put the actor id inside the namespace template. Isolation then costs nothing and cannot be forgotten in a code path.
-- Extraction is asynchronous and slow: fifteen minutes for an episode. Every assertion needs a deadline, and every deadline needs to be longer than you think.
-- Retrieval belongs in the system prompt, before the model call, not in a tool the model may or may not choose.
-- Teardown is real: `remove all` empties the contract, the deploy that follows does the deleting.
+- Extraction is asynchronous and slow, and strategies differ. Every assertion needs a deadline longer than the slowest one.
+- Send the actor id with `--user-id` and verify it arrived. A silent fallback to a default actor looks like working memory and is the opposite.
+- Teardown is real: `remove all` empties the contract, the deploy after it does the deleting.

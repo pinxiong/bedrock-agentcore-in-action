@@ -1,0 +1,5 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore remove all` with stdin closed, which is what a CI runner, a pipe or a
+script inside a wrapper gives it. Exit status 1 and the contract on disk is untouched.
+
+Error: This command requires an interactive terminal. Use --help to see non-interactive flags.

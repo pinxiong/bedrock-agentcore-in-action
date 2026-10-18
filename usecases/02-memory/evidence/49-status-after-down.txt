@@ -1,0 +1,6 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore status` straight after the reconciling deploy. The target is empty
+because `remove all` emptied aws-targets.json, which is why it reports no resources at all.
+
+AgentCore Status (target: )
+No resources match the given filters.

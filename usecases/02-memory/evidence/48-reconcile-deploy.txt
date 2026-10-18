@@ -1,0 +1,17 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore deploy -y --target default`, run right after evidence/47.
+Wall clock 4 m 13 s. This is the step that deletes the stack.
+
+✓ Load deployment target
+✓ Validate project
+✓ Validate AWS credentials
+✓ Sync CDK dependencies
+✓ Build CDK project
+✓ Synthesize CloudFormation
+✓ Check bootstrap status
+✓ Check stack status
+✓ Deploy to AWS
+✓ Tear down stack
+✓ Deployed to 'default' (stack: AgentCore-aiauc02-default)
+Log: agentcore/.cli/logs/deploy/deploy-20261018-150950.log
+agentcore deploy -y --target default  9.11s user 2.08s system 4% cpu 4:12.53 total

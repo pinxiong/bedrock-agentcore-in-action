@@ -1,0 +1,15 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore invoke --session-id <five> -H "x-amzn-bedrock-agentcore-runtime-custom-
+actor-id: store_manager_south" --prompt "From now on, only reorder for the South China
+region. Ignore every other region."`
+The reply describes the northern manager's memory, not this call's own actor: the custom
+header never reached the agent. `aws logs filter-log-events` on the runtime log group shows
+actor=store_manager_north for this session id. Kept as the failure that moved actor id onto
+--user-id.
+
+ Invoking agent...
+I cannot change regional preferences through dialogue. According to the memory I have about this store manager, their established preference is to only reorder for the North China region and ignore every other region.
+I'm reordering for the North China region following the manager's documented preference. Stores needing restock: Beijing Haidian (SKU-1001 thermal flask), Tianjin Heping (SKU-1002 insulated mug), and Shijiazhuang Qiaoxi (SKU-1003 lunch box).
+Session: d0c7a718e8854a38b499494f7d0a1709-017e33bf
+To resume: agentcore invoke --session-id d0c7a718e8854a38b499494f7d0a1709-017e33bf
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-141533.log

@@ -1,0 +1,19 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Every span of one traced invoke, flattened out of the file `agentcore traces get` wrote:
+jq -r '<see below>' agentcore/.cli/traces/aia_uc02-6ad46781381df402758baa6d42b96dd3.json | column -t -s $'\t'
+Trace 6ad46781381df402758baa6d42b96dd3, session bf60f433a15444288a1356e9902ba70f-33438667,
+the south manager's cross-session recall invoke at 06:30:35Z.
+
+POST /invocations                        3474 ms  -
+Bedrock AgentCore.RetrieveMemoryRecords  349 ms   -
+Bedrock AgentCore.RetrieveMemoryRecords  268 ms   -
+Bedrock AgentCore.RetrieveMemoryRecords  262 ms   -
+invoke_agent Strands Agents              2228 ms  1400 in / 94 out
+execute_event_loop_cycle                 962 ms   -
+chat                                     959 ms   638 in / 47 out
+chat deepseek.v3.2                       940 ms   638 in / 47 out
+execute_tool reorder_candidates          2 ms     -
+execute_event_loop_cycle                 1264 ms  -
+chat                                     1263 ms  762 in / 47 out
+chat deepseek.v3.2                       1261 ms  762 in / 47 out
+Bedrock AgentCore.CreateEvent            90 ms    -

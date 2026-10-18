@@ -1,0 +1,9 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `git checkout agentcore/agentcore.json agentcore/aws-targets.json` followed by
+`agentcore status`. Restoring the two files is what makes the folder deployable again.
+
+AgentCore Status (target: default, us-east-1)
+Agents
+  aia_uc02: Local only
+Memories
+  aia_uc02_mem: Local only (USER_PREFERENCE, EPISODIC, SEMANTIC)

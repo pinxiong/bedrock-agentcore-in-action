@@ -1,0 +1,34 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore traces list`, run at 06:34 UTC. One row per invoke of this runtime;
+the CLI hard-wraps the console URL at 80 characters.
+
+Traces for aia_uc02 (target: default)
+Trace ID                     Timestamp          Session ID
+6ad4683475bdb02d2a04fd703344 2026-10-18         597e436a5ae1435cb7d6c422c4a936be
+e7cd                         06:33:35Z          -584aa045
+6ad468136694dd94585de8e855c0 2026-10-18         8c851910bb66403ca65ef561263c7819
+2902                         06:33:02Z          -f72bb7fd
+6ad4679f52e205f213272cdb5066 2026-10-18         26c6ebad50ea46109f01d6a7b6327c56
+aed3                         06:31:06Z          -c947d60c
+6ad46781381df402758baa6d42b9 2026-10-18         bf60f433a15444288a1356e9902ba70f
+6dd3                         06:30:35Z          -33438667
+6ad466704e5eb4fc7333e6fb11e4 2026-10-18         c40ea8a3deea4b6c9efe0755fc784ef3
+1326                         06:26:02Z          -229cdb2d
+6ad4661b06264dfc57ae67df0dd1 2026-10-18         961c4f4cc5144f9db5517a7b43615ded
+aa5d                         06:24:37Z          -59ec0a08
+6ad464064a02e1366b4955300104 2026-10-18         d0c7a718e8854a38b499494f7d0a1709
+55d9                         06:15:44Z          -017e33bf
+6ad463a853956b8f532a775242d3 2026-10-18         f61ff08c8c5d40d593799b9f2f97a6ea
+15ae                         06:14:09Z          -a9dcc540
+6ad463412ef6592f057e39031571 2026-10-18         60fc545dbe8d4aa5a546d47773b26e05
+d866                         06:12:29Z          -4096dcd0
+6ad462de047adc241b08b3a33d3b 2026-10-18         e52f66d7e0ed4d89bfc9b234ec70cc96
+5b0b                         06:10:48Z          -44ce5098
+6ad462bb53fa4dab356ee90c7e5d 2026-10-18         30edb3f9b01d4aa2a9c0722a3b7810df
+92d1                         06:10:14Z          -403477a1
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc02_aia_uc02-iDgX8XA1Bj/endp
+oint/DEFAULT/agent/aia_uc02?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc02_aia_uc02-iDgX8XA1Bj%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc02.DEFAULT&tabId=traces
+Note: Traces may take 2-3 minutes to appear in CloudWatch

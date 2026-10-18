@@ -1,0 +1,40 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, account 123456789012)
+Per-step durations written by `agentcore deploy -y --target default` to
+agentcore/.cli/logs/deploy/deploy-20261018-140109.log. Only the STEP, Duration and Total lines are kept.
+
+================================================================================
+AGENTCORE DEPLOY LOG
+Command: deploy
+Started: 2026-10-18T06:01:09.357Z
+================================================================================
+[14:01:09] STEP: Load deployment target
+[14:01:09] Status: SUCCESS
+[14:01:09] Duration: 1ms
+[14:01:09] STEP: Validate project
+[14:01:10] Status: SUCCESS
+[14:01:10] Duration: 874ms
+[14:01:10] STEP: Sync CDK dependencies
+[14:01:10] Status: SUCCESS
+[14:01:10] Duration: 1ms
+[14:01:10] STEP: Build CDK project
+[14:01:12] Status: SUCCESS
+[14:01:12] Duration: 2.5s
+[14:01:12] STEP: Synthesize CloudFormation
+[14:01:26] Status: SUCCESS
+[14:01:26] Duration: 14.0s
+[14:01:26] STEP: Check bootstrap status
+[14:01:27] Status: SUCCESS
+[14:01:27] Duration: 885ms
+[14:01:27] STEP: Check stack status
+[14:01:28] Status: SUCCESS
+[14:01:28] Duration: 840ms
+[14:01:28] STEP: Deploy to AWS
+[14:05:22] Status: SUCCESS
+[14:05:22] Duration: 3m 54s
+[14:05:22] STEP: Persist deployment state
+[14:05:23] Status: SUCCESS
+[14:05:23] Duration: 1.0s
+================================================================================
+COMPLETED SUCCESSFULLY
+Total Duration: 4m 18s
+================================================================================

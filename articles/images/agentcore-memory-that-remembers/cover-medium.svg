@@ -1,27 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 788" width="1400" height="788" role="img">
 <title>An Agent That Remembers: short-term and long-term memory on AgentCore</title>
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
-<radialGradient id="gA" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.24"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
-<radialGradient id="gB" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
-<marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"/></marker>
 </defs>
-<rect width="1200" height="675" fill="url(#bg)"/>
-<rect width="1200" height="675" fill="url(#gA)"/>
-<rect width="1200" height="675" fill="url(#gB)"/>
-<text x="66" y="108" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="29" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
-<text x="66" y="202" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="62" fill="#f8fafc" font-weight="700">An Agent That Remembers</text>
-<text x="66" y="260" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="26" fill="#c4b5fd">Short-term and long-term memory, in one resource</text>
-<rect x="66" y="338" width="294" height="189" rx="14" fill="#0b1428" stroke="#2563eb" stroke-width="2"/>
-<text x="92" y="388" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#2563eb" font-weight="600">session 1</text>
-<text x="92" y="422" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#cbd5e1">only North China</text>
-<text x="92" y="459" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#cbd5e1">matters to me</text>
-<rect x="510" y="338" width="294" height="189" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
-<text x="536" y="388" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#059669" font-weight="600">session 2</text>
-<text x="536" y="422" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#cbd5e1">reordered for</text>
-<text x="536" y="459" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#cbd5e1">North China only</text>
-<line x1="374.4" y1="432.0" x2="495.6" y2="432.0" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
-<text x="435" y="412" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#8ea0bd" text-anchor="middle">memory</text>
-<text x="66" y="628" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#8ea0bd">one memory resource, three namespaces, actor id inside the key</text>
+<rect width="1400" height="788" fill="url(#bg)"/>
+<rect width="1400" height="788" fill="url(#g1)"/>
+<rect width="1400" height="788" fill="url(#g2)"/>
+<text x="77" y="126" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="34" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
+<text x="77" y="236" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="73" fill="#f8fafc" font-weight="700">An Agent That Remembers</text>
+<text x="77" y="303" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="31" fill="#c4b5fd">Short-term and long-term memory, in one resource</text>
+<rect x="77" y="394" width="343" height="221" rx="14" fill="#0b1428" stroke="#2563eb" stroke-width="2"/>
+<text x="108" y="453" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#2563eb" font-weight="600">session 1</text>
+<text x="108" y="492" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1">only my own region</text>
+<text x="108" y="536" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1">matters to me</text>
+<rect x="595" y="394" width="343" height="221" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="626" y="453" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#059669" font-weight="600">session 2</text>
+<text x="626" y="492" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1">already knew that,</text>
+<text x="626" y="536" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1">and says why</text>
+<line x1="437" y1="504" x2="578" y2="504" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="508" y="481" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#8ea0bd" text-anchor="middle">memory</text>
+<text x="77" y="733" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#8ea0bd">one memory resource, three namespaces, actor id inside the key</text>
 </svg>

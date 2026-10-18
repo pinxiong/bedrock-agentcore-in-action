@@ -1,25 +1,26 @@
 # UC02 · Memory（短期记忆与跨会话长期记忆）
 
 > **Series**: AgentCore in Action（7 个独立用例，难度 D1 到 D5）· **Use case**: 02 · **Difficulty**: **D2** · **Region**: `us-east-1`
-> **Verified on**: 2026-10-18 · **Cost**: 全程 ≈ $0.03 的模型调用 + 一天的 memory 存储（上界 < $2）· **Time**: 60 min（其中首次部署 4 m 23 s，断言 17 m 27 s）
+> **Verified on**: 2026-10-18 · **Cost**: 全程 ≈ $0.02 的模型调用 + 一天的 memory 存储（上界 < $2）· **Time**: 60 min（其中部署 4 m 20 s，等情节抽取 16 m 30 s）
 > **Capabilities**: `memory`（深挖）· `runtime` / `identity`（附带）
 > **Standalone**: yes。目录不依赖任何其他用例，也不需要仓库里的其他文件；拷到任何地方照样能跑（见 §2.3）。
 
 > 文中的账号 ID 已脱敏为 `123456789012`；真实输出里出现的是你自己的账号。
+> 本用例目录里没有任何自己写的操作脚本，每一步都是一条 `agentcore` 或 `aws` 命令。
 
 ---
 
 ## 1. 本用例结束时你会看到什么
 
-一句话：一个上周说过「只要华北区」的补货助手，在这周的全新 session 里不再问第二遍。
+一句话：一个上周说过「只要华南区」的补货助手，在这周的全新 session 里不再问第二遍。
 
 跑完之后你会得到：
 
-- 一个 runtime ARN 与一个 memory ARN（`make status` 会打印出来）
-- 一次跨会话回忆：session 1 只说了偏好，session 2 直接按偏好下单
-- 一次隔离证明：`store_manager_north` 与 `store_manager_south` 各自只看到自己的偏好
-- 一次情节回忆：一条失败补货记录被语义检索找回来，而不是靠重放对话
-- 一份可重复执行的断言：`make test` 输出 `4 passed, 0 failed`
+- 一个 runtime 与一个 memory（`agentcore status` 会把两个都列出来）
+- 一次跨会话回忆：session 1 只说了偏好，session 2 四分钟后按偏好下单
+- 一次隔离证明：两位店长在同一分钟问同一个问题，各自只拿到自己的区域
+- 一次情节回忆：一条失败补货记录被检索找回来，然后在回答里主动说出来
+- 一条 independence 查询：账号里只有打着 `UseCase=02` 的四行资源
 
 ---
 
@@ -32,7 +33,7 @@
 | 新增能力数 | 1（`memory` 深挖，`runtime` 复用） | ≤ 2 ✅ |
 | 新增外部依赖 | 1 个有状态 AWS 资源（AgentCore Memory） | 1 个 ✅ |
 | 必须理解的机制 | 状态、检索、隔离三个轴：什么进短期、什么进长期、谁看不见谁 | ✅ |
-| 参考耗时 | 60 min | ≤ 60 min ✅ |
+| 参考耗时 | 60 min（其中约 17 min 在等异步抽取） | ≤ 60 min ✅ |
 
 **难度上升的实际含义**：UC01 里 agent 是无状态的，invoke 结束即归零。本用例第一次让状态活过 invoke，于是三个新问题必须回答：写进去的东西什么时候变得可读（异步抽取）、读回来的东西怎么进 prompt（检索结果拼进 system prompt）、两个人怎么不串（actor id 进 namespace）。
 
@@ -47,9 +48,9 @@
 
 - 本目录**不 import** 任何其他用例，也不读其他用例的 stack outputs
 - 本目录的 `agentcore/agentcore.json` 只声明自己的 runtime 与 memory
-- `make check` 会把整个目录拷到临时目录再跑一遍检查，证明「拷贝即独立」
-- 所有资源带 `Project=agentcore-in-action`、`UseCase=02`、`AutoDelete=true` 三个 tag，清理断言靠它们
-- 断言 4（`independence`）要求账号里没有其他用例的资源。**跑之前请确认其他用例已经 `make down`**，否则它失败得理直气壮
+- 独立性由仓库级工具用原生命令核对：目录内没有指向目录外的路径、合约自包含、CDK 产物里没有跨栈引用
+- 所有资源带 `Project=agentcore-in-action`、`UseCase=02`、`AutoDelete=true` 三个 tag，§9 的清理断言靠它们
+- independence 要求账号里没有其他用例的资源。**跑之前请确认其他用例已经拆除**，否则它失败得理直气壮
 
 ### 2.4 官方坐标（对齐 awslabs/agentcore-samples）
 
@@ -62,38 +63,39 @@
 
 ## 3. 为什么需要这一层
 
-补货助手的第一版只会看着系统提示词回答。于是每周一，店长都要重新说一遍「我只要华北区」。
+补货助手的第一版只会看着系统提示词回答。于是每周一，店长都要重新说一遍「我只要某个区」。
 
 把这句话塞进 prompt 缓存不解决问题：换一个店长就串了，隔一周就过期了，而且没人说得清它存在哪。AgentCore Memory 把这件事拆成两个可以分别验证的动作：
 
 - **写**：`CreateEvent`，一次 invoke 一条，键是 `(actorId, sessionId)`，30 天后过期
 - **读**：`RetrieveMemoryRecords`，按 namespace 检索抽取出来的 record
 
-关键在于「写」和「可读」之间隔着一个异步抽取。这个间隔是本用例最容易被低估的部分，也是断言唯一需要等待的地方。
+关键在于「写」和「可读」之间隔着一个异步抽取。这个间隔是本用例最容易被低估的部分，也是唯一需要「等」的地方：偏好 2 到 4 分钟可读，情节 16 分半可读。
 
 ---
 
 ## 4. Architecture
 
 ```text
-caller ──invoke(prompt, actor_id)──> Runtime aia_uc02 ──converse──> Bedrock deepseek.v3.2
-                                          │
-                                          ├── CreateEvent（短期，一次一条）
-                                          ▼
-                              Memory aia_uc02_mem
-                                 /users/{actorId}/preferences    USER_PREFERENCE
-                                 /users/{actorId}/facts          SEMANTIC
-                                 /episodes/{actorId}/{sessionId} EPISODIC
-                                          │
-                                          └── RetrieveMemoryRecords（长期，读一个 namespace）
+agentcore invoke --user-id <actor>
+   └─► Runtime aia_uc02 ──converse──► Bedrock deepseek.v3.2
+            │
+            ├── RetrieveMemoryRecords（进 system prompt，先读后答）
+            ▼
+   Memory aia_uc02_mem
+       /users/{actorId}/preferences    USER_PREFERENCE
+       /users/{actorId}/facts          SEMANTIC
+       /episodes/{actorId}/{sessionId} EPISODIC
+            ▲
+            └── CreateEvent（回答之后写，一次一轮）
 ```
 
 一次 invoke 的顺序是固定的：
 
-1. 解析 actor（payload 的 `actor_id` → 运行时 header → 固定默认值）
+1. 解析 actor（`x-amzn-bedrock-agentcore-runtime-user-id` → 自定义 actor header → 固定默认值）
 2. `RetrieveMemoryRecords` 三个 namespace，各自 try/except，失败只记日志
 3. 把结果拼进 system prompt
-4. 模型回答
+4. 模型回答（必要时调 `reorder_candidates`）
 5. `CreateEvent` 写入这一轮（在回答之后，慢写不拖慢回复）
 
 ---
@@ -104,17 +106,17 @@ caller ──invoke(prompt, actor_id)──> Runtime aia_uc02 ──converse─�
 - 宿主机 Python 3.10–3.14（本机 3.14.0）；运行时目标是 `PYTHON_3_13`，写死在契约里
 - 一个有 Bedrock 模型权限的 AWS 账号，区域 `us-east-1`
 - 模型 `deepseek.v3.2`，通过 `MODEL_ID` 环境变量传入
+- `jq`（本文用它把 trace 里的 span 摊平成表格）
 
 ```bash
-cd usecases/02-memory
-make doctor          # 19 项检查，含 memory 契约与模型可用性
+agentcore --version
+aws configure get region
+aws sts get-caller-identity --query Account --output text
 ```
-
-`make doctor` 会检查三件部署时才会暴露的事：memory 是否声明、`USER_PREFERENCE` 与 `EPISODIC` 两个 strategy 是否在、每个 strategy 的 namespace 模板里是否有 `{actorId}`。
 
 ### 5.1 最小权限（生产用法）
 
-CLI 会为 runtime 和 memory 各生成一个 role。生产上你要的是：runtime role 能调 Bedrock 与 memory 的 `CreateEvent` / `RetrieveMemoryRecords` / `ListMemoryRecords`；memory execution role 能被 AgentCore Memory 服务 assume。实验室账号里这两件事由 CLI 自动完成，不需要手工建。
+CLI 会为 runtime 和 memory 各生成一个 role。生产上你要的是：runtime role 能调 Bedrock 与 memory 的 `CreateEvent` / `RetrieveMemoryRecords`；memory execution role 能被 AgentCore Memory 服务 assume。实验室账号里这两件事由 CLI 自动完成，不需要手工建。
 
 ---
 
@@ -122,15 +124,13 @@ CLI 会为 runtime 和 memory 各生成一个 role。生产上你要的是：run
 
 | 项 | 实测 |
 |---|---|
-| 首次部署（含建 memory 与两个 role） | 4 m 23 s |
-| 第二次部署（只改描述） | 58 s |
-| 单次 invoke（含 CLI 启动） | 19 s |
-| 偏好抽取可见（空 namespace 首次，早期尝试的资源，已拆除） | 88 s |
-| 偏好抽取可见（本次运行，namespace 已有记录） | 1.5 s |
-| 情节抽取可见 | 959 s（约 16 min） |
-| `make test` 全程 | 17 m 27 s（几乎都花在等情节抽取） |
-| 模型调用 | 15 次 invoke，约 0.04 USD（单次实测 3 433 in / 210 out） |
-| 拆除 | 4 m 11 s |
+| 部署（含建 memory 与两个 role） | 4 m 20 s |
+| 应用改动后再部署 | 1 m 44 s |
+| 单次 invoke（CLI 墙钟） | 17–21 s |
+| 偏好抽取可读 | 113 s 时还读不到，236 s 时读得到 |
+| 情节抽取可读 | 990 s（16 m 30 s） |
+| 一次 trace 过的 invoke 的模型消耗 | 1 400 in / 94 out token ≈ $0.001 |
+| 拆除（`remove all` + 收敛部署） | 见 §9 |
 
 memory 资源本身按存储与它自己发起的抽取模型调用计费；本用例一天之内远低于 1 USD。
 
@@ -138,102 +138,151 @@ memory 资源本身按存储与它自己发起的抽取模型调用计费；本�
 
 ## 7. Step-by-step
 
-### 7.1 自检
+> 下面所有 `agentcore` 命令都必须在**用例根目录** `usecases/02-memory/` 执行。
+> 在 `agentcore/` 子目录里执行会直接报 `Please run this command from your project root directory.`
+> CLI 没有 `--region`，区域只认 `agentcore/aws-targets.json`。
+
+### 7.1 部署
 
 ```bash
-make doctor
+cd usecases/02-memory
+agentcore deploy -y --target default
+agentcore status
 ```
 
-期望结尾是 `19 passed, 0 warned, 0 failed` 与 `next: make deploy`。任何 FAIL 都带一行 fix，照着做即可。
+期望看到 `Runtime: READY`，以及 `Memories` 一栏列出三个 strategy（`USER_PREFERENCE, EPISODIC, SEMANTIC`）。Outputs 里有一行 memory id、一行 runtime ARN。
 
-离线也可以跑：`python3 tests/doctor.py --offline` 会跳过三个需要 AWS 的检查。
+### 7.2 偏好：写一次，换一个 session 读
 
-### 7.2 部署
+两次 invoke 用**不同的 `--session-id`**，同一个 `--user-id`。第一次只说偏好：
 
 ```bash
-make deploy
+agentcore invoke --user-id store_manager_south \
+  --session-id "<uuid>-<uuid8>" \
+  --prompt "From now on, only reorder for the South China region. Ignore every other region."
 ```
 
-期望看到两行 Outputs，一行是 memory id，一行是 runtime ARN：
+> session id 最短 33 字符，一个 uuid4 的 hex 只有 32 位。用两段 uuid 拼：
+> `--session-id "$(uuidgen | tr A-Z a-z)-$(uuidgen | tr A-Z a-z | cut -c1-8)"`
 
-```text
-ApplicationMemoryAiaUc02MemIdOutput7F0802F1: aiauc02_aia_uc02_mem-y7Ql9N3D59
-ApplicationAgentAiaUc02RuntimeArnOutput9F81CB35:
-  arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-ACujAB8uYJ
-```
-
-`make status` 会同时打印 memory 的三个 strategy，用来确认它们真的建出来了。
-
-### 7.3 两个 session
-
-第一次说偏好，第二次什么都不说直接要清单。两次用不同的 `--session`，同一个 actor。
+等三到四分钟（`CreateEvent` 只是触发抽取，抽取本身不在 invoke 里），换一个 session id 再问：
 
 ```bash
-python3 run.py invoke --session "$(uuidgen | tr A-Z a-z)-$(uuidgen | tr A-Z a-z | cut -c1-8)" \
-  --prompt "From now on, only reorder for the North China region. Ignore every other region."
-
-# 换一个 session id，再问一次
-python3 run.py invoke --session "$(uuidgen | tr A-Z a-z)-$(uuidgen | tr A-Z a-z | cut -c1-8)" \
+agentcore invoke --user-id store_manager_south \
+  --session-id "<另一个 uuid>" \
   --prompt "Draft this week's reorder list."
 ```
 
-第二次的回答会主动提到「按你记录的偏好，只补华北」。
+这次什么都不解释，回答却是华南三店。它不可能来自这个 session，也不可能来自默认策略：没有记忆时 agent 会明确说自己在猜华北（见 §7.3 的第一步）。
 
-换 actor 看隔离：
+### 7.3 隔离：同一分钟，两位店长
 
-```bash
-python3 run.py invoke --actor store_manager_south --prompt "Draft this week's reorder list."
-```
-
-同一个问题，南区的店长拿到的是华南。actor 走 `x-amzn-bedrock-agentcore-runtime-custom-actor-id` 这个 header，入口把它变成 namespace 的一部分。
-
-### 7.4 跑断言
+先给第二位店长一条偏好，然后是关键的两次对照调用，中间只隔 14 秒：
 
 ```bash
-make test
+agentcore invoke --user-id store_manager_east \
+  --session-id "<uuid>" \
+  --prompt "From now on, only reorder for the East China region. Ignore every other region."
+
+# 等三到四分钟
+agentcore invoke --user-id store_manager_east --session-id "<uuid>" \
+  --prompt "Draft this week's reorder list."
+
+agentcore invoke --user-id store_manager_south --session-id "<uuid>" \
+  --prompt "Draft this week's reorder list."
 ```
 
-四条断言，逐条对应 §1 的四件事。期望 `4 passed, 0 failed`。若第 4 条失败并点名 `aiauc01` 之类的资源，说明账号里还有别的用例没拆，不是本用例的问题。
+同一个问题、同一个 runtime、同一个 memory 资源：一个答华东（上海/杭州/南京），另一个答华南（广州/深圳/东莞）。`--user-id` 进 nanospace 的键，所以隔离不需要任何过滤。
 
-### 7.5 本地跑（不碰 AWS）
+### 7.4 情节：失败一次，被记住一次
 
 ```bash
-make dev      # 端口 8080，真实模型，没有 memory 资源
+agentcore invoke --user-id store_manager_east --session-id "<uuid>" \
+  --prompt "I tried restocking my stores from the Guangzhou warehouse last month. It failed: the lead time was 9 days and three stores stocked out. Make a note of it."
+
+# 等约 16 分钟，情节抽取比偏好慢一个数量级
+agentcore invoke --user-id store_manager_east --session-id "<另一个 uuid>" \
+  --prompt "How should I restock the East China stores this week?"
 ```
 
-没有 `MEMORY_*_ID` 时 `from_env()` 返回 `None`，agent 退化成「会忘记的那个版本」，正好用来复现本用例开头的那句话。
+第二次回答会主动提起「上次从广州仓补货失败、lead time 9 天」这件事，并据此给方案。没有人把那段话重新发了一遍。
+
+### 7.5 看这次调用到底做了什么
+
+```bash
+agentcore traces list
+agentcore traces get <trace id>
+```
+
+`traces get` 会把 JSON 落到 `agentcore/.cli/traces/`（该目录下的 `@ptr` 字段是 base64，解出来含账号 ID，别直接贴出去）。用 `jq` 把 span 摊平：
+
+```bash
+jq -r '[.[] ."@message" | select(type == "object" and .name != null)] as $spans
+  | $spans | sort_by(.startTimeUnixNano) | .[] | (.attributes // {}) as $a
+  | [.name, (((.durationNano // 0) / 1000000 | floor | tostring) + " ms"),
+     (if $a["gen_ai.usage.input_tokens"] then ($a["gen_ai.usage.input_tokens"] | tostring) + " in / " + ($a["gen_ai.usage.output_tokens"] | tostring) + " out" else "-" end)] | @tsv' \
+  agentcore/.cli/traces/<trace file>.json | column -t -s $'\t'
+```
+
+你会看到模型之前有三次 `RetrieveMemoryRecords`（三个 namespace 各一次），模型之后有一次 `CreateEvent`，中间还夹着一个 `execute_tool reorder_candidates`。这条表格就是「读了什么、写了什么」的全部证据。
+
+### 7.6 本地跑（不碰 AWS）
+
+```bash
+agentcore dev -l    # 监听 http://localhost:8080/invocations
+```
+
+没有 `MEMORY_*_ID` 时 `memory.py::from_env()` 返回 `None`，agent 退化成「会忘记的那个版本」，正好用来复现 §3 开头的那句话。
 
 ---
 
-## 8. Troubleshooting
+## 8. Verify
 
-| 症状 | 原因 | 修法 |
-|---|---|---|
-| `Invalid length for parameter runtimeSessionId, value: 22, valid min length: 33` | session id 太短，请求还没发出去就被参数校验拦下 | 用两个 uuid4 拼，单个 hex uuid 只有 32 位，差一位 |
-| `no episodic record ... within 300s` | 情节抽取比偏好抽取慢一个数量级（本资源实测 15 min） | 把 deadline 抬到 20 min 以上；断言里打印实际等待时长 |
-| `make invoke --session ...` 报 `unrecognized option` | make 不转发不认识的 flag | 用 `python3 run.py invoke --session ...`，或 `AIA_PROMPT=... make invoke` |
-| 第二条断言里 actor 看到了对方的区域 | 某个 strategy 的 namespace 模板里没有 `{actorId}` | `make doctor` 的 memory contract 段会直接点出来 |
-| `agentcore remove all` 报 `requires an interactive terminal` | 非 tty 环境 | `run.py` 已经固定传 `-y` |
+四类断言，全部用原生命令的输出自证（`evidence/` 里按顺序留了原始输出）：
+
+1. **跨会话偏好**：session 2 在从未见过那句话的前提下按偏好下单（`evidence/31`）
+2. **actor 隔离**：同一分钟同一个问题，两位店长拿到各自的区域（`evidence/39` 与 `evidence/40`）
+3. **情节回忆**：后一个 session 主动复述上一次失败的补货方案（`evidence/44`）
+4. **independence**：只有本用例的资源挂在 `Project=agentcore-in-action` 下（`evidence/38`、拆除后 `evidence/45`）
+
+```bash
+aws resourcegroupstaggingapi get-resources --region us-east-1 \
+  --tag-filters Key=Project,Values=agentcore-in-action \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,tags:Tags[?Key==`UseCase`].Value|[0]}' --output text
+```
+
+期望：部署期间四行且都是 `02`，拆除后零行。
+
+> 完整仓库里还有一层系列级校验，会在这之上再核对能力覆盖、目录自包含、难度单调、跨栈引用与命令是否存在。本目录不含那份工具，也不需要它来跑通本文的每一步。
 
 ---
 
 ## 9. Cleanup
 
 ```bash
-make down
+agentcore remove all -y
+agentcore deploy -y --target default
+agentcore status
 ```
 
-两步：`agentcore remove all -y` 把本地契约清空，随后的 `agentcore deploy` 才真正删栈。跑完期望 `aia_uc02: Local only` 与 `aia_uc02_mem: Local only`。
+两步都要：`remove all` 只是把资源从 `agentcore/agentcore.json` 里摘掉，**真正的删除靠随后这次 deploy 把 stack 收敛到空**。`-y` 不是可选项：没有 tty 时（CI、管道、脚本）命令会以 `This command requires an interactive terminal` 直接失败。
 
-有意留下的只有一样：CDK bootstrap stack 与它的 asset bucket。那是账号级地基，每个用例都用，不该跟着单个用例删。memory 资源随栈一起删，所以重新部署时记忆是空的，所有断言要从头再挣一遍。
+`remove all` 会把 `agentcore/agentcore.json` 与 `agentcore/aws-targets.json` 写到空，所以**重新部署之前先从 git 恢复这两个文件**：
 
-`agentcore.json` 与 `aws-targets.json` 会被改写，重新部署前从 git 恢复。
+```bash
+git checkout agentcore/agentcore.json agentcore/aws-targets.json
+```
+
+有意留下的只有一样：CDK bootstrap stack 与它的 asset bucket。那是账号级地基，每个用例都用，不该跟着单个用例删。memory 资源随栈一起删，所以重新部署时记忆是空的，所有结论要从头再挣一遍。
 
 ---
 
-## 10. What you repeated（为独立而内嵌的基线）
+## 10. Going further
 
-- 一个最小 Strands agent、`model/load.py`、`model/sanitize.py`、`tests/doctor.py`、`tests/copy_check.py`、`run.py`、`Makefile`：与 UC01 同源
-- 重复是独立性的代价：本用例不 import UC01，也不读它的 stack outputs，所以这些文件必须自带
-
-内容上真正新增的只有三处：`app/aia_uc02/memory.py`、`agentcore.json` 里的 `memories` 段、以及 `tests/smoke.py` 里那三条 memory 断言。
+- 延伸实验：
+  1. 把 `agentcore/agentcore.json` 里 `eventExpiryDuration` 从 30 改成 7，重新部署，观察事件留存窗口的变化。
+  2. 把 EPISODIC strategy 删掉再部署一次，§7.4 那两次调用就再也问不出「上次失败」——没人抽出那条 record，即使 event 还在。
+  3. 再跑一次 `agentcore deploy`，让 runtime 升一个版本，然后对比两次版本的 trace。
+- 官方文档：<https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html>
+- 难度阶梯上的位置：本用例是第 2 档。
+- 文章版：`articles/agentcore-memory-that-remembers.md`

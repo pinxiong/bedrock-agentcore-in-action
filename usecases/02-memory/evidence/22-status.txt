@@ -1,0 +1,13 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, account 123456789012)
+Output of `agentcore status`, right after the deploy. The CLI hard-wraps long lines, so the runtime ARN is split across two lines; nothing else is changed.
+
+AgentCore Status (target: default, us-east-1)
+Agents
+  aia_uc02: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:12345
+6789012:runtime/aiauc02_aia_uc02-iDgX8XA1Bj)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abe
+drock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc02_aia_uc02-iDgX8XA1
+Bj/invocations
+Memories
+  aia_uc02_mem: Deployed (USER_PREFERENCE, EPISODIC, SEMANTIC) (arn:aws:bedrock-
+agentcore:us-east-1:123456789012:memory/aiauc02_aia_uc02_mem-mjWcR3Gk40)

@@ -2,26 +2,25 @@
 <title>An Agent That Remembers: short-term and long-term memory on AgentCore</title>
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
-<radialGradient id="gA" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.24"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
-<radialGradient id="gB" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
-<marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"/></marker>
 </defs>
 <rect width="1000" height="420" fill="url(#bg)"/>
-<rect width="1000" height="420" fill="url(#gA)"/>
-<rect width="1000" height="420" fill="url(#gB)"/>
+<rect width="1000" height="420" fill="url(#g1)"/>
+<rect width="1000" height="420" fill="url(#g2)"/>
 <text x="55" y="67" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
 <text x="55" y="126" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#f8fafc" font-weight="700">An Agent That Remembers</text>
 <text x="55" y="162" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#c4b5fd">Short-term and long-term memory, in one resource</text>
 <rect x="55" y="210" width="245" height="118" rx="14" fill="#0b1428" stroke="#2563eb" stroke-width="2"/>
 <text x="77" y="242" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#2563eb" font-weight="600">session 1</text>
-<text x="77" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">only North China</text>
+<text x="77" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">only my own region</text>
 <text x="77" y="286" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">matters to me</text>
 <rect x="425" y="210" width="245" height="118" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
 <text x="447" y="242" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#059669" font-weight="600">session 2</text>
-<text x="447" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">reordered for</text>
-<text x="447" y="286" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">North China only</text>
-<line x1="312.0" y1="268.8" x2="413.0" y2="268.8" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="447" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">already knew that,</text>
+<text x="447" y="286" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1">and says why</text>
+<line x1="312" y1="269" x2="413" y2="269" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
 <text x="362" y="256" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle">memory</text>
 <text x="55" y="391" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">one memory resource, three namespaces, actor id inside the key</text>
 </svg>

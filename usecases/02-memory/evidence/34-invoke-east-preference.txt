@@ -1,0 +1,12 @@
+RUN: 2026-10-18 (runtime id aiauc02_aia_uc02-iDgX8XA1Bj, memory id aiauc02_aia_uc02_mem-mjWcR3Gk40, stack AgentCore-aiauc02-default, account 123456789012)
+Output of `agentcore invoke --user-id store_manager_east --session-id <eleven> --prompt
+"From now on, only reorder for the East China region. Ignore every other region."`
+Started 06:33:16 UTC, returned 06:33:36 UTC. No extraction yet, so it falls back to the
+chain default and says so.
+
+ Invoking agent...
+Since no specific regional preference is stored for this manager, I'll use the chain default.
+I'm guessing with the chain default of North China. Stores below reorder point: Beijing Haidian (SKU-1001), Tianjin Heping (SKU-1002), and Shijiazhuang Qiaoxi (SKU-1003).
+Session: 597e436a5ae1435cb7d6c422c4a936be-584aa045
+To resume: agentcore invoke --session-id 597e436a5ae1435cb7d6c422c4a936be-584aa045
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-143322.log
