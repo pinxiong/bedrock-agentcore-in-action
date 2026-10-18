@@ -254,7 +254,7 @@ invoke_agent Strands Agents        2.50 s   tools=["add_numbers"]
 
 The `execute_tool` span is the point. It is what separates "the model said 42" from "the tool computed 42 and the model reported it", and it only exists on the deployed runtime; local `agentcore dev` traces record the tool call in logs but not as a span.
 
-Cost, measured on this run: the traced invoke used 945 input and 71 output tokens, which at deepseek.v3.2 prices in us-east-1, 0.62 and 1.85 USD per million tokens, is 0.00072 USD of model calls. Six billable invokes happened while writing this article. The runtime bills per use, so a deployed agent left idle costs nothing, and the teardown leaves nothing tagged to this use case behind.
+Cost, measured on this run: the traced invoke used 945 input and 71 output tokens, which at deepseek.v3.2 prices in us-east-1, 0.62 and 1.85 USD per million tokens, is 0.00072 USD of model calls. Six cloud invokes happened on this run. The runtime bills per use, so a deployed agent left idle costs nothing, and the teardown leaves nothing tagged to this use case behind.
 
 ## Troubleshooting
 
