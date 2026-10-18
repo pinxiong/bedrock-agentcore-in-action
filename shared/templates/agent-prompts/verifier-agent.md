@@ -36,21 +36,27 @@ published. Be specific and be willing to fail it.
 
 **B. Truth**
 
-7. Every command in the article exists in the CLI it claims to come from.
-   Spot-check each `agentcore ...` subcommand with `agentcore <cmd> --help`; a
-   command that does not exist is a blocking defect.
+7. Every command in the article exists in the CLI it claims to come from, and it
+   is a native command: `agentcore ...` or `aws ...`. A `make <target>` or a
+   `python3 run.py <target>` is a blocking defect. Spot-check each
+   `agentcore ...` subcommand with `agentcore <cmd> --help`; a command that does
+   not exist is a blocking defect.
 8. Every number in the article (timings, token counts, costs, versions) traces
    to an evidence file under `usecases/{{NN}}-{{SLUG}}/evidence/`. Pick five at
    random and open the file. Any number you cannot trace is a blocking defect.
 9. The assertions in `docs/05-capability-map.yaml` for `{{UC_ID}}` are each
-   addressed in the article and each has a matching assertion in
-   `usecases/{{NN}}-{{SLUG}}/tests/smoke.py`.
+   addressed in the article and each is proven by a capture under
+   `usecases/{{NN}}-{{SLUG}}/evidence/` of the native command that proves it.
+   An assertion with no evidence file is a blocking defect.
 10. Account ids are redacted to `123456789012`. No ARN in the article contains a
     real account id.
 
 **C. Independence**
 
-11. `aia.py check {{NN}}` passes (copy the folder out and it still runs).
+11. `env -u PYTHONPATH /usr/local/bin/python3 aia.py check {{NN}}` passes. It
+    reads the folder rather than running anything in it: no path may leave the
+    folder, and no banned operational script (`run.py`, `Makefile`,
+    `tests/doctor.py`, `tests/smoke.py`, `tests/copy_check.py`) may be present.
 12. `usecases/{{NN}}-{{SLUG}}/` contains no reference to another use case: no
     import, no stack output read, no relative path leaving the folder.
 13. The article never tells the reader to deploy another use case first.
@@ -61,6 +67,11 @@ published. Be specific and be willing to fail it.
     referenced by root path `/images/{{ARTICLE_SLUG}}/`.
 15. At least three images: one architecture diagram, one deploy capture, one
     result capture. Each has alt text describing its content.
+16. Every command the article shows is followed by its output as a figure, and no
+    output appears twice, once as a fenced block and once as an image. A command
+    with no figure, or an output printed both ways, is a blocking defect.
+17. Every GitHub URL says `/tree/master/` or `/blob/master/`. A `/tree/main/`
+    link is a 404 on this repository and is a blocking defect.
 
 ## Output
 

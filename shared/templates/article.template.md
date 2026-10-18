@@ -38,19 +38,24 @@ fails in production. This section is where the article earns a reader's attentio
 
 ## 5. Walkthrough
 
-{{The few commands that matter, each with its real output. Point at this folder for
-the full version rather than pasting everything. This folder is self-contained:
-`make doctor` / `make deploy` / `make test` / `make down` cover the whole loop.}}
+{{The few commands that matter, each with its real output, and each output shown as
+a figure. Point at this folder for the full version rather than pasting
+everything. This folder is self-contained: `agentcore deploy -y --target default`,
+`agentcore status`, `agentcore invoke --prompt`, then `agentcore remove all -y`
+followed by `agentcore deploy -y --target default` cover the whole loop.}}
 
 ## 6. Verification
 
-{{Real output from `make test` and `make check`. Assertions, not adjectives.}}
+{{Real output of the native command that proves each capability, saved under
+`evidence/`. Assertions, not adjectives: `agentcore status`, `agentcore invoke`,
+`agentcore traces list`, `aws resourcegroupstaggingapi get-resources`.}}
 
 ## 7. Cleanup
 
 ```bash
-make down                    # tag-scoped teardown of this use case only
-agentcore status             # nothing from this use case should be listed
+agentcore remove all -y                   # empties agentcore/agentcore.json ...
+agentcore deploy -y --target default      # ... and this reconciles the stack down
+agentcore status                          # nothing from this use case should be listed
 ```
 
 {{Say what survives on purpose, and why. Example: the CDK bootstrap stack and its
@@ -71,8 +76,8 @@ asset bucket are reused by every later deployment in the account.}}
 | `agentcore/agentcore.json` | the contract: every resource this use case declares | you |
 | `agentcore/aws-targets.json` | where deployments land | you |
 | `app/{{AGENT_NAME}}/` | the agent code `codeLocation` points at | you |
-| `Makefile` | every operation, all of them relative to this folder | you |
-| `tests/doctor.py`, `tests/copy_check.py` | environment self-check, and the proof the folder stands alone | you |
+| `evidence/` | captures of the native commands that prove the capabilities | you |
+| `tests/` | unit tests for the agent's own Python, offline | you |
 | `raw/` | boto3 sidecar scripts; teaching only, never deployed | you |
 | `agentcore/cdk/`, `agentcore/.llm-context/`, `agentcore/.cli/` | generated plumbing | the CLI |
 
@@ -86,10 +91,11 @@ Repository: <https://github.com/awslabs/agentcore-samples>
 ## 12. Try it yourself
 
 ```bash
-cp -r usecases/{{UC_SLUG}} /tmp/{{UC_ID}} && cd /tmp/{{UC_ID}} && make doctor
-make deploy && make test && make down
+cp -r usecases/{{UC_SLUG}} /tmp/{{UC_ID}} && cd /tmp/{{UC_ID}}
+agentcore deploy -y --target default
+agentcore status
 ```
 
 This use case is self-contained: copy the folder anywhere and it still runs, and
-you do not need any other use case deployed first. `make check` asserts exactly
-that, by copying the folder to a temporary directory and checking the copy.
+you do not need any other use case deployed first. The repository-level check
+asserts exactly that, by reading the folder for any path that leaves it.

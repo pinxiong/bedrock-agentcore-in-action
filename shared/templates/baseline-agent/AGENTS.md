@@ -4,8 +4,13 @@ Context for an AI coding assistant (or a human) working inside this folder.
 
 This file mirrors `AGENTS.md` as the AgentCore CLI writes it on
 `agentcore create`, trimmed to what is true for this use case. The folder is a
-complete AgentCore project: copy it anywhere and it runs. `make help` lists
-everything you can do from here, and `README.md` is the walkthrough.
+complete AgentCore project: copy it anywhere and it runs. Everything you can do
+from here is an `agentcore` or `aws` command, and `README.md` is the walkthrough.
+
+There is deliberately no entry-point script in this folder: no `run.py`, no
+`Makefile`, no assertion script. The series teaches the CLI, so the reader types
+what the article shows. A capability is proven by the captured output of a native
+command, saved under `evidence/`.
 
 ## Mental model
 
@@ -32,18 +37,17 @@ how every resource in this series can be traced back to one use case.
 5. **Validate the runtime payload.** Require the prompt to be a string. Anything
    else is a caller bug that surfaces as a confusing model error.
 6. **Keep this folder self-contained.** No absolute paths, no references to a
-   parent directory, no imports from outside `app/{{AGENT_NAME}}/`. `make check`
-   asserts this, including by copying the folder to a temporary location.
+   parent directory, no imports from outside `app/{{AGENT_NAME}}/`. The
+   repository-level check reads the folder and fails on any path that escapes it.
 
 ## Layout
 
 ```
 {{UC_SLUG}}/
 ├── AGENTS.md                  # this file
-├── run.py                     # every operation, self-contained and cross-platform
-├── Makefile                   # forwards to run.py; holds no logic
 ├── README.md                  # the walkthrough (start here)
 ├── article.md                 # the narrative version
+├── evidence/                  # captures of the native commands that prove it
 ├── agentcore/
 │   ├── agentcore.json         # project spec: what gets deployed
 │   ├── aws-targets.json       # deployment targets, account + region
@@ -58,11 +62,7 @@ how every resource in this series can be traced back to one use case.
 │   ├── pyproject.toml         # dependencies, packaged into the deployment zip
 │   └── uv.lock
 └── tests/
-    ├── doctor.py              # environment self-check
-    ├── copy_check.py          # asserts this folder stands alone
-    ├── smoke.py               # asserts the deployed capabilities
-    ├── test_sanitize.py       # offline unit tests
-    └── resourcegroupstaggingapi_check.py
+    └── test_sanitize.py       # offline unit tests for this agent's own Python
 ```
 
 `app/{{AGENT_NAME}}/` is the only directory that is packaged and deployed. Its path
@@ -89,21 +89,34 @@ The full type definitions are in `agentcore/.llm-context/agentcore.ts`.
 From this folder:
 
 ```bash
-python3 run.py help       # list every target (the entry point, cross-platform)
-make help                 # the same, if you have make
-make check                # does this folder stand alone?
-make doctor               # is this machine and this folder ready?
-make deploy               # deploy it
-make invoke               # call it
-make dev                  # run it locally, a real model, no deployment
-make test                 # assert the deployed capabilities
-make down                 # destroy it
+agentcore validate                        # is the JSON contract valid?
+agentcore deploy -y --target default      # deploy it
+agentcore status                          # what is deployed, and is it READY
+agentcore invoke --prompt "..."           # call it
+agentcore traces list                     # list today's traces
+agentcore traces get <trace-id>           # one trace, pipe it through jq
+agentcore remove all -y                   # empty the local spec ...
+agentcore deploy -y --target default      # ... and reconcile the stack down
 ```
 
-`run.py` is the entry point and `Makefile` only forwards to it, so the two can
-never disagree. Use whichever your platform has.
+The teardown is two commands on purpose: `remove all -y` empties
+`agentcore/agentcore.json`, and the following `deploy` is what actually drives
+the stack to nothing. Because the first one rewrites the contract, restore
+`agentcore/agentcore.json` and `agentcore/aws-targets.json` from git before you
+deploy again.
+
+`aws resourcegroupstaggingapi get-resources` is how you prove the teardown was
+scoped to this use case:
+
+```bash
+aws resourcegroupstaggingapi get-resources --region us-east-1 \
+  --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values={{UC_NUM}}
+```
 
 `agentcore` must be run from this folder, not from `agentcore/`: inside
 `agentcore/` the CLI answers `Please run this command from your project root
 directory.` There is no `--region` flag; the region comes from
 `agentcore/aws-targets.json`.
+
+Save the output of every one of these under `evidence/` as you go. A capability
+goes in the article only when the capture that proves it is on disk.

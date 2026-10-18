@@ -3,7 +3,7 @@
 #
 # 四类校验规则：
 #   [覆盖] 14 项 capability 每项至少在一个 usecase 里 depth: deep
-#   [实证] usecase 声明 deep 的能力，必须在 usecases/<dir>/tests/smoke.py 里有对应断言
+#   [实证] usecase 声明 deep 的能力，必须在 usecases/<dir>/evidence/ 里有对应原生命令的输出存档
 #   [独立] (a) difficulty 序列在阶梯顺序上单调不减
 #          (b) usecases/<dir>/agentcore 存在且不含对其他 usecase 的引用
 #          (c) usecases/<dir>/ 的 codeLocation（= app/aia_ucNN/）不 import 其他 usecase
@@ -161,7 +161,7 @@ cross_cutting:
   - { id: ram-cross-account,         deep_in: [uc07] }
 
 # ── 用例（阶梯顺序 = 数组顺序；difficulty 必须单调不减）────────────────
-# assertions 必须与 usecases/<dir>/tests/smoke.py 里的断言一一对应。
+# assertions 必须与 usecases/<dir>/evidence/ 里证明它的那条原生命令输出一一对应。
 usecases:
   - id: uc01
     dir: usecases/01-first-agent

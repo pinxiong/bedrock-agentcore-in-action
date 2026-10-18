@@ -4,16 +4,20 @@
 Reads docs/05-capability-map.yaml and enforces five classes of rules.
 
   [COVER]   every one of the 14 capabilities is `deep` in at least one use case
-  [EVID]    a use case declaring `deep: [cap]` must assert that capability in
-            usecases/<dir>/tests/smoke.py via a CAPABILITY_ASSERTIONS dict
-  [COPY]    every use case folder stands alone when it is copied out. Each use
-            case ships tests/copy_check.py, which scans itself for paths that
-            escape the folder and then does a real copy to a temporary directory
-            and re-runs the same checks there. This class shells out to that
-            file rather than re-implementing it: the assertion belongs to the
-            use case, and keeping one implementation is what stops the two from
-            drifting. It exists because "copy any folder and it runs
-            independently" was a promise in the README before it was a test.
+  [EVID]    a use case declaring `deep: [cap]` must carry, under
+            usecases/<dir>/evidence/, a capture of the native command that
+            proves it. There is no assertion script to grep any more
+            (docs/09-article-spec.md §8 banned tests/smoke.py): the proof is the
+            captured output of `agentcore ...` or `aws ...`, matched on evidence
+            filenames and on the capability's own key strings.
+  [COPY]    every use case folder stands alone when it is copied out. Enforced by
+            reading the folder, never by executing anything inside it: nothing
+            may point at a path outside the folder, the IaC contract must be
+            self-contained and tagged, and the operational scripts the series
+            banned (run.py, Makefile, tests/doctor.py, tests/smoke.py,
+            tests/copy_check.py) must be absent. It exists because "copy any
+            folder and it runs independently" was a promise in the README before
+            it was a test.
   [INDEP]   (a) difficulty is declared, inside the scale bounds, and the sequence
                 over the ladder is non-decreasing
             (b) every use case has its own agentcore/ directory and no cross-stack
@@ -35,7 +39,7 @@ Usage
   python3 shared/scripts/verify-coverage.py --usecase uc04
   python3 shared/scripts/verify-coverage.py --allow-missing-dirs   # during bootstrap
   python3 shared/scripts/verify-coverage.py --skip-cli             # no CLI on this machine
-  python3 shared/scripts/verify-coverage.py --skip-copy            # do not copy any tree
+  python3 shared/scripts/verify-coverage.py --skip-copy            # do not inspect folders
 
 Requires PyYAML:  pip install pyyaml
 """
@@ -60,7 +64,6 @@ except ModuleNotFoundError:  # pragma: no cover
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_FILE = "docs/05-capability-map.yaml"
-COPY_TIMEOUT_S = 300
 
 CROSS_STACK_PATTERNS = [
     (r"\bImportValue\b", "CloudFormation ImportValue"),
@@ -81,6 +84,63 @@ IMPORT_PATTERNS = [
 # like the thing I4 forbids.
 SKIP_DIRS = {".venv", "venv", "node_modules", "__pycache__", ".git", "cdk.out", ".cache"}
 SKIP_SUFFIXES = {".png", ".svg", ".pdf", ".zip", ".lock", ".whl", ".so", ".pyc"}
+
+# docs/09-article-spec.md §8: a use case folder ships no self-written
+# operational scripts. The series teaches the agentcore CLI, so the reader never
+# runs a wrapper, and a folder carrying one is a folder that cannot be copied
+# out and understood on its own.
+FORBIDDEN_IN_FOLDER = [
+    "run.py",
+    "Makefile",
+    "tests/doctor.py",
+    "tests/smoke.py",
+    "tests/copy_check.py",
+    "tests/resourcegroupstaggingapi_check.py",
+]
+REQUIRED_IN_FOLDER = [
+    "README.md",
+    "AGENTS.md",
+    "agentcore/agentcore.json",
+    "agentcore/aws-targets.json",
+    "agentcore/.gitignore",
+]
+# A path that only resolves because the parent repository happens to be there.
+ESCAPE_PATTERNS = [
+    (r"(?<![\w.])\.\./", "a parent-directory hop"),
+    (r"/Users/", "an absolute path from somebody's machine"),
+    (r"shared/", "a repository-level shared tree"),
+    (r"aia\.py", "the repository-level dispatcher"),
+]
+# A capture under evidence/ is terminal output, not an instruction: it routinely
+# contains the machine's own paths, and scanning it would fail every use case
+# that recorded a real run. The folder is still checked for what it ships.
+EVIDENCE_DIR = "evidence"
+# Trees that are not the use case's own writing and are never copied: the CLI's
+# local state and logs, the CDK project it generates (whose TypeScript imports
+# hop to a parent that never leaves the folder), and build output.
+SCAN_SKIP_DIRS = SKIP_DIRS | {".cli", "dist", "cdk", ".pytest_cache", ".mypy_cache", ".idea"}
+
+# Capability -> extra strings that count as proof of it. The default needles are
+# derived from the capability id and name; these exist where the proof's filename
+# would not carry the id itself, because a trace is what proves observability.
+CAPABILITY_EVIDENCE_HINTS = {
+    "runtime": ["endpoint", "invoke"],
+    "observability": ["trace", "span", "cloudwatch", "otel"],
+    "memory": ["memory record", "namespace"],
+    "gateway": ["mcp", "target"],
+    "identity": ["credential", "oauth", "jwt"],
+    "code-interpreter": ["interpreter"],
+    "browser": ["playwright", "session"],
+    "web-search": ["websearch", "search"],
+    "evaluations": ["evaluator", "evaluation"],
+    "optimization": ["optimization", "optimize"],
+    "payments": ["payment", "x402"],
+    "policy": ["dogwood", "cedar", "denied"],
+    "registry": ["registry"],
+    "harness": ["harness"],
+}
+TEXT_SUFFIXES = {".txt", ".json", ".md", ".log", ".yaml", ".yml", ".env"}
+MAX_EVIDENCE_BYTES = 2_000_000
 
 
 def walk_files(root: Path, suffix: str | None = None) -> list[Path]:
@@ -211,58 +271,113 @@ def check_coverage(spec: dict, rep: Report) -> None:
     print()
 
 
-def smoke_assertions(root: Path, uc: dict) -> tuple[set[str], str | None]:
-    """Return the capability ids asserted in smoke.py, or an error string."""
-    path = root / uc["dir"] / "tests" / "smoke.py"
-    if not path.exists():
-        return set(), f"missing {path.relative_to(root)}"
-    text = path.read_text(encoding="utf-8")
-    match = re.search(r"CAPABILITY_ASSERTIONS\s*[:=][^=]*?=\s*\{", text)
-    if not match:
-        # tolerate a bare annotation without initialiser
-        if "CAPABILITY_ASSERTIONS" not in text:
-            return set(), (
-                f"{path.relative_to(root)} has no CAPABILITY_ASSERTIONS dict"
-            )
-        return set(), None
-    # collect the top-level keys of the dict literal
-    depth = 0
-    body_start = match.end() - 1
-    for idx in range(body_start, len(text)):
-        ch = text[idx]
-        if ch == "{":
-            depth += 1
-        elif ch == "}":
-            depth -= 1
-            if depth == 0:
-                body = text[body_start + 1 : idx]
-                break
-    else:
-        return set(), f"{path.relative_to(root)}: unbalanced CAPABILITY_ASSERTIONS dict"
-    keys = set(re.findall(r'^\s{0,8}["\']([a-z0-9\-]+)["\']\s*:', body, re.M))
-    return keys, None
+def capability_needles(cid: str, named: dict[str, dict]) -> list[str]:
+    """Strings whose presence in an evidence capture counts as proof of `cid`.
+
+    Deliberately loose rather than a schema: an evidence file is named after the
+    command that produced it, so matching the capability id, its name and a few
+    synonyms is what catches `10-traces-list.txt` proving observability.
+    """
+    entry = named.get(cid) or {}
+    name = str(entry.get("name") or cid)
+    raw = {
+        cid,
+        cid.replace("-", " "),
+        cid.replace("-", "_"),
+        cid.replace("-", ""),
+        name.lower(),
+        name.lower().replace(" ", "-"),
+        name.lower().replace(" ", ""),
+    }
+    raw.update(CAPABILITY_EVIDENCE_HINTS.get(cid, []))
+    return sorted({n for n in raw if len(n) >= 4})
+
+
+def needle_hits(name: str, text: str, needles: list[str]) -> bool:
+    """True when a needle matches the filename or the capture's contents."""
+    flat = name.lower().replace("-", " ").replace("_", " ")
+    lowered = text.lower()
+    for needle in needles:
+        spaced = needle.replace("-", " ").replace("_", " ")
+        if spaced in flat:
+            return True
+        for form in {needle, spaced, needle.replace(" ", "-"), needle.replace(" ", "_")}:
+            if form and form in lowered:
+                return True
+    return False
+
+
+def evidence_files(evidence_dir: Path) -> list[Path]:
+    return sorted(
+        p for p in evidence_dir.rglob("*")
+        if p.is_file() and p.suffix in TEXT_SUFFIXES and p.stat().st_size <= MAX_EVIDENCE_BYTES
+    )
+
+
+def covered_capabilities(evidence_dir: Path, needles_by_cap: dict[str, list[str]]) -> dict[str, str]:
+    """capability id -> the evidence file that proves it.
+
+    A filename is the stronger signal, so it is tried first over every file
+    before any capture is opened: `11-memory-records.txt` proves memory, while
+    the word "memory" inside a status dump proves only that memory exists.
+    """
+    files = evidence_files(evidence_dir)
+    found: dict[str, str] = {}
+    for path in files:
+        for cid, needles in needles_by_cap.items():
+            if cid in found:
+                continue
+            if needle_hits(path.name, "", needles):
+                found[cid] = path.name
+    for path in files:
+        if len(found) == len(needles_by_cap):
+            break
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        for cid, needles in needles_by_cap.items():
+            if cid in found:
+                continue
+            if needle_hits(path.name, text, needles):
+                found[cid] = path.name
+    return found
 
 
 def check_evidence(root: Path, spec: dict, only: str | None, allow_missing: bool, rep: Report) -> None:
-    print("[EVID] every declared deep capability is asserted in smoke.py")
+    print("[EVID] every declared deep capability is proven by a capture under evidence/")
+    named = {c["id"]: c for c in spec.get("capabilities", []) + spec.get("cross_cutting", [])}
     for uc in spec.get("usecases", []) + spec.get("bonus", []):
         if only and uc["id"] != only:
             continue
         deep = set(uc.get("deep", []))
-        asserted, err = smoke_assertions(root, uc)
-        if err:
-            if allow_missing:
-                rep.warn(f"{uc['id']}: {err} (allowed during bootstrap)")
-            else:
-                rep.fail(f"{uc['id']}: {err}")
+        if not deep:
             continue
-        gap = sorted(deep - asserted)
+        needles_by_cap = {cid: capability_needles(cid, named) for cid in deep}
+
+        uc_dir = root / uc["dir"]
+        if not uc_dir.exists():
+            msg = f"{uc['id']}: directory {uc['dir']} does not exist yet"
+            rep.warn(msg + " (allowed during bootstrap)") if allow_missing else rep.fail(msg)
+            continue
+
+        evidence_dir = uc_dir / EVIDENCE_DIR
+        if not evidence_dir.is_dir():
+            msg = f"{uc['id']}: no {uc['dir']}/{EVIDENCE_DIR}/ directory, so nothing proves {', '.join(sorted(deep))}"
+            rep.warn(msg + " (allowed during bootstrap)") if allow_missing else rep.fail(msg)
+            continue
+
+        found = covered_capabilities(evidence_dir, needles_by_cap)
+        gap = sorted(set(needles_by_cap) - set(found))
         if gap:
             rep.fail(
-                f"{uc['id']}: declared deep but not asserted in smoke.py: {', '.join(gap)}"
+                f"{uc['id']}: declared deep but no capture under {EVIDENCE_DIR}/ proves it: "
+                f"{', '.join(gap)}. save the output of the native command that proves "
+                f"each one, e.g. agentcore status | agentcore invoke | agentcore traces list"
             )
         else:
-            rep.ok(f"{uc['id']}: all {len(deep)} deep capabilities are asserted")
+            detail = ", ".join(f"{cid} <- {found[cid]}" for cid in sorted(found))
+            rep.ok(f"{uc['id']}: all {len(deep)} deep capabilities are proven ({detail})")
     print()
 
 
@@ -429,6 +544,128 @@ def check_commands(spec: dict, only: str | None, skip: bool, rep: Report) -> Non
     print()
 
 
+def scannable_files(root: Path) -> list[Path]:
+    """Text files under root that instruct the reader, minus vendor trees.
+
+    evidence/ is excluded: it holds captured output, and a capture of a real run
+    is full of paths that are not instructions to follow. So is the CLI's own
+    state under agentcore/.cli and the CDK project it generates.
+    """
+    found: list[Path] = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        parts = path.relative_to(root).parts
+        if any(p in SCAN_SKIP_DIRS or p == EVIDENCE_DIR for p in parts[:-1]):
+            continue
+        if path.suffix in SKIP_SUFFIXES or path.suffix == ".lock":
+            continue
+        found.append(path)
+    return sorted(found)
+
+
+def check_escapes(uc_dir: Path) -> list[str]:
+    """Lines in the folder that only resolve because the repository is there."""
+    hits: list[str] = []
+    for path in scannable_files(uc_dir):
+        rel = path.relative_to(uc_dir)
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            for pattern, label in ESCAPE_PATTERNS:
+                if re.search(pattern, line):
+                    hits.append(f"{rel}:{lineno}: {label} -> {line.strip()[:90]}")
+    return hits
+
+
+def check_standalone_folder(root: Path, uc: dict, rep: Report) -> bool:
+    """Read one use case folder and decide whether it stands alone.
+
+    No subprocess, no import, nothing executed: the folder is inspected as data.
+    """
+    uc_dir = root / uc["dir"]
+    num = uc["id"].replace("uc", "").replace("bonus-", "")
+    ok = True
+
+    banned = [f for f in FORBIDDEN_IN_FOLDER if (uc_dir / f).exists()]
+    if banned:
+        ok = False
+        rep.fail(
+            f"{uc['id']}: ships an operational script the series banned "
+            f"(docs/09-article-spec.md §8): {', '.join(banned)}"
+        )
+
+    spec = {}
+    contract = uc_dir / "agentcore" / "agentcore.json"
+    if contract.exists():
+        try:
+            spec = json.loads(contract.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            spec = {}
+    code_location = (spec.get("runtimes") or [{}])[0].get("codeLocation")
+    if code_location:
+        code_location = str(code_location).rstrip("/")
+
+    required = list(REQUIRED_IN_FOLDER)
+    if code_location:
+        required += [f"{code_location}/main.py", f"{code_location}/pyproject.toml"]
+    missing = [f for f in required if not (uc_dir / f).exists()]
+    if missing:
+        ok = False
+        rep.fail(f"{uc['id']}: missing {', '.join(missing)}")
+
+    hits = check_escapes(uc_dir)
+    if hits:
+        ok = False
+        rep.fail(f"{uc['id']}: the folder points outside itself")
+        for h in hits[:8]:
+            rep.fail(f"  {h}")
+        if len(hits) > 8:
+            rep.fail(f"  and {len(hits) - 8} more line(s)")
+    if ok:
+        rep.ok(f"{uc['id']}: the folder stands alone ({len(scannable_files(uc_dir))} files read)")
+
+    # Tags and the deployment target: they are what make cleanup auditable and
+    # what stops a use case from deploying into another one's account.
+    #
+    # `agentcore remove all -y` empties the contract, tags included, which is the
+    # documented end of a use case's run (docs/09-article-spec.md section 8). An
+    # emptied contract is therefore a state to restore, not a violation.
+    emptied = not spec.get("runtimes")
+    tags = spec.get("tags") or {}
+    want = {"Project": "agentcore-in-action", "UseCase": num, "AutoDelete": "true"}
+    wrong = {k: v for k, v in want.items() if tags.get(k) != v}
+    if wrong:
+        if emptied:
+            rep.warn(
+                f"{uc['id']}: agentcore.json has been emptied by `agentcore remove all` "
+                f"(expected {want}, got {tags}). restore it from git before deploying again"
+            )
+        else:
+            ok = False
+            rep.fail(f"{uc['id']}: agentcore.json tags are wrong: expected {want}, got {tags}")
+
+    targets_file = uc_dir / "agentcore" / "aws-targets.json"
+    if targets_file.exists():
+        try:
+            targets = json.loads(targets_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            targets = []
+        if not targets or not targets[0].get("region"):
+            if emptied:
+                rep.warn(
+                    f"{uc['id']}: aws-targets.json has been emptied by `agentcore remove all`. "
+                    f"restore it from git before deploying again"
+                )
+            else:
+                ok = False
+                rep.fail(f"{uc['id']}: aws-targets.json declares no region")
+
+    return ok
+
+
 def check_copy(root: Path, spec: dict, only: str | None, allow_missing: bool, skip: bool, rep: Report) -> None:
     print("[COPY] every use case folder stands alone when it is copied out")
 
@@ -442,43 +679,15 @@ def check_copy(root: Path, spec: dict, only: str | None, allow_missing: bool, sk
         if only and uc["id"] != only:
             continue
         uc_dir = root / uc["dir"]
-        script = uc_dir / "tests" / "copy_check.py"
-        if not script.exists():
-            msg = f"{uc['id']}: no tests/copy_check.py, so nothing asserts the folder stands alone"
-            if allow_missing:
-                rep.warn(msg + " (allowed during bootstrap)")
-            else:
-                rep.fail(msg)
+        if not uc_dir.exists():
+            msg = f"{uc['id']}: directory {uc['dir']} does not exist yet"
+            rep.warn(msg + " (allowed during bootstrap)") if allow_missing else rep.fail(msg)
             continue
-
-        try:
-            proc = subprocess.run(
-                [sys.executable, "tests/copy_check.py", "--quiet"],
-                cwd=uc_dir,
-                capture_output=True,
-                text=True,
-                timeout=COPY_TIMEOUT_S,
-            )
-        except subprocess.TimeoutExpired:
-            rep.fail(f"{uc['id']}: tests/copy_check.py did not finish within {COPY_TIMEOUT_S}s")
-            continue
-
-        if proc.returncode == 0:
-            summary = next(
-                (l for l in reversed(proc.stdout.splitlines()) if "passed," in l), ""
-            ).strip()
-            rep.ok(f"{uc['id']}: the folder stands alone ({summary or 'copy_check passed'})")
-        else:
-            rep.fail(f"{uc['id']}: the folder does not stand alone")
-            inner = [l.strip() for l in proc.stdout.splitlines() if l.strip().startswith("FAIL")]
-            for line in inner[:8]:
-                rep.fail(f"  {line}")
-            if not inner:
-                rep.fail(f"  copy_check exited {proc.returncode}: {proc.stderr.strip()[:200]}")
+        check_standalone_folder(root, uc, rep)
         checked += 1
 
     if not checked:
-        rep.warn("no complete use case to copy yet")
+        rep.warn("no use case folder to inspect yet")
     print()
 
 
@@ -499,7 +708,7 @@ def main() -> int:
     ap.add_argument(
         "--skip-copy",
         action="store_true",
-        help="skip the [COPY] check (it copies each use case to a temporary directory)",
+        help="skip the [COPY] check (it reads every use case folder in full)",
     )
     args = ap.parse_args()
 

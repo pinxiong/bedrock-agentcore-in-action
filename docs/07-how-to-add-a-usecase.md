@@ -62,29 +62,34 @@ usecases/08-your-idea/
 ├── README.md               from the twelve-section template
 ├── article.md              from the twelve-section article template
 ├── AGENTS.md               context for an AI assistant working in this folder
-├── run.py                  ★ the entry point: doctor / deploy / test / down
-├── Makefile                forwards to run.py, holds no logic
+├── evidence/               captures of the native commands that prove each capability
 ├── .env.example            placeholders only
 ├── app/aia_uc08/           the baseline agent, verified entrypoint contract
 │   ├── main.py
 │   ├── model/
 │   └── pyproject.toml
 ├── raw/                    boto3 sidecar: control plane + data plane, never deployed
-├── tests/                  smoke.py, doctor.py, copy_check.py, the independence helper
+├── tests/                  unit tests for the agent's own Python, offline
 └── agentcore/              agentcore.json is yours to fill; cdk/ is generated
 ```
 
-Pass `--capabilities a,b` to override the map, and `--dry-run` to see what would
-happen. The generated `smoke.py` carries a `CAPABILITY_ASSERTIONS` dict with one
-`TODO` per declared capability. **`python3 run.py test` fails until every one is
-implemented.** That is the point: a use case is not done because it deploys.
+There is deliberately no `run.py` and no `Makefile`: the series teaches the CLI,
+so the reader types `agentcore ...` and `aws ...`, never a wrapper
+(`docs/09-article-spec.md` section 8). Pass `--capabilities a,b` to override the
+map, and `--dry-run` to see what would happen.
 
-Two commands you will run constantly from inside the new folder:
+The commands you will run constantly from inside the new folder:
 
 ```bash
-python3 run.py check     # does this folder stand alone? (fails until run.py sync has run)
-python3 run.py doctor    # toolchain, credentials, and this folder
+agentcore deploy -y --target default      # deploy it
+agentcore status                          # what is deployed
+agentcore invoke --prompt "..."           # call it
+agentcore remove all -y                   # empty the contract ...
+agentcore deploy -y --target default      # ... and reconcile the stack down
 ```
+
+Each one's output belongs in `evidence/`, named after the command. A capability
+is not proven because the use case deploys; it is proven by the capture.
 
 ## 4. Build it, and keep it independent
 
@@ -94,8 +99,8 @@ Four rules while you work, matching the contract:
 |---|---|
 | **I3** own stack | `agentcore/agentcore.json` must not reference another use case's stack. No `Fn.import_value`, no `terraform_remote_state`, no `Outputs` from a sibling. The verifier greps for all of these. |
 | **I4** own source | The directory `codeLocation` points at (the CLI's `app/<AgentName>/`) must not import another use case. If you need a helper, copy it in. |
-| **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `run.py down`. |
-| **I6** own entry point | Nothing inside this folder may point at a path outside it. Commands in the README go through `run.py` (or `make`), never through the repository dispatcher. `run.py check` scans for parent hops, absolute paths, the repository's shared tree and its dispatcher script, and copies the folder to a temporary directory to prove it. |
+| **I2** own cleanup | Tag every resource `UseCase=0X`. Untagged resources are invisible to the cleanup assertion and will silently survive `agentcore remove all`. |
+| **I6** own entry point | Nothing inside this folder may point at a path outside it, and no self-written operational script may ship in it. Commands in the README are `agentcore ...` or `aws ...`, never the repository dispatcher. The repository-level check reads the folder for parent hops, absolute paths, the repository's shared tree and its dispatcher script. |
 
 The trade-off is duplication, and it is deliberate. Say so out loud in the
 **What you repeated** section of the README rather than hiding it. A reader who
@@ -124,9 +129,11 @@ Do not merge README and article. A document that is both is worse at both jobs.
 ## 6. Prove it
 
 ```bash
-python aia.py up 08 && python aia.py test 08 && python aia.py down 08
+python aia.py up 08      # agentcore deploy -y --target default
+python aia.py status 08  # agentcore status
+python aia.py down 08    # agentcore remove all -y, then the reconciling deploy
 
-python aia.py verify 08    # assertions plus coverage plus independence for uc08
+python aia.py check 08     # coverage + independence + evidence for uc08
 python aia.py verify-all   # the whole repo
 ```
 
@@ -159,6 +166,7 @@ python aia.py verify-all
 | Class | It fails when |
 |---|---|
 | `[COVER]` | a capability is not `deep` anywhere, or the 14-item list drifted |
-| `[EVID]` | a use case declares `deep: [cap]` but `tests/smoke.py` has no assertion for it |
+| `[EVID]` | a use case declares `deep: [cap]` but no capture under `evidence/` proves it |
+| `[COPY]` | a path in the folder leaves the folder, the contract is not tagged, or a banned operational script (`run.py`, `Makefile`, `tests/smoke.py`, ...) is present |
 | `[INDEP]` | the difficulty sequence decreases, agentcore/ is missing, or the `codeLocation` directory imports another use case |
 | `[CMD]` | a `cli:` entry names a command, subcommand or flag the installed CLI does not have |

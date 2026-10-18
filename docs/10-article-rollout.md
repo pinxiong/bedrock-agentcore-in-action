@@ -50,5 +50,6 @@ Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 ## Budget
 
 The ladder caps cost per use case at roughly $1, $2, $5, $3, $8, $15, $12: about
-$46 in total for the seven. Every use case ends with `make down`, so the spend is
-incurred once and stops.
+$46 in total for the seven. Every use case ends with `agentcore remove all -y`
+followed by `agentcore deploy -y --target default`, so the spend is incurred once
+and stops.

@@ -6,18 +6,27 @@ One file, standard library only (PyYAML optional, needed by `list`, `new` and
 WSL. Every command takes ONE use case number on purpose -- nothing here deploys
 more than one use case at a time.
 
+Every use case is deployed and torn down with the AgentCore CLI itself: `up`
+is `agentcore deploy`, `status` is `agentcore status`, `down` is
+`agentcore remove all -y` followed by the reconciling `agentcore deploy`.
+Nothing here wraps those commands in a script of our own, because the series
+teaches the CLI, not a wrapper (docs/09-article-spec.md section 8).
+
 Usage:
   python aia.py doctor [--usecase NN]     environment self-check, reports only
   python aia.py up NN                     deploy exactly one use case
-  python aia.py test NN                   run that use case's assertions
   python aia.py down NN                   destroy exactly one use case
   python aia.py status NN                 what is deployed for that use case
-  python aia.py verify NN                 test + coverage + independence checks
+  python aia.py check NN                  does that use case's folder stand alone?
   python aia.py verify-all                coverage + independence, whole repo
   python aia.py list                      the difficulty ladder, from the map
   python aia.py cost [NN]                 tagged resources for one or all use cases
   python aia.py new 08-your-idea --difficulty 5 [--title T] [--capabilities a,b]
                                           scaffold a new self-contained use case
+
+There is no `test` target. A capability is proven by the captured output of a
+native command under usecases/NN-slug/evidence/, not by an assertion script,
+and verify-coverage.py is what checks that the capture exists.
 """
 
 from __future__ import annotations
@@ -299,25 +308,16 @@ def cmd_down(args: argparse.Namespace) -> int:
     if not agentcore_project(uc_dir):
         print(f"  nothing agentcore-managed in {uc_dir} (no agentcore/agentcore.json)")
         return 0
-    # `remove all` empties the local spec, then `deploy` reconciles the stack down.
-    # It rewrites agentcore/agentcore.json, so restore it from git afterwards if you
-    # intend to deploy the use case again.
-    run(["agentcore", "remove", "all"], cwd=uc_dir, check=False)
+    # `remove all -y` empties the local spec, then `deploy` reconciles the stack
+    # down. -y is not optional: without it the CLI asks for confirmation and
+    # aborts with "requires an interactive terminal" in any non-interactive
+    # shell, which is every CI run and every captured teardown.
+    # It rewrites agentcore/agentcore.json, so restore it from git afterwards if
+    # you intend to deploy the use case again.
+    run(["agentcore", "remove", "all", "-y"], cwd=uc_dir, check=False)
     run(["agentcore", "deploy", "-y", "--target", "default"], cwd=uc_dir, check=False)
     print(">> now check the cleanup list in the use case README (Cleanup section) by hand")
     return 0
-
-
-def cmd_test(args: argparse.Namespace) -> int:
-    uc_dir = find_uc_dir(args.usecase)
-    num = uc_number(uc_dir)
-    smoke = uc_dir / "tests" / "smoke.py"
-    if not smoke.exists():
-        die(f"{smoke} does not exist")
-    # check=False: a failing assertion is a normal outcome, reported by the exit
-    # code, not a Python traceback.
-    proc = run([sys.executable, "tests/smoke.py", "--usecase", num], cwd=uc_dir, check=False)
-    return proc.returncode
 
 
 def cmd_status(args: argparse.Namespace) -> int:
@@ -330,26 +330,12 @@ def cmd_status(args: argparse.Namespace) -> int:
 
 
 def cmd_check(args: argparse.Namespace) -> int:
-    """The use case asserts its own independence; this only invokes it.
+    """Does this use case's folder stand alone if it were copied out?
 
-    Re-implementing the copy scan here would create a second source of truth for
-    what "standalone" means, and the use case has to carry the assertion anyway
-    so that a copied folder can check itself.
+    The check lives in verify-coverage.py ([COPY], [INDEP], [EVID]) and reads the
+    folder as data. Re-implementing it here would create a second source of
+    truth for what "standalone" means.
     """
-    uc_dir = find_uc_dir(args.usecase)
-    script = uc_dir / "tests" / "copy_check.py"
-    if not script.exists():
-        die(f"{script} does not exist; this use case cannot assert its own independence")
-    return run([sys.executable, "tests/copy_check.py"], cwd=uc_dir, check=False).returncode
-
-
-def cmd_verify(args: argparse.Namespace) -> int:
-    # cheapest and local first, so a folder that cannot stand alone never
-    # reaches the paid assertions
-    for step in (cmd_check, cmd_test):
-        rc = step(args)
-        if rc != 0:
-            return rc
     uc_dir = find_uc_dir(args.usecase)
     return run(
         [sys.executable, "shared/scripts/verify-coverage.py", "--usecase", f"uc{uc_number(uc_dir)}"],
@@ -455,13 +441,6 @@ def cmd_new(args: argparse.Namespace) -> int:
     if not capabilities:
         die("no usable capabilities given")
 
-    assert_block = "".join(
-        f'    "{cap}": [\n'
-        f'        "TODO: state what proves {cap} works in this use case",\n'
-        "    ],\n"
-        for cap in capabilities
-    )
-
     print(f"scaffolding {target}")
     print(f"  id            {uc_id}")
     print(f"  title         {title}")
@@ -483,7 +462,9 @@ def cmd_new(args: argparse.Namespace) -> int:
         "{{AWS_ACCOUNT_ID}}": detect_account(),
     }
     agent_dir = f"app/{subs['{{AGENT_NAME}}']}"
-    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "raw"):
+    # evidence/ is where the captures of the native commands go; it is part of
+    # the contract, so it is created even while it is still empty.
+    for sub in (agent_dir, f"{agent_dir}/model", "tests", "agentcore", "evidence", "raw"):
         (target / sub).mkdir(parents=True, exist_ok=True)
 
     # Agent code first. The agent code sits in app/<AgentName>/, which is the
@@ -502,23 +483,16 @@ def cmd_new(args: argparse.Namespace) -> int:
         src = BASELINE / rel
         (target / rel).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
 
+    # tests/ carries only the agent's own unit tests (pytest-style, offline). The
+    # series ships no operational scripts: no run.py, no Makefile, no smoke or
+    # copy_check (docs/09-article-spec.md section 8). What proves a capability is
+    # the captured output of a native command under evidence/.
     for src in sorted((BASELINE / "tests").glob("*.py")):
         (target / "tests" / src.name).write_text(render(src.read_text(encoding="utf-8"), subs), encoding="utf-8")
 
-    smoke_tpl = BASELINE / "tests" / "smoke.py"
-    smoke = render(smoke_tpl.read_text(encoding="utf-8"), subs).replace(
-        "{{CAPABILITY_ASSERTIONS}}", assert_block
+    (target / "AGENTS.md").write_text(
+        render((BASELINE / "AGENTS.md").read_text(encoding="utf-8"), subs), encoding="utf-8"
     )
-    (target / "tests" / "smoke.py").write_text(smoke, encoding="utf-8")
-
-    # The self-contained entry points. These are what make "copy any folder and
-    # it runs independently" true for this use case: without them every command
-    # would be routed through the repository root, and a copy would be inert.
-    # run.py is the entry point (it works on Windows too); the Makefile only
-    # forwards, and copy_check.py asserts the two target lists stay in step.
-    # `tests/doctor.py` and `tests/copy_check.py` arrive through the tests glob.
-    for rel in ("run.py", "Makefile", "AGENTS.md"):
-        (target / rel).write_text(render((BASELINE / rel).read_text(encoding="utf-8"), subs), encoding="utf-8")
 
     doc_tpl = TEMPLATES / "usecase-doc.template.md"
     doc = render(doc_tpl.read_text(encoding="utf-8"), subs).replace("0X", uc_num)
@@ -553,7 +527,7 @@ what the CLI did for them.
 | `data_plane.py` | `bedrock-agentcore` | call `invoke_agent_runtime` directly and print the raw SSE stream |
 
 Both scripts are optional. If you do not write them, delete this directory:
-`make check` only requires what the use case needs in order to run.
+the independence check only requires what the use case needs in order to run.
 """,
         encoding="utf-8",
     )
@@ -565,20 +539,24 @@ done. next:
 
   1. build the app environment, which also writes the lockfile that makes the
      folder reproducible:
-       cd usecases/{slug} && make sync
-  2. implement the capability assertions in tests/smoke.py
-     (it fails on purpose until each one is implemented)
-  3. assert the folder stands alone; it will fail until step 1 is done:
-       make check
-  4. deploy it:
-       cd usecases/{slug} && make deploy
+       cd usecases/{slug} && uv sync
+  2. deploy it:
+       cd usecases/{slug} && agentcore deploy -y --target default
      agentcore/agentcore.json is the source of truth; the CDK app under
      agentcore/cdk/ is generated by the CLI. If agentcore/cdk/ is missing,
      run `agentcore create` once in a scratch directory and copy it in.
-  5. write the operations doc in README.md: twelve sections, every step needs
+  3. prove every capability in [{caps}] with a native command and save the
+     capture under evidence/, e.g.
+       agentcore status            -> evidence/NN-status.txt
+       agentcore invoke --prompt   -> evidence/NN-invoke.txt
+       agentcore traces list       -> evidence/NN-traces.txt
+  4. tear it down (remove all empties the spec, deploy reconciles the stack
+     down; restore agentcore/agentcore.json from git before deploying again):
+       agentcore remove all -y && agentcore deploy -y --target default
+  5. write the operations doc in README.md: every step needs
      command / expected output / how to verify / what to do if it fails
   6. add or update this block in docs/05-capability-map.yaml, then run:
-       python aia.py verify {uc_num}
+       python aia.py check {uc_num}
 
   - id: {uc_id}
     dir: usecases/{slug}
@@ -624,10 +602,8 @@ def main(argv: list[str] | None = None) -> int:
     for name, fn, help_txt in [
         ("up", cmd_up, "deploy exactly one use case"),
         ("down", cmd_down, "destroy exactly one use case"),
-        ("test", cmd_test, "run one use case's assertions"),
         ("check", cmd_check, "does that use case's folder stand alone if copied out?"),
         ("status", cmd_status, "what is deployed for one use case"),
-        ("verify", cmd_verify, "check + test + coverage + independence"),
     ]:
         p = sub.add_parser(name, help=help_txt)
         p.add_argument("usecase", help="use case number, e.g. 05")
