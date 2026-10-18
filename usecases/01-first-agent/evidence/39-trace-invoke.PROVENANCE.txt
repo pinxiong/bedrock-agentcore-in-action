@@ -1,0 +1,11 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+The trace `agentcore traces get 6ad45817558974710d8c3b6d35f5a089` downloaded to
+agentcore/.cli/traces/, copied here because .cli/ is gitignored. Account id
+redacted to 123456789012, including inside the base64 @ptr fields. The jq command
+in the article reads this file; evidence/37-trace-spans.txt is its output.
+
+
+Sanitised: {'ptr': 23, 'key': 2}
+@ptr fields dropped (base64 CloudWatch pointers that decode to the real account id).
+aws.auth.account.access_key dropped.
+Account id in remaining strings replaced with 123456789012.

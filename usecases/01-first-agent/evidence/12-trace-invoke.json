@@ -40,8 +40,7 @@
       "flags": 1,
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "9c734c55e2be62ad"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.885",
@@ -84,8 +83,7 @@
       "flags": 1,
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "9c734c55e2be62ad"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.902",
@@ -128,8 +126,7 @@
       "flags": 1,
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "9c734c55e2be62ad"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.967",
@@ -172,8 +169,7 @@
       "flags": 1,
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "9c734c55e2be62ad"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.972",
@@ -216,8 +212,7 @@
       "flags": 1,
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "1c1f8a729b0cd8f4"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.989",
@@ -262,8 +257,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "6d550aa91625f2f7",
       "eventName": "gen_ai.system.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:04.989",
@@ -308,8 +302,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "6d550aa91625f2f7",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.786",
@@ -367,8 +360,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "6d550aa91625f2f7",
       "eventName": "gen_ai.choice"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.787",
@@ -437,14 +429,12 @@
         "aws.genai.token_count_total": 491,
         "retry_attempts": 0,
         "PlatformType": "AWS::BedrockAgentCore",
-        "aws.auth.account.access_key": "ASIASJQG72OJGQDDQCT7",
         "session.id": "a99e785c-18e2-4b18-abef-368271019e7e"
       },
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.788",
@@ -528,8 +518,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.791",
@@ -604,8 +593,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.791",
@@ -673,8 +661,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.793",
@@ -719,8 +706,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.system.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.793",
@@ -765,8 +751,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.793",
@@ -834,8 +819,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.assistant.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.793",
@@ -881,8 +865,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.tool.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:06.793",
@@ -934,8 +917,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.466",
@@ -1004,14 +986,12 @@
         "aws.genai.token_count_total": 525,
         "retry_attempts": 0,
         "PlatformType": "AWS::BedrockAgentCore",
-        "aws.auth.account.access_key": "ASIASJQG72OJGQDDQCT7",
         "session.id": "a99e785c-18e2-4b18-abef-368271019e7e"
       },
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.466",
@@ -1061,8 +1041,7 @@
       "traceId": "6ad4087a7220c9ed52be46e901c25cc9",
       "spanId": "416ee8461bb18714",
       "eventName": "gen_ai.choice"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.467",
@@ -1160,8 +1139,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.468",
@@ -1236,8 +1214,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.468",
@@ -1325,8 +1302,7 @@
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-17 23:45:07.469",
@@ -1387,7 +1363,6 @@
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   }
 ]

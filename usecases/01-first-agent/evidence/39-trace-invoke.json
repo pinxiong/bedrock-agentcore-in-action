@@ -1,9 +1,3 @@
-RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
-The trace `agentcore traces get 6ad45817558974710d8c3b6d35f5a089` downloaded to
-agentcore/.cli/traces/, copied here because .cli/ is gitignored. Account id
-redacted to 123456789012, including inside the base64 @ptr fields. The jq command
-in the article reads this file; evidence/37-trace-spans.txt is its output.
-
 [
   {
     "@timestamp": "2026-10-18 05:24:45.789",
@@ -46,8 +40,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "flags": 1,
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "5dd0b71026d7e857"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.849",
@@ -90,8 +83,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "flags": 1,
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "5dd0b71026d7e857"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.865",
@@ -134,8 +126,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "flags": 1,
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "5dd0b71026d7e857"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.929",
@@ -178,8 +169,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "flags": 1,
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "5dd0b71026d7e857"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.933",
@@ -222,8 +212,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "flags": 1,
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "2cd7c4fcffe67ee0"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.951",
@@ -268,8 +257,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "3f7f7718755b804c",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:45.951",
@@ -314,8 +302,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "3f7f7718755b804c",
       "eventName": "gen_ai.system.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.836",
@@ -373,8 +360,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "3f7f7718755b804c",
       "eventName": "gen_ai.choice"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.837",
@@ -443,14 +429,12 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
         "aws.genai.token_count_total": 501,
         "retry_attempts": 0,
         "PlatformType": "AWS::BedrockAgentCore",
-        "aws.auth.account.access_key": "REDACTED",
         "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87"
       },
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.838",
@@ -534,8 +518,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.841",
@@ -610,8 +593,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.841",
@@ -679,8 +661,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.842",
@@ -732,8 +713,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.842",
@@ -779,8 +759,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.tool.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.842",
@@ -825,8 +804,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.user.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.842",
@@ -871,8 +849,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.system.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:47.842",
@@ -940,8 +917,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.assistant.message"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.360",
@@ -991,8 +967,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "traceId": "6ad45817558974710d8c3b6d35f5a089",
       "spanId": "09b427f246b2abd0",
       "eventName": "gen_ai.choice"
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.360",
@@ -1061,14 +1036,12 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
         "aws.genai.token_count_total": 535,
         "retry_attempts": 0,
         "PlatformType": "AWS::BedrockAgentCore",
-        "aws.auth.account.access_key": "REDACTED",
         "session.id": "75596b56-1b64-4c4e-9225-8074940fbb87"
       },
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.361",
@@ -1166,8 +1139,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.361",
@@ -1242,8 +1214,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.362",
@@ -1331,8 +1302,7 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "OK"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   },
   {
     "@timestamp": "2026-10-18 05:24:48.363",
@@ -1393,7 +1363,6 @@ in the article reads this file; evidence/37-trace-spans.txt is its output.
       "status": {
         "code": "UNSET"
       }
-    },
-    "@ptr":"REDACTED"
+    }
   }
 ]

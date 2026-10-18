@@ -1,0 +1,6 @@
+
+
+Sanitised: {'ptr': 23, 'key': 2}
+@ptr fields dropped (base64 CloudWatch pointers that decode to the real account id).
+aws.auth.account.access_key dropped.
+Account id in remaining strings replaced with 123456789012.
