@@ -1,0 +1,30 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Where the two unit prices in the article come from, and the arithmetic done on them.
+
+Tokens: the invoke_agent row of evidence/37-trace-spans.txt, 955 in / 81 out.
+
+Prices: read out of the AWS Price List API, not off a web page:
+
+  aws pricing get-products --service-code AmazonBedrock --region us-east-1 \
+    --filters 'Type=TERM_MATCH,Field=model,Value=DeepSeek v3.2' \
+              'Type=TERM_MATCH,Field=regionCode,Value=us-east-1'
+
+It returns 16 entries for that model in that region. Two of them are the on-demand
+standard tier, quoted per 1K tokens:
+
+  USE1-deepseek.v3.2-input-tokens
+    $0.00062 per 1K input tokens for DeepSeek v3.2 in US East (N. Virginia)
+  USE1-deepseek.v3.2-output-tokens
+    $0.00185 per 1K output tokens for DeepSeek v3.2 in US East (N. Virginia)
+
+which is 0.62 and 1.85 USD per million. The other 14 entries are the flex, priority
+and batch tiers of the same model; this run used the default tier, so those are the
+two rates that apply.
+
+  955 in / 1e6 * 0.62 = 0.00059210 USD
+   81 out / 1e6 * 1.85 = 0.00014985 USD
+  total                  0.00074195 USD -> 0.00074 USD as printed in the article
+
+That is one invoke. The runtime itself bills per use, so the deployed-but-idle agent
+costs nothing, which is why the article can quote a model cost and no infrastructure
+cost.

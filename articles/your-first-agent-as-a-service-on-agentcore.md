@@ -29,7 +29,7 @@ The other seven stay off. No Memory, so the agent keeps nothing between turns. N
 
 ## Requirements
 
-- Node.js 20 or newer (22.22.2 here), the AgentCore CLI 0.31.1, AWS CLI 2.x, jq 1.7, uv 0.11.9
+- Node.js 20 or newer (22.22.2 here), the AgentCore CLI 0.31.1, AWS CLI 2.x, jq 1.7.1, uv 0.11.9
 - Python 3.10 to 3.14 on the host; the runtime target is PYTHON_3_13, set in the contract
 - An AWS account with Bedrock model access; region us-east-1 for everything
 - Model: deepseek.v3.2, passed to the code through the `MODEL_ID` environment variable
@@ -179,6 +179,10 @@ agentcore status
 
 ![Terminal capture: the schema reset, the stack teardown, and status finding nothing left](/images/your-first-agent-as-a-service-on-agentcore/S8-teardown.png)
 
+![The six commands of the loop and what each one cost on this run](/images/your-first-agent-as-a-service-on-agentcore/F2-deploy-loop.png)
+
+Six commands, and the loop closes where it started: nothing deployed, nothing tagged, one trace kept.
+
 ## What it produced
 
 The invoke is unremarkable on purpose: one sentence, the right arithmetic, nothing else. The interesting artifact is the span tree, and it reads like the agent loop drawn by the runtime itself:
@@ -193,7 +197,6 @@ Cost, measured on this run: the traced invoke used 955 input and 81 output token
 
 - `agentcore remove all` without `-y` dies in a non-interactive shell with "This command requires an interactive terminal". Any piped or CI run hits this. The fix is the `-y` flag, and it is not optional in a script.
 - `agentcore remove all -y` resets every schema in `agentcore.json` and empties `aws-targets.json`, so the next deploy has no target and `agentcore status` answers `No resources match the given filters`. Restore both files from git before you deploy again.
-- Three deploys failed early with `CDK synth failed: node dist/bin/cdk.js: Subprocess exited with error 1`, before anything reached AWS. The same command succeeded on the fourth try; the CLI swallows the compiler's error, so retry before debugging.
 
 ## Takeaways
 

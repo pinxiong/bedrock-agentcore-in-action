@@ -2,7 +2,7 @@
 """Generate every image for the uc01 article from the run captured on 2026-10-18.
 
 Every line drawn here comes from `usecases/01-first-agent/evidence/`, files
-30 to 44. The terminal panels are the captured output with the account id
+30 to 48. The terminal panels are the captured output with the account id
 redacted to 123456789012, with the spinner frames and the blank lines between
 progress steps removed, and with lines longer than the panel wrapped. Nothing
 else is changed and nothing is invented.
@@ -517,12 +517,18 @@ def figure_span_tree() -> None:
 # covers                                                                      #
 # --------------------------------------------------------------------------- #
 
-def cover() -> None:
+COVER_TITLE = ("<title>Cover: your first agent as a service. A support agent deployed on "
+               "AgentCore Runtime, measured in us-east-1.</title>")
+
+
+def cover_parts() -> list[str]:
+    """The cover composition, drawn at 1200x675.
+
+    Returns the gradients, the background and the one open <g> that holds the
+    artwork, so a caller can wrap it at any size.
+    """
     w, h = 1200, 675
     p = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
-        "<title>Cover: your first agent as a service. A support agent deployed on AgentCore Runtime, "
-        "measured in us-east-1.</title>",
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
         f'<stop offset="0" stop-color="{BG0}"/><stop offset="1" stop-color="{BG1}"/></linearGradient>',
@@ -573,8 +579,32 @@ def cover() -> None:
         p.append(f'<text x="{x+26}" y="498" font-size="18" fill="#cbd5e1">{sub1}</text>')
         p.append(f'<line x1="{x+26}" y1="524" x2="{x+310}" y2="524" stroke="{accent}" stroke-opacity="0.35" stroke-width="1"/>')
         p.append(f'<text x="{x+26}" y="554" font-size="15.5" fill="{bright}">{sub2}</text>')
+    return p
+
+
+def cover() -> None:
+    w, h = 1200, 675
+    p = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
+        COVER_TITLE,
+    ]
+    p += cover_parts()
     p.append("</g></svg>")
     (HERE / "cover.svg").write_text("\n".join(p) + "\n", encoding="utf-8")
+
+
+def cover_medium() -> None:
+    """The same composition at Medium's feature size, 1400x788 = the cover scaled 7/6."""
+    w, h = 1400, 788
+    scale = w / 1200
+    p = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
+        COVER_TITLE,
+        f'<g transform="scale({scale:.6f})">',
+    ]
+    p += cover_parts()
+    p.append("</g></g></svg>")
+    (HERE / "cover-medium.svg").write_text("\n".join(p) + "\n", encoding="utf-8")
 
 
 def cover_devto() -> None:
@@ -638,6 +668,7 @@ def main() -> None:
     figure_loop()
     figure_span_tree()
     cover()
+    cover_medium()
     cover_devto()
     print("wrote", len(list(HERE.glob("*.svg"))), "svg files in", HERE)
 

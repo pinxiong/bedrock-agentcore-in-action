@@ -1,0 +1,19 @@
+RUN: 2026-10-18 (runtime id aiauc01_aia_uc01-XyX3fXF14g, stack AgentCore-aiauc01-default, account 123456789012)
+Versions behind the Requirements bullet of the article, printed by the same machine
+that ran the deploy. jq is here because its version is the only one the article pins
+to a patch level:
+
+  $ jq --version
+  jq-1.7.1-apple
+
+  $ node --version
+  v22.22.2
+
+  $ uv --version
+  uv 0.11.9 (7829a03b6 2026-05-05 aarch64-apple-darwin)
+
+  $ agentcore --version
+  0.31.1
+
+  $ aws --version
+  aws-cli/2.15.6 Python/3.11.6 Darwin/25.6.0 exe/x86_64 prompt/off

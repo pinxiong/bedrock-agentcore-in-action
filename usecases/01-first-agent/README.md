@@ -204,10 +204,10 @@ Runtime 的执行角色由 CLI 生成，实测权限如下。生产上按这个�
 
 | 项 | 本用例 |
 |---|---|
-| 预估花费 | **≈ $0.01**（跑完 deploy → invoke → test → remove 全流程）· 上界 **< $1** |
-| 最贵的一项 | Bedrock 模型 token。实测一次调用 945 输入 + 71 输出 token，按 `deepseek.v3.2` us-east-1 的 $0.62 / $1.85 每百万 token 计 ≈ **$0.0007** |
-| Runtime 计算 | 一次调用约 7 秒活跃计算（$0.0895/vCPU-h + $0.00945/GB-h），量级 **$0.0002**。无请求时不收计算费 |
-| 预计耗时 | 30 min。首次 `deploy` 实测 9 min 49 s（含装 CDK 依赖），之后每次 26 s |
+| 预估花费 | **≈ $0.01**（跑完 deploy → invoke → traces → remove 全流程）· 上界 **< $1** |
+| 最贵的一项 | Bedrock 模型 token。这一轮实测一次调用 955 输入 + 81 输出 token（`evidence/37-trace-spans.txt`），按 `deepseek.v3.2` us-east-1 的 $0.62 / $1.85 每百万 token 计 = **$0.00074**；两个单价与算式见 `evidence/46-model-cost.txt` |
+| Runtime 计算 | 按使用计费，空闲不收费。这一轮**没有单独计量**它的金额，所以表里不写数字：可核对的只有上面那笔模型费 |
+| 预计耗时 | 30 min。这一轮实测：`deploy` 1 m 31 s（`evidence/31-deploy-log.txt`）、`invoke` 9 954 ms（`evidence/34-invoke-log.txt`）、拆除 1 m 40 s（`evidence/44-teardown-log.txt`） |
 
 ⚠️ 常见超支点：**忘记删**。Runtime 本身空闲不收费，但 CloudWatch 日志与 X-Ray trace 会按存储计费，日志组不设保留策略就会一直挂着。跑完记得执行 §10。
 
@@ -573,7 +573,7 @@ structure: independent-usecases
 
 | 症状 | 原因 | 修复 |
 |---|---|---|
-| `CDK synth failed: ... Subprocess exited with error 1`，手动 `cdk synth` 却只是长时间挂住 | `agentcore/cdk/cdk.out` 是上一次部署的陈旧状态 | `rm -rf agentcore/cdk/cdk.out`，重跑 `agentcore deploy -y --target default` |
+| `agentcore deploy` 报 `CDK synth failed: node dist/bin/cdk.js: Subprocess exited with error 1`，连着几次都一样 | CLI 只转述退出码，不把 cdk 的 stderr 打出来。2026-10-18 这次七分钟内连挂五次，中间还夹着一次 8.5 s 的部分成功，目录一个字没改 —— 这形状是干扰（多半是同一个 `agentcore/cdk` 上另有 deploy 在重写 dist），不是模板写错 | 进 `agentcore/cdk` 跑 `npx cdk synth` 看真正的报错，并确认没有第二个 `agentcore deploy` 在跑同一份目录；不要靠重试蒙过去，见 `evidence/48-deploy-synth-failures.txt` |
 | 打包依赖时卡住十几分钟 | 国内拉不到 PyPI 官方源 | 见 §7.2 的 `UV_DEFAULT_INDEX` 变量 |
 | `agentcore status` 报 `unknown option '--region'` | CLI 没有全局 `--region`；区域来自 `agentcore/aws-targets.json` | 删掉参数，改 json |
 | 在 `agentcore/` 里执行命令报 `run this command from your project root directory` | 项目根是这个目录本身 | 上退一级 |
