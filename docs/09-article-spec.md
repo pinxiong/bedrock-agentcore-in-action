@@ -26,7 +26,7 @@ sections except `## Troubleshooting`, which may be omitted when nothing broke.
 | 3 | `## Requirements` | Tool versions, IAM permissions, region. Bullets or a code block, never a table. |
 | 4 | `## The code` | The GitHub URL of this use case's folder, then the folder tree as a code block, then one line per important file. |
 | 5 | `## How it works` | The two to four pieces of core code, each with a real snippet and a paragraph on why it is written that way. |
-| 6 | `## Deploy it` | The commands, in order, each followed by its captured output. Ends with the teardown command. |
+| 6 | `## Deploy it` | The `agentcore` commands, in order, each followed by a figure of its captured output. Ends with the teardown command. |
 | 7 | `## What it produced` | The result, with images. Terminal captures and one diagram. |
 | 8 | `## Troubleshooting` | Only real failures hit during the run, each with the symptom and the fix. Omit the section if the run was clean. |
 | 9 | `## Takeaways` | Three to five bullets. No preview of the next article, no roadmap. |
@@ -43,11 +43,16 @@ the same section with one line saying it is outside the core nine.
   material too.
 - **Every fenced block carries a language.** `bash` is the floor; prefer
   `bash`, `json`, `python`, `yaml`, `ts`, `text`. `plaintext` is banned.
+  Anything the reader runs is a shell command, so it is `bash`; never leave a
+  command block untagged and never tag one `plaintext`.
 - **No bold in the body.** No `**...**`. Emphasis comes from structure.
 - **Output over prose.** Commands, their real output, and images carry the
   article. A paragraph exists to explain what the reader just saw.
 - Account ids in captured output are redacted to `123456789012`.
 - Region is `us-east-1` for the whole series.
+- **The repository branch is `master`, never `main`.** Every GitHub URL in an
+  article says `/tree/master/` and `/blob/master/`. A `/tree/main/` link is a
+  404 on this repository and is a blocking defect.
 
 ## 4. The real-run rule
 
@@ -57,8 +62,10 @@ performed while writing it. Specifically:
 - Every command shown was executed, and the output shown is the captured output.
 - Every timing, token count or cost figure is measured, never estimated.
 - Every image is a capture of that run or a diagram generated from it.
-- The article's assertions match `tests/smoke.py` in the use case folder, and
-  `aia.py test <NN>` passed before the article was written.
+- Every capability the use case claims is proven by the output of a native
+  command, saved under `evidence/` before the article was written. There is no
+  assertion script to hide behind: if the reader cannot reproduce the proof
+  with `agentcore` or `aws`, the claim does not go in the article.
 
 If a step cannot be run, it does not go in the article. That is a rule, not
 advice: a fabricated figure is worse than a missing section.
@@ -69,6 +76,7 @@ advice: a fabricated figure is worse than a missing section.
 - Referenced by root path: `/images/<slug>/name.png`.
 - Every article carries: one architecture diagram, one deploy capture, one
   result capture. More is fine, fewer is not.
+- Every command's output is a capture figure. Section 9 is the rule.
 - Alt text describes the content in one sentence, no "image of" prefix.
 
 ## 6. Front matter
@@ -114,7 +122,49 @@ uc04 `security`, uc05 `aws`, uc06 `observability`, uc07 `mcp`.
 4. The same script writes a Medium import file. Medium has no write API and
    cannot import tables, which is why rule 3 in section 3 exists.
 
-## 8. Process
+## 8. Native commands only (ruled on 2026-10-18)
+
+The point of the series is to teach the reader AgentCore. Every step in an
+article is therefore a command the reader can type with the AgentCore CLI or
+the AWS CLI, and nothing else.
+
+- The commands shown are `agentcore ...` and `aws ...`. A project script is
+  never the thing the article tells the reader to run. No `make <target>`, no
+  `python3 run.py <target>`, no wrapper of any kind.
+- The use case folder ships **no self-written operational scripts**: no
+  `run.py`, no `Makefile`, no `tests/doctor.py`, no `tests/smoke.py`, no
+  `tests/copy_check.py`. What the reader needs is `agentcore.json`,
+  `aws-targets.json`, the agent code, and the commands. A pytest unit test for
+  the agent's own Python is fine and stays; nothing that runs a deployment or
+  asserts a deployed capability does.
+- Verifying a capability is done with native commands and their output:
+  `agentcore status`, `agentcore invoke`, `agentcore traces list`,
+  `agentcore traces get <id>` piped through `jq`, and
+  `aws resourcegroupstaggingapi get-resources` for the independence check.
+  Where an assertion used to live in `tests/smoke.py`, the article now shows
+  the native command whose output proves it.
+- Self-containedness is still asserted, but by reading the folder with native
+  tooling: no import from another use case, no path leaving the folder, no
+  cross-stack reference in the CDK output. The check is run by the repository
+  tooling, not by a script inside the use case folder.
+- `agentcore remove all -y` is the teardown command. It empties
+  `agentcore.json` and `aws-targets.json`; say so, and tell the reader to
+  restore both from git before deploying again.
+
+## 9. Every command's output is an image, never a code block
+
+- A command block is followed by its output as a **figure**, not by a fenced
+  output block. Printing the same output twice, once as text and once as an
+  image, is a blocking defect.
+- Every command shown has a figure. If a command has no figure yet, render one.
+- The figure's content is the captured output of that command on the run the
+  article describes, redacted and wrapped, nothing invented. Rendering it as a
+  terminal panel is fine; the bytes on screen must be the bytes the terminal
+  printed.
+- Figures are generated, so the SVG, the PNG and the generator must agree.
+  Change one, change all three.
+
+## 10. Process
 
 - One writer agent per article. It builds or extends the use case, runs it,
   captures evidence, and writes the English master.
