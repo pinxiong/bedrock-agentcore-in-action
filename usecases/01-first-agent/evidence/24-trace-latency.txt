@@ -1,3 +1,9 @@
+RUN: 2 (re-deploy, runtime id aiauc01_aia_uc01-p93Lh12kLc, stack AgentCore-aiauc01-default)
+RUN 1 = aiauc01_aia_uc01-R3MXCi9yld. The article describes RUN 1; this file is RUN 2.
+This measurement is kept for the record only. It is NOT cited in the article:
+the single-run rule means a run-2 latency cannot be quoted in a run-1 narrative,
+so the article dropped the trace-visibility timing entirely.
+
 # Trace visibility latency, measured on the uc01 runtime
 #
 # The question the article has to answer: after `agentcore invoke` returns, how

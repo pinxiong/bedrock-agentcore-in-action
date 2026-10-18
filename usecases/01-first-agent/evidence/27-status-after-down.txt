@@ -1,3 +1,5 @@
+RUN: 2 (after the run-2 teardown above, runtime id aiauc01_aia_uc01-p93Lh12kLc)
+
 # `aia.py status 01` after the teardown above. Nothing listed.
 # Command: env -u PYTHONPATH /usr/local/bin/python3 aia.py status 01
 # It reads "No resources match the given filters." because `agentcore remove all`

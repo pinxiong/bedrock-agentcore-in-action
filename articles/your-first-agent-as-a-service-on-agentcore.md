@@ -173,7 +173,7 @@ Outputs:
 
 ![The loop in six commands, each with the output it produced on this run](/images/your-first-agent-as-a-service-on-agentcore/F2-deploy-loop.png)
 
-Synthesizing CloudFormation took 15.4 s; the remaining 1 m 27 s was stack creation, which is four resources: an AWS::BedrockAgentCore::Runtime, the AWS::IAM::Role it runs as, that role's AWS::IAM::Policy and AWS::CDK::Metadata. That is the whole footprint, and it is the list `aws cloudformation describe-stack-resources` returns while the stack is up. Status and one real invoke:
+Synthesizing CloudFormation took 15.4 s; the remaining 1 m 27 s was stack creation. The stack this contract produces is four resources: an AWS::BedrockAgentCore::Runtime, the AWS::IAM::Role it runs as, that role's AWS::IAM::Policy, and AWS::CDK::Metadata. That is the whole footprint; the resource types are recorded in `evidence/23-stack-resources.txt`. Status and one real invoke:
 
 ```bash
 make status
@@ -237,7 +237,7 @@ Total duration: 1 m 28 s
 
 ## What it produced
 
-The invoke is unremarkable on purpose: one sentence, the right arithmetic, nothing else. The interesting artifact is the trace. I timed three invokes against this stack: the newest was queryable within 5 s of the invoke returning, the slowest within 107 s, not the 2-3 minutes the CLI hint warns about. The tree reads like the agent loop drawn by the runtime itself:
+The invoke is unremarkable on purpose: one sentence, the right arithmetic, nothing else. The interesting artifact is the trace, and the tree reads like the agent loop drawn by the runtime itself:
 
 ```text
 invoke_agent Strands Agents        2.50 s   tools=["add_numbers"]
@@ -267,4 +267,4 @@ Cost, measured on this run: the traced invoke used 945 input and 71 output token
 - CodeZip means no Dockerfile: the platform zips `codeLocation`, and the runtime version and endpoint come from the same contract.
 - An agent is not observable until a tool call has its own span; write that assertion before you need it.
 - A stream sanitizer belongs in the entrypoint from day one, because scaffolding leaks are intermittent and a test-only filter rots.
-- The full loop, measured: doctor in seconds, deploy 1 m 51 s, invoke 9 911 ms, trace visible in 5 s to 107 s across three timed invokes, down 1 m 28 s.
+- The full loop, measured: doctor in seconds, deploy 1 m 51 s, invoke 9 911 ms, down 1 m 28 s.

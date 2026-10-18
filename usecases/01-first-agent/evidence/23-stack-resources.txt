@@ -1,3 +1,10 @@
+RUN: 2 (re-deploy, runtime id aiauc01_aia_uc01-p93Lh12kLc, stack AgentCore-aiauc01-default)
+RUN 1 = aiauc01_aia_uc01-R3MXCi9yld. The article describes RUN 1; this file is RUN 2.
+Only the resource TYPES are quoted in the article, because the stack is
+deterministic from agentcore.json. Nothing from this file that carries run-2
+identity (physical ids, the -p93Lh12kLc ARN, this capture's timestamp) appears
+in the article.
+
 # CloudFormation resources for the uc01 stack, captured while the stack was up.
 # Command:
 #   aws cloudformation describe-stack-resources --stack-name AgentCore-aiauc01-default \

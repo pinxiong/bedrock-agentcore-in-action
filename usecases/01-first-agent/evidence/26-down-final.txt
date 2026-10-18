@@ -1,3 +1,8 @@
+RUN: 2 teardown (runtime id aiauc01_aia_uc01-p93Lh12kLc, stack AgentCore-aiauc01-default)
+RUN 1's teardown is evidence/19-down-final-raw.txt + 20-down-timings.txt +
+21-status-after-down.txt and holds the article's 1 m 28 s. This file is run 2's
+teardown, captured for the record only. The article's down number is unchanged.
+
 # Teardown of the uc01 stack, second run (the fix run), captured while it ran.
 # Command: make down, from usecases/01-first-agent/ (forwards to run.py down).
 # run.py's down target is two commands, and this is why:

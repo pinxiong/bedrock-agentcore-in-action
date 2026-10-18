@@ -1,3 +1,9 @@
+RUN: 1 (runtime id aiauc01_aia_uc01-R3MXCi9yld, stack AgentCore-aiauc01-default)
+This is a verbatim copy of agentcore/.cli/logs/deploy/deploy-20261018-074224.log,
+the deploy the article's 15.4 s / 1 m 27 s / 1 m 51 s timings come from. Copied
+here on the fix run because .cli/logs/ is gitignored. The file's own wall clock
+reads 07:42 = 23:42 UTC, which is run 1, not the 09:52 re-deploy.
+
 # The deploy log the article's timings come from.
 # Source: agentcore/.cli/logs/deploy/deploy-20261018-074224.log
 # Named in the deploy output as "Log: agentcore/.cli/logs/deploy/deploy-20261018-074224.log".
