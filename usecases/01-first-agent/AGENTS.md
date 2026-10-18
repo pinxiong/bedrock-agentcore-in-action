@@ -4,8 +4,8 @@ Context for an AI coding assistant (or a human) working inside this folder.
 
 This file mirrors `AGENTS.md` as the AgentCore CLI writes it on
 `agentcore create`, trimmed to what is true for this use case. The folder is a
-complete AgentCore project: copy it anywhere and it runs. `make help` lists
-everything you can do from here, and `README.md` is the walkthrough.
+complete AgentCore project: copy it anywhere and it runs. `README.md` is the
+walkthrough, and every operation in it is an `agentcore` or `aws` command.
 
 ## Mental model
 
@@ -32,16 +32,16 @@ how every resource in this series can be traced back to one use case.
 5. **Validate the runtime payload.** Require the prompt to be a string. Anything
    else is a caller bug that surfaces as a confusing model error.
 6. **Keep this folder self-contained.** No absolute paths, no references to a
-   parent directory, no imports from outside `app/aia_uc01/`. `make check`
-   asserts this, including by copying the folder to a temporary location.
+   parent directory, no imports from outside `app/aia_uc01/`, and no
+   self-written operational script. The series ships `agentcore` and `aws`
+   commands instead, and the repository-level verifier reads this folder as data
+   to assert the constraint: it never executes anything in here.
 
 ## Layout
 
 ```
 01-first-agent/
 ├── AGENTS.md                  # this file
-├── run.py                     # every operation, self-contained and cross-platform
-├── Makefile                   # forwards to run.py; holds no logic
 ├── README.md                  # the walkthrough (start here)
 ├── article.md                 # the narrative version
 ├── agentcore/
@@ -51,18 +51,16 @@ how every resource in this series can be traced back to one use case.
 │   ├── .cli/                  # CLI state and downloaded traces
 │   ├── .llm-context/          # TypeScript types for the JSON, for AI assistants
 │   └── cdk/                   # generated CDK project that does the deployment
+├── evidence/                  # captured output of every command below
 ├── app/aia_uc01/              # codeLocation: the code that becomes the runtime
+│   ├── README.md              # what the app is, and why it is shaped this way
 │   ├── main.py                # BedrockAgentCoreApp + @app.entrypoint
 │   ├── model/load.py          # model provider wiring
 │   ├── model/sanitize.py      # strips model scaffolding out of the text stream
 │   ├── pyproject.toml         # dependencies, packaged into the deployment zip
 │   └── uv.lock
 └── tests/
-    ├── doctor.py              # environment self-check
-    ├── copy_check.py          # asserts this folder stands alone
-    ├── smoke.py               # asserts the deployed capabilities
-    ├── test_sanitize.py       # offline unit tests
-    └── resourcegroupstaggingapi_check.py
+    └── test_sanitize.py       # offline unit tests for the stream sanitizer
 ```
 
 `app/aia_uc01/` is the only directory that is packaged and deployed. Its path
@@ -89,19 +87,27 @@ The full type definitions are in `agentcore/.llm-context/agentcore.ts`.
 From this folder:
 
 ```bash
-python3 run.py help       # list every target (the entry point, cross-platform)
-make help                 # the same, if you have make
-make check                # does this folder stand alone?
-make doctor               # is this machine and this folder ready?
-make deploy               # deploy it
-make invoke               # call it
-make dev                  # run it locally, a real model, no deployment
-make test                 # assert the deployed capabilities
-make down                 # destroy it
+agentcore deploy -y --target default          # deploy it
+agentcore status                              # is it up, and what is its ARN?
+agentcore invoke --prompt "..."               # call it
+agentcore traces list                         # the traces it left
+agentcore traces get <trace id>               # download one trace as JSON
+agentcore dev -l                              # run it locally, no deployment
+aws resourcegroupstaggingapi get-resources \
+  --region us-east-1 \
+  --tag-filters Key=Project,Values=agentcore-in-action
+                                              # what is tagged to this series
+agentcore remove all -y                       # empty the contract
+agentcore deploy -y --target default          # reconcile the stack to nothing
 ```
 
-`run.py` is the entry point and `Makefile` only forwards to it, so the two can
-never disagree. Use whichever your platform has.
+There is no wrapper script in this folder on purpose: the series teaches the
+CLI, and a folder that ships a wrapper is a folder the reader cannot copy out
+and understand on its own. What a capability assertion used to be is now the
+captured output of one of the commands above, saved under `evidence/` (files 30
+to 45 are the 2026-10-18 run). `agentcore remove all -y` empties
+`agentcore.json` and `aws-targets.json`; restore both from git before deploying
+again.
 
 `agentcore` must be run from this folder, not from `agentcore/`: inside
 `agentcore/` the CLI answers `Please run this command from your project root
