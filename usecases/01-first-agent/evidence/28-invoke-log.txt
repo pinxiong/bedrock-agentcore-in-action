@@ -1,0 +1,37 @@
+# RUN: 1 (aiauc01_aia_uc01-R3MXCi9yld)
+# Cloud invoke log for the 9 911 ms figure quoted in the article.
+# Source: agentcore/.cli/logs/invoke/invoke-aia_uc01-20261018-074457.log (verbatim,
+# account id redacted). That path is gitignored, so this copy is the only durable record.
+#
+================================================================================
+AGENTCORE INVOKE LOG
+Agent: aia_uc01
+Runtime ARN: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld
+Region: us-east-1
+Session ID: none
+Started: 2026-10-17T23:44:57.535Z
+================================================================================
+
+[07:44:57.542] INVOKE REQUEST (Session: none)
+
+--- REQUEST ---
+{
+  "timestamp": "2026-10-17T23:44:57.542Z",
+  "agent": "aia_uc01",
+  "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld",
+  "region": "us-east-1",
+  "prompt": "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
+}
+--- END REQUEST ---
+
+[07:45:07.453] INVOKE RESPONSE (9911ms)
+
+--- RESPONSE ---
+{
+  "timestamp": "2026-10-17T23:45:07.478Z",
+  "durationMs": 9911,
+  "success": true,
+  "response": "\n\nThe refund total you should quote is $42."
+}
+--- END RESPONSE ---
+
