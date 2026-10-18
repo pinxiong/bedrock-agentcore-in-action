@@ -40,7 +40,7 @@ Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 | # | Dev.to | xiongpin.dev | Medium | Date |
 |---|---|---|---|---|
 | uc01 | https://dev.to/aws-builders/your-first-agent-as-a-service-deploying-a-support-agent-on-agentcore-48hh | https://xiongpin.dev/posts/your-first-agent-as-a-service-on-agentcore/ | manual, checklist in `writing-lab/distribution/` | 2026-10-18 |
-| uc02 | | | | |
+| uc02 | https://dev.to/aws-builders/an-agent-that-remembers-short-term-and-long-term-memory-on-agentcore-3bf5 | https://xiongpin.dev/posts/agentcore-memory-that-remembers/ | manual, checklist in `writing-lab/distribution/` | 2026-10-18 |
 | uc03 | | | | |
 | uc04 | | | | |
 | uc05 | | | | |
