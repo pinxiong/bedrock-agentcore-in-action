@@ -47,6 +47,11 @@ DEFAULT_MODEL_ID = "deepseek.v3.2"
 MAP_FILE = REPO_ROOT / "docs" / "05-capability-map.yaml"
 TEMPLATES = REPO_ROOT / "shared" / "templates"
 BASELINE = TEMPLATES / "baseline-agent"
+# Where this machine's PyYAML lives. verify-coverage.py cannot run without it,
+# and aia.py itself does not need it, so the two can be run by different
+# interpreters. Only a hint: when it is absent, or cannot import yaml, the probe
+# in verify_python() falls back to whatever is running aia.py.
+MANAGED_VENV_PYTHON = Path("/Users/pinxiong/.workbuddy/binaries/python/envs/default/bin/python")
 
 # --------------------------------------------------------------------------- #
 # small helpers                                                               #
@@ -98,6 +103,39 @@ def capture(cmd: list[str]) -> tuple[int, str]:
 
 def have(tool: str) -> bool:
     return shutil.which(tool) is not None
+
+
+def verify_python() -> list[str]:
+    """The `env ...` prefix that runs verify-coverage.py on a PyYAML interpreter.
+
+    Candidates are probed in order, and the first one that can import yaml wins:
+
+      1. the managed venv, which is where this machine's PyYAML was installed;
+      2. that venv's base interpreter with the venv's own site-packages in front
+         of it, which is the form that works when the venv launcher cannot find
+         its stdlib (its pyvenv.cfg and its `python` symlink disagree here);
+      3. whatever is running aia.py.
+
+    `env -u PYTHONPATH` is not optional: an inherited PYTHONPATH shim breaks the
+    managed interpreter, and a bare `python3` inherits it.
+    """
+    # (env assignments, interpreter): env applies assignments only until it
+    # reaches the program name, so they have to come first.
+    candidates: list[tuple[list[str], str]] = []
+    if MANAGED_VENV_PYTHON.exists():
+        candidates.append(([], str(MANAGED_VENV_PYTHON)))
+        base = str(MANAGED_VENV_PYTHON.resolve())
+        for site_packages in sorted((MANAGED_VENV_PYTHON.parent.parent / "lib").glob("python3.*/site-packages")):
+            candidates.append(([f"PYTHONPATH={site_packages}"], base))
+    candidates.append(([], sys.executable))
+    for assigns, interpreter in candidates:
+        probe = subprocess.run(
+            ["env", "-u", "PYTHONPATH", *assigns, interpreter, "-c", "import yaml"],
+            capture_output=True,
+        )
+        if probe.returncode == 0:
+            return ["env", "-u", "PYTHONPATH", *assigns, interpreter]
+    return ["env", "-u", "PYTHONPATH", sys.executable]
 
 
 def die(msg: str) -> "NoReturn":  # type: ignore[valid-type]
@@ -338,14 +376,18 @@ def cmd_check(args: argparse.Namespace) -> int:
     """
     uc_dir = find_uc_dir(args.usecase)
     return run(
-        [sys.executable, "shared/scripts/verify-coverage.py", "--usecase", f"uc{uc_number(uc_dir)}"],
+        [*verify_python(), "shared/scripts/verify-coverage.py", "--usecase", f"uc{uc_number(uc_dir)}"],
         cwd=REPO_ROOT,
         check=False,
     ).returncode
 
 
 def cmd_verify_all(_args: argparse.Namespace) -> int:
-    run([sys.executable, "shared/scripts/verify-coverage.py", "--allow-missing-dirs"], cwd=REPO_ROOT)
+    run(
+        [*verify_python(), "shared/scripts/verify-coverage.py", "--allow-missing-dirs"],
+        cwd=REPO_ROOT,
+        check=False,
+    )
     return 0
 
 
