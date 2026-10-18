@@ -45,7 +45,7 @@ aws sts get-caller-identity --query Account --output text
 
 ## The code
 
-https://github.com/pinxiong/bedrock-agentcore-in-action/tree/main/usecases/02-memory
+https://github.com/pinxiong/bedrock-agentcore-in-action/tree/master/usecases/02-memory
 
 ```text
 02-memory/

@@ -135,9 +135,13 @@ def devto(slug, fm, body, tags, create):
     desc = fm_get(fm, "description") or ""
     if len(desc) > 140:
         desc = desc[:137].rsplit(" ", 1)[0] + "..."
+    # Dev.to renders the body on its own host, so a root-relative /images/ path
+    # resolves to dev.to/images/... and every figure in the article 404s. The
+    # Hugo copy keeps the root path; the API copy gets absolute URLs.
+    dev_body = re.sub(r"\]\(/images/", "](https://xiongpin.dev/images/", body.lstrip("\n"))
     payload = {"article": {
         "title": fm_get(fm, "title"),
-        "body_markdown": body.lstrip("\n"),
+        "body_markdown": dev_body,
         "published": False,
         "description": desc,
         "tags": tags,
