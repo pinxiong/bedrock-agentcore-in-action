@@ -48,6 +48,18 @@ checkable, and the last two run in CI.
 # The independence test, for any use case
 python aia.py up 05 && python aia.py status 05 && python aia.py down 05
 
+# The strongest form: list everything the project owns and read the UseCase
+# column. Anything this run touched shows up in the same table.
+aws resourcegroupstaggingapi get-resources --region us-east-1 \
+  --tag-filters Key=Project,Values=agentcore-in-action \
+  --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' \
+  --output text
+# Expected: only UseCase=05 rows.
+
+# To narrow it: one filter, several values. `--tag-filters` is AND across
+# filters and OR within one filter's Values, so `Key=UseCase,Values=01
+# Key=UseCase,Values=02` asks for one resource that is two use cases at once.
+# It matches nothing and returns empty, which reads exactly like a pass.
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=Project,Values=agentcore-in-action Key=UseCase,Values=01,02,03,04,06,07
 # Expected: ResourceTagMappingList is empty

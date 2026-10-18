@@ -51,7 +51,9 @@ published. Be specific and be willing to fail it.
    whose command could never have returned anything else: an independence proof
    written as `Key=UseCase,Values=01 Key=UseCase,Values=02` is AND across
    filters, matches nothing, and reads exactly like a pass. The OR form is one
-   filter: `Key=UseCase,Values=01,02`.
+   filter: `Key=UseCase,Values=01,02`. The strongest form is the one filtered
+   only on `Project`: it lists every resource the series owns, so a foreign use
+   case's rows show up in the same table instead of being filtered away.
 10. Account ids are redacted to `123456789012`. No ARN in the article contains a
     real account id.
 

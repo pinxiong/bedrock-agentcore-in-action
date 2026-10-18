@@ -403,6 +403,10 @@ def cmd_list(_args: argparse.Namespace) -> int:
 
 
 def cmd_cost(args: argparse.Namespace) -> int:
+    # `--tag-filters` is AND across filters and OR within one filter's Values.
+    # Project and UseCase are different keys, so ANDing them is what we want;
+    # repeating one key would ask for a resource that is two things at once and
+    # would match nothing. Several use cases go in one filter: Values=01,02,03.
     filters = [
         "--tag-filters", f"Key=Project,Values={PROJECT_TAG}",
         "--query", "ResourceTagMappingList[].ResourceARN",
