@@ -125,7 +125,8 @@ CLI 会为 runtime 和 memory 各生成一个 role。生产上你要的是：run
 | 首次部署（含建 memory 与两个 role） | 4 m 23 s |
 | 第二次部署（只改描述） | 58 s |
 | 单次 invoke（含 CLI 启动） | 19 s |
-| 偏好抽取可见（空 namespace 首次） | 88 s |
+| 偏好抽取可见（空 namespace 首次，早期尝试的资源，已拆除） | 88 s |
+| 偏好抽取可见（本次运行，namespace 已有记录） | 1.5 s |
 | 情节抽取可见 | 959 s（约 16 min） |
 | `make test` 全程 | 17 m 27 s（几乎都花在等情节抽取） |
 | 模型调用 | 15 次 invoke，约 0.04 USD（单次实测 3 433 in / 210 out） |
