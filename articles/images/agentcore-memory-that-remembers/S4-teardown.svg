@@ -38,5 +38,5 @@
 <text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ aws resourcegroupstaggingapi get-resources \</text>
 <text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --tag-filters Key=Project,Values=agentcore-in-action --region us-east-1</text>
 <text x="58" y="642" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">0</text>
-<text x="58" y="677" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">captured from evidence/12-down-raw.txt, evidence/13 and evidence/14</text>
+<text x="58" y="677" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">Total Duration from evidence/18-down-deploy.txt · the rest from evidence/12-down-raw.txt, evidence/13 and evidence/14</text>
 </svg>

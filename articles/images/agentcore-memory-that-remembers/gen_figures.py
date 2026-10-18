@@ -2,8 +2,8 @@
 """Generate every image for the uc02 article from the run captured on 2026-10-18.
 
 Every number drawn here comes from `usecases/02-memory/evidence/`. The terminal
-panels are the captured output with the account id redacted to 123456789012 and
-nothing else changed.
+panels are the captured output with the account id redacted to 123456789012, the
+bold markers the model emitted stripped, and a `...` wherever a line is cut.
 
     python3 gen_figures.py            # writes every .svg next to this file
     render.sh                         # svg -> png, see the comment at the bottom
@@ -171,18 +171,21 @@ CROSS_SESSION: list[tuple[str, str]] = [
     ("Based on your explicit instruction, I'll only reorder for the North China region.", W),
     ("The North China region needs reorders at three stores: Beijing Haidian (42 thermal", S),
     ("flasks), Tianjin Heping (17 insulated mugs), and Shijiazhuang Qiaoxi (8 lunch boxes).", S),
+    ("I followed your instruction to only reorder for North China and ignored all other regions. ...", S),
     ("", S),
     ("$ python3 run.py invoke --session 03fd411e-293b-4aa2-a219-bd996c7e3481-6b0df16e \\", S),
     ('    --prompt "Draft this week\'s reorder list."', S),
     ("Invoking agent...", D),
     ("I'll create the reorder list for the North China region as specified in your preferences.", W),
+    ("Let me check which stores need reordering.", S),
     ("Here's this week's reorder list for the North China region:", S),
-    ("Store: Beijing Haidian, SKU: SKU-1001, Reorder Quantity: 42 units", S),
-    ("Store: Tianjin Heping, SKU: SKU-1002, Reorder Quantity: 17 units", S),
-    ("Store: Shijiazhuang Qiaoxi, SKU: SKU-1003, Reorder Quantity: 8 units", S),
-    ("Note: I've applied your documented preference to only reorder for North China region.", G),
+    ("Store: Beijing Haidian, SKU: SKU-1001, Product: thermal flask, Reorder Quantity: 42 units", S),
+    ("Store: Tianjin Heping, SKU: SKU-1002, Product: insulated mug, Reorder Quantity: 17 units", S),
+    ("Store: Shijiazhuang Qiaoxi, SKU: SKU-1003, Product: lunch box, Reorder Quantity: 8 units", S),
+    ("Note: I've applied your documented preference to only reorder for North China region,", G),
+    ("ignoring all other regions.", G),
     ("", S),
-    ("Session: 03fd411e-293b-4aa2-a219-bd996c7e3481-6b0df16e", T),
+    ("Session: 03fd411e-293b-4aa2-a219-bd996c7e3481-6b0df16e  ...", T),
 ]
 
 
@@ -317,7 +320,7 @@ def figure_architecture() -> None:
 # --------------------------------------------------------------------------- #
 
 def figure_two_sessions() -> None:
-    w, h = 1440, 700
+    w, h = 1440, 726
     out = head(w, h, "A preference stated in session one is extracted into a record and read "
                      "back by session two, which never saw the first conversation.",
                glow_a=TEAL, glow_b=ORANGE)
@@ -332,11 +335,10 @@ def figure_two_sessions() -> None:
     label(out, 88, 172, "session 1", 20, "#93c5fd", weight="600")
     label(out, 210, 172, "writes the preference", 15, "#7c93b5")
     label(out, 88, 214, 'prompt  "From now on, only reorder for the North China region."', 16, "#cbd5e1")
-    label(out, 88, 246, "event   0000001792288205925#d8d92b03", 15, "#5eead4")
-    label(out, 88, 278, 'reply   "Based on your explicit instruction, I\'ll only reorder"', 15, "#8ea0bd")
-    label(out, 88, 300, '        "for the North China region."', 15, "#8ea0bd")
-    label(out, 88, 352, "the agent never stores the preference itself.", 15, "#64748b")
-    label(out, 88, 378, "it appends the turn; extraction decides what becomes a fact.", 15, "#64748b")
+    label(out, 88, 246, 'reply   "Based on your explicit instruction, I\'ll only reorder"', 15, "#8ea0bd")
+    label(out, 88, 268, '        "for the North China region."', 15, "#8ea0bd")
+    label(out, 88, 320, "the agent never stores the preference itself.", 15, "#64748b")
+    label(out, 88, 346, "it appends the turn; extraction decides what becomes a fact.", 15, "#64748b")
 
     arrow(out, 624, 280, 700, 280, "#5eead4")
 
@@ -359,8 +361,9 @@ def figure_two_sessions() -> None:
     label(out, 1230, 246, 'prompt', 15, "#8ea0bd", anchor="middle")
     label(out, 1230, 272, '"Draft this week\'s', 16, "#cbd5e1", anchor="middle")
     label(out, 1230, 296, 'reorder list."', 16, "#cbd5e1", anchor="middle")
-    label(out, 1230, 344, "reordered for", 15, "#8ea0bd", anchor="middle")
-    label(out, 1230, 372, "North China only", 18, "#f8fafc", anchor="middle", weight="600")
+    label(out, 1230, 340, "reordered for", 15, "#8ea0bd", anchor="middle")
+    label(out, 1230, 368, "North China only", 18, "#f8fafc", anchor="middle", weight="600")
+    label(out, 1230, 404, "wrote   0000001792289323248#0e132265", 15, "#5eead4", anchor="middle")
 
     # record row
     out.append('<rect x="60" y="462" width="1320" height="116" rx="16" fill="#0b1428" '
@@ -376,6 +379,10 @@ def figure_two_sessions() -> None:
     label(out, 88, 638, "north   /users/store_manager_north/preferences   North China",
           16, "#34d399")
     label(out, 88, 670, "south   /users/store_manager_south/preferences   South China", 16, "#fdba74")
+
+    label(out, 60, 710, "the event id session 2 wrote is the one traced in "
+                        "evidence/17-trace-tokens.json; the record above is what it read.",
+          14, "#64748b")
 
     out.append("</svg>")
     (HERE / "F2-two-sessions.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
@@ -446,11 +453,13 @@ def main() -> None:
     panel("S1-deploy", "terminal - deploy", DEPLOY,
           "step timings from evidence/04-deploy.txt, outputs from evidence/07-deploy-clean.txt")
     panel("S2-cross-session-recall", "terminal - two sessions, one memory resource", CROSS_SESSION,
-          "evidence/09 and 10 · 19 s wall clock each, session ids shortened nowhere")
+          "evidence/09 and 10 · 19 s CLI wall clock each · every cut marked ... · "
+          "bold markers stripped · session ids verbatim")
     panel("S3-verify", "terminal - the three memory assertions", VERIFY,
           "captured from evidence/08-test-clean.txt, long lines wrapped")
     panel("S4-teardown", "terminal - teardown, and zero tagged resources left", TEARDOWN,
-          "captured from evidence/12-down-raw.txt, evidence/13 and evidence/14")
+          "Total Duration from evidence/18-down-deploy.txt · the rest from "
+          "evidence/12-down-raw.txt, evidence/13 and evidence/14")
     figure_architecture()
     figure_two_sessions()
     cover(1200, 675, "cover")

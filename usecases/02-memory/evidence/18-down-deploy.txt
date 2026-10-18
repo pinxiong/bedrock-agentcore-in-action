@@ -1,0 +1,64 @@
+RUN: this run (runtime aiauc02_aia_uc02-ACujAB8uYJ, memory id mem-y7Ql9N3D59,
+stack AgentCore-aiauc02-default, account id redacted to 123456789012)
+
+This is the teardown deploy the article quotes as "Total Duration: 4m 11s", and
+the only file that carries that number: evidence/12-down-raw.txt holds nothing
+between its start timestamp 1792291282 and its end timestamp 1792291554.
+Copied here on the fix run because agentcore/.cli/ is gitignored. Verbatim copy
+of agentcore/.cli/logs/deploy/deploy-20261018-104142.log: the reconciling deploy
+that `make down` runs after `agentcore remove all -y`, started 2026-10-18
+10:41:42 local. Nothing in this log identifies the account.
+
+AGENTCORE DEPLOY LOG is reproduced below exactly as written.
+
+================================================================================
+AGENTCORE DEPLOY LOG
+Command: deploy
+Started: 2026-10-18T02:41:42.856Z
+================================================================================
+
+
+[10:41:42] STEP: Load deployment target
+[10:41:42] Status: SUCCESS
+[10:41:42] Duration: 60ms
+
+[10:41:42] STEP: Validate project
+[10:41:43] Status: SUCCESS
+[10:41:43] Duration: 48ms
+
+[10:41:43] STEP: Validate AWS credentials
+[10:41:43] Status: SUCCESS
+[10:41:43] Duration: 701ms
+
+[10:41:43] STEP: Sync CDK dependencies
+[10:41:43] Status: SUCCESS
+[10:41:43] Duration: 82ms
+
+[10:41:43] STEP: Build CDK project
+[10:42:12] Status: SUCCESS
+[10:42:12] Duration: 28.9s
+
+[10:42:12] STEP: Synthesize CloudFormation
+[10:42:15] Status: SUCCESS
+[10:42:15] Duration: 2.3s
+
+[10:42:15] STEP: Check bootstrap status
+[10:42:16] Status: SUCCESS
+[10:42:16] Duration: 1.0s
+
+[10:42:16] STEP: Check stack status
+[10:42:16] Status: SUCCESS
+[10:42:16] Duration: 687ms
+
+[10:42:16] STEP: Deploy to AWS
+[10:45:39] Status: SUCCESS
+[10:45:39] Duration: 3m 23s
+
+[10:45:39] STEP: Tear down stack
+[10:45:54] Status: SUCCESS
+[10:45:54] Duration: 14.3s
+
+================================================================================
+COMPLETED SUCCESSFULLY
+Total Duration: 4m 11s
+================================================================================

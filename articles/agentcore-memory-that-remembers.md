@@ -89,6 +89,7 @@ The agent itself never stores a preference. It appends the turn and asks a quest
 
 ```python
 def remember(self, actor, session_id, turns):
+    # ... the real one wraps this in try/except and returns None on failure
     event = self.client.create_event(
         memory_id=self.memory_id, actor_id=actor,
         session_id=session_id, messages=turns)
@@ -109,7 +110,7 @@ def recall(self, actor, query):
     return found
 ```
 
-Writing the event is also what starts extraction, which is why the second session can find a sentence the first session said. Extraction is not part of the invoke: the reply returned in 19 seconds and the records arrived later.
+Writing the event is also what starts extraction, which is why the second session can find a sentence the first session said. Extraction is not part of the invoke: the CLI returned in 19 seconds (12,117 ms of it the model call), and the records arrived later.
 
 Retrieval happens before the model is called, because the records become part of the system prompt:
 
@@ -118,7 +119,7 @@ records = store.recall(actor, prompt) if store else []
 agent = Agent(
     model=load_model(),
     system_prompt=f"{SYSTEM_PROMPT}\n\nWhat you remember about this manager:\n{render(records)}",
-    conversation_manager=NullConversationManager(),
+    # ... tools=list(TOOLS) and conversation_manager=NullConversationManager() too
 )
 ```
 
@@ -186,6 +187,8 @@ Outputs:
 
 ![Terminal capture: the deploy step timings, the memory id and the runtime ARN](/images/agentcore-memory-that-remembers/S1-deploy.png)
 
+Step timings are the first deploy's, the Outputs a minutes-later re-deploy of the same stack.
+
 Two sessions, two different session ids. The first only states a preference:
 
 ```bash
@@ -248,7 +251,7 @@ memory
 4 passed, 0 failed
 ```
 
-The 1.5 seconds needs explaining: that preference had already been extracted by an earlier run against the same resource, so the read found it immediately. The episode was new, and took 959.
+The 1.5 seconds needs explaining: that preference had already been extracted by an earlier run against the same resource. The episode was new, and took 959.
 
 ![Terminal capture: the three memory assertions and the independence check](/images/agentcore-memory-that-remembers/S3-verify.png)
 
@@ -289,9 +292,9 @@ The measured loop, one actor, two sessions:
 
 ![The cross-session loop: an event, its extracted record, and a second session reading the record](/images/agentcore-memory-that-remembers/F2-two-sessions.png)
 
-The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model the same question produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
+The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model "Draft this week's reorder list." produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
 
-The third assertion is the one that taught me something. Episodic extraction is slow: the episodes in this resource were written 15 minutes 11 seconds to 15 minutes 14 seconds after the event timestamp they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only ever fail against it.
+The third assertion taught me something. Episodic extraction is slow: these episodes were written 15 minutes 11 seconds to 15 minutes 14 seconds after the events they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only fail against it.
 
 A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a `BASE` episode filed under the session that produced it, and a `REFLECTION` written one level up, over all of them. That is why the namespace template has a `{sessionId}` and the reflection template does not:
 
