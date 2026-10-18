@@ -352,14 +352,18 @@ def degenerate_tag_filters(text: str) -> list[str]:
     it returns empty every time and reads exactly like a pass. The OR form is
     one filter with comma-separated values.
 
-    Only commands are judged, never prose: the scan keys on `--tag-filters`, so
-    a capture that merely explains the trap in words is not flagged, and a
-    documented example written as a shell comment is skipped too.
+    Only commands are judged, never prose. Three guards keep it that way: the
+    line has to carry the call itself, and comment lines, table rows and
+    blockquotes are skipped, because all three are how the trap gets written
+    down as an example rather than run.
     """
     flat = text.replace("\\\n", " ")
     problems: list[str] = []
     for line in flat.splitlines():
-        if "--tag-filters" not in line or line.lstrip().startswith("#"):
+        stripped = line.lstrip()
+        if "--tag-filters" not in line or "get-resources" not in line:
+            continue
+        if stripped.startswith(("#", "|", ">")):
             continue
         span = line.split("--tag-filters", 1)[1]
         span = re.split(r"\s--(?!tag-filters)", span)[0]
@@ -663,6 +667,18 @@ def check_standalone_folder(root: Path, uc: dict, rep: Report) -> bool:
             rep.fail(f"  {h}")
         if len(hits) > 8:
             rep.fail(f"  and {len(hits) - 8} more line(s)")
+
+    # The reader copies the commands out of the README, not out of evidence/.
+    # A tag filter there that can never match hands them a check that passes
+    # with zero rows, which is worse than handing them nothing.
+    for path in scannable_files(uc_dir):
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except (UnicodeDecodeError, OSError):
+            continue
+        for problem in degenerate_tag_filters(text):
+            ok = False
+            rep.fail(f"{uc['id']}: {path.relative_to(uc_dir)} {problem}")
     if ok:
         rep.ok(f"{uc['id']}: the folder stands alone ({len(scannable_files(uc_dir))} files read)")
 
