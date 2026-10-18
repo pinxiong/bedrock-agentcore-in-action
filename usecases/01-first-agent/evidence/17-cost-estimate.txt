@@ -1,0 +1,5 @@
+cycle 1 chat: 431 in / 60 out
+cycle 2 chat: 514 in / 11 out
+invoke_agent total: 945 in / 71 out
+model cost per invoke: 0.000717 USD
+6 invokes this run -> 0.004304 USD of model calls

@@ -1,0 +1,11 @@
+# `aia.py status 01` after the teardown above. Nothing listed.
+# Command: env -u PYTHONPATH /usr/local/bin/python3 aia.py status 01
+# It reads "No resources match the given filters." because `agentcore remove all`
+# emptied aws-targets.json, so there is no target to filter on. The first run's
+# teardown (evidence/21-status-after-down.txt) printed "aia_uc01: Local only"
+# instead, because its targets file had not been emptied yet. Both mean nothing
+# is deployed.
+
+  $ agentcore status
+AgentCore Status (target: )
+No resources match the given filters.

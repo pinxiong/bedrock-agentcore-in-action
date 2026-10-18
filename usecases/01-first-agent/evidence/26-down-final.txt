@@ -1,0 +1,30 @@
+# Teardown of the uc01 stack, second run (the fix run), captured while it ran.
+# Command: make down, from usecases/01-first-agent/ (forwards to run.py down).
+# run.py's down target is two commands, and this is why:
+#   agentcore remove all -y     empties the local contract
+#   agentcore deploy -y --target default   reconciles the now-empty stack to nothing
+# Note: `aia.py down 01` runs `agentcore remove all` WITHOUT -y and dies with
+# "This command requires an interactive terminal" before it deletes anything.
+# That is the troubleshooting item in the article; run.py and the Makefile are
+# the ones that carry the -y.
+# Redacted: real account id -> 123456789012. Spinner frames stripped.
+
+>> agentcore remove all -y
+All schemas reset to empty state
+Your source code has not been modified. Run `agentcore deploy` to apply changes to AWS.
+>> agentcore deploy -y --target default
+[K✓ Load deployment target
+[K✓ Validate project
+[K✓ Validate AWS credentials
+[K✓ Sync CDK dependencies
+[K✓ Build CDK project
+[K✓ Synthesize CloudFormation
+[K✓ Check bootstrap status
+[K✓ Check stack status
+[K✓ Deploy to AWS
+[K✓ Tear down stack
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc01-default)
+Log: agentcore/.cli/logs/deploy/deploy-20261018-102818.log
+>> now walk the Cleanup checklist in README section 10
+>> agentcore.json was rewritten; restore it before deploying again

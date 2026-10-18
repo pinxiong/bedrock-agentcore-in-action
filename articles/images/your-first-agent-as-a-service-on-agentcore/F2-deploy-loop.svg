@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 620" width="1440" height="620" role="img">
+<title>The deploy loop: doctor, dev, deploy, invoke, traces, down, with the measured output each one returns.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.15" cy="0.1" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.22"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="620" fill="url(#bg)"/>
+<rect width="1440" height="620" fill="url(#gA)"/>
+<g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<text x="60" y="66" font-size="17" fill="#ea580c" font-weight="700">THE WHOLE LOOP IN SIX COMMANDS</text>
+<text x="60" y="112" font-size="38" fill="#ffffff" font-weight="800">One loop, reproducible</text>
+<text x="60" y="146" font-size="18" fill="#8ea0bd">every output below was captured while writing this article</text>
+<rect x="60" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#0d9488" stroke-width="1.6"/>
+<rect x="60" y="196" width="208" height="6" rx="3" fill="#0d9488"/>
+<text x="82" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 1</text>
+<text x="82" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">doctor</text>
+<text x="82" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">15 passed, 0 warned, 0</text>
+<text x="82" y="342" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">failed</text>
+<line x1="82" y1="456" x2="246" y2="456" stroke="#0d9488" stroke-opacity="0.35" stroke-width="1"/>
+<text x="82" y="482" font-size="14" fill="#8ea0bd">local</text>
+<text x="82" y="514" font-size="18" fill="#0d9488" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">n/a</text>
+<text x="279.0" y="381.0" font-size="20" fill="#3b4a68" text-anchor="middle">&#8250;</text>
+<rect x="290" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#2563eb" stroke-width="1.6"/>
+<rect x="290" y="196" width="208" height="6" rx="3" fill="#2563eb"/>
+<text x="312" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 2</text>
+<text x="312" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">dev</text>
+<text x="312" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Uvicorn on</text>
+<text x="312" y="342" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">127.0.0.1:8080</text>
+<line x1="312" y1="456" x2="476" y2="456" stroke="#2563eb" stroke-opacity="0.35" stroke-width="1"/>
+<text x="312" y="482" font-size="14" fill="#8ea0bd">real model</text>
+<text x="312" y="514" font-size="18" fill="#2563eb" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">~$0.0007 / call</text>
+<text x="509.0" y="381.0" font-size="20" fill="#3b4a68" text-anchor="middle">&#8250;</text>
+<rect x="520" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#7c3aed" stroke-width="1.6"/>
+<rect x="520" y="196" width="208" height="6" rx="3" fill="#7c3aed"/>
+<text x="542" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 3</text>
+<text x="542" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">deploy</text>
+<text x="542" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Runtime: READY</text>
+<line x1="542" y1="456" x2="706" y2="456" stroke="#7c3aed" stroke-opacity="0.35" stroke-width="1"/>
+<text x="542" y="482" font-size="14" fill="#8ea0bd">stack create</text>
+<text x="542" y="514" font-size="18" fill="#7c3aed" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 51 s</text>
+<text x="739.0" y="381.0" font-size="20" fill="#3b4a68" text-anchor="middle">&#8250;</text>
+<rect x="750" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#059669" stroke-width="1.6"/>
+<rect x="750" y="196" width="208" height="6" rx="3" fill="#059669"/>
+<text x="772" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 4</text>
+<text x="772" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">invoke</text>
+<text x="772" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&#x27;The refund total</text>
+<text x="772" y="342" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">should be $42.&#x27;</text>
+<line x1="772" y1="456" x2="936" y2="456" stroke="#059669" stroke-opacity="0.35" stroke-width="1"/>
+<text x="772" y="482" font-size="14" fill="#8ea0bd">one session</text>
+<text x="772" y="514" font-size="18" fill="#059669" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9 911 ms</text>
+<text x="969.0" y="381.0" font-size="20" fill="#3b4a68" text-anchor="middle">&#8250;</text>
+<rect x="980" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#ea580c" stroke-width="1.6"/>
+<rect x="980" y="196" width="208" height="6" rx="3" fill="#ea580c"/>
+<text x="1002" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 5</text>
+<text x="1002" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">traces get</text>
+<text x="1002" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">execute_tool</text>
+<text x="1002" y="342" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">add_numbers</text>
+<line x1="1002" y1="456" x2="1166" y2="456" stroke="#ea580c" stroke-opacity="0.35" stroke-width="1"/>
+<text x="1002" y="482" font-size="14" fill="#8ea0bd">X-Ray</text>
+<text x="1002" y="514" font-size="18" fill="#ea580c" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">about 2 min lag</text>
+<text x="1199.0" y="381.0" font-size="20" fill="#3b4a68" text-anchor="middle">&#8250;</text>
+<rect x="1210" y="196" width="208" height="356" rx="16" fill="#101c36" stroke="#e11d48" stroke-width="1.6"/>
+<rect x="1210" y="196" width="208" height="6" rx="3" fill="#e11d48"/>
+<text x="1232" y="242" font-size="15" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">step 6</text>
+<text x="1232" y="276" font-size="24" fill="#ffffff" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">down</text>
+<text x="1232" y="318" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">0 resources tagged</text>
+<text x="1232" y="342" font-size="15" fill="#cbd5e1" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">UseCase=01</text>
+<line x1="1232" y1="456" x2="1396" y2="456" stroke="#e11d48" stroke-opacity="0.35" stroke-width="1"/>
+<text x="1232" y="482" font-size="14" fill="#8ea0bd">stack delete</text>
+<text x="1232" y="514" font-size="18" fill="#e11d48" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 28 s</text>
+</g></svg>

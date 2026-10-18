@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img">
+<title>Cover: your first agent as a service. Deploying a support agent on AgentCore.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.9" cy="0.1" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.26"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="gB" cx="0.1" cy="1.0" r="0.7"><stop offset="0" stop-color="#ea580c" stop-opacity="0.22"/><stop offset="1" stop-color="#ea580c" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1000" height="420" fill="url(#bg)"/>
+<rect width="1000" height="420" fill="url(#gA)"/>
+<rect width="1000" height="420" fill="url(#gB)"/>
+<g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<rect x="56" y="62" width="38" height="5" rx="2.5" fill="#ea580c"/>
+<text x="108" y="70" font-size="16" font-weight="700" letter-spacing="2.5" fill="#fb923c">AGENTCORE IN ACTION · USE CASE 01</text>
+<text x="56" y="164" font-size="62" font-weight="800" fill="#ffffff">YOUR FIRST AGENT</text>
+<text x="56" y="236" font-size="62" font-weight="800" fill="#ffffff">AS A <tspan fill="#38bdf8">SERVICE</tspan></text>
+<text x="56" y="278" font-size="20" fill="#a6b6cd">Deploying a support agent on Bedrock AgentCore</text>
+<text x="56" y="318" font-size="17" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">deploy 1 m 51 s   invoke 9 911 ms   945 tokens</text>
+<rect x="56" y="344" width="168" height="34" rx="17" fill="#059669" opacity="0.18"/>
+<text x="70" y="366" font-size="15" fill="#059669" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Runtime: READY</text>
+<rect x="238" y="344" width="268" height="34" rx="17" fill="#0d9488" opacity="0.18"/>
+<text x="252" y="366" font-size="15" fill="#0d9488" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">execute_tool add_numbers</text>
+<rect x="520" y="344" width="158" height="34" rx="17" fill="#7c3aed" opacity="0.18"/>
+<text x="534" y="366" font-size="15" fill="#7c3aed" font-weight="600" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">no Dockerfile</text>
+</g></svg>

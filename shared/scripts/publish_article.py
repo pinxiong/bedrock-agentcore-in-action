@@ -79,7 +79,17 @@ def check_master(slug):
     plain = body.count("```plaintext")
     if plain:
         problems.append(f"{plain} plaintext code blocks")
-    untagged = len(re.findall(r"^```\s*$", body, re.M))
+    untagged = 0
+    in_block = False
+    for line in body.splitlines():
+        if not line.startswith("```"):
+            continue
+        if in_block:            # a closing fence: never carries a language
+            in_block = False
+        else:                   # an opening fence: it must carry a language
+            in_block = True
+            if line.strip() == "```":
+                untagged += 1
     if untagged:
         problems.append(f"{untagged} code fences without a language tag")
     if re.search(r"[一-鿿]", body):

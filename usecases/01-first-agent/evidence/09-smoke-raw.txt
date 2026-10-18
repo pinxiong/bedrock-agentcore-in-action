@@ -1,0 +1,16 @@
+>> /Users/pinxiong/.workbuddy/binaries/python/versions/3.14.3/bin/python3 tests/smoke.py --usecase 01
+
+[2mruntime[0m
+       aiauc01_aia_uc01 v1 · arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld
+  [32mPASS[0m assert_runtime_1: the runtime exists in the target region and reports status READY
+       session 771b1dec-1664-4e54-9e69-409233cfbd5d · 16 events · tools ['add_numbers']
+       reply 'The refund total should be $42.'
+  [32mPASS[0m assert_runtime_2: invoking it answers a tool-using prompt and the reply has no model scaffolding
+
+[2mobservability[0m
+       trace 1-6ad4087a-7220c9ed52be46e901c25cc9 · span 'execute_tool add_numbers'
+  [32mPASS[0m assert_observability_1: that same invoke left an X-Ray trace whose span tree contains an execute_tool span
+
+  [32mPASS[0m independence: no other use case's resources present
+
+4 passed, 0 failed

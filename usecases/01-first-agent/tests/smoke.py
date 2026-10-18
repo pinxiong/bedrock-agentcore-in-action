@@ -40,7 +40,7 @@ USE_CASE = "uc01"
 # ── what this use case asserts ──────────────────────────────────────────────
 # Everything below is measured against the deployed agent, not mocked.
 RUNTIME_PREFIX = "aiauc01_"
-PROMPT = "What is 21 plus 21? Use the tool."
+PROMPT = "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
 EXPECTED = "42"
 TOOL_NAME = "add_numbers"
 

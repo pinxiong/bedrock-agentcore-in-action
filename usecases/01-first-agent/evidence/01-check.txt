@@ -1,0 +1,31 @@
+>> /Users/pinxiong/.workbuddy/binaries/python/versions/3.14.3/bin/python3 tests/copy_check.py
+copy_check: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/01-first-agent
+use case 01 · nested run: False
+
+[1] every file this use case needs is in the folder
+  PASS  all 13 required files present
+  PASS  no leftover directories from an older layout
+  PASS  app/aia_uc01/uv.lock present, so the dependency graph is pinned
+
+[2] the in-folder entry points agree
+  PASS  both entry points expose the same 15 targets
+  PASS  every make recipe forwards to run.py, so only one implementation exists
+
+[3] nothing points outside the folder
+  PASS  the folder: 36 files scanned, none points outside the folder
+
+[4] the IaC contract is self-contained and tagged
+  PASS  project tags present: Project=agentcore-in-action, UseCase=01, AutoDelete=true
+  PASS  codeLocation 'app/aia_uc01' resolves inside this folder
+  PASS  deployment target: us-east-1 (target default)
+  PASS  names are namespaced to this use case: aiauc01 / aia_uc01
+
+[5] the folder survives a real copy
+  PASS  copied to /var/folders/dl/mqb8jzq922784p2j3r_qbw8h0000gq/T/aia-copy-5lkqq0xq/01-first-agent
+  PASS  the copy carries all 36 files, and nothing extra
+  PASS  the copy: 36 files scanned, none points outside the folder
+  PASS  `run.py help` runs inside the copy
+  PASS  `make help` runs inside the copy and forwards to run.py
+  PASS  the copy passes its own copy_check
+
+16 passed, 0 failed

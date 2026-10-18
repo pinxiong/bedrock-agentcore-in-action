@@ -1,0 +1,13 @@
+series-tagged resources left after down: 4
+runtimes named aiauc01*: []
+workload-identity-directory/default/workload-identity/aiauc0 02 true
+runtime/aiauc02_aia_uc02-ya2TRQF3iL 02 true
+runtime/aiauc02_aia_uc02-ya2TRQF3iL/runtime-endpoint/DEFAULT 02 true
+memory/aiauc02_aia_uc02_mem-RY6XTAFg8M 02 true
+
+# note (2026-10-18 00:06Z): the four UseCase=02 resources above were deployed by
+# the uc02 writer into the shared lab account AFTER this use case's smoke run
+# (evidence/18-independence.txt, 23:5xZ, showed UseCase=02: 0) and after this use
+# case's `down`. They are not uc01's. The independence assertion is account-wide,
+# so two use cases deploying concurrently into one account will trip each other's
+# smoke test; uc01's own run was clean.

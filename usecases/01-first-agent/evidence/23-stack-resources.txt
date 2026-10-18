@@ -1,0 +1,81 @@
+# CloudFormation resources for the uc01 stack, captured while the stack was up.
+# Command:
+#   aws cloudformation describe-stack-resources --stack-name AgentCore-aiauc01-default \
+#     --region us-east-1 --output json
+# Why this file exists: the article (section "Deploy it") names the resources that
+# the 1 m 27 s of stack creation produced. This is the measurement. The alternative,
+# agentcore/cdk/cdk.out, is overwritten by every later synth, including the one the
+# teardown runs, so it cannot be used as evidence after the fact.
+# Redacted: the real account id appears as 123456789012 throughout.
+
+Summary, in the order the call returned them:
+
+  1. AWS::BedrockAgentCore::Runtime    logical: ApplicationAgentAiaUc01Runtime7F6EBFD4
+     physical: aiauc01_aia_uc01-p93Lh12kLc
+  2. AWS::IAM::Role                    logical: ApplicationAgentAiaUc01RuntimeExecutionRole3DD10B20
+     physical: AgentCore-aiauc01-default-ApplicationAgentAiaUc01Ru-5ixYJvZVOX5o
+  3. AWS::IAM::Policy                  logical: ApplicationAgentAiaUc01RuntimeExecutionRoleDefaultPolicy9C07D93E
+     physical: Agent-Appli-l229YxFF3d8G
+  4. AWS::CDK::Metadata                logical: CDKMetadata
+     physical: acbb3090-ca96-11f1-977b-0affe0e294ab
+
+All four were CREATE_COMPLETE at the time of the call. Count: 4.
+No fifth resource of any kind, and no resource whose type or logical id suggests a
+Bedrock model-access policy: there is no AWS::IAM::ManagedPolicy, no ManagedPolicyArn,
+and the only AWS::IAM::Policy in the stack is the CDK-generated default policy that
+belongs to the execution role.
+
+Raw JSON output below (redacted).
+
+{
+    "StackResources": [
+        {
+            "StackName": "AgentCore-aiauc01-default",
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc01-default/acbb3090-ca96-11f1-977b-0affe0e294ab",
+            "LogicalResourceId": "ApplicationAgentAiaUc01Runtime7F6EBFD4",
+            "PhysicalResourceId": "aiauc01_aia_uc01-p93Lh12kLc",
+            "ResourceType": "AWS::BedrockAgentCore::Runtime",
+            "Timestamp": "2026-10-18T01:54:13.679000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "StackName": "AgentCore-aiauc01-default",
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc01-default/acbb3090-ca96-11f1-977b-0affe0e294ab",
+            "LogicalResourceId": "ApplicationAgentAiaUc01RuntimeExecutionRole3DD10B20",
+            "PhysicalResourceId": "AgentCore-aiauc01-default-ApplicationAgentAiaUc01Ru-5ixYJvZVOX5o",
+            "ResourceType": "AWS::IAM::Role",
+            "Timestamp": "2026-10-18T01:53:37.159000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "StackName": "AgentCore-aiauc01-default",
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc01-default/acbb3090-ca96-11f1-977b-0affe0e294ab",
+            "LogicalResourceId": "ApplicationAgentAiaUc01RuntimeExecutionRoleDefaultPolicy9C07D93E",
+            "PhysicalResourceId": "Agent-Appli-l229YxFF3d8G",
+            "ResourceType": "AWS::IAM::Policy",
+            "Timestamp": "2026-10-18T01:53:53.813000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "StackName": "AgentCore-aiauc01-default",
+            "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc01-default/acbb3090-ca96-11f1-977b-0affe0e294ab",
+            "LogicalResourceId": "CDKMetadata",
+            "PhysicalResourceId": "acbb3090-ca96-11f1-977b-0affe0e294ab",
+            "ResourceType": "AWS::CDK::Metadata",
+            "Timestamp": "2026-10-18T01:53:21.015000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

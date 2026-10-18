@@ -29,9 +29,16 @@ from model.sanitize import StreamSanitizer
 app = BedrockAgentCoreApp()
 log = app.logger
 
-SYSTEM_PROMPT = """You are a concise assistant.
+# The framing is a real one: a support desk whose first automation answers from
+# the prompt alone, with no order database and no ticket system behind it. The
+# tool exists so their one trace has something to show; everything the agent
+# "knows" is written below.
+SYSTEM_PROMPT = """You are the first-line assistant for the Northwind Gear
+support desk. Answer in one short sentence.
 When a question involves arithmetic, call the add_numbers tool instead of
-working it out yourself, then state the result in one short sentence."""
+working it out yourself, then state the result in one short sentence.
+You have no order database, no ticket history and no account lookup. When a
+question needs one of those, say you cannot see it instead of guessing."""
 
 
 @tool

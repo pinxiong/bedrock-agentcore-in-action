@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img">
+<title>Cover: your first agent as a service. A support agent deployed on AgentCore Runtime, measured in us-east-1.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.12" cy="0.06" r="0.75"><stop offset="0" stop-color="#ea580c" stop-opacity="0.22"/><stop offset="1" stop-color="#ea580c" stop-opacity="0"/></radialGradient>
+<radialGradient id="gB" cx="0.95" cy="0.92" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.26"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="gC" cx="0.45" cy="1.15" r="0.6"><stop offset="0" stop-color="#0d9488" stop-opacity="0.20"/><stop offset="1" stop-color="#0d9488" stop-opacity="0"/></radialGradient>
+<linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#463414"/><stop offset="1" stop-color="#1b2236"/></linearGradient>
+<linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d403c"/><stop offset="1" stop-color="#1b2236"/></linearGradient>
+<linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173561"/><stop offset="1" stop-color="#1b2236"/></linearGradient>
+<clipPath id="c1"><rect x="72" y="400" width="336" height="196" rx="18"/></clipPath>
+<clipPath id="c2"><rect x="432" y="400" width="336" height="196" rx="18"/></clipPath>
+<clipPath id="c3"><rect x="792" y="400" width="336" height="196" rx="18"/></clipPath>
+</defs>
+<rect width="1200" height="675" fill="url(#bg)"/>
+<rect width="1200" height="675" fill="url(#gA)"/>
+<rect width="1200" height="675" fill="url(#gB)"/>
+<rect width="1200" height="675" fill="url(#gC)"/>
+<g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<rect x="72" y="72" width="42" height="5" rx="2.5" fill="#ea580c"/>
+<text x="130" y="81" font-size="19" font-weight="700" letter-spacing="3" fill="#fb923c">RUNTIME + OBSERVABILITY · MEASURED</text>
+<text x="72" y="196" font-size="82" font-weight="800" fill="#ffffff">YOUR FIRST AGENT</text>
+<text x="72" y="288" font-size="82" font-weight="800" fill="#ffffff">AS A <tspan fill="#38bdf8">SERVICE</tspan></text>
+<text x="72" y="334" font-size="23" fill="#a6b6cd">A support agent on AgentCore Runtime, end to end</text>
+<text x="72" y="364" font-size="18" fill="#8ea0bd" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">agentcore deploy -y --target default</text>
+<rect x="72" y="400" width="336" height="196" rx="18" fill="url(#g1)" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>
+<g clip-path="url(#c1)"><rect x="72" y="400" width="336" height="7" fill="#f59e0b"/></g>
+<text x="98" y="466" font-size="34" font-weight="800" fill="#fcd34d">ONE FOLDER</text>
+<text x="98" y="498" font-size="18" fill="#cbd5e1">the support prompt + one tool</text>
+<line x1="98" y1="524" x2="382" y2="524" stroke="#f59e0b" stroke-opacity="0.35" stroke-width="1"/>
+<text x="98" y="554" font-size="15.5" fill="#fcd34d">no Dockerfile anywhere</text>
+<rect x="432" y="400" width="336" height="196" rx="18" fill="url(#g2)" stroke="#14b8a6" stroke-opacity="0.6" stroke-width="1.5"/>
+<g clip-path="url(#c2)"><rect x="432" y="400" width="336" height="7" fill="#14b8a6"/></g>
+<text x="458" y="466" font-size="34" font-weight="800" fill="#5eead4">ONE COMMAND</text>
+<text x="458" y="498" font-size="18" fill="#cbd5e1">1 m 51 s to READY</text>
+<line x1="458" y1="524" x2="742" y2="524" stroke="#14b8a6" stroke-opacity="0.35" stroke-width="1"/>
+<text x="458" y="554" font-size="15.5" fill="#5eead4">9 911 ms per cold invoke</text>
+<rect x="792" y="400" width="336" height="196" rx="18" fill="url(#g3)" stroke="#3b82f6" stroke-opacity="0.6" stroke-width="1.5"/>
+<g clip-path="url(#c3)"><rect x="792" y="400" width="336" height="7" fill="#3b82f6"/></g>
+<text x="818" y="466" font-size="34" font-weight="800" fill="#93c5fd">ONE TRACE</text>
+<text x="818" y="498" font-size="18" fill="#cbd5e1">execute_tool add_numbers</text>
+<line x1="818" y1="524" x2="1102" y2="524" stroke="#3b82f6" stroke-opacity="0.35" stroke-width="1"/>
+<text x="818" y="554" font-size="15.5" fill="#93c5fd">945 tokens in, 71 out</text>
+</g></svg>

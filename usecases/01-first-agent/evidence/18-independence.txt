@@ -1,0 +1,13 @@
+account: 123456789012
+all runtimes in us-east-1: ['helloagent_hello_agent', 'harness_demoproj_demo_proj', 'aiauc01_aia_uc01']
+UseCase=02: 0 resources
+UseCase=03: 0 resources
+UseCase=04: 0 resources
+UseCase=05: 0 resources
+UseCase=06: 0 resources
+UseCase=07: 0 resources
+UseCase=01 resources:
+   arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc01_aia_uc01-R3MXCi9yld
+   arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld/runtime-endpoint/DEFAULT
+   arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld
+live cloudformation stacks: ['AgentCore-aiauc01-default', 'AgentCore-helloagent-default', 'AgentCore-demoproj-default', 'CDKToolkit', 'aws-sam-cli-managed-default']

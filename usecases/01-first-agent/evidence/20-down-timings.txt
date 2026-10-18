@@ -1,0 +1,11 @@
+[08:02:34] Duration: 25ms
+[08:02:34] Duration: 23ms
+[08:02:35] Duration: 728ms
+[08:02:35] Duration: 27ms
+[08:03:05] Duration: 29.9s
+[08:03:09] Duration: 4.5s
+[08:03:10] Duration: 728ms
+[08:03:11] Duration: 732ms
+[08:03:53] Duration: 42.5s
+[08:04:02] Duration: 8.7s
+Total Duration: 1m 28s

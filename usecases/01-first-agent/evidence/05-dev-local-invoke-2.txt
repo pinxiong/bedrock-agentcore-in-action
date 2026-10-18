@@ -1,0 +1,30 @@
+data: {"event": {"messageStart": {"role": "assistant"}}}
+
+data: {"event": {"contentBlockDelta": {"delta": {"text": "I'll calculate the refund total for the two returned items priced at "}, "contentBlockIndex": 0}}}
+
+data: {"event": {"contentBlockDelta": {"delta": {"text": "21 each.\n\n"}, "contentBlockIndex": 0}}}
+
+data: {"event": {"contentBlockStop": {"contentBlockIndex": 0}}}
+
+data: {"event": {"contentBlockStart": {"start": {"toolUse": {"toolUseId": "tooluse_WluoSb91MlzbKFFajAvfv3", "name": "add_numbers"}}, "contentBlockIndex": 1}}}
+
+data: {"event": {"contentBlockDelta": {"delta": {"toolUse": {"input": "{\"a\": 21, \"b\": 21}"}}, "contentBlockIndex": 1}}}
+
+data: {"event": {"contentBlockStop": {"contentBlockIndex": 1}}}
+
+data: {"event": {"contentBlockStop": {"contentBlockIndex": 2}}}
+
+data: {"event": {"messageStop": {"stopReason": "tool_use"}}}
+
+data: {"event": {"metadata": {"usage": {"inputTokens": 699, "outputTokens": 76, "totalTokens": 775}, "metrics": {"latencyMs": 1663}}}}
+
+data: {"event": {"messageStart": {"role": "assistant"}}}
+
+data: {"event": {"contentBlockDelta": {"delta": {"text": "The refund total is $42."}, "contentBlockIndex": 0}}}
+
+data: {"event": {"contentBlockStop": {"contentBlockIndex": 0}}}
+
+data: {"event": {"messageStop": {"stopReason": "end_turn"}}}
+
+data: {"event": {"metadata": {"usage": {"inputTokens": 798, "outputTokens": 8, "totalTokens": 806}, "metrics": {"latencyMs": 455}}}}
+

@@ -1,0 +1,115 @@
+# Trace visibility latency, measured on the uc01 runtime
+#
+# The question the article has to answer: after `agentcore invoke` returns, how
+# long until that invoke shows up in `agentcore traces list`? The CLI's own
+# hint, "Traces may take 2-3 minutes to appear in CloudWatch", is a static
+# string and measures nothing.
+#
+# Method: record the wall clock immediately before the invoke and immediately
+# after it returns, then run the same listing command the article quotes every
+# 5 s until the invoke's session id appears in it. Times are this machine's
+# clock, UTC.
+#
+# Reading the listing: it is a fixed-width table, so a 36-character session id
+# wraps onto a continuation line as 32 characters then 4. Matching is done on
+# those two pieces, not on a whitespace-squashed string, which would interleave
+# the columns and never match.
+
+[2026-10-18T02:24:15Z] baseline listing, taken before this invoke
+    Traces for aia_uc01 (target: default)
+    
+    Trace ID                     Timestamp          Session ID
+    6ad42d7e67d829410093504735f9 2026-10-18         6dc09549-8688-4ac2-b183-f539c417
+    c637                         02:23:02Z          595c
+    6ad42a924bb81fdf0c746c1d2fd3 2026-10-18         4e9a378e-69f8-4c9b-832f-51d46ede
+    dcbd                         02:10:34Z          bfa0
+    6ad42a116bca67ab2b706d304f10 2026-10-18         5a1bd2d0-2706-48e8-a784-02805593
+    2c36                         02:08:24Z          e5cf
+    6ad427a70fcffd3f31cbec622a20 2026-10-18         7f857cd9-9373-45d8-bcee-d276967b
+    3f1d                         01:58:07Z          d3c9
+    
+    Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+    -1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-p93Lh12kLc/endp
+    oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+    core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-p93Lh12kLc%2Fruntim
+    e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces
+    Note: Traces may take 2-3 minutes to appear in CloudWatch
+
+[2026-10-18T02:24:24Z] invoke starts
+    agentcore invoke --prompt "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
+[2026-10-18T02:24:42Z] invoke returned after 18.40 s
+[2026-10-18T02:24:42Z] session id: f7577b65-5b31-46a5-a8a0-9b7d749a19a3
+    The total refund amount would be $42.
+    Session: f7577b65-5b31-46a5-a8a0-9b7d749a19a3
+    To resume: agentcore invoke --session-id f7577b65-5b31-46a5-a8a0-9b7d749a19a3
+
+polling every 5 s for that session id
+
+  poll  1  2026-10-18T02:24:47Z  +  23.4 s from invoke start, +   5.0 s from invoke return  ->  VISIBLE
+
+the listing that first contained it, verbatim:
+    Traces for aia_uc01 (target: default)
+    
+    Trace ID                     Timestamp          Session ID
+    6ad42ddf48f456cb484778fe1a3c 2026-10-18         f7577b65-5b31-46a5-a8a0-9b7d749a
+    c1a4                         02:24:41Z          19a3
+    6ad42d7e67d829410093504735f9 2026-10-18         6dc09549-8688-4ac2-b183-f539c417
+    c637                         02:23:02Z          595c
+    6ad42a924bb81fdf0c746c1d2fd3 2026-10-18         4e9a378e-69f8-4c9b-832f-51d46ede
+    dcbd                         02:10:34Z          bfa0
+    6ad42a116bca67ab2b706d304f10 2026-10-18         5a1bd2d0-2706-48e8-a784-02805593
+    2c36                         02:08:24Z          e5cf
+    6ad427a70fcffd3f31cbec622a20 2026-10-18         7f857cd9-9373-45d8-bcee-d276967b
+    3f1d                         01:58:07Z          d3c9
+    
+    Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+    -1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-p93Lh12kLc/endp
+    oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+    core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-p93Lh12kLc%2Fruntim
+    e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces
+    Note: Traces may take 2-3 minutes to appear in CloudWatch
+
+RESULT
+  invoke started              : 2026-10-18T02:24:24Z
+  invoke returned             : 2026-10-18T02:24:42Z
+  invoke wall time            : 18.40 s
+  last poll without it        : n/a
+  first poll with it          : 2026-10-18T02:24:47Z
+  bounded above by            :    5.0 s after invoke return (0.08 min)
+  polls                       : 1, roughly 5 s apart
+
+  One observation, not a distribution. The true moment lies between the last
+  negative poll and the positive one, or between the invoke return and the
+  first poll when the first poll is already positive.
+
+--------------------------------------------------------------------------------
+Two more observations from the same stack, same account, same morning
+--------------------------------------------------------------------------------
+
+The run above is the one with a complete poll log. Two earlier invokes on this
+same deployment corroborate it, with looser bounds because they were not polled
+from t0:
+
+1. session 6dc09549-8688-4ac2-b183-f539c417595c
+   invoke returned 2026-10-18T02:23:03Z
+   first poll, 2026-10-18T02:23:08Z, already contained it  ->  within 5 s
+   (trace timestamp 02:23:02Z, i.e. the trace itself is stamped one second
+   before the invoke returned)
+
+2. session 5a1bd2d0-2706-48e8-a784-02805593e5cf
+   invoke returned 2026-10-18T02:08:25Z
+   a listing taken 2026-10-18T02:10:12Z already contained it  ->  within 107 s
+   (trace timestamp 02:08:24Z, visible in the baseline listing reproduced in
+   the run above)
+
+So across three invokes on this stack the observed latency after the invoke
+returned is: <= 5 s, <= 5 s, <= 107 s. Not the 2-3 minutes the CLI hint warns
+about. All three bounds are upper bounds; only the <= 5 s figures are tight,
+because those polls started 5 s after the invoke returned and were immediately
+positive.
+
+Caveat: the very first invokes after a fresh deploy are slower to show up than
+later ones, and "Transaction search enabled. It takes ~10 minutes for
+transaction search to be fully active" is printed by every deploy. The numbers
+above are from a stack that had been up for about 20 minutes, not from the
+first minute after deploy.

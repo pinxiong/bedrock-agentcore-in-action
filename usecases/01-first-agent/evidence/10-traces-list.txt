@@ -1,0 +1,14 @@
+Traces for aia_uc01 (target: default)
+
+Trace ID                     Timestamp          Session ID
+6ad4089b32c78c9f5b56e9823bb9 2026-10-17         771b1dec-1664-4e54-9e69-409233cf
+faf9                         23:45:41Z          bd5d
+6ad4087a7220c9ed52be46e901c2 2026-10-17         a99e785c-18e2-4b18-abef-36827101
+5cc9                         23:45:07Z          9e7e
+
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-R3MXCi9yld/endp
+oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-R3MXCi9yld%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces
+Note: Traces may take 2-3 minutes to appear in CloudWatch

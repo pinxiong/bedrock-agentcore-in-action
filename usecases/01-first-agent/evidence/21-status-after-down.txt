@@ -1,0 +1,4 @@
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc01: Local only

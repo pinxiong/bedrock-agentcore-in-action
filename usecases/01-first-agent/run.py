@@ -35,7 +35,7 @@ USE_CASE_DIR = Path(__file__).resolve().parent
 USE_CASE_NUMBER = "01"
 APP_DIR = "app/aia_uc01"
 DEFAULT_TARGET = "default"
-DEFAULT_PROMPT = "What is 21 plus 21? Use the tool."
+DEFAULT_PROMPT = "A customer returns two items priced 21 each. What refund total should I quote? Use the tool."
 
 DRY_RUN = False
 
@@ -153,7 +153,9 @@ def t_logs(_args: argparse.Namespace) -> int:
 def t_down(args: argparse.Namespace) -> int:
     # `remove all` empties the local contract; the deploy that follows is what
     # reconciles the stack to nothing. Order matters and both must run.
-    rc = shell(["agentcore", "remove", "all"])
+    # `-y` is not optional: without a tty the command refuses with "requires an
+    # interactive terminal", which is every CI runner and every piped capture.
+    rc = shell(["agentcore", "remove", "all", "-y"])
     if rc != 0:
         print("   `agentcore remove all` failed; stopping before the reconciling deploy")
         return rc

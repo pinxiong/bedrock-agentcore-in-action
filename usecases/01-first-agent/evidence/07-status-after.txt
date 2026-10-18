@@ -1,0 +1,7 @@
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc01: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc01_aia_uc01-R3MXCi9yld)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abe
+drock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-R3MXCi9y
+ld/invocations

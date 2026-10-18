@@ -1,0 +1,9 @@
+[invoke_agent Strands Agents]
+    A aws.local.service = aiauc01_aia_uc01.DEFAULT
+    A span.name = invoke_agent Strands Agents
+    A span.kind = INTERNAL
+    A aws.local.environment = bedrock-agentcore:default
+Traceback (most recent call last):
+  File "<stdin>", line 18, in <module>
+  File "<stdin>", line 12, in walk
+AttributeError: 'int' object has no attribute 'items'

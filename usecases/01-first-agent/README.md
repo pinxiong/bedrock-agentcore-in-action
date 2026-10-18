@@ -197,7 +197,7 @@ Runtime 的执行角色由 CLI 生成，实测权限如下。生产上按这个�
 | 项 | 本用例 |
 |---|---|
 | 预估花费 | **≈ $0.01**（跑完 deploy → invoke → test → remove 全流程）· 上界 **< $1** |
-| 最贵的一项 | Bedrock 模型 token。实测一次调用 846 输入 + 82 输出 token，按 `deepseek.v3.2` us-east-1 的 $0.62 / $1.85 每百万 token 计 ≈ **$0.0007** |
+| 最贵的一项 | Bedrock 模型 token。实测一次调用 945 输入 + 71 输出 token，按 `deepseek.v3.2` us-east-1 的 $0.62 / $1.85 每百万 token 计 ≈ **$0.0007** |
 | Runtime 计算 | 一次调用约 7 秒活跃计算（$0.0895/vCPU-h + $0.00945/GB-h），量级 **$0.0002**。无请求时不收计算费 |
 | 预计耗时 | 30 min。首次 `deploy` 实测 9 min 49 s（含装 CDK 依赖），之后每次 26 s |
 

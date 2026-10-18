@@ -1,0 +1,12 @@
+trace 1-6ad4087a-7220c9ed52be46e901c25cc9 segments: 3
+ROOT aiauc01_aia_uc01.DEFAULT None
+   - invoke_agent Strands Agents (2.50s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=invoke_agent Strands Agents span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+      - execute_event_loop_cycle (0.68s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=execute_event_loop_cycle span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+         - chat (0.68s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=chat span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+            - BedrockRuntime (0.67s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=chat deepseek.v3.2 aws.local.operation=UnmappedOperation aws.remote.resource.type=AWS::Bedrock::Model span.kind=CLIENT aws.remote.resource.identifier=deepseek.v3.2 aws.remote.service=AWS::BedrockRuntime aws.local.environment=bedrock-agentcore:default aws.remote.operation=ConverseStream
+      - execute_event_loop_cycle (1.82s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=execute_event_loop_cycle span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+         - chat (1.82s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=chat span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+            - BedrockRuntime (1.80s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=chat deepseek.v3.2 aws.local.operation=UnmappedOperation aws.remote.resource.type=AWS::Bedrock::Model span.kind=CLIENT aws.remote.resource.identifier=deepseek.v3.2 aws.remote.service=AWS::BedrockRuntime aws.local.environment=bedrock-agentcore:default aws.remote.operation=ConverseStream
+         - execute_tool add_numbers (0.00s) aws.local.service=aiauc01_aia_uc01.DEFAULT span.name=execute_tool add_numbers span.kind=INTERNAL aws.local.environment=bedrock-agentcore:default
+ROOT BedrockRuntime AWS::BedrockRuntime
+ROOT BedrockRuntime AWS::BedrockRuntime

@@ -1,0 +1,13 @@
+Starting dev server...
+Agent: aia_uc01
+Provider: (see agent code)
+Server: http://localhost:8080/invocations
+Log: agentcore/.cli/logs/dev/dev-20261018-073922.log
+Press Ctrl+C to stop
+
+→ INFO:     Will watch for changes in these directories: ['/Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/01-first-agent/app/aia_uc01']
+→ INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
+→ INFO:     Started reloader process [83470] using StatReload
+→ INFO:     Started server process [83486]
+→ INFO:     Waiting for application startup.
+→ INFO:     Application startup complete.

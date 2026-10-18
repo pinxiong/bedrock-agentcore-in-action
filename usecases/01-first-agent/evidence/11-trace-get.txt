@@ -1,0 +1,8 @@
+Trace saved to:
+/Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/01-firs
+t-agent/agentcore/.cli/traces/aia_uc01-6ad4087a7220c9ed52be46e901c25cc9.json
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc01_aia_uc01-R3MXCi9yld/endp
+oint/DEFAULT/agent/aia_uc01?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc01_aia_uc01-R3MXCi9yld%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc01.DEFAULT&tabId=traces

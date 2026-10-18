@@ -58,6 +58,10 @@ VENDOR_DIRS = {
     ".cache",
     ".cli",
     "dist",
+    # Captured output from a real run: terminal logs, traces, screenshots. It is
+    # proof, not source, and it carries this machine's paths and your account
+    # id, both of which would trip the escape scan below.
+    "evidence",
 }
 BINARY_SUFFIXES = {
     ".png", ".jpg", ".jpeg", ".gif", ".ico", ".pdf", ".zip", ".gz", ".tar",

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 940" width="1440" height="940" role="img">
+<title>A support agent as a managed runtime: the folder you own becomes four tagged resources, and the runtime talks to Bedrock and to CloudWatch.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.10" cy="0.05" r="0.7"><stop offset="0" stop-color="#2563eb" stop-opacity="0.24"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="gB" cx="0.90" cy="0.95" r="0.75"><stop offset="0" stop-color="#0d9488" stop-opacity="0.20"/><stop offset="1" stop-color="#0d9488" stop-opacity="0"/></radialGradient>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
+<marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5eead4"/></marker>
+</defs>
+<rect width="1440" height="940" fill="url(#bg)"/>
+<rect width="1440" height="940" fill="url(#gA)"/>
+<rect width="1440" height="940" fill="url(#gB)"/>
+<g font-family="ui-sans-serif, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<text x="60" y="66" font-size="17" fill="#ea580c" font-weight="700" text-anchor="start" font-family="inherit">ONE FOLDER IN, FOUR TAGGED RESOURCES OUT</text>
+<text x="60" y="112" font-size="40" fill="#ffffff" font-weight="800" text-anchor="start" font-family="inherit">Your first support agent on AgentCore Runtime</text>
+<text x="60" y="146" font-size="18" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">measured in us-east-1, 2026-10-18</text>
+<rect x="60" y="210" width="340" height="470" rx="22" fill="#0b1428" fill-opacity="0.55" stroke="#2563eb" stroke-width="1.4" stroke-dasharray="7 7"/>
+<rect x="82" y="197" width="103" height="26" rx="13" fill="#0d1c3a"/>
+<text x="95" y="216" font-size="17" fill="#2563eb" font-weight="700" text-anchor="start" font-family="inherit">YOU OWN</text>
+<text x="82" y="258" font-size="19" fill="#ffffff" font-weight="700" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">usecases/01-first-agent/</text>
+<rect x="82" y="288" width="296" height="44" rx="10" fill="#101c36" stroke="#2563eb" stroke-width="1.6" opacity="1.0"/>
+<text x="230.0" y="315.0" font-size="14" fill="#2563eb" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">agentcore.json   the contract</text>
+<rect x="82" y="344" width="296" height="44" rx="10" fill="#101c36" stroke="#2563eb" stroke-width="1.6" opacity="1.0"/>
+<text x="230.0" y="371.0" font-size="14" fill="#2563eb" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">aws-targets.json   the region</text>
+<rect x="82" y="400" width="296" height="44" rx="10" fill="#101c36" stroke="#2563eb" stroke-width="1.6" opacity="1.0"/>
+<text x="230.0" y="427.0" font-size="14" fill="#2563eb" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">app/aia_uc01/main.py</text>
+<rect x="82" y="462" width="296" height="176" rx="14" fill="#0e1830" stroke="#233052" stroke-width="1.6" opacity="1.0"/>
+<text x="102" y="492" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">main.py holds everything</text>
+<text x="102" y="514" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">the support agent knows:</text>
+<text x="102" y="546" font-size="14" fill="#0d9488" font-weight="500" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">SYSTEM_PROMPT   desk tone</text>
+<text x="102" y="570" font-size="14" fill="#0d9488" font-weight="500" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">add_numbers     one tool</text>
+<text x="102" y="594" font-size="14" fill="#0d9488" font-weight="500" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">StreamSanitizer clean text</text>
+<text x="102" y="624" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">no database, no tickets</text>
+<path d="M 414 445 L 586 445" stroke="#60a5fa" stroke-width="2.6" stroke-dasharray="8 6" marker-end="url(#ah)"/>
+<text x="500" y="424" font-size="18" fill="#93c5fd" font-weight="700" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">agentcore deploy</text>
+<text x="500" y="482" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">CodeZip + CDK synth</text>
+<text x="500" y="504" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 51 s, measured</text>
+<rect x="600" y="210" width="780" height="470" rx="22" fill="#0b1428" fill-opacity="0.55" stroke="#0d9488" stroke-width="1.4" stroke-dasharray="7 7"/>
+<rect x="622" y="197" width="180" height="26" rx="13" fill="#0d1c3a"/>
+<text x="635" y="216" font-size="17" fill="#0d9488" font-weight="700" text-anchor="start" font-family="inherit">AWS  us-east-1</text>
+<text x="1356" y="258" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">account 123456789012</text>
+<text x="624" y="258" font-size="19" fill="#ffffff" font-weight="700" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">CloudFormation stack: AgentCore-aiauc01-default</text>
+<rect x="624" y="288" width="432" height="356" rx="16" fill="#101c36" stroke="#2563eb" stroke-width="1.6" opacity="1.0"/>
+<rect x="624" y="288" width="432" height="6" rx="3" fill="#2563eb"/>
+<text x="648" y="322" font-size="20" fill="#93c5fd" font-weight="700" text-anchor="start" font-family="inherit">AgentCore Runtime</text>
+<text x="648" y="346" font-size="17" fill="#ffffff" font-weight="600" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">aiauc01_aia_uc01</text>
+<text x="648" y="372" font-size="14" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">one microVM per session, serverless</text>
+<rect x="648" y="392" width="122" height="34" rx="10" fill="#101c36" stroke="#cbd5e1" stroke-width="1.6" opacity="1.0"/>
+<text x="709.0" y="414.0" font-size="14" fill="#cbd5e1" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /ping</text>
+<rect x="780" y="392" width="158" height="34" rx="10" fill="#101c36" stroke="#cbd5e1" stroke-width="1.6" opacity="1.0"/>
+<text x="859.0" y="414.0" font-size="14" fill="#cbd5e1" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">POST /invocations</text>
+<rect x="948" y="392" width="92" height="34" rx="10" fill="#101c36" stroke="#cbd5e1" stroke-width="1.6" opacity="1.0"/>
+<text x="994.0" y="414.0" font-size="14" fill="#cbd5e1" font-weight="500" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">HTTP</text>
+<rect x="648" y="442" width="384" height="74" rx="12" fill="#0d1729" stroke="#243352" stroke-width="1.6" opacity="1.0"/>
+<text x="668" y="470" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">- your main.py runs here, unchanged</text>
+<text x="668" y="496" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">- stream_async yields one SSE per token</text>
+<rect x="648" y="532" width="384" height="90" rx="12" fill="#0d1729" stroke="#243352" stroke-width="1.6" opacity="1.0"/>
+<text x="668" y="560" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">Agent per session_id, capped at 128</text>
+<text x="668" y="586" font-size="14" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">NullConversationManager: no history kept</text>
+<text x="668" y="610" font-size="14" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">UC02 replaces this with Memory</text>
+<rect x="1080" y="288" width="264" height="168" rx="16" fill="#101c36" stroke="#7c3aed" stroke-width="1.6" opacity="1.0"/>
+<rect x="1080" y="288" width="264" height="6" rx="3" fill="#7c3aed"/>
+<text x="1102" y="322" font-size="16" fill="#c4b5fd" font-weight="700" text-anchor="start" font-family="inherit">IAM role, one per runtime</text>
+<text x="1102" y="350" font-size="14" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">bedrock:InvokeModel*</text>
+<text x="1102" y="374" font-size="13" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">logs:*  -&gt; runtime log group</text>
+<text x="1102" y="398" font-size="14" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">xray:PutTraceSegments</text>
+<text x="1102" y="430" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">least privilege, generated</text>
+<rect x="1080" y="476" width="264" height="168" rx="16" fill="#101c36" stroke="#ea580c" stroke-width="1.6" opacity="1.0"/>
+<rect x="1080" y="476" width="264" height="6" rx="3" fill="#ea580c"/>
+<text x="1102" y="510" font-size="16" fill="#fdba74" font-weight="700" text-anchor="start" font-family="inherit">tags -&gt; auditable cleanup</text>
+<text x="1102" y="538" font-size="12.5" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Project=agentcore-in-action</text>
+<text x="1102" y="562" font-size="13" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">UseCase=01</text>
+<text x="1102" y="586" font-size="13" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">AutoDelete=true</text>
+<text x="1102" y="618" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">make down reads these</text>
+<path d="M 840 286 L 840 188" stroke="#5eead4" stroke-width="2.6" marker-end="url(#ah2)"/>
+<rect x="624" y="118" width="432" height="62" rx="14" fill="#101c36" stroke="#0d9488" stroke-width="1.6" opacity="1.0"/>
+<text x="648" y="148" font-size="19" fill="#5eead4" font-weight="700" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Amazon Bedrock  ·  deepseek.v3.2</text>
+<text x="648" y="170" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">ConverseStream  -  $0.62 / $1.85 per 1M tokens</text>
+<path d="M 840 646 L 840 738" stroke="#5eead4" stroke-width="2.6" marker-end="url(#ah2)"/>
+<rect x="624" y="748" width="432" height="62" rx="14" fill="#101c36" stroke="#0d9488" stroke-width="1.6" opacity="1.0"/>
+<text x="648" y="778" font-size="19" fill="#5eead4" font-weight="700" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">CloudWatch logs + X-Ray traces</text>
+<text x="648" y="800" font-size="13" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">the reason this article can say where the time went</text>
+<rect x="60" y="730" width="500" height="172" rx="16" fill="#0b1428" stroke="#233052" stroke-width="1.6" opacity="1.0"/>
+<text x="88" y="766" font-size="16" fill="#ea580c" font-weight="700" text-anchor="start" font-family="inherit">measured on this run</text>
+<circle cx="94" cy="795" r="3.5" fill="#ea580c"/>
+<text x="108" y="800" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">deploy, cold stack</text>
+<text x="480" y="800" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1 m 51 s</text>
+<circle cx="94" cy="817" r="3.5" fill="#ea580c"/>
+<text x="108" y="822" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">invoke, cold session</text>
+<text x="480" y="822" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9 911 ms</text>
+<circle cx="94" cy="839" r="3.5" fill="#ea580c"/>
+<text x="108" y="844" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">invoke_agent span</text>
+<text x="480" y="844" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">2.50 s</text>
+<circle cx="94" cy="861" r="3.5" fill="#ea580c"/>
+<text x="108" y="866" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">tokens per invoke</text>
+<text x="480" y="866" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">945 in / 71 out</text>
+<circle cx="94" cy="883" r="3.5" fill="#ea580c"/>
+<text x="108" y="888" font-size="15" fill="#8ea0bd" font-weight="400" text-anchor="start" font-family="inherit">model cost per invoke</text>
+<text x="480" y="888" font-size="15" fill="#ffffff" font-weight="600" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">$0.00072</text>
+<rect x="1080" y="730" width="300" height="172" rx="16" fill="#0b1428" stroke="#233052" stroke-width="1.6" opacity="1.0"/>
+<text x="1104" y="766" font-size="16" fill="#e11d48" font-weight="700" text-anchor="start" font-family="inherit">what you never write</text>
+<circle cx="1118" cy="793" r="3.5" fill="#e11d48"/>
+<text x="1130" y="798" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">no Dockerfile</text>
+<circle cx="1118" cy="815" r="3.5" fill="#e11d48"/>
+<text x="1130" y="820" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">no task definition</text>
+<circle cx="1118" cy="837" r="3.5" fill="#e11d48"/>
+<text x="1130" y="842" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">no load balancer</text>
+<circle cx="1118" cy="859" r="3.5" fill="#e11d48"/>
+<text x="1130" y="864" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">no IAM policy document</text>
+<circle cx="1118" cy="881" r="3.5" fill="#e11d48"/>
+<text x="1130" y="886" font-size="15" fill="#cbd5e1" font-weight="400" text-anchor="start" font-family="inherit">no OTEL exporter config</text>
+</g></svg>
