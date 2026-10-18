@@ -1,0 +1,58 @@
+RUN: this run (runtime aiauc02_aia_uc02-ACujAB8uYJ, memory id mem-y7Ql9N3D59,
+stack AgentCore-aiauc02-default)
+Copied here on the fix run because agentcore/.cli/ is gitignored, so the deploy
+this article quotes had no evidence file of its own. Verbatim copy of
+agentcore/.cli/logs/deploy/deploy-20261018-094342.log: the deploy that created
+the runtime and the memory resource named above, started 2026-10-18 09:43:42
+local. Every step timing the article prints comes from this file, including
+Total Duration 4m 23s. Nothing in this log identifies the account.
+
+AGENTCORE DEPLOY LOG is reproduced below exactly as written.
+
+================================================================================
+AGENTCORE DEPLOY LOG
+Command: deploy
+Started: 2026-10-18T01:43:42.529Z
+================================================================================
+
+
+[09:43:42] STEP: Load deployment target
+[09:43:42] Status: SUCCESS
+[09:43:42] Duration: 1ms
+
+[09:43:42] STEP: Validate project
+[09:43:43] Status: SUCCESS
+[09:43:43] Duration: 682ms
+
+[09:43:43] STEP: Sync CDK dependencies
+[09:43:43] Status: SUCCESS
+[09:43:43] Duration: 2ms
+
+[09:43:43] STEP: Build CDK project
+[09:43:45] Status: SUCCESS
+[09:43:45] Duration: 2.4s
+
+[09:43:45] STEP: Synthesize CloudFormation
+[09:43:52] Status: SUCCESS
+[09:43:52] Duration: 7.1s
+
+[09:43:52] STEP: Check bootstrap status
+[09:43:53] Status: SUCCESS
+[09:43:53] Duration: 665ms
+
+[09:43:53] STEP: Check stack status
+[09:43:54] Status: SUCCESS
+[09:43:54] Duration: 1.4s
+
+[09:43:54] STEP: Deploy to AWS
+[09:48:02] Status: SUCCESS
+[09:48:02] Duration: 4m 7s
+
+[09:48:02] STEP: Persist deployment state
+[09:48:02] Status: SUCCESS
+[09:48:02] Duration: 715ms
+
+================================================================================
+COMPLETED SUCCESSFULLY
+Total Duration: 4m 23s
+================================================================================

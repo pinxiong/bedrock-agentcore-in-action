@@ -346,7 +346,7 @@ def figure_two_sessions() -> None:
     label(out, 850, 226, "extraction", 21, "#fdba74", weight="600", anchor="middle")
     label(out, 850, 262, "runs after the event", 15, "#8ea0bd", anchor="middle")
     label(out, 850, 292, "not part of the invoke", 15, "#8ea0bd", anchor="middle")
-    label(out, 850, 336, "visible after 88 s", 18, "#f8fafc", anchor="middle", weight="600")
+    label(out, 850, 336, "visible after 1.5 s", 18, "#f8fafc", anchor="middle", weight="600")
     label(out, 850, 362, "measured, not estimated", 14, "#64748b", anchor="middle")
 
     arrow(out, 1004, 280, 1080, 280, "#fdba74")
@@ -444,7 +444,7 @@ def cover(w: int, h: int, name: str) -> None:
 
 def main() -> None:
     panel("S1-deploy", "terminal - deploy", DEPLOY,
-          "captured from evidence/07-deploy-clean.txt and the deploy log")
+          "step timings from evidence/04-deploy.txt, outputs from evidence/07-deploy-clean.txt")
     panel("S2-cross-session-recall", "terminal - two sessions, one memory resource", CROSS_SESSION,
           "evidence/09 and 10 · 19 s wall clock each, session ids shortened nowhere")
     panel("S3-verify", "terminal - the three memory assertions", VERIFY,

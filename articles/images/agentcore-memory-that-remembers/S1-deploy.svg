@@ -45,5 +45,5 @@
 <text x="58" y="777" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    arn:aws:bedrock-agentcore:us-east-1:123456789012:memory/aiauc02_aia_uc02_mem-y7Ql9N3D59</text>
 <text x="58" y="804" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  StackNameOutput</text>
 <text x="58" y="831" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    AgentCore-aiauc02-default</text>
-<text x="58" y="866" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">captured from evidence/07-deploy-clean.txt and the deploy log</text>
+<text x="58" y="866" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">step timings from evidence/04-deploy.txt, outputs from evidence/07-deploy-clean.txt</text>
 </svg>

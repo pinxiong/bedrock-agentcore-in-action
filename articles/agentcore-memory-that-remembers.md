@@ -23,10 +23,10 @@ Northwind Gear runs forty stores and restocks them every Monday. A store manager
 Three of the nine capabilities carry this use case.
 
 - Memory: one memory resource holds both halves. Short term is an append-only event log keyed by actor and session; long term is a set of records the service extracts from those events into namespaces. This article goes deep on that split.
-- Runtime: hosts `app/aia_uc02/` as a managed endpoint, the same CodeZip shape as the first article. Each session still gets its own microVM, which is why the session id matters.
+- Runtime: hosts `app/aia_uc02/` as a managed endpoint. Each session gets its own microVM, which is why the session id matters.
 - Identity, lightly: the actor id arrives in the invoke payload or in a runtime header, and becomes the partition key of the memory namespace. There is no Cognito pool here.
 
-The other six stay off: no Gateway, no Policy, no Evaluations, and no Observability work beyond what the runtime emits.
+The other six stay off: no Gateway, no Policy, no Evaluations, no Code Interpreter, no Browser, and no Observability work beyond what the runtime emits.
 
 ## Requirements
 
@@ -76,9 +76,9 @@ The memory resource is declared once, and the strategies decide what long-term r
   "eventExpiryDuration": 30,
   "strategies": [
     {"type": "USER_PREFERENCE", "namespaceTemplates": ["/users/{actorId}/preferences"]},
-    {"type": "SEMANTIC",        "namespaceTemplates": ["/users/{actorId}/facts"]},
     {"type": "EPISODIC",        "namespaceTemplates": ["/episodes/{actorId}/{sessionId}"],
-                                "reflectionNamespaceTemplates": ["/episodes/{actorId}"]}
+                                "reflectionNamespaceTemplates": ["/episodes/{actorId}"]},
+    {"type": "SEMANTIC",        "namespaceTemplates": ["/users/{actorId}/facts"]}
   ]
 }]
 ```
@@ -109,7 +109,7 @@ def recall(self, actor, query):
     return found
 ```
 
-Writing the event is also what starts extraction, which is why the second session can find a sentence the first session said. Extraction is not part of the invoke: the reply returned in 19 seconds and the record appeared 88 seconds later.
+Writing the event is also what starts extraction, which is why the second session can find a sentence the first session said. Extraction is not part of the invoke: the reply returned in 19 seconds and the records arrived later.
 
 Retrieval happens before the model is called, because the records become part of the system prompt:
 
@@ -122,7 +122,7 @@ agent = Agent(
 )
 ```
 
-A fresh Agent per invoke, not one per session. A cached agent would keep serving the first turn's memories, and a retrieval failure is logged and swallowed rather than turned into a 500: an agent that cannot remember is still useful.
+A fresh Agent per invoke, not one per session. A cached agent would keep serving the first turn's memories, and a retrieval failure is logged and swallowed: an agent that cannot remember is still useful.
 
 ## Deploy it
 
@@ -134,10 +134,7 @@ make doctor
 
 ```text
 toolchain
-  PASS  python 3.14.0 (inside the CodeZip 3.10 to 3.14 range)
-  PASS  node v22.22.2
-  PASS  aws cli aws-cli/2.15.6
-  PASS  uv 0.11.9 (builds the app environment)
+  ... four checks: python 3.14.0, node v22.22.2, aws cli 2.15.6, uv 0.11.9 ...
 
 agentcore cli
   PASS  agentcore 0.31.1
@@ -155,15 +152,13 @@ memory contract
   PASS  every strategy namespaces on {actorId}, so actors are isolated by key
 
 aws environment
-  PASS  credentials work, account 123456789012
-  PASS  region is us-east-1
-  PASS  model deepseek.v3.2 is available in us-east-1
+  ... three checks: credentials work, region is us-east-1, model available ...
 
 19 passed, 0 warned, 0 failed
 next: make deploy
 ```
 
-The memory contract check is there because a deployment missing the EPISODIC strategy would deploy cleanly and then fail an assertion twenty minutes later.
+The memory contract check exists because a deployment missing the EPISODIC strategy would succeed and then fail an assertion much later.
 
 ```bash
 make deploy
@@ -191,7 +186,7 @@ Outputs:
 
 ![Terminal capture: the deploy step timings, the memory id and the runtime ARN](/images/agentcore-memory-that-remembers/S1-deploy.png)
 
-Two sessions, two different session ids, 19 seconds each. The first one only states a preference:
+Two sessions, two different session ids. The first only states a preference:
 
 ```bash
 python3 run.py invoke --session b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8 \
@@ -201,7 +196,7 @@ python3 run.py invoke --session b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8 \
 ```text
 Based on your explicit instruction, I'll only reorder for the North China region.
 The North China region needs reorders at three stores: Beijing Haidian (42 thermal
-flasks), Tianjin Heping (17 insulated mugs), and Shijiazhuang Qiaoxi (8 lunch boxes).
+flasks), Tianjin Heping (17 insulated mugs), and Shijiazhuang Qiaoxi (8 lunch boxes). ...
 ```
 
 The second one is a new session and says nothing about regions:
@@ -212,15 +207,15 @@ python3 run.py invoke --session 03fd411e-293b-4aa2-a219-bd996c7e3481-6b0df16e \
 ```
 
 ```text
-I'll create the reorder list for the North China region as specified in your preferences.
+I'll create the reorder list for the North China region as specified in your preferences. ...
 Here's this week's reorder list for the North China region:
-Store: Beijing Haidian, SKU: SKU-1001, Reorder Quantity: 42 units
-Store: Tianjin Heping, SKU: SKU-1002, Reorder Quantity: 17 units
-Store: Shijiazhuang Qiaoxi, SKU: SKU-1003, Reorder Quantity: 8 units
-Note: I've applied your documented preference to only reorder for North China region.
+Store: Beijing Haidian, SKU: SKU-1001, ... Reorder Quantity: 42 units
+Store: Tianjin Heping, SKU: SKU-1002, ... Reorder Quantity: 17 units
+Store: Shijiazhuang Qiaoxi, SKU: SKU-1003, ... Reorder Quantity: 8 units
+Note: I've applied your documented preference to only reorder for North China region, ...
 ```
 
-The store lines are reformatted: the model emitted them with markdown bold markers, which this page would render as bold, so the markers are stripped and nothing else is changed. The second session had never seen the sentence about North China. The only place it could have come from is the memory resource.
+Both captures are trimmed, and `...` marks every cut; the store lines also lose the bold markers the model emitted, which this page would render as bold. The second session had never seen the sentence about North China. The only place it could have come from is the memory resource.
 
 ![Terminal capture: a preference written in one session and applied in the next](/images/agentcore-memory-that-remembers/S2-cross-session-recall.png)
 
@@ -253,7 +248,7 @@ memory
 4 passed, 0 failed
 ```
 
-The 1.5 seconds needs explaining: that preference had already been extracted by an earlier run against the same resource, so the read found it immediately. On an empty namespace the same read took 88 seconds. The episode was new, and took 959.
+The 1.5 seconds needs explaining: that preference had already been extracted by an earlier run against the same resource, so the read found it immediately. The episode was new, and took 959.
 
 ![Terminal capture: the three memory assertions and the independence check](/images/agentcore-memory-that-remembers/S3-verify.png)
 
@@ -284,7 +279,7 @@ Memories
 
 ![Terminal capture: remove all, the reconciling deploy, and both resources reporting Local only](/images/agentcore-memory-that-remembers/S4-teardown.png)
 
-Removal only empties the local contract; the reconciling deploy destroys the stack. One thing survives on purpose: the CDK bootstrap stack and its asset bucket, account-level plumbing shared by every deployment. The memory resource does not survive, which is why a re-deploy starts empty and has to re-earn every assertion.
+Removal only empties the local contract; the reconciling deploy destroys the stack. One thing survives on purpose: the CDK bootstrap stack and its asset bucket. The memory resource does not survive, which is why a re-deploy starts empty and has to re-earn every assertion.
 
 ## What it produced
 
@@ -292,11 +287,11 @@ Removal only empties the local contract; the reconciling deploy destroys the sta
 
 The measured loop, one actor, two sessions:
 
-![The cross-session loop: an event, an extraction 88 seconds later, and a second session reading the record](/images/agentcore-memory-that-remembers/F2-two-sessions.png)
+![The cross-session loop: an event, its extracted record, and a second session reading the record](/images/agentcore-memory-that-remembers/F2-two-sessions.png)
 
-Isolation came out cleaner than expected. The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model the same question produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
+The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model the same question produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
 
-The third assertion is the one that taught me something. Episodic extraction is much slower than preference extraction: the episodes in this resource were written between 15 minutes 11 seconds and 15 minutes 59 seconds after the event timestamp they came from, against 88 seconds for a preference. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only ever fail against it.
+The third assertion is the one that taught me something. Episodic extraction is slow: the episodes in this resource were written 15 minutes 11 seconds to 15 minutes 14 seconds after the event timestamp they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only ever fail against it.
 
 A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a `BASE` episode filed under the session that produced it, and a `REFLECTION` written one level up, over all of them. That is why the namespace template has a `{sessionId}` and the reflection template does not:
 
@@ -304,21 +299,20 @@ A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a
 BASE        /episodes/store_manager_north/195f957a...-78cd451f/
             {"situation":"The user reported a failed restocking attempt ... 9-day lead time"}
 REFLECTION  /episodes/store_manager_north/
-            {"title":"Applying Regional Scope Constraints Without Tool Calls"}
+            {"title":"Structured Output Format for Reorder and Inventory Lists"}
 ```
 
-Cost, measured on one traced invoke: 3,433 input and 210 output tokens across two model calls, which at 0.62 and 1.85 USD per million tokens is 0.0025 USD. Fifteen invokes happened while writing this, so model calls stayed under five cents. Memory storage and the extraction calls bill separately; I did not measure that line.
+Cost, measured on one traced invoke: 3,433 input and 210 output tokens across two model calls, which at 0.62 and 1.85 USD per million tokens is 0.0025 USD. Memory storage and the extraction calls bill separately; I did not measure that line.
 
 ## Troubleshooting
 
 - `Invalid length for parameter runtimeSessionId, value: 22, valid min length: 33`. Short readable session ids look fine and fail before they are sent. The smoke test now builds ids from two uuid4 halves, because one hex uuid is 32 characters, one short of the minimum.
-- `no episodic record ... within 300s`. Not a broken strategy. Raise the deadline past fifteen minutes, and print how long the wait actually took so the number in the article is a measurement.
-- `make invoke --session ...` fails with `unrecognized option`. GNU make does not forward unknown flags to the recipe. Use `python3 run.py invoke --session ...` for the flags, or `make invoke` with the environment variable `AIA_PROMPT`.
+- `no episodic record ... within 1500s`. Not a broken strategy, just a slow queue: raise the deadline past the observed fifteen minutes, and print how long the wait actually took so the number in the article is a measurement.
 
 ## Takeaways
 
 - Memory is two mechanisms, not one: an event log you write, and records the service extracts. Only the second one survives a new session.
 - Put the actor id inside the namespace template. Isolation then costs nothing and cannot be forgotten in a code path.
-- Extraction is asynchronous and unevenly so: 88 seconds for a preference, 15 minutes for an episode. Every assertion needs a deadline, and every deadline needs to be longer than you think.
+- Extraction is asynchronous and slow: fifteen minutes for an episode. Every assertion needs a deadline, and every deadline needs to be longer than you think.
 - Retrieval belongs in the system prompt, before the model call, not in a tool the model may or may not choose.
 - Teardown is real: `remove all` empties the contract, the deploy that follows does the deleting.

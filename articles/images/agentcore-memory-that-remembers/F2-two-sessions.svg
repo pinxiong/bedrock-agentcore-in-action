@@ -26,7 +26,7 @@
 <text x="850" y="226" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#fdba74" text-anchor="middle" font-weight="600">extraction</text>
 <text x="850" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">runs after the event</text>
 <text x="850" y="292" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">not part of the invoke</text>
-<text x="850" y="336" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle" font-weight="600">visible after 88 s</text>
+<text x="850" y="336" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle" font-weight="600">visible after 1.5 s</text>
 <text x="850" y="362" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">measured, not estimated</text>
 <line x1="1004" y1="280" x2="1080" y2="280" stroke="#fdba74" stroke-width="2.2" marker-end="url(#ah)"/>
 <rect x="1080" y="130" width="300" height="300" rx="18" fill="#0b1428" stroke="#059669" stroke-width="2"/>
