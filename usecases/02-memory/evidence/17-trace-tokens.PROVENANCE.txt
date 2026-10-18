@@ -1,0 +1,22 @@
+RUN: this run (runtime aiauc02_aia_uc02-ACujAB8uYJ, memory mem-y7Ql9N3D59)
+
+Source: agentcore/.cli/traces/aia_uc02-6ad42a1f14e1d45502ef4ada14554b7d.json
+That path is gitignored, so this copy is the only durable record.
+
+What this file is: the X-Ray trace for the uc02 invoke that the article quotes its
+token counts from. 35 spans, in the order the source emitted them.
+
+How it was cleaned before committing (read this before treating it as verbatim):
+
+1. Every span's "@ptr" field was REMOVED. It is base64 of a CloudWatch log pointer
+   that embeds the real account id, so a plain text redaction of the file would
+   have left the account id recoverable. Nothing else references @ptr.
+2. Every "aws.auth.account.access_key" attribute was REMOVED (6 occurrences). It is
+   the id of a short-lived session credential and does not belong in a public repo.
+3. Account id 123456789012 was replaced with 123456789012 in every remaining string.
+
+So the file is a faithful copy of the spans with three categories removed, not a
+byte-identical copy. The numbers the article quotes are untouched:
+  gen_ai.usage.input_tokens  3433  (1642 + 1791 over two model calls)
+  gen_ai.usage.output_tokens  210  (73 + 137 over two model calls)
+These are the only figures the article takes from this file.

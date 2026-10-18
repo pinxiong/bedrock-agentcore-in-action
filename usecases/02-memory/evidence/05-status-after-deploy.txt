@@ -3,7 +3,8 @@ $ make status
 AgentCore Status (target: default, us-east-1)
 
 Agents
-  aia_uc02: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-ACujAB8uYJ)
+  aia_uc02: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:12345
+6789012:runtime/aiauc02_aia_uc02-ACujAB8uYJ)
   URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abe
 drock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc02_aia_uc02-ACujAB8u
 YJ/invocations
