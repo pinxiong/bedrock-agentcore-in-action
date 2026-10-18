@@ -1,0 +1,19 @@
+$ python3 - <<'PY'   # read the records this run produced
+     list_memory_records for each namespace of aia_uc02_mem
+PY
+
+/users/store_manager_north/preferences
+  record mem-6193ef3f-2c0e-430b-aec4-d988bc7189d4
+   "{\"context\":\"Inventory reordering and restocking operations for North China region, including historical restocking performance data. A restocking attempt for North China stores from the Guangzhou warehouse in September 2026 fa
+
+/users/store_manager_south/preferences
+  record mem-ebec9c89-c468-4d98-8046-73cb2990372a
+   "{\"context\":\"Managing inventory reorder operations\",\"preference\":\"Only reorder for the South China region; ignore every other region.\",\"categories\":[\"inventory\",\"reordering\",\"regional settings\",\"South China\"]}"
+
+/episodes/store_manager_north/  (prefix read)
+   REFLECTION ['/episodes/store_manager_north/']
+   "{\"title\":\"Structured Output Format for Reorder and Inventory Lists\",\"use_cases\":\"Applies when generating inventory reorder lists, stock summaries, or similar tabular operational reports for ma
+   BASE ['/episodes/store_manager_north/195f957a3c184095bbb788db3117fa48-78cd451f/']
+   "{\"situation\":\"The user reported a failed restocking attempt where supplies intended for North China stores were shipped from the Guangzhou warehouse the previous month, resulting in a 9-day lead t
+   BASE ['/episodes/store_manager_north/97f4fcf699b1477b9de66bbf1d5f5764-79f22221/']
+   "{\"situation\":\"The user described a past restocking attempt for North China stores that used the Guangzhou warehouse, resulting in a 9-day lead time and three stockouts. They provided this as conte

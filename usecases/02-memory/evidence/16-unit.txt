@@ -1,0 +1,10 @@
+$ make unit
+>> /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/app/aia_uc02/.venv/bin/python tests/test_sanitize.py
+  PASS  deepseek DSML marker split across four deltas (measured)
+  PASS  nova thinking block, open tag itself split
+  PASS  the block after the DSML marker is dropped entirely
+  PASS  ascii DSML variant, in case a gateway rewrites the bar
+  PASS  plain text passes through unchanged
+  PASS  a lone '<' in prose is held back then released, not eaten
+
+6 passed, 0 failed

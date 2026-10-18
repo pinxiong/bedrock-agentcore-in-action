@@ -1,0 +1,36 @@
+$ make doctor
+>> /usr/local/opt/python@3.14/bin/python3.14 tests/doctor.py
+doctor · use case 02 · /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory
+
+toolchain
+  [32mPASS[0m  python 3.14.0 (inside the CodeZip 3.10 to 3.14 range)
+  [32mPASS[0m  node v22.22.2
+  [32mPASS[0m  aws cli aws-cli/2.15.6
+  [32mPASS[0m  uv 0.11.9 (builds the app environment)
+
+agentcore cli
+  [32mPASS[0m  agentcore 0.31.1
+
+this folder
+  [32mPASS[0m  codeLocation 'app/aia_uc02' exists
+  [32mPASS[0m  app environment present at app/aia_uc02/.venv
+  [32mPASS[0m  run.py present
+  [32mPASS[0m  Makefile present
+  [32mPASS[0m  AGENTS.md present
+  [32mPASS[0m  tests/smoke.py present
+  [32mPASS[0m  tests/copy_check.py present
+
+memory contract
+  [32mPASS[0m  memory 'aia_uc02_mem' declared, events expire in 30d
+  [32mPASS[0m  strategy USER_PREFERENCE present (the regional preference the second session has to recall)
+  [32mPASS[0m  strategy EPISODIC present (the failed restock a later session has to recall)
+  [32mPASS[0m  every strategy namespaces on {actorId}, so actors are isolated by key
+
+aws environment
+  [32mPASS[0m  credentials work, account 123456789012
+  [32mPASS[0m  region is us-east-1
+  [32mPASS[0m  model deepseek.v3.2 is available in us-east-1
+
+19 passed, 0 warned, 0 failed
+[2mnext: make deploy[0m
+EXIT=0

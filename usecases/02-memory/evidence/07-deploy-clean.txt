@@ -1,0 +1,36 @@
+$ make deploy
+1792288282
+>> agentcore deploy -y --target default
+Load deployment target...
+Load deployment target
+Validate project...
+Validate project
+Sync CDK dependencies...
+Sync CDK dependencies
+Build CDK project...
+Build CDK project
+Synthesize CloudFormation...
+Synthesize CloudFormation
+Check bootstrap status...
+Check bootstrap status
+Check stack status...
+Check stack status
+Deploy to AWS...
+Deploy to AWS
+Persist deployment state...
+Persist deployment state
+Deployed to 'default' (stack: AgentCore-aiauc02-default)
+Outputs:
+ApplicationMemoryAiaUc02MemIdOutput7F0802F1: aiauc02_aia_uc02_mem-y7Ql9N3D59
+ApplicationMemoryNames676588DB: aia_uc02_mem
+ApplicationAgentAiaUc02RuntimeIdOutput62FFD619: aiauc02_aia_uc02-ACujAB8uYJ
+ApplicationAgentAiaUc02RuntimeArnOutput9F81CB35: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-ACujAB8uYJ
+ApplicationAgentAiaUc02RoleArnOutputED94279B: arn:aws:iam::123456789012:role/AgentCore-aiauc02-default-ApplicationAgentAiaUc02Ru-ehg58FDza8rG
+ApplicationMemoryAiaUc02MemArnOutput418E65F1: arn:aws:bedrock-agentcore:us-east-1:123456789012:memory/aiauc02_aia_uc02_mem-y7Ql9N3D59
+ApplicationMemoryIds538D889E: aiauc02_aia_uc02_mem-y7Ql9N3D59
+StackNameOutput: AgentCore-aiauc02-default
+Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.
+Next: agentcore invoke | agentcore status
+Log: agentcore/.cli/logs/deploy/deploy-20261018-095124.log
+EXIT=0
+1792288340

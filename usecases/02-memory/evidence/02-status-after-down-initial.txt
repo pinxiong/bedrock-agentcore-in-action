@@ -1,0 +1,8 @@
+  $ agentcore status
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc02: Local only
+
+Memories
+  aia_uc02_mem: Local only (USER_PREFERENCE, EPISODIC, SEMANTIC)

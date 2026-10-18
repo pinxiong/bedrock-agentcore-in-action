@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760" width="1440" height="760" role="img">
+<title>One AgentCore Memory resource split into a short-term event log and three long-term namespaces, every namespace keyed by actor id.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.24"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="gB" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
+<marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"/></marker>
+</defs>
+<rect width="1440" height="760" fill="url(#bg)"/>
+<rect width="1440" height="760" fill="url(#gA)"/>
+<rect width="1440" height="760" fill="url(#gB)"/>
+<text x="60" y="62" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#f8fafc" text-anchor="start" font-weight="600">the deployed use case, uc02</text>
+<text x="60" y="90" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">every resource below is tagged Project=agentcore-in-action, UseCase=uc02</text>
+<rect x="46" y="140" width="250" height="120" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="1.6"/>
+<text x="171" y="193" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#f8fafc" text-anchor="middle">caller</text>
+<text x="171" y="219" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" text-anchor="middle">prompt + actor_id</text>
+<rect x="380" y="125" width="300" height="230" rx="14" fill="#122146" stroke="#3b82f6" stroke-width="1.6"/>
+<text x="530" y="220" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#f8fafc" text-anchor="middle">AgentCore Runtime</text>
+<text x="530" y="246" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" text-anchor="middle">aia_uc02</text>
+<text x="530" y="272" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" text-anchor="middle">app/aia_uc02, CodeZip, PYTHON_3_13</text>
+<line x1="296" y1="200" x2="374" y2="200" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="335" y="188" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#64748b" text-anchor="middle" font-weight="400">invoke</text>
+<rect x="380" y="420" width="300" height="90" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="1.6"/>
+<text x="530" y="458" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle">Bedrock</text>
+<text x="530" y="484" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" text-anchor="middle">deepseek.v3.2</text>
+<line x1="530" y1="355" x2="530" y2="414" stroke="#60a5fa" stroke-width="2.2" stroke-dasharray="5 5" marker-end="url(#ah)"/>
+<text x="544" y="390" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="start" font-weight="400">converse</text>
+<rect x="780" y="112" width="614" height="560" rx="18" fill="#101c37" stroke="#7c3aed" stroke-width="2"/>
+<text x="804" y="152" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#c4b5fd" text-anchor="start" font-weight="600">AgentCore Memory  aia_uc02_mem</text>
+<text x="804" y="178" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" text-anchor="start" font-weight="400">eventExpiryDuration 30 d, three extraction strategies</text>
+<line x1="684" y1="234" x2="778" y2="234" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="690" y="222" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#5eead4" text-anchor="start" font-weight="400">write</text>
+<rect x="804" y="190" width="566" height="78" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="1.6"/>
+<text x="1087" y="209" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4" text-anchor="middle">short term</text>
+<text x="1087" y="235" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" text-anchor="middle">CreateEvent, one event per turn</text>
+<text x="1087" y="261" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" text-anchor="middle">append-only, keyed by (actor, session)</text>
+<path d="M 1050 268 L 1050 308" stroke="#ea580c" stroke-width="2.4" marker-end="url(#ah)" fill="none"/>
+<text x="1062" y="296" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#fdba74" text-anchor="start" font-weight="400">async extraction</text>
+<line x1="778" y1="339" x2="686" y2="339" stroke="#c4b5fd" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#ahp)"/>
+<text x="690" y="327" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" text-anchor="start" font-weight="400">read</text>
+<rect x="804" y="316" width="566" height="86" rx="12" fill="#0b1428" stroke="#059669" stroke-width="1.6"/>
+<text x="826" y="352" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#f8fafc" text-anchor="start" font-weight="600">USER_PREFERENCE</text>
+<text x="826" y="378" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="start" font-weight="400">/users/{actorId}/preferences</text>
+<rect x="804" y="414" width="566" height="86" rx="12" fill="#0b1428" stroke="#2563eb" stroke-width="1.6"/>
+<text x="826" y="450" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#f8fafc" text-anchor="start" font-weight="600">SEMANTIC</text>
+<text x="826" y="476" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="start" font-weight="400">/users/{actorId}/facts</text>
+<rect x="804" y="512" width="566" height="86" rx="12" fill="#0b1428" stroke="#ea580c" stroke-width="1.6"/>
+<text x="826" y="548" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#f8fafc" text-anchor="start" font-weight="600">EPISODIC</text>
+<text x="826" y="574" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="start" font-weight="400">/episodes/{actorId}/{sessionId}</text>
+<text x="804" y="634" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">long term: RetrieveMemoryRecords reads one namespace at a time</text>
+<text x="804" y="658" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">the trailing slash on /episodes/{actorId}/ is a prefix read</text>
+<text x="60" y="600" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">the actor id sits inside the key, not in a filter, so the</text>
+<text x="60" y="624" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">two managers never share a namespace to begin with.</text>
+<text x="60" y="672" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#64748b" text-anchor="start" font-weight="400">teardown: agentcore remove all -y, then a reconciling deploy</text>
+<text x="60" y="696" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#64748b" text-anchor="start" font-weight="400">survives: the CDK bootstrap stack and its asset bucket</text>
+</svg>

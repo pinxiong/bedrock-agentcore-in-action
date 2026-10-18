@@ -1,0 +1,12 @@
+$ python3 run.py invoke --session b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8 \
+--prompt "From now on, only reorder for the North China region. Ignore every other region."
+1792289271
+>> agentcore invoke --prompt From now on, only reorder for the North China region. Ignore every other region. --session-id b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8
+Invoking agent...
+Based on your explicit instruction, I'll only reorder for the North China region.
+The North China region needs reorders at three stores: Beijing Haidian (42 thermal flasks), Tianjin Heping (17 insulated mugs), and Shijiazhuang Qiaoxi (8 lunch boxes). I followed your instruction to only reorder for North China and ignored all other regions.
+Session: b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8
+To resume: agentcore invoke --session-id b0b998ab-89ca-4387-99cb-fc01130e9108-ff3568e8
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-100757.log
+EXIT=0
+1792289290

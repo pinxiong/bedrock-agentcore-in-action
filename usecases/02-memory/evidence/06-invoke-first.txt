@@ -1,0 +1,10 @@
+$ make invoke
+1792288184
+>> agentcore invoke --prompt Draft this week's reorder list.
+Invoking agent...
+I'm defaulting to North China since no regional preference exists for this manager. Here are the stores needing reorder in North China: Beijing Haidian (SKU-1001 thermal flask, 42 units), Tianjin Heping (SKU-1002 insulated mug, 17 units), and Shijiazhuang Qiaoxi (SKU-1003 lunch box, 8 units).
+Session: 16d5d2e1-1715-41a6-804e-714bf5b4f7c7
+To resume: agentcore invoke --session-id 16d5d2e1-1715-41a6-804e-714bf5b4f7c7
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/02-memory/agentcore/.cli/logs/invoke/invoke-aia_uc02-20261018-094950.log
+EXIT=0
+1792288206

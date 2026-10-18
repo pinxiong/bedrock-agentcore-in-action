@@ -1,0 +1,13 @@
+$ aia.py status 02
+  $ agentcore status
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc02: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc02_aia_uc02-ya2TRQF3iL)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abe
+drock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc02_aia_uc02-ya2TRQF3
+iL/invocations
+
+Memories
+  aia_uc02_mem: Deployed (USER_PREFERENCE, EPISODIC, SEMANTIC) (arn:aws:bedrock-
+agentcore:us-east-1:123456789012:memory/aiauc02_aia_uc02_mem-RY6XTAFg8M)

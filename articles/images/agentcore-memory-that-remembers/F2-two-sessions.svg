@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 700" width="1440" height="700" role="img">
+<title>A preference stated in session one is extracted into a record and read back by session two, which never saw the first conversation.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="gA" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#0d9488" stop-opacity="0.24"/><stop offset="1" stop-color="#0d9488" stop-opacity="0"/></radialGradient>
+<radialGradient id="gB" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#ea580c" stop-opacity="0.20"/><stop offset="1" stop-color="#ea580c" stop-opacity="0"/></radialGradient>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
+<marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"/></marker>
+</defs>
+<rect width="1440" height="700" fill="url(#bg)"/>
+<rect width="1440" height="700" fill="url(#gA)"/>
+<rect width="1440" height="700" fill="url(#gB)"/>
+<text x="60" y="62" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#f8fafc" text-anchor="start" font-weight="600">the cross-session loop, measured</text>
+<text x="60" y="90" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">two invocations of the same runtime, two different session ids, one actor</text>
+<rect x="60" y="130" width="560" height="300" rx="18" fill="#0b1428" stroke="#2563eb" stroke-width="2"/>
+<text x="88" y="172" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#93c5fd" text-anchor="start" font-weight="600">session 1</text>
+<text x="210" y="172" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" text-anchor="start" font-weight="400">writes the preference</text>
+<text x="88" y="214" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="start" font-weight="400">prompt  &quot;From now on, only reorder for the North China region.&quot;</text>
+<text x="88" y="246" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#5eead4" text-anchor="start" font-weight="400">event   0000001792288205925#d8d92b03</text>
+<text x="88" y="278" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">reply   &quot;Based on your explicit instruction, I&#x27;ll only reorder&quot;</text>
+<text x="88" y="300" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">        &quot;for the North China region.&quot;</text>
+<text x="88" y="352" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#64748b" text-anchor="start" font-weight="400">the agent never stores the preference itself.</text>
+<text x="88" y="378" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#64748b" text-anchor="start" font-weight="400">it appends the turn; extraction decides what becomes a fact.</text>
+<line x1="624" y1="280" x2="700" y2="280" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="700" y="180" width="300" height="200" rx="18" fill="#101c37" stroke="#ea580c" stroke-width="2"/>
+<text x="850" y="226" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#fdba74" text-anchor="middle" font-weight="600">extraction</text>
+<text x="850" y="262" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">runs after the event</text>
+<text x="850" y="292" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">not part of the invoke</text>
+<text x="850" y="336" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle" font-weight="600">visible after 88 s</text>
+<text x="850" y="362" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">measured, not estimated</text>
+<line x1="1004" y1="280" x2="1080" y2="280" stroke="#fdba74" stroke-width="2.2" marker-end="url(#ah)"/>
+<rect x="1080" y="130" width="300" height="300" rx="18" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="1230" y="172" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#6ee7b7" text-anchor="middle" font-weight="600">session 2</text>
+<text x="1230" y="204" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" text-anchor="middle" font-weight="400">a new session id</text>
+<text x="1230" y="246" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">prompt</text>
+<text x="1230" y="272" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="middle" font-weight="400">&quot;Draft this week&#x27;s</text>
+<text x="1230" y="296" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="middle" font-weight="400">reorder list.&quot;</text>
+<text x="1230" y="344" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle" font-weight="400">reordered for</text>
+<text x="1230" y="372" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="middle" font-weight="600">North China only</text>
+<rect x="60" y="462" width="1320" height="116" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<text x="88" y="502" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" text-anchor="start" font-weight="600">the record session 2 read</text>
+<text x="88" y="534" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#34d399" text-anchor="start" font-weight="400">namespace  /users/store_manager_north/preferences</text>
+<text x="88" y="562" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" text-anchor="start" font-weight="400">preference  &quot;Only reorder for the North China region; ignore every other region.&quot;</text>
+<rect x="60" y="588" width="1320" height="104" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<text x="88" y="638" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#34d399" text-anchor="start" font-weight="400">north   /users/store_manager_north/preferences   North China</text>
+<text x="88" y="670" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#fdba74" text-anchor="start" font-weight="400">south   /users/store_manager_south/preferences   South China</text>
+</svg>

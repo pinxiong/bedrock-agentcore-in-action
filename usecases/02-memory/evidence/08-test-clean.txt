@@ -1,0 +1,26 @@
+$ make test
+1792290216
+>> /usr/local/opt/python@3.14/bin/python3.14 tests/smoke.py --usecase 02
+
+memory
+       session 1 e9f9d728131040b1ad532866e69b4981-cd9243d4 · reply "I'll get the current reorder list for the North China region only.\n\nI've restricted the re"
+       extraction visible after 1.5s · 1 record(s)
+       record '{"context":"Inventory reordering and restocking operations for North China region, including historical restoc'
+       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b · tools ['reorder_candidates']
+       reply "Based on your preference for North China region, here is this week's reorder list:\n\n**North China Region Reorder List:**\n- Beijing Haidian: SKU-1001 thermal fla"
+  PASS assert_memory_1: a second session retrieves a preference written in the first
+       actor store_manager_north sees '{"context":"Inventory reordering and restocking operations for North China region, including historical restoc'
+       actor store_manager_south sees '{"context":"Managing inventory reorder operations","preference":"Only reorder for the South China region; igno'
+       actor store_manager_south reply "Based on your preference for South China region only, here's this week's reorder list:\n1. Guangzhou Tianhe needs 63 unit"
+  PASS assert_memory_2: actor A cannot retrieve actor B memories
+       episodic extraction visible after 959s
+       episodic record '{"situation":"The user requested a draft of the weekly reorder list as part of a routine inventory management workflow, with the assistant d'
+       reply "Based on your preference for North China region reorders, I'll check which stores need restocking. Remember: the Guangzhou warehouse must not be used for North "
+  PASS assert_memory_3: episodic strategy recalls a previously failed approach
+
+  PASS independence: no other use case's resources present
+
+4 passed, 0 failed
+EXIT=0
+1792291263
+

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "aiauc02",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "agentcore-in-action",
+    "UseCase": "02",
+    "AutoDelete": "true"
+  },
+  "runtimes": [
+    {
+      "name": "aia_uc02",
+      "description": "UC02 Memory: a reorder assistant that remembers across sessions",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/aia_uc02/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "deepseek.v3.2"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "tags": {
+        "UseCase": "02"
+      }
+    }
+  ],
+  "memories": [
+    {
+      "name": "aia_uc02_mem",
+      "eventExpiryDuration": 30,
+      "strategies": [
+        {
+          "type": "USER_PREFERENCE",
+          "namespaceTemplates": [
+            "/users/{actorId}/preferences"
+          ]
+        },
+        {
+          "type": "EPISODIC",
+          "namespaceTemplates": [
+            "/episodes/{actorId}/{sessionId}"
+          ],
+          "reflectionNamespaceTemplates": [
+            "/episodes/{actorId}"
+          ]
+        },
+        {
+          "type": "SEMANTIC",
+          "namespaceTemplates": [
+            "/users/{actorId}/facts"
+          ]
+        }
+      ]
+    }
+  ],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [],
+  "payments": []
+}

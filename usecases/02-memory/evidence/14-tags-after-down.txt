@@ -1,0 +1,2 @@
+$ aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=agentcore-in-action --region us-east-1
+0

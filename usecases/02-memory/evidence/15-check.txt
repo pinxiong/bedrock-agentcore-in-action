@@ -1,0 +1,26 @@
+$ make check
+  PASS  no leftover directories from an older layout
+  PASS  app/aia_uc02/uv.lock present, so the dependency graph is pinned
+
+[2] the in-folder entry points agree
+  PASS  both entry points expose the same 15 targets
+  PASS  every make recipe forwards to run.py, so only one implementation exists
+
+[3] nothing points outside the folder
+  PASS  the folder: 35 files scanned, none points outside the folder
+
+[4] the IaC contract is self-contained and tagged
+  PASS  project tags present: Project=agentcore-in-action, UseCase=02, AutoDelete=true
+  PASS  codeLocation 'app/aia_uc02' resolves inside this folder
+  PASS  deployment target: us-east-1 (target default)
+  PASS  names are namespaced to this use case: aiauc02 / aia_uc02
+
+[5] the folder survives a real copy
+  PASS  copied to /var/folders/dl/mqb8jzq922784p2j3r_qbw8h0000gq/T/aia-copy-a0ytbfgj/02-memory
+  PASS  the copy carries all 35 files, and nothing extra
+  PASS  the copy: 35 files scanned, none points outside the folder
+  PASS  `run.py help` runs inside the copy
+  PASS  `make help` runs inside the copy and forwards to run.py
+  PASS  the copy passes its own copy_check
+
+16 passed, 0 failed
