@@ -194,17 +194,24 @@ VERIFY: list[tuple[str, str]] = [
     ("", S),
     ("memory", D),
     ("       session 1 e9f9d728131040b1ad532866e69b4981-cd9243d4", D),
-    ("       extraction visible after 1.5s - 1 record(s)", O),
-    ("       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b - tools ['reorder_candidates']", D),
+    ("       · reply \"I'll get the current reorder list for the North China region only. ...\"", D),
+    ("       extraction visible after 1.5s · 1 record(s)", O),
+    ("       record '{\"context\":\"Inventory reordering and restocking operations", D),
+    ("       for North China region, including historical restoc ...", D),
+    ("       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b · tools ['reorder_candidates']", D),
     ("       reply \"Based on your preference for North China region, here is this", W),
-    ("       week's reorder list:\"", W),
+    ("       week's reorder list: ...\"", W),
     ("  PASS assert_memory_1: a second session retrieves a preference written in the first", G),
-    ("       actor store_manager_north sees '...Only reorder for the North China region...'", D),
-    ("       actor store_manager_south sees '...Only reorder for the South China region...'", D),
+    ("       actor store_manager_north sees '{\"context\":\"Inventory reordering and restocking operations", D),
+    ("       for North China region, including historical restoc ...", D),
+    ("       actor store_manager_south sees '{\"context\":\"Managing inventory reorder operations\",\"preference\":\"Only", D),
+    ("       reorder for the South China region; igno ...", D),
     ("       actor store_manager_south reply \"Based on your preference for South China", W),
-    ("       region only, here's this week's reorder list:\"", W),
+    ("       region only, here's this week's reorder list: ...\"", W),
     ("  PASS assert_memory_2: actor A cannot retrieve actor B memories", G),
     ("       episodic extraction visible after 959s", O),
+    ("       episodic record '{\"situation\":\"The user requested a draft of the weekly", D),
+    ("       reorder list as part of a routine inventory management workflow, with the assistant d ...", D),
     ("       reply \"... Remember: the Guangzhou warehouse must not be used for North", W),
     ("       China restocks.\"", W),
     ("  PASS assert_memory_3: episodic strategy recalls a previously failed approach", G),
@@ -456,7 +463,8 @@ def main() -> None:
           "evidence/09 and 10 · 19 s CLI wall clock each · every cut marked ... · "
           "bold markers stripped · session ids verbatim")
     panel("S3-verify", "terminal - the three memory assertions", VERIFY,
-          "captured from evidence/08-test-clean.txt, long lines wrapped")
+          "evidence/08-test-clean.txt · long lines wrapped · every cut marked ... · "
+          "the python3.14 wrapper, timestamps and exit status dropped")
     panel("S4-teardown", "terminal - teardown, and zero tagged resources left", TEARDOWN,
           "Total Duration from evidence/18-down-deploy.txt · the rest from "
           "evidence/12-down-raw.txt, evidence/13 and evidence/14")

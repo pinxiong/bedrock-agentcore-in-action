@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 785" width="1440" height="785" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 974" width="1440" height="974" role="img">
 <title>terminal - the three memory assertions</title>
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
@@ -7,10 +7,10 @@
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
 <marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c4b5fd"/></marker>
 </defs>
-<rect width="1440" height="785" fill="url(#bg)"/>
-<rect width="1440" height="785" fill="url(#gA)"/>
-<rect width="1440" height="785" fill="url(#gB)"/>
-<rect x="28" y="26" width="1384" height="733" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect width="1440" height="974" fill="url(#bg)"/>
+<rect width="1440" height="974" fill="url(#gA)"/>
+<rect width="1440" height="974" fill="url(#gB)"/>
+<rect x="28" y="26" width="1384" height="922" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
 <rect x="28" y="26" width="1384" height="46" rx="16" fill="#101b33"/>
 <rect x="28" y="58" width="1384" height="14" fill="#101b33"/>
 <circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
@@ -21,23 +21,30 @@
 <text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
 <text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">memory</text>
 <text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       session 1 e9f9d728131040b1ad532866e69b4981-cd9243d4</text>
-<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">       extraction visible after 1.5s - 1 record(s)</text>
-<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b - tools [&#x27;reorder_candidates&#x27;]</text>
-<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       reply &quot;Based on your preference for North China region, here is this</text>
-<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       week&#x27;s reorder list:&quot;</text>
-<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_1: a second session retrieves a preference written in the first</text>
-<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       actor store_manager_north sees &#x27;...Only reorder for the North China region...&#x27;</text>
-<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       actor store_manager_south sees &#x27;...Only reorder for the South China region...&#x27;</text>
-<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       actor store_manager_south reply &quot;Based on your preference for South China</text>
-<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       region only, here&#x27;s this week&#x27;s reorder list:&quot;</text>
-<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_2: actor A cannot retrieve actor B memories</text>
-<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">       episodic extraction visible after 959s</text>
-<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       reply &quot;... Remember: the Guangzhou warehouse must not be used for North</text>
-<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       China restocks.&quot;</text>
-<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_3: episodic strategy recalls a previously failed approach</text>
-<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
-<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS independence: no other use case&#x27;s resources present</text>
-<text x="58" y="642" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
-<text x="58" y="669" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">4 passed, 0 failed</text>
-<text x="58" y="704" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">captured from evidence/08-test-clean.txt, long lines wrapped</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       · reply &quot;I&#x27;ll get the current reorder list for the North China region only. ...&quot;</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">       extraction visible after 1.5s · 1 record(s)</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       record &#x27;{&quot;context&quot;:&quot;Inventory reordering and restocking operations</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       for North China region, including historical restoc ...</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       session 2 34b26d624d2140d1b767098a09abdfaa-8d1f1d6b · tools [&#x27;reorder_candidates&#x27;]</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       reply &quot;Based on your preference for North China region, here is this</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       week&#x27;s reorder list: ...&quot;</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_1: a second session retrieves a preference written in the first</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       actor store_manager_north sees &#x27;{&quot;context&quot;:&quot;Inventory reordering and restocking operations</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       for North China region, including historical restoc ...</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       actor store_manager_south sees &#x27;{&quot;context&quot;:&quot;Managing inventory reorder operations&quot;,&quot;preference&quot;:&quot;Only</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       reorder for the South China region; igno ...</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       actor store_manager_south reply &quot;Based on your preference for South China</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       region only, here&#x27;s this week&#x27;s reorder list: ...&quot;</text>
+<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_2: actor A cannot retrieve actor B memories</text>
+<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">       episodic extraction visible after 959s</text>
+<text x="58" y="642" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       episodic record &#x27;{&quot;situation&quot;:&quot;The user requested a draft of the weekly</text>
+<text x="58" y="669" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">       reorder list as part of a routine inventory management workflow, with the assistant d ...</text>
+<text x="58" y="696" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       reply &quot;... Remember: the Guangzhou warehouse must not be used for North</text>
+<text x="58" y="723" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">       China restocks.&quot;</text>
+<text x="58" y="750" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS assert_memory_3: episodic strategy recalls a previously failed approach</text>
+<text x="58" y="777" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
+<text x="58" y="804" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">  PASS independence: no other use case&#x27;s resources present</text>
+<text x="58" y="831" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
+<text x="58" y="858" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">4 passed, 0 failed</text>
+<text x="58" y="893" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/08-test-clean.txt · long lines wrapped · every cut marked ... · the python3.14 wrapper, timestamps and exit status dropped</text>
 </svg>

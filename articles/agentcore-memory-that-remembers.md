@@ -53,7 +53,7 @@ https://github.com/pinxiong/bedrock-agentcore-in-action/tree/main/usecases/02-me
 ├── Makefile                   # forwards to run.py, holds no logic
 ├── agentcore/
 │   ├── agentcore.json         # the runtime plus one memory with three strategies
-│   └── aws-targets.json       # account 123456789012, region us-east-1
+│   └── aws-targets.json       # deployment target: region us-east-1
 ├── app/aia_uc02/
 │   ├── main.py                # the agent: prompt, tool, actor resolution, entrypoint
 │   ├── memory.py              # the only file that knows short term from long term
@@ -83,7 +83,7 @@ The memory resource is declared once, and the strategies decide what long-term r
 }]
 ```
 
-Two things follow from that layout. The actor id is inside the namespace, so isolation is a property of the key space rather than a filter some code path has to remember. And the reflection namespace sits one level above the per-session one, so a prefix read of `/episodes/{actorId}/` reaches both a single episode and the lessons written across all of them.
+The actor id is inside the namespace, so isolation is a property of the key space rather than a filter some code path has to remember. The reflection namespace sits one level above the per-session one, so a prefix read of `/episodes/{actorId}/` reaches both a single episode and the lessons written across all of them.
 
 The agent itself never stores a preference. It appends the turn and asks a question:
 
@@ -96,6 +96,8 @@ def remember(self, actor, session_id, turns):
     return event.get("eventId")
 
 def recall(self, actor, query):
+    # ... condensed: the real one also drops records whose text is empty,
+    # and continues past a namespace that failed instead of falling through
     found = []
     for label, ns, by_path in (("preference", f"/users/{actor}/preferences", False),
                                ("fact", f"/users/{actor}/facts", False),
@@ -236,8 +238,8 @@ memory
        reply "Based on your preference for North China region, here is this
        week's reorder list: ..."
   PASS assert_memory_1: a second session retrieves a preference written in the first
-       actor store_manager_north sees '...Only reorder for the North China region...'
-       actor store_manager_south sees '...Only reorder for the South China region...'
+       actor store_manager_north sees '{"context":"Inventory reordering and restocking operations for North China region, including historical restoc ...
+       actor store_manager_south sees '{"context":"Managing inventory reorder operations","preference":"Only reorder for the South China region; igno ...
        actor store_manager_south reply "Based on your preference for South China
        region only, here's this week's reorder list: ..."
   PASS assert_memory_2: actor A cannot retrieve actor B memories
@@ -280,9 +282,11 @@ Memories
   aia_uc02_mem: Local only (USER_PREFERENCE, EPISODIC, SEMANTIC)
 ```
 
+The Total Duration is from the deploy log this step writes (`evidence/18-down-deploy.txt`); the rest is the console output (`evidence/12-down-raw.txt`).
+
 ![Terminal capture: remove all, the reconciling deploy, and both resources reporting Local only](/images/agentcore-memory-that-remembers/S4-teardown.png)
 
-Removal only empties the local contract; the reconciling deploy destroys the stack. One thing survives on purpose: the CDK bootstrap stack and its asset bucket. The memory resource does not survive, which is why a re-deploy starts empty and has to re-earn every assertion.
+Removal only empties the local contract; the reconciling deploy destroys the stack. One thing survives on purpose: the CDK bootstrap stack and its asset bucket. The memory resource does not survive, so a re-deploy starts empty and re-earns every assertion.
 
 ## What it produced
 
@@ -294,9 +298,9 @@ The measured loop, one actor, two sessions:
 
 The two actors wrote to `/users/store_manager_north/preferences` and `/users/store_manager_south/preferences`; a semantic query for "which region does this store manager reorder for" returned North China to one and South China to the other, and asking the model "Draft this week's reorder list." produced South China for the southern manager. There is no filter to get wrong, because the actor id is part of the key.
 
-The third assertion taught me something. Episodic extraction is slow: these episodes were written 15 minutes 11 seconds to 15 minutes 14 seconds after the events they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only fail against it.
+The third assertion taught me something. Episodic extraction is slow: episodes were written about fifteen minutes after the events they came from. It is not a broken strategy, it is a slower queue, and a 300-second deadline can only fail against it.
 
-A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a `BASE` episode filed under the session that produced it, and a `REFLECTION` written one level up, over all of them. That is why the namespace template has a `{sessionId}` and the reflection template does not:
+A prefix read of `/episodes/store_manager_north/` returns two kinds of record: a `BASE` episode filed under the session that produced it, and a `REFLECTION` written one level up, over all of them. Hence the `{sessionId}` in one template and not the other:
 
 ```text
 BASE        /episodes/store_manager_north/195f957a...-78cd451f/
