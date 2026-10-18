@@ -351,11 +351,15 @@ def degenerate_tag_filters(text: str) -> list[str]:
     Key=UseCase,Values=02` asks for a resource that is two use cases at once:
     it returns empty every time and reads exactly like a pass. The OR form is
     one filter with comma-separated values.
+
+    Only commands are judged, never prose: the scan keys on `--tag-filters`, so
+    a capture that merely explains the trap in words is not flagged, and a
+    documented example written as a shell comment is skipped too.
     """
     flat = text.replace("\\\n", " ")
     problems: list[str] = []
     for line in flat.splitlines():
-        if "--tag-filters" not in line:
+        if "--tag-filters" not in line or line.lstrip().startswith("#"):
             continue
         span = line.split("--tag-filters", 1)[1]
         span = re.split(r"\s--(?!tag-filters)", span)[0]
