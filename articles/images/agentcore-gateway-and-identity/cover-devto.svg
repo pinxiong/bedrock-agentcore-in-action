@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img">
+<title>Gateway and Identity: one JWT in, three systems out</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.06" cy="0.0" r="0.85"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.95" cy="1.0" r="0.85"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
+<filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/></filter>
+</defs>
+<rect width="1000" height="420" fill="url(#bg)"/>
+<rect width="1000" height="420" fill="url(#g1)"/>
+<rect width="1000" height="420" fill="url(#g2)"/>
+<text x="44" y="62" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
+<text x="44" y="128" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="44" fill="#f8fafc" font-weight="700">Gateway and Identity</text>
+<text x="44" y="168" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#c4b5fd">One JWT in, three systems out</text>
+
+<rect x="44" y="196" width="196" height="136" rx="12" fill="#0b1428" stroke="#7c3aed" stroke-width="2" filter="url(#sh)"/>
+<text x="62" y="224" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#a78bfa" font-weight="600">agent source</text>
+<text x="62" y="262" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="14" fill="#e2e8f0">CLIENT_SECRET_ARN</text>
+<text x="62" y="290" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd">no system API keys</text>
+<text x="62" y="314" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd">no refresh loop</text>
+
+<line x1="248" y1="264" x2="288" y2="264" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<text x="268" y="252" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="12" fill="#8ea0bd" text-anchor="middle">token</text>
+
+<rect x="294" y="196" width="192" height="136" rx="12" fill="#0b1428" stroke="#2563eb" stroke-width="2" filter="url(#sh)"/>
+<text x="312" y="224" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#60a5fa" font-weight="600">gateway</text>
+<text x="312" y="256" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#e2e8f0">MCP endpoint</text>
+<text x="312" y="282" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#e2e8f0">checks the JWT</text>
+<text x="312" y="308" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#5eead4">mints outbound</text>
+
+<line x1="490" y1="216" x2="532" y2="216" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<line x1="490" y1="264" x2="532" y2="264" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+<line x1="490" y1="312" x2="532" y2="312" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ah)"/>
+
+<rect x="538" y="196" width="418" height="40" rx="10" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="556" y="222" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#cbd5e1">orders API<tspan fill="#8ea0bd">  ·  OpenAPI descriptor</tspan></text>
+<rect x="538" y="244" width="418" height="40" rx="10" fill="#0b1428" stroke="#ea580c" stroke-width="2"/>
+<text x="556" y="270" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#cbd5e1">ticketing function<tspan fill="#8ea0bd">  ·  Lambda tool schema</tspan></text>
+<rect x="538" y="292" width="418" height="40" rx="10" fill="#0b1428" stroke="#0d9488" stroke-width="2"/>
+<text x="556" y="318" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#cbd5e1">CRM<tspan fill="#8ea0bd">  ·  remote MCP server</tspan></text>
+
+<text x="44" y="386" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#8ea0bd">the agent never holds a credential for any of the three</text>
+</svg>

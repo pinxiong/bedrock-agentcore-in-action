@@ -2,6 +2,12 @@
 title: "Reaching Real Systems Without Holding Credentials: Gateway and Identity"
 description: "One JWT in, three systems out: an AgentCore Gateway fronts an order API, a ticketing function and a CRM, and the agent source holds no system credential."
 tags: ["ai", "agents", "agentcore", "security"]
+date: 2026-10-23
+draft: false
+canonical_url: "https://xiongpin.dev/posts/agentcore-gateway-and-identity/"
+cover:
+  image: "/images/agentcore-gateway-and-identity/cover.png"
+  alt: "Cover art: an agent source holding only a secret ARN, a gateway checking a JWT, and three systems behind it"
 ---
 
 An agent that can reach a real system usually carries that system's key, and the
