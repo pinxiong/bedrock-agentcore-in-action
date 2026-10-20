@@ -1,0 +1,10 @@
+$ agentcore remove all -y && agentcore deploy -y --target default
+reconcile: Total Duration 1m 40s
+
+$ agentcore status
+AgentCore Status (target: )
+No resources match the given filters.
+
+$ aws resourcegroupstaggingapi get-resources ... Key=Project,Values=agentcore-in-action | wc -w
+0
+(tables, lambdas, role, secret, user pool deleted by aws CLI; zero resources left)

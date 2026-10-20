@@ -4,125 +4,16 @@
   "version": 1,
   "managedBy": "CDK",
   "tags": {
-    "Project": "agentcore-in-action",
-    "UseCase": "03",
-    "AutoDelete": "true"
+    "agentcore:created-by": "agentcore-cli",
+    "agentcore:project-name": "aiauc03"
   },
-  "runtimes": [
-    {
-      "name": "aia_uc03",
-      "description": "uc03 Gateway Identity",
-      "build": "CodeZip",
-      "entrypoint": "main.py",
-      "codeLocation": "app/aia_uc03/",
-      "runtimeVersion": "PYTHON_3_13",
-      "envVars": [
-        {
-          "name": "MODEL_ID",
-          "value": "deepseek.v3.2"
-        },
-        {
-          "name": "GATEWAY_MCP_URL",
-          "value": "https://aiauc03-ops-gateway-00gtncwhmj.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
-        },
-        {
-          "name": "TOKEN_ENDPOINT",
-          "value": "https://aia-uc03-ops-285.auth.us-east-1.amazoncognito.com/oauth2/token"
-        },
-        {
-          "name": "GATEWAY_SCOPE",
-          "value": "https://aia-uc03/ops/orders.read"
-        },
-        {
-          "name": "CLIENT_SECRET_ARN",
-          "value": "arn:aws:secretsmanager:us-east-1:123456789012:secret:aia-uc03-gateway-client-eeXVGc"
-        }
-      ],
-      "networkMode": "PUBLIC",
-      "protocol": "HTTP",
-      "tags": {
-        "UseCase": "03"
-      }
-    }
-  ],
+  "runtimes": [],
   "memories": [],
   "knowledgeBases": [],
-  "credentials": [
-    {
-      "authorizerType": "OAuthCredentialProvider",
-      "name": "cognito-orders-m2m",
-      "discoveryUrl": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CZAVbCDhv/.well-known/openid-configuration",
-      "scopes": [
-        "https://aia-uc03/ops/orders.read"
-      ],
-      "vendor": "CustomOauth2"
-    },
-    {
-      "authorizerType": "OAuthCredentialProvider",
-      "name": "ops-gateway-oauth",
-      "discoveryUrl": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CZAVbCDhv/.well-known/openid-configuration",
-      "vendor": "CustomOauth2",
-      "managed": true,
-      "usage": "inbound"
-    }
-  ],
+  "credentials": [],
   "evaluators": [],
   "onlineEvalConfigs": [],
-  "agentCoreGateways": [
-    {
-      "name": "ops-gateway",
-      "protocolType": "MCP",
-      "description": "Northwind operations gateway",
-      "targets": [
-        {
-          "name": "orders",
-          "targetType": "openApiSchema",
-          "outboundAuth": {
-            "type": "OAUTH",
-            "credentialName": "cognito-orders-m2m"
-          },
-          "schemaSource": {
-            "inline": {
-              "path": "agentcore/gateway/orders-openapi.json"
-            }
-          }
-        },
-        {
-          "name": "ticketing",
-          "targetType": "lambdaFunctionArn",
-          "lambdaFunctionArn": {
-            "lambdaArn": "arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-ticketing",
-            "toolSchemaFile": "agentcore/gateway/create-ticket-tool.json"
-          }
-        },
-        {
-          "name": "crm",
-          "targetType": "mcpServer",
-          "toolDefinitions": [
-            {
-              "name": "crm",
-              "description": "Tool for crm",
-              "inputSchema": {
-                "type": "object"
-              }
-            }
-          ],
-          "endpoint": "https://pakjn2tjya3tmiocnqpujerppe0pidtw.lambda-url.us-east-1.on.aws/mcp"
-        }
-      ],
-      "authorizerType": "CUSTOM_JWT",
-      "authorizerConfiguration": {
-        "customJwtAuthorizer": {
-          "discoveryUrl": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CZAVbCDhv/.well-known/openid-configuration",
-          "allowedClients": [
-            "66n9f4uo3eqc18jdeujq3tltd2"
-          ]
-        }
-      },
-      "enableSemanticSearch": true,
-      "exceptionLevel": "NONE"
-    }
-  ],
+  "agentCoreGateways": [],
   "policyEngines": [],
   "configBundles": [],
   "abTests": [],
