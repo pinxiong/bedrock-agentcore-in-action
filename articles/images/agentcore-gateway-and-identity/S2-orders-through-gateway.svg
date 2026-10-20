@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2305 938" width="2305" height="938" role="img">
+<title>tools/call orders___listOrders</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+</defs>
+<rect width="2305" height="938" rx="18" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="2304" height="937" rx="18" fill="none" stroke="#1e2d4d"/>
+<rect x="0" y="0" width="2305" height="76" rx="18" fill="#0f1b33"/>
+<rect x="0" y="58" width="2305" height="18" fill="#0f1b33"/>
+<circle cx="34" cy="38" r="8" fill="#ff5f57"/>
+<circle cx="60" cy="38" r="8" fill="#febc2e"/>
+<circle cx="86" cy="38" r="8" fill="#28c840"/>
+<text x="1152" y="46" text-anchor="middle" font-family="Menlo, monospace" font-size="24" fill="#7c8db5">tools/call orders___listOrders</text>
+<text xml:space="preserve" x="44" y="148" font-family="Menlo, monospace" font-size="28" font-weight="600" fill="#5eead4">$ curl -s -X POST $GATEWAY/mcp -H 'authorization: Bearer &lt;token&gt;' \</text>
+<text xml:space="preserve" x="44" y="191" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">    -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"orders___listOrders","arguments":{"status":"delayed"}}}' | ↵</text>
+<text xml:space="preserve" x="44" y="234" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">jq</text>
+<text xml:space="preserve" x="44" y="277" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">{</text>
+<text xml:space="preserve" x="44" y="320" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">    "jsonrpc": "2.0",</text>
+<text xml:space="preserve" x="44" y="363" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">    "id": 1,</text>
+<text xml:space="preserve" x="44" y="406" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">    "result": {</text>
+<text xml:space="preserve" x="44" y="449" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#fb7185">        "isError": false,</text>
+<text xml:space="preserve" x="44" y="492" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">        "content": [</text>
+<text xml:space="preserve" x="44" y="535" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">            {</text>
+<text xml:space="preserve" x="44" y="578" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">                "type": "text",</text>
+<text xml:space="preserve" x="44" y="621" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">                "text": "{\"status_filter\":\"delayed\",\"count\":3,\"orders\":[{\"order_id\":\"SO-1041\",\"region\":\"north\",\"un↵</text>
+<text xml:space="preserve" x="44" y="664" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">its\":240,\"status\":\"delayed\"},{\"order_id\":\"SO-1042\",\"region\":\"north\",\"units\":60,\"status\":\"delayed\"},{\"region\":\↵</text>
+<text xml:space="preserve" x="44" y="707" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">"north\",\"order_id\":\"SO-1044\",\"units\":18,\"status\":\"delayed\"}],\"auth\":\"bearer\",\"token_prefix\":\"eyJraWQiOiJE\"}"</text>
+<text xml:space="preserve" x="44" y="750" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">            }</text>
+<text xml:space="preserve" x="44" y="793" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">        ]</text>
+<text xml:space="preserve" x="44" y="836" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">    }</text>
+<text xml:space="preserve" x="44" y="879" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">... (capture truncated for the figure)</text>
+</svg>

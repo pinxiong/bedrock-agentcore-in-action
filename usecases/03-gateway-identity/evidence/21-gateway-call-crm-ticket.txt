@@ -1,0 +1,29 @@
+$ tools/call crm___getCustomer {"customer_id":"CUS-7781"}
+{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+        "content": [
+            {
+                "type": "text",
+                "text": "{\"customer_id\": \"CUS-7781\", \"name\": \"Northwind Gear Harbin\", \"tier\": \"gold\", \"account_manager\": \"li.wei\", \"open_incidents\": 2}"
+            }
+        ],
+        "isError": false
+    }
+}
+
+$ tools/call ticketing___createTicket {"order_id":"SO-1041","summary":"Expedite 240 units to Harbin before Monday"}
+{
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+        "isError": false,
+        "content": [
+            {
+                "type": "text",
+                "text": "{\"ok\":true,\"ticket_id\":\"TCK-EF4197DC97\",\"order_id\":\"SO-1041\"}"
+            }
+        ]
+    }
+}

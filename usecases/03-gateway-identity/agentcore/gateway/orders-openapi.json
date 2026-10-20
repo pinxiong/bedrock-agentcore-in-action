@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Northwind order service",
+    "version": "1.0.0",
+    "description": "Read-only order lookup. Every request must carry a bearer token minted by the identity provider."
+  },
+  "servers": [
+    {
+      "url": "https://b5rocyu5d53td7i5jjdr3onavm0uipdg.lambda-url.us-east-1.on.aws"
+    }
+  ],
+  "paths": {
+    "/orders": {
+      "get": {
+        "operationId": "listOrders",
+        "summary": "List orders by status",
+        "description": "Returns the orders whose status matches the filter, with the units still outstanding.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["delayed", "shipped", "cancelled"]
+            },
+            "description": "Order status to filter on. Defaults to delayed."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders that match the filter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status_filter": { "type": "string" },
+                    "count": { "type": "integer" },
+                    "orders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "order_id": { "type": "string" },
+                          "region": { "type": "string" },
+                          "units": { "type": "integer" },
+                          "status": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

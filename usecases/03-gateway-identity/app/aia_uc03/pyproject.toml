@@ -1,0 +1,15 @@
+[project]
+name = "03-gateway-identity"
+version = "0.1.0"
+description = "Gateway Identity: use case 03 of bedrock-agentcore-in-action"
+requires-python = ">=3.10"   # CodeZip runtime targets go up to PYTHON_3_14
+dependencies = [
+    "strands-agents",
+    "bedrock-agentcore",
+]
+
+[project.optional-dependencies]
+test = ["boto3", "pytest"]
+
+[tool.uv]
+package = false

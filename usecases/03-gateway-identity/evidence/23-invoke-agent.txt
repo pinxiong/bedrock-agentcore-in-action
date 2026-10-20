@@ -1,0 +1,12 @@
+$ agentcore invoke --prompt "Three delayed orders in the north region. Check what is delayed, open tickets for the ones above 100 units, and tell me who to escalate to."
+Great! I found 3 delayed orders as mentioned. Now I need to open tickets for orders with units above 100. Looking at the orders:
+- SO-1041 has 240 units (above 100, needs ticket)
+- SO-1042 has 60 units (below 100)
+- SO-1044 has 18 units (below 100)
+So I need to open a ticket only for SO-1041.
+Now let me get the customer information for CUS-7781 to find out who to escalate to.
+Based on my actions, here are the results:
+There are "3" delayed orders. Only one order got a ticket: SO-1041 (which has 240 units). The account manager to escalate to is "li.wei". The ticket ID created for SO-1041 is "TCK-DA72266CF0". The other delayed orders (SO-1042 and SO-1044) didn't require tickets as they have 60 and 18 units respectively, both below the 100-unit threshold.
+Session: 824c5e55-183c-4428-823e-e63c2bbc8a1e
+To resume: agentcore invoke --session-id 824c5e55-183c-4428-823e-e63c2bbc8a1e
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/03-gateway-identity/agentcore/.cli/logs/invoke/invoke-aia_uc03-20261020-113451.log

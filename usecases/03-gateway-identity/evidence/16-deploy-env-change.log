@@ -1,0 +1,55 @@
+================================================================================
+AGENTCORE DEPLOY LOG
+Command: deploy
+Started: 2026-10-20T03:32:30.187Z
+================================================================================
+
+
+[11:32:30] STEP: Load deployment target
+[11:32:30] Status: SUCCESS
+[11:32:30] Duration: 1ms
+
+[11:32:30] STEP: Validate project
+[11:32:31] Status: SUCCESS
+[11:32:31] Duration: 941ms
+
+[11:32:31] STEP: Sync CDK dependencies
+[11:32:31] Status: SUCCESS
+[11:32:31] Duration: 3ms
+
+[11:32:31] STEP: Build CDK project
+[11:32:33] Status: SUCCESS
+[11:32:33] Duration: 2.3s
+
+[11:32:33] STEP: Creating OAuth credentials...
+[11:32:35] Status: SUCCESS
+[11:32:35] Duration: 2.0s
+
+[11:32:35] STEP: Synthesize CloudFormation
+[11:32:38] Status: SUCCESS
+[11:32:38] Duration: 3.2s
+
+[11:32:38] STEP: Check bootstrap status
+[11:32:39] Status: SUCCESS
+[11:32:39] Duration: 914ms
+
+[11:32:39] STEP: Check stack status
+[11:32:40] Status: SUCCESS
+[11:32:40] Duration: 838ms
+
+[11:32:40] STEP: Deploying gateways...
+[11:33:54] Status: SUCCESS
+[11:33:54] Duration: 1m 14s
+
+[11:33:54] STEP: Persist deployment state
+[11:33:55] Status: SUCCESS
+[11:33:55] Duration: 798ms
+[11:33:55] Gateway URLs: ops-gateway: arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc03-ops-gateway-00gtncwhmj
+[11:33:56]   ticketing: ✓ synced
+[11:33:56]   crm: ✓ synced
+[11:33:56]   orders: ✓ synced
+
+================================================================================
+COMPLETED SUCCESSFULLY
+Total Duration: 1m 32s
+================================================================================

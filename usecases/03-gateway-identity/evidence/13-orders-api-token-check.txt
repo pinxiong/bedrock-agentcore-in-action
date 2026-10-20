@@ -1,0 +1,30 @@
+$ curl -s -o /dev/null -w "%{http_code}" "<url>/orders?status=delayed"
+401
+
+$ curl -s -H "Authorization: Bearer <token>" "<url>/orders?status=delayed" | jq
+{
+    "status_filter": "delayed",
+    "count": 3,
+    "orders": [
+        {
+            "order_id": "SO-1041",
+            "region": "north",
+            "units": 240,
+            "status": "delayed"
+        },
+        {
+            "order_id": "SO-1042",
+            "region": "north",
+            "units": 60,
+            "status": "delayed"
+        },
+        {
+            "region": "north",
+            "order_id": "SO-1044",
+            "units": 18,
+            "status": "delayed"
+        }
+    ],
+    "auth": "bearer",
+    "token_prefix": "eyJraWQiOiJE"
+}

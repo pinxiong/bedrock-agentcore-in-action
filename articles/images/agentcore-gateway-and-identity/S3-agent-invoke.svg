@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2305 766" width="2305" height="766" role="img">
+<title>agentcore invoke · the whole workflow</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+</defs>
+<rect width="2305" height="766" rx="18" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="2304" height="765" rx="18" fill="none" stroke="#1e2d4d"/>
+<rect x="0" y="0" width="2305" height="76" rx="18" fill="#0f1b33"/>
+<rect x="0" y="58" width="2305" height="18" fill="#0f1b33"/>
+<circle cx="34" cy="38" r="8" fill="#ff5f57"/>
+<circle cx="60" cy="38" r="8" fill="#febc2e"/>
+<circle cx="86" cy="38" r="8" fill="#28c840"/>
+<text x="1152" y="46" text-anchor="middle" font-family="Menlo, monospace" font-size="24" fill="#7c8db5">agentcore invoke · the whole workflow</text>
+<text xml:space="preserve" x="44" y="148" font-family="Menlo, monospace" font-size="28" font-weight="600" fill="#5eead4">$ agentcore invoke --prompt "Three delayed orders in the north region. Check what is delayed, open tickets for the ones above 100 u↵</text>
+<text xml:space="preserve" x="44" y="191" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">nits, and tell me who to escalate to."</text>
+<text xml:space="preserve" x="44" y="234" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">Great! I found 3 delayed orders as mentioned. Now I need to open tickets for orders with units above 100. Looking at the orders:</text>
+<text xml:space="preserve" x="44" y="277" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">- SO-1041 has 240 units (above 100, needs ticket)</text>
+<text xml:space="preserve" x="44" y="320" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">- SO-1042 has 60 units (below 100)</text>
+<text xml:space="preserve" x="44" y="363" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">- SO-1044 has 18 units (below 100)</text>
+<text xml:space="preserve" x="44" y="406" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">So I need to open a ticket only for SO-1041.</text>
+<text xml:space="preserve" x="44" y="449" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">Now let me get the customer information for CUS-7781 to find out who to escalate to.</text>
+<text xml:space="preserve" x="44" y="492" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">Based on my actions, here are the results:</text>
+<text xml:space="preserve" x="44" y="535" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">There are "3" delayed orders. Only one order got a ticket: SO-1041 (which has 240 units). The account manager to escalate to is "li↵</text>
+<text xml:space="preserve" x="44" y="578" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">.wei". The ticket ID created for SO-1041 is "TCK-DA72266CF0". The other delayed orders (SO-1042 and SO-1044) didn't require tickets↵</text>
+<text xml:space="preserve" x="44" y="621" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5"> as they have 60 and 18 units respectively, both below the 100-unit threshold.</text>
+<text xml:space="preserve" x="44" y="664" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">Session: 824c5e55-183c-4428-823e-e63c2bbc8a1e</text>
+<text xml:space="preserve" x="44" y="707" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">To resume: agentcore invoke --session-id 824c5e55-183c-4428-823e-e63c2bbc8a1e</text>
+</svg>

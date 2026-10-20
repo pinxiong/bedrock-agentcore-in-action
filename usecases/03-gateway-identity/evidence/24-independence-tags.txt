@@ -1,0 +1,11 @@
+$ aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=Project,Values=agentcore-in-action --query "ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==\`UseCase\`].Value|[0]}" --output text
+arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc03-ops-gateway-00gtncwhmj	03
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc03_aia_uc03-12HmdUGz9i	03
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc03_aia_uc03-12HmdUGz9i/runtime-endpoint/DEFAULT	03
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc03_aia_uc03-12HmdUGz9i	03
+arn:aws:dynamodb:us-east-1:123456789012:table/aia-uc03-orders	03
+arn:aws:dynamodb:us-east-1:123456789012:table/aia-uc03-tickets	03
+arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-crm	03
+arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-orders-api	03
+arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-ticketing	03
+arn:aws:secretsmanager:us-east-1:123456789012:secret:aia-uc03-gateway-client-eeXVGc	03

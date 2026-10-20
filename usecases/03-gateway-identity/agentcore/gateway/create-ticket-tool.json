@@ -1,0 +1,23 @@
+[
+  {
+    "name": "createTicket",
+    "description": "Open a ticket for one order. Use it when a delayed order needs a human to act, and always pass the order id the lookup returned.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Order id, for example SO-1041"
+        },
+        "summary": {
+          "type": "string",
+          "description": "One sentence describing what a human must do"
+        }
+      },
+      "required": [
+        "order_id",
+        "summary"
+      ]
+    }
+  }
+]

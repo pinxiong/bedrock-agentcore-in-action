@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 780" width="1440" height="780" role="img">
+<title>One token in, three systems out: the agent, the gateway, and the systems behind it</title>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/>
+  </linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#2563eb"/>
+  </linearGradient>
+  <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#6d28d9"/><stop offset="1" stop-color="#7c3aed"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/>
+  </filter>
+</defs>
+<rect width="1440" height="780" fill="url(#bg)"/>
+
+<g font-family="Menlo, monospace">
+  <rect x="48" y="40" width="292" height="40" rx="20" fill="#0f1b33" stroke="#1e2d4d"/>
+  <text x="70" y="66" font-size="19" fill="#5eead4">GATEWAY AND IDENTITY</text>
+</g>
+<text x="48" y="128" font-family="Georgia, serif" font-size="40" fill="#e8eefb">One token in, three systems out</text>
+<text x="48" y="166" font-family="Georgia, serif" font-size="21" fill="#8ba0c8">The agent never holds a system credential. The gateway mints one per call.</text>
+
+<!-- caller -->
+<g filter="url(#shadow)">
+  <rect x="48" y="230" width="300" height="200" rx="18" fill="#111f3d" stroke="#2563eb" stroke-width="2"/>
+</g>
+<text x="72" y="268" font-family="Menlo, monospace" font-size="17" fill="#5eead4">RUNTIME · aia_uc03</text>
+<text x="72" y="302" font-family="Georgia, serif" font-size="24" fill="#e8eefb">Operations assistant</text>
+<text x="72" y="334" font-family="Menlo, monospace" font-size="15" fill="#8ba0c8">holds: one secret ARN</text>
+<text x="72" y="358" font-family="Menlo, monospace" font-size="15" fill="#8ba0c8">holds: no API key</text>
+<text x="72" y="382" font-family="Menlo, monospace" font-size="15" fill="#8ba0c8">holds: no client secret</text>
+<text x="72" y="410" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">token cached 1 h, then re-minted</text>
+
+<!-- cognito -->
+<g filter="url(#shadow)">
+  <rect x="48" y="556" width="300" height="150" rx="18" fill="#111f3d" stroke="#0d9488" stroke-width="2"/>
+</g>
+<text x="72" y="592" font-family="Menlo, monospace" font-size="17" fill="#5eead4">COGNITO · ops pool</text>
+<text x="72" y="626" font-family="Georgia, serif" font-size="22" fill="#e8eefb">issues the M2M token</text>
+<text x="72" y="658" font-family="Menlo, monospace" font-size="14" fill="#8ba0c8">scope orders.read</text>
+<text x="72" y="682" font-family="Menlo, monospace" font-size="14" fill="#8ba0c8">TTL 3600 s</text>
+
+<!-- gateway -->
+<g filter="url(#shadow)">
+  <rect x="500" y="230" width="330" height="476" rx="20" fill="#161033" stroke="#7c3aed" stroke-width="2"/>
+</g>
+<text x="526" y="270" font-family="Menlo, monospace" font-size="17" fill="#c4b5fd">GATEWAY · ops-gateway</text>
+<text x="526" y="306" font-family="Georgia, serif" font-size="25" fill="#e8eefb">Validates the caller,</text>
+<text x="526" y="338" font-family="Georgia, serif" font-size="25" fill="#e8eefb">then borrows its own key</text>
+<text x="526" y="376" font-family="Menlo, monospace" font-size="15" fill="#8ba0c8">authorizer CUSTOM_JWT</text>
+<text x="526" y="400" font-family="Menlo, monospace" font-size="15" fill="#8ba0c8">protocol MCP</text>
+<rect x="526" y="424" width="278" height="1" fill="#2a2350"/>
+<text x="526" y="458" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">target 1 · openApiSchema</text>
+<text x="526" y="482" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">target 2 · lambdaFunctionArn</text>
+<text x="526" y="506" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">target 3 · mcpServer</text>
+<text x="526" y="546" font-family="Georgia, serif" font-size="18" fill="#a5b4fc">tools/list returns 4 names,</text>
+<text x="526" y="572" font-family="Georgia, serif" font-size="18" fill="#a5b4fc">one per target plus search</text>
+<text x="526" y="618" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">no JWT: HTTP 401</text>
+<text x="526" y="642" font-family="Menlo, monospace" font-size="14" fill="#6f83a8">with JWT: tools/call runs</text>
+
+<!-- systems -->
+<g filter="url(#shadow)">
+  <rect x="1010" y="230" width="382" height="138" rx="16" fill="#111f3d" stroke="#2563eb" stroke-width="2"/>
+</g>
+<text x="1034" y="266" font-family="Menlo, monospace" font-size="16" fill="#93c5fd">ORDER SERVICE · Lambda URL</text>
+<text x="1034" y="300" font-family="Georgia, serif" font-size="21" fill="#e8eefb">orders table, GET /orders</text>
+<text x="1034" y="330" font-family="Menlo, monospace" font-size="14" fill="#8ba0c8">sees a bearer minted by the gateway</text>
+
+<g filter="url(#shadow)">
+  <rect x="1010" y="392" width="382" height="138" rx="16" fill="#111f3d" stroke="#ea580c" stroke-width="2"/>
+</g>
+<text x="1034" y="428" font-family="Menlo, monospace" font-size="16" fill="#fdba74">TICKETING · Lambda ARN</text>
+<text x="1034" y="462" font-family="Georgia, serif" font-size="21" fill="#e8eefb">createTicket writes a row</text>
+<text x="1034" y="492" font-family="Menlo, monospace" font-size="14" fill="#8ba0c8">ticket id returned to the model</text>
+
+<g filter="url(#shadow)">
+  <rect x="1010" y="554" width="382" height="138" rx="16" fill="#111f3d" stroke="#059669" stroke-width="2"/>
+</g>
+<text x="1034" y="590" font-family="Menlo, monospace" font-size="16" fill="#6ee7b7">CRM · MCP endpoint</text>
+<text x="1034" y="624" font-family="Georgia, serif" font-size="21" fill="#e8eefb">getCustomer returns the owner</text>
+<text x="1034" y="654" font-family="Menlo, monospace" font-size="14" fill="#8ba0c8">JSON-RPC over one path: /mcp</text>
+
+<!-- edges -->
+<g stroke="#0d9488" stroke-width="2.5" fill="none">
+  <path d="M348 330 C 410 330, 410 600, 348 600" stroke-dasharray="0"/>
+  <path d="M200 430 L 200 556" marker-end="url(#arrowTeal)"/>
+</g>
+<defs>
+  <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L7,3 z" fill="#0d9488"/>
+  </marker>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L7,3 z" fill="#2563eb"/>
+  </marker>
+  <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L7,3 z" fill="#7c3aed"/>
+  </marker>
+  <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L7,3 z" fill="#ea580c"/>
+  </marker>
+  <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L7,3 z" fill="#059669"/>
+  </marker>
+</defs>
+
+<path d="M348 300 L 494 300" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+<text x="356" y="288" font-family="Menlo, monospace" font-size="14" fill="#93c5fd">MCP + JWT</text>
+
+<path d="M200 556 L 200 436" stroke="#0d9488" stroke-width="2.5" fill="none" marker-end="url(#arrowTeal)"/>
+<text x="212" y="500" font-family="Menlo, monospace" font-size="14" fill="#5eead4">token</text>
+
+<path d="M500 600 L 352 640" stroke="#0d9488" stroke-width="2.5" fill="none" stroke-dasharray="7 6" marker-end="url(#arrowTeal)"/>
+<text x="380" y="632" font-family="Menlo, monospace" font-size="13" fill="#5eead4">discovery</text>
+
+<path d="M830 296 L 1004 296" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+<text x="848" y="284" font-family="Menlo, monospace" font-size="14" fill="#93c5fd">OAuth → bearer</text>
+
+<path d="M830 460 L 1004 460" stroke="#ea580c" stroke-width="3" fill="none" marker-end="url(#arrowOrange)"/>
+<text x="866" y="448" font-family="Menlo, monospace" font-size="14" fill="#fdba74">invoke</text>
+
+<path d="M830 624 L 1004 624" stroke="#059669" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+<text x="856" y="612" font-family="Menlo, monospace" font-size="14" fill="#6ee7b7">tools/call</text>
+
+<text x="48" y="748" font-family="Menlo, monospace" font-size="15" fill="#6f83a8">cost of the whole lab: two DynamoDB tables, three Lambdas, one gateway, one runtime, one user pool</text>
+</svg>

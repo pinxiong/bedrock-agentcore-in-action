@@ -242,7 +242,7 @@ usecases:
     assertions:
       - all three target types appear in tools/list
       - a call without a JWT is rejected
-      - 3LO outbound triggers consent then auto-refreshes
+      - the order service sees a gateway-minted bearer while the agent source holds no secret
       - no plaintext credential exists in agent source
       - no resource from any other use case exists in the account
     cost_usd: 5

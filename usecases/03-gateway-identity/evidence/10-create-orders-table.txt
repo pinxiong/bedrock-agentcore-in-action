@@ -1,0 +1,5 @@
+{
+    "name": "aia-uc03-orders",
+    "status": "CREATING",
+    "arn": "arn:aws:dynamodb:us-east-1:123456789012:table/aia-uc03-orders"
+}

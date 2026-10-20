@@ -1,0 +1,8 @@
+$ curl -s -o /dev/null -w "%{http_code}" -X POST $GATEWAY/mcp -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}"
+401
+
+$ curl -s -X POST $GATEWAY/mcp -H "authorization: Bearer <token>" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}" | jq -r ".result.tools[].name"
+x_amz_bedrock_agentcore_search
+crm___getCustomer
+orders___listOrders
+ticketing___createTicket

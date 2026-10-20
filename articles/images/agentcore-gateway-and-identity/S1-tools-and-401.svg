@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2305 551" width="2305" height="551" role="img">
+<title>gateway · no token 401, then tools/list</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+</defs>
+<rect width="2305" height="551" rx="18" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="2304" height="550" rx="18" fill="none" stroke="#1e2d4d"/>
+<rect x="0" y="0" width="2305" height="76" rx="18" fill="#0f1b33"/>
+<rect x="0" y="58" width="2305" height="18" fill="#0f1b33"/>
+<circle cx="34" cy="38" r="8" fill="#ff5f57"/>
+<circle cx="60" cy="38" r="8" fill="#febc2e"/>
+<circle cx="86" cy="38" r="8" fill="#28c840"/>
+<text x="1152" y="46" text-anchor="middle" font-family="Menlo, monospace" font-size="24" fill="#7c8db5">gateway · no token 401, then tools/list</text>
+<text xml:space="preserve" x="44" y="148" font-family="Menlo, monospace" font-size="28" font-weight="600" fill="#5eead4">$ curl -s -o /dev/null -w "%{http_code}" -X POST $GATEWAY/mcp -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}"</text>
+<text xml:space="preserve" x="44" y="191" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">401</text>
+<text xml:space="preserve" x="44" y="234" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="277" font-family="Menlo, monospace" font-size="28" font-weight="600" fill="#5eead4">$ curl -s -X POST $GATEWAY/mcp -H "authorization: Bearer &lt;token&gt;" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}" | j↵</text>
+<text xml:space="preserve" x="44" y="320" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">q -r ".result.tools[].name"</text>
+<text xml:space="preserve" x="44" y="363" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">x_amz_bedrock_agentcore_search</text>
+<text xml:space="preserve" x="44" y="406" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">crm___getCustomer</text>
+<text xml:space="preserve" x="44" y="449" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">orders___listOrders</text>
+<text xml:space="preserve" x="44" y="492" font-family="Menlo, monospace" font-size="28" font-weight="400" fill="#dfe7f5">ticketing___createTicket</text>
+</svg>
