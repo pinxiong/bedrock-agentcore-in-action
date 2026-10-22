@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2248 941" width="2248" height="941" role="img">
+<title>agentcore add gateway, credential and three targets</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+</defs>
+<rect width="2248" height="941" rx="18" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="2247" height="940" rx="18" fill="none" stroke="#1e2d4d"/>
+<rect x="0" y="0" width="2248" height="76" rx="18" fill="#0f1b33"/>
+<rect x="0" y="58" width="2248" height="18" fill="#0f1b33"/>
+<circle cx="34" cy="38" r="8" fill="#ff5f57"/>
+<circle cx="60" cy="38" r="8" fill="#febc2e"/>
+<circle cx="86" cy="38" r="8" fill="#28c840"/>
+<text x="1124" y="46" text-anchor="middle" font-family="Menlo, monospace" font-size="24" fill="#7c8db5">agentcore add gateway, credential and three targets</text>
+<text xml:space="preserve" x="44" y="144" font-family="Menlo, monospace" font-size="24" font-weight="600" fill="#5eead4">$ agentcore add gateway --name ops-gateway --description "Northwind operations gateway" --protocol-type MCP --authorizer-type CUSTOM_JWT --discovery-↵</text>
+<text xml:space="preserve" x="44" y="181" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">url "$DISCOVERY" --allowed-clients 66n9f4uo3eqc18jdeujq3tltd2</text>
+<text xml:space="preserve" x="44" y="218" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Added gateway 'ops-gateway'</text>
+<text xml:space="preserve" x="44" y="255" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="292" font-family="Menlo, monospace" font-size="24" font-weight="600" fill="#5eead4">$ agentcore add credential --name cognito-orders-m2m --type oauth --discovery-url "$DISCOVERY" --client-id "$CID" --client-secret "$CSECRET" --scopes↵</text>
+<text xml:space="preserve" x="44" y="329" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5"> "https://aia-uc03/ops/orders.read"</text>
+<text xml:space="preserve" x="44" y="366" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Warning: passing secrets as CLI flags exposes them to shell history and the process table. Prefer interactive mode (run `agentcore add credential` wi↵</text>
+<text xml:space="preserve" x="44" y="403" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">th no secret flags) for masked entry.</text>
+<text xml:space="preserve" x="44" y="440" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Added credential 'cognito-orders-m2m'</text>
+<text xml:space="preserve" x="44" y="477" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="514" font-family="Menlo, monospace" font-size="24" font-weight="600" fill="#5eead4">$ agentcore add gateway-target --name orders --gateway ops-gateway --type open-api-schema --schema agentcore/gateway/orders-openapi.json --outbound-a↵</text>
+<text xml:space="preserve" x="44" y="551" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">uth oauth --credential-name cognito-orders-m2m</text>
+<text xml:space="preserve" x="44" y="588" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Added gateway target 'orders'</text>
+<text xml:space="preserve" x="44" y="625" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="662" font-family="Menlo, monospace" font-size="24" font-weight="600" fill="#5eead4">$ agentcore add gateway-target --name ticketing --gateway ops-gateway --type lambda-function-arn --lambda-arn arn:aws:lambda:us-east-1:123456789012:f↵</text>
+<text xml:space="preserve" x="44" y="699" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">unction:aia-uc03-ticketing --tool-schema-file agentcore/gateway/create-ticket-tool.json</text>
+<text xml:space="preserve" x="44" y="736" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Added gateway target 'ticketing'</text>
+<text xml:space="preserve" x="44" y="773" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="810" font-family="Menlo, monospace" font-size="24" font-weight="600" fill="#5eead4">$ agentcore add gateway-target --name crm --gateway ops-gateway --type mcp-server --endpoint https://pakjn2tjya3tmiocnqpujerppe0pidtw.lambda-url.us-e↵</text>
+<text xml:space="preserve" x="44" y="847" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">ast-1.on.aws/mcp</text>
+<text xml:space="preserve" x="44" y="884" font-family="Menlo, monospace" font-size="24" font-weight="400" fill="#dfe7f5">Added gateway target 'crm'</text>
+</svg>

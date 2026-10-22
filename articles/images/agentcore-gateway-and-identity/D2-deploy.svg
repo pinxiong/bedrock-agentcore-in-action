@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1663 1988" width="1663" height="1988" role="img">
+<title>first deploy, 3m 4s</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+</defs>
+<rect width="1663" height="1988" rx="18" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="1662" height="1987" rx="18" fill="none" stroke="#1e2d4d"/>
+<rect x="0" y="0" width="1663" height="76" rx="18" fill="#0f1b33"/>
+<rect x="0" y="58" width="1663" height="18" fill="#0f1b33"/>
+<circle cx="34" cy="38" r="8" fill="#ff5f57"/>
+<circle cx="60" cy="38" r="8" fill="#febc2e"/>
+<circle cx="86" cy="38" r="8" fill="#28c840"/>
+<text x="831" y="46" text-anchor="middle" font-family="Menlo, monospace" font-size="24" fill="#7c8db5">first deploy, 3m 4s</text>
+<text xml:space="preserve" x="44" y="141" font-family="Menlo, monospace" font-size="21" font-weight="600" fill="#5eead4">$ agentcore deploy -y --target default</text>
+<text xml:space="preserve" x="44" y="173" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="205" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">================================================================================</text>
+<text xml:space="preserve" x="44" y="237" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">AGENTCORE DEPLOY LOG</text>
+<text xml:space="preserve" x="44" y="269" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">Command: deploy</text>
+<text xml:space="preserve" x="44" y="301" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">Started: 2026-10-20T03:16:06.062Z</text>
+<text xml:space="preserve" x="44" y="333" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">================================================================================</text>
+<text xml:space="preserve" x="44" y="365" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="397" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="429" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] STEP: Load deployment target</text>
+<text xml:space="preserve" x="44" y="461" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="493" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] Duration: 22ms</text>
+<text xml:space="preserve" x="44" y="525" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="557" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] STEP: Validate project</text>
+<text xml:space="preserve" x="44" y="589" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="621" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] Duration: 858ms</text>
+<text xml:space="preserve" x="44" y="653" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="685" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:06] STEP: Sync CDK dependencies</text>
+<text xml:space="preserve" x="44" y="717" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:07] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="749" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:07] Duration: 22ms</text>
+<text xml:space="preserve" x="44" y="781" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="813" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:07] STEP: Build CDK project</text>
+<text xml:space="preserve" x="44" y="845" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:31] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="877" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:31] Duration: 24.8s</text>
+<text xml:space="preserve" x="44" y="909" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="941" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:31] STEP: Creating OAuth credentials...</text>
+<text xml:space="preserve" x="44" y="973" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:35] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1005" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:35] Duration: 4.0s</text>
+<text xml:space="preserve" x="44" y="1037" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1069" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:16:35] STEP: Synthesize CloudFormation</text>
+<text xml:space="preserve" x="44" y="1101" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:24] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1133" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:24] Duration: 48.5s</text>
+<text xml:space="preserve" x="44" y="1165" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1197" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:24] STEP: Check bootstrap status</text>
+<text xml:space="preserve" x="44" y="1229" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:25] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1261" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:25] Duration: 946ms</text>
+<text xml:space="preserve" x="44" y="1293" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1325" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:25] STEP: Check stack status</text>
+<text xml:space="preserve" x="44" y="1357" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:26] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1389" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:26] Duration: 859ms</text>
+<text xml:space="preserve" x="44" y="1421" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1453" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:17:26] STEP: Deploying gateways...</text>
+<text xml:space="preserve" x="44" y="1485" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:04] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1517" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:04] Duration: 1m 38s</text>
+<text xml:space="preserve" x="44" y="1549" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1581" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:04] STEP: Persist deployment state</text>
+<text xml:space="preserve" x="44" y="1613" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:05] Status: SUCCESS</text>
+<text xml:space="preserve" x="44" y="1645" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:05] Duration: 909ms</text>
+<text xml:space="preserve" x="44" y="1677" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:05] Gateway URLs: ops-gateway: arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc03-ops-gateway-00gtncwhmj</text>
+<text xml:space="preserve" x="44" y="1709" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:07]   ticketing: ✓ synced</text>
+<text xml:space="preserve" x="44" y="1741" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:07]   crm: ✓ synced</text>
+<text xml:space="preserve" x="44" y="1773" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">[11:19:07]   orders: ✓ synced</text>
+<text xml:space="preserve" x="44" y="1805" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5"></text>
+<text xml:space="preserve" x="44" y="1837" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">================================================================================</text>
+<text xml:space="preserve" x="44" y="1869" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">COMPLETED SUCCESSFULLY</text>
+<text xml:space="preserve" x="44" y="1901" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">Total Duration: 3m 4s</text>
+<text xml:space="preserve" x="44" y="1933" font-family="Menlo, monospace" font-size="21" font-weight="400" fill="#dfe7f5">================================================================================</text>
+</svg>

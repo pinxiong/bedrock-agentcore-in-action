@@ -2,7 +2,7 @@
 title: "Reaching Real Systems Without Holding Credentials: Gateway and Identity"
 description: "One JWT in, three systems out: an AgentCore Gateway fronts an order API, a ticketing function and a CRM, and the agent source holds no system credential."
 tags: ["ai", "agents", "agentcore", "security"]
-date: 2026-10-23
+date: 2026-10-22
 draft: false
 canonical_url: "https://xiongpin.dev/posts/agentcore-gateway-and-identity/"
 cover:
@@ -50,8 +50,69 @@ The other six stay off. No Memory, no Policy engine, no Evaluations.
 
 ## The code
 
-The agent is one file. Three tools wrap one function, `mcp_call`, which speaks
-JSON-RPC to the gateway with a bearer token it mints itself:
+The whole use case is this folder:
+
+https://github.com/pinxiong/bedrock-agentcore-in-action/tree/master/usecases/03-gateway-identity
+
+```text
+03-gateway-identity/
+├── app/aia_uc03/main.py        three tools, one JSON-RPC client, one token cache
+├── app/aia_uc03/model/         model client and response cleanup
+├── infra/orders_api.py         order service, refuses any caller without a bearer
+├── infra/ticketing.py          Lambda behind the ticketing target
+├── infra/crm_mcp.py            small MCP server over a function URL
+├── agentcore/agentcore.json    runtime, gateway, credential, three targets
+├── agentcore/aws-targets.json  account and region
+└── agentcore/gateway/          OpenAPI descriptor and Lambda tool schema
+```
+
+Five files matter. `main.py` is the only one the runtime executes, and it holds
+the token cache, the `mcp_call` helper and the three `@tool` wrappers.
+`orders_api.py` returns `401` until it sees a bearer it can verify, and echoes
+which token it saw, which is how the outbound hop becomes observable.
+`ticketing.py` writes a ticket row and returns its id. `crm_mcp.py` answers
+`initialize`, `tools/list` and `tools/call` over JSON-RPC. The two files under
+`agentcore/gateway/` are the descriptors the gateway turns into tools.
+
+## How it works
+
+The gateway is a declaration, not code. Its whole behaviour sits in the
+`agentCoreGateways` array of `agentcore.json`: one protocol, one authorizer,
+three targets.
+
+```json
+{
+  "name": "ops-gateway",
+  "protocolType": "MCP",
+  "authorizerType": "CUSTOM_JWT",
+  "authorizerConfiguration": {
+    "customJwtAuthorizer": {
+      "discoveryUrl": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CZAVbCDhv/.well-known/openid-configuration",
+      "allowedClients": ["66n9f4uo3eqc18jdeujq3tltd2"]
+    }
+  },
+  "targets": [
+    { "name": "orders", "targetType": "openApiSchema",
+      "outboundAuth": { "type": "OAUTH", "credentialName": "cognito-orders-m2m" },
+      "schemaSource": { "inline": { "path": "agentcore/gateway/orders-openapi.json" } } },
+    { "name": "ticketing", "targetType": "lambdaFunctionArn",
+      "lambdaFunctionArn": { "lambdaArn": "arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-ticketing",
+                             "toolSchemaFile": "agentcore/gateway/create-ticket-tool.json" } },
+    { "name": "crm", "targetType": "mcpServer",
+      "endpoint": "https://pakjn2tjya3tmiocnqpujerppe0pidtw.lambda-url.us-east-1.on.aws/mcp" }
+  ]
+}
+```
+
+Three shapes, one tool list: an OpenAPI document, a Lambda with a tool schema,
+and a remote MCP server become `orders___listOrders`, `ticketing___createTicket`
+and `crm___getCustomer`. The triple underscore prefix is the target name the
+gateway prepends, so the model sees where a tool lives without being told. Only
+the first target carries `outboundAuth`, because only the order service demands
+a credential of its caller.
+
+On the agent side there is no system key at all. The runtime mints the gateway's
+token from a Cognito machine client, and caches it for the life of the process:
 
 ```python
 def bearer() -> str:
@@ -76,7 +137,7 @@ def bearer() -> str:
     return payload["access_token"]
 ```
 
-The secret behind `client_credentials()` is never in the source. The runtime
+The secret behind `client_credentials()` never reaches the source. The runtime
 reads it from Secrets Manager through `CLIENT_SECRET_ARN`, an environment
 variable in the contract:
 
@@ -87,28 +148,35 @@ def client_credentials() -> dict:
     return json.loads(raw)
 ```
 
-The three tools differ only in the gateway tool name they call:
-`orders___listOrders`, `ticketing___createTicket`, `crm___getCustomer`. The
-double underscore prefix is the target name the gateway prepends, one per
-backend.
+One IAM detail is easy to miss. The runtime role that the CLI creates knows
+nothing about Secrets Manager, so `get_secret_value` fails on the first invoke,
+and the model reports the access denied as a vague tool error. The fix is one
+inline policy, attached once with `aws iam put-role-policy` against the runtime
+role and scoped to the single secret:
 
-## How it works
-
-The gateway is declared in `agentcore.json` with an MCP protocol and a
-`CUSTOM_JWT` authorizer that points at the pool's OIDC discovery document:
-
-```bash
-agentcore add gateway --name ops-gateway --protocol-type MCP \
-  --authorizer-type CUSTOM_JWT \
-  --discovery-url "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_CZAVbCDhv/.well-known/openid-configuration" \
-  --allowed-clients 66n9f4uo3eqc18jdeujq3tltd2
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    { "Effect": "Allow",
+      "Action": ["secretsmanager:GetSecretValue"],
+      "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:aia-uc03-gateway-client-*" }
+  ]
+}
 ```
 
-Then three targets, one per shape of backend. The order service is an OpenAPI
-descriptor with an outbound OAuth credential attached, so the gateway exchanges
-that credential for a scoped token on every call:
+Least privilege survives here too: the role can read one secret, not the vault.
+
+## Deploy it
+
+The three backends come up first, because the gateway needs their addresses.
+Then the declarations, in this order:
 
 ```bash
+agentcore add gateway --name ops-gateway --description "Northwind operations gateway" \
+  --protocol-type MCP --authorizer-type CUSTOM_JWT \
+  --discovery-url "$DISCOVERY" --allowed-clients 66n9f4uo3eqc18jdeujq3tltd2
+
 agentcore add credential --name cognito-orders-m2m --type oauth \
   --discovery-url "$DISCOVERY" --client-id "$CID" --client-secret "$CSECRET" \
   --scopes "https://aia-uc03/ops/orders.read"
@@ -116,44 +184,44 @@ agentcore add credential --name cognito-orders-m2m --type oauth \
 agentcore add gateway-target --name orders --gateway ops-gateway \
   --type open-api-schema --schema agentcore/gateway/orders-openapi.json \
   --outbound-auth oauth --credential-name cognito-orders-m2m
+
+agentcore add gateway-target --name ticketing --gateway ops-gateway \
+  --type lambda-function-arn \
+  --lambda-arn arn:aws:lambda:us-east-1:123456789012:function:aia-uc03-ticketing \
+  --tool-schema-file agentcore/gateway/create-ticket-tool.json
+
+agentcore add gateway-target --name crm --gateway ops-gateway \
+  --type mcp-server \
+  --endpoint https://pakjn2tjya3tmiocnqpujerppe0pidtw.lambda-url.us-east-1.on.aws/mcp
 ```
 
-The ticketing function is a Lambda ARN with a tool schema file, and the CRM is
-an `mcp-server` target pointing at a function URL that answers `initialize`,
-`tools/list` and `tools/call`. Two Lambda functions, two DynamoDB tables and
-one user pool are the whole lab; every resource carries the tags
-`Project=agentcore-in-action`, `UseCase=03`, `AutoDelete=true`.
+![Five declarations and five confirmations, ending with the CRM target added](/images/agentcore-gateway-and-identity/D1-add-sequence.png)
 
-One IAM detail is easy to miss. The runtime role that the CLI creates knows
-nothing about Secrets Manager, so `get_secret_value` fails on the first invoke
-with an access denied that the model reports as a vague tool error. One inline
-policy on the runtime role, scoped to the one secret ARN, is the fix:
+Five confirmations, no AWS resource touched yet: the CLI is editing
+`agentcore.json`. Three Lambda functions, two DynamoDB tables and one user pool
+are the whole lab, and every resource carries the tags
+`Project=agentcore-in-action`, `UseCase=03`, `AutoDelete=true`. The credential
+command also prints the warning every reader should see once, about secrets on
+the command line.
 
-```bash
-aws iam put-role-policy --role-name "$RUNTIME_ROLE" \
-  --policy-name aia-uc03-secret-read \
-  --policy-document file://secret-read.json
-```
-
-Least privilege survives here too: the role can read one secret, not the vault.
-
-## Deploy it
-
-The backend comes up first, then one command deploys the runtime, the gateway
-and both credentials:
+One command then deploys the runtime, the gateway and both credentials:
 
 ```bash
 agentcore deploy -y --target default
 ```
 
-The first deploy took 3 minutes 4 seconds. Changing one environment variable
-afterwards, the gateway URL is only knowable after the gateway exists, took
-1 minute 32 seconds on the second deploy. The CLI reuses the CDK project, so the
-second run is a stack update, not a rebuild.
+![The first deploy: ten steps, 1m 38s of it in the gateway, 3m 4s in total](/images/agentcore-gateway-and-identity/D2-deploy.png)
 
-![The agent, the gateway and the three systems behind it](/images/agentcore-gateway-and-identity/F1-gateway-architecture.png)
+The first deploy took 3 minutes 4 seconds. Changing one environment variable
+afterwards, because the gateway URL is only knowable once the gateway exists,
+took 1 minute 32 seconds on the second deploy. The CLI reuses the CDK project,
+so the second run is a stack update, not a rebuild.
 
 ## What it produced
+
+The shape of the finished lab, three backends and one gateway in front of them:
+
+![The agent, the gateway and the three systems behind it](/images/agentcore-gateway-and-identity/F1-gateway-architecture.png)
 
 A call without a token is rejected before any routing happens:
 
