@@ -30,8 +30,8 @@
 <text x="424" y="472" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4">mints outbound</text>
 
 <line x1="654" y1="368" x2="712" y2="368" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
-<line x1="654" y1="425" x2="712" y2="425" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
-<line x1="654" y1="482" x2="712" y2="482" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="654" y1="425" x2="712" y2="457" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="654" y1="482" x2="712" y2="546" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
 
 <rect x="720" y="332" width="414" height="72" rx="12" fill="#0b1428" stroke="#059669" stroke-width="2"/>
 <text x="746" y="366" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">orders API</text>
