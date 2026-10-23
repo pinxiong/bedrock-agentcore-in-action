@@ -1,0 +1,36 @@
+$ aws lambda delete-function --function-name aia-uc04-refund --region us-east-1
+{
+    "StatusCode": 204
+}
+exit=0
+$ aws logs delete-log-group --log-group-name /aws/vendedlogs/bedrock-agentcore/gateway/APPLICATION_LOGS/aiauc04-refund-gateway-vxib2yw9yr --region us-east-1
+exit=0
+$ aws iam list-attached-role-policies --role-name aia-uc04-lambda
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "AWSLambdaBasicExecutionRole",
+            "PolicyArn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        }
+    ]
+}
+$ aws iam list-role-policies --role-name aia-uc04-lambda
+{
+    "PolicyNames": []
+}
+$ aws iam detach-role-policy --role-name aia-uc04-lambda --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+exit=0
+$ aws iam delete-role --role-name aia-uc04-lambda
+exit=0
+=== VERIFY (post-manual-cleanup) ===
+$ aws lambda get-function --function-name aia-uc04-refund
+
+aws: [ERROR]: An error occurred (ResourceNotFoundException) when calling the GetFunction operation: Function not found: arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund
+
+$ aws iam get-role --role-name aia-uc04-lambda
+
+aws: [ERROR]: An error occurred (NoSuchEntity) when calling the GetRole operation: The role with name aia-uc04-lambda cannot be found.
+$ aws logs describe-log-groups --log-group-name-prefix /aws/vendedlogs/bedrock-agentcore
+{
+    "logGroups": []
+}

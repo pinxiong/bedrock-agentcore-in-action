@@ -1,0 +1,5 @@
+Gateway decision log, LOG_ONLY mode (log group /aws/vendedlogs/bedrock-agentcore/gateway/APPLICATION_LOGS/aiauc04-refund-gateway-vxib2yw9yr)
+2026-10-23 16:49:09.914  Policy evaluation denied request  id=2  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:49:12.592  Policy evaluation denied request  id=3  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:50:22.650  Policy evaluation denied request  id=2  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:50:24.546  Policy evaluation completed  id=3  decision=ALLOW  determiningPolicies=['refundCeiling-hrk1reemhq']  reason=None

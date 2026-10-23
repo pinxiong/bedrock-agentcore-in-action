@@ -1,0 +1,6 @@
+Direct MCP call to the gateway, ENFORCE mode (no agent in between)
+$ curl -s -X POST $GATEWAY_URL -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"refund___processRefund","arguments":{"orderId":"SO-2214","amount":3000}}}'
+{"jsonrpc":"2.0","id":2,"error":{"code":-32002,"message":"Tool Execution Denied: Tool call not allowed due to policy enforcement [No policy applies to the request (denied by default).]"}}
+
+$ curl -s -X POST $GATEWAY_URL -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"refund___processRefund","arguments":{"orderId":"SO-2214","amount":200}}}'
+{"jsonrpc":"2.0","id":3,"result":{"isError":false,"content":[{"type":"text","text":"{\"ok\":true,\"refundId\":\"RF-2774812797\",\"orderId\":\"SO-2214\",\"amountCny\":200,\"status\":\"refunded\",\"refundedAt\":\"2026-10-23T17:00:12Z\"}"}]}}

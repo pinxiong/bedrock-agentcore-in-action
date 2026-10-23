@@ -1,0 +1,15 @@
+Gateway decision log, both modes
+log group: /aws/vendedlogs/bedrock-agentcore/gateway/APPLICATION_LOGS/aiauc04-refund-gateway-vxib2yw9yr
+
+== LOG_ONLY (gateway policyEngineConfiguration.mode = LOG_ONLY) ==
+2026-10-23 16:49:09.914  Policy evaluation denied request  id=2  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:49:12.592  Policy evaluation denied request  id=3  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:50:22.650  Policy evaluation denied request  id=2  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:50:24.546  Policy evaluation completed  id=3  decision=ALLOW  determiningPolicies=['refundCeiling-hrk1reemhq']  reason=None
+
+== ENFORCE (gateway policyEngineConfiguration.mode = ENFORCE) ==
+2026-10-23 16:57:07.685  Policy evaluation completed  id=dbaade4a-0a22-424b-8e5f-1a42df23b6ff  decision=ALLOW  determiningPolicies=['approvalAlways-mlb2qck4h5']  reason=None
+2026-10-23 16:57:13.132  Tool Execution Denied: Tool call not allowed due to policy enforcement [No policy applies to the request (denied by default).]  id=3  decision=None  determiningPolicies=None  reason=None
+2026-10-23 16:57:13.132  Policy evaluation denied request  id=3  decision=DENY  determiningPolicies=[]  reason=No policy applies to the request (denied by default).
+2026-10-23 16:57:40.859  Policy evaluation completed  id=64459310-6a75-4c44-80ab-4b416e0a697b  decision=ALLOW  determiningPolicies=['approvalAlways-mlb2qck4h5']  reason=None
+2026-10-23 16:57:42.597  Policy evaluation completed  id=ef725e47-cf7a-4394-bfed-b46b009c509b  decision=ALLOW  determiningPolicies=['refundCeiling-hrk1reemhq']  reason=None

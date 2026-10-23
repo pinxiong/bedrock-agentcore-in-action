@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 515" width="1440" height="515" role="img">
+<title>terminal - CNY 3000 under ENFORCE: the approval records, the refund does not run</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="515" fill="url(#bg)"/>
+<rect width="1440" height="515" fill="url(#g1)"/>
+<rect width="1440" height="515" fill="url(#g2)"/>
+<rect x="28" y="26" width="1384" height="463" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1384" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1384" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="720" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - CNY 3000 under ENFORCE: the approval records, the refund does not run</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore invoke --prompt &quot;Refund order SO-2214 for CNY 3000. I confirm the amount, process it now.&quot;</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">I&#x27;ll process the refund for order SO-2214 for CNY 3000 as you&#x27;ve confirmed.</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Now I&#x27;ll process the refund:</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">The refund approval was recorded successfully, but the actual refund processing was blocked by the company&#x27;s</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        policy engine. This means that while the conversation approval was noted, the system prevented the refund from</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        being processed due to company policies.</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">You may need to escalate this to higher management or check with your supervisor about why this specific refund</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        request (order SO-2214 for CNY 3000) is being blocked by the policy engine. The approval was recorded at</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        2026-10-23T16:57:07Z, but the actual processing couldn&#x27;t proceed due to policy restrictions.</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#5eead4" xml:space="preserve">Session: 4025df72-8ee1-4baa-8813-c993338e6aee</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#5eead4" xml:space="preserve">To resume: agentcore invoke --session-id 4025df72-8ee1-4baa-8813-c993338e6aee</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">Log: agentcore/.cli/logs/invoke/invoke-aia_uc04-20261024-005656.log</text>
+<text x="58" y="434" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/25-invoke-3000-enforce.txt · the agent reports the block; it has no way around it</text>
+</svg>

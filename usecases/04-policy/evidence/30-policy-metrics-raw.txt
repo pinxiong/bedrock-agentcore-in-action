@@ -1,0 +1,13 @@
+$ aws cloudwatch get-metric-data --region us-east-1 \
+    --start-time 2026-10-23T16:40:00Z --end-time 2026-10-23T16:59:00Z \
+    --metric-data-queries file://policy-decision-queries.json --output text \
+    --query 'MetricDataResults[].[Id, Values]'
+deny_logonly
+1.0	2.0
+allow_logonly
+1.0
+deny_enforce
+1.0
+allow_enforce
+3.0
+Four agent invokes, window 16:40-16:59Z: LOG_ONLY Deny=3 Allow=1, ENFORCE Deny=1 Allow=3.

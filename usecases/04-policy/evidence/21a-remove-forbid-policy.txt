@@ -1,0 +1,1 @@
+{"success":true,"resourceType":"policy","resourceName":"refundCeiling","message":"Removed policy 'refundCeiling'","note":"Your agent app source code has not been modified. Deploy with `agentcore deploy` to apply your removal changes to AWS."}

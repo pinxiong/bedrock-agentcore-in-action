@@ -1,0 +1,14 @@
+$ aws logs filter-log-events --region us-east-1 \
+    --log-group-name /aws/vendedlogs/bedrock-agentcore/gateway/APPLICATION_LOGS/aiauc04-refund-gateway-vxib2yw9yr \
+    --filter-pattern "Policy evaluation" \
+    --start-time 1792773900000 --end-time 1792774740000 \
+    --output json --query 'events[].message' \
+  | jq -r '.[] | fromjson | [(.event_timestamp/1000 | strftime("%H:%M:%S")), .body.log, .body.id, .body.policy.decision, ((.body.policy.determiningPolicies // []) | if length == 0 then "-" else join(",") end), "\(.body.policy.latencyMs)ms"] | join(" | ")'
+16:49:09 | Policy evaluation denied request | 2 | DENY | - | 54ms
+16:49:12 | Policy evaluation denied request | 3 | DENY | - | 52ms
+16:50:22 | Policy evaluation denied request | 2 | DENY | - | 56ms
+16:50:24 | Policy evaluation completed | 3 | ALLOW | refundCeiling-hrk1reemhq | 44ms
+16:57:07 | Policy evaluation completed | dbaade4a-0a22-424b-8e5f-1a42df23b6ff | ALLOW | approvalAlways-mlb2qck4h5 | 52ms
+16:57:13 | Policy evaluation denied request | 3 | DENY | - | 47ms
+16:57:40 | Policy evaluation completed | 64459310-6a75-4c44-80ab-4b416e0a697b | ALLOW | approvalAlways-mlb2qck4h5 | 50ms
+16:57:42 | Policy evaluation completed | ef725e47-cf7a-4394-bfed-b46b009c509b | ALLOW | refundCeiling-hrk1reemhq | 51ms

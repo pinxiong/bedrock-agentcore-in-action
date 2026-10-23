@@ -1,0 +1,10 @@
+CloudWatch metrics, namespace AWS/Bedrock-AgentCore
+engine: aiauc04_refundPolicyEngine-s3etkq_2tj  (dimension PolicyEngine)
+window: last 3 hours, 300s period, Sum
+
+LOG_ONLY  DenyDecisions  = 5   <- recorded, none of them blocked the tool
+LOG_ONLY  AllowDecisions = 1
+ENFORCE   DenyDecisions  = 1   <- the CNY 3000 processRefund, blocked at the gateway
+ENFORCE   AllowDecisions = 3   <- approveRefund x2 (approvalAlways), processRefund CNY 200 (refundCeiling)
+
+Same engine, same policies, one switch: mode on the gateway.

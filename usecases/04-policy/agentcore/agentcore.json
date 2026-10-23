@@ -1,0 +1,92 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "aiauc04",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "agentcore-in-action",
+    "UseCase": "04",
+    "AutoDelete": "true"
+  },
+  "runtimes": [
+    {
+      "name": "aia_uc04",
+      "description": "uc04 Policy",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/aia_uc04/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "deepseek.v3.2"
+        },
+        {
+          "name": "GATEWAY_MCP_URL",
+          "value": "https://aiauc04-refund-gateway-vxib2yw9yr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP",
+      "tags": {
+        "UseCase": "04"
+      }
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [
+    {
+      "name": "refund-gateway",
+      "protocolType": "MCP",
+      "targets": [
+        {
+          "name": "refund",
+          "targetType": "lambdaFunctionArn",
+          "lambdaFunctionArn": {
+            "lambdaArn": "arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund",
+            "toolSchemaFile": "agentcore/gateway/refund-tools.json"
+          }
+        }
+      ],
+      "authorizerType": "NONE",
+      "enableSemanticSearch": true,
+      "exceptionLevel": "NONE",
+      "policyEngineConfiguration": {
+        "policyEngineName": "refundPolicyEngine",
+        "mode": "ENFORCE"
+      }
+    }
+  ],
+  "policyEngines": [
+    {
+      "name": "refundPolicyEngine",
+      "description": "Refund ceiling for the refund gateway",
+      "policies": [
+        {
+          "name": "refundCeiling",
+          "description": "Refunds are permitted up to CNY 500; anything above falls through to default deny",
+          "statement": "permit (principal, action == AgentCore::Action::\"refund___processRefund\", resource == AgentCore::Gateway::\"aiauc04-refund-gateway-vxib2yw9yr\") when { context.input.amount <= 500 };",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE"
+        },
+        {
+          "name": "approvalAlways",
+          "description": "Recording an approval is allowed whenever the order id is present",
+          "statement": "permit (principal, action == AgentCore::Action::\"refund___approveRefund\", resource == AgentCore::Gateway::\"aiauc04-refund-gateway-vxib2yw9yr\") when { context.input.orderId is String && context.input.orderId != \"\" };",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE"
+        }
+      ]
+    }
+  ],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [],
+  "payments": []
+}

@@ -1,0 +1,59 @@
+[
+  {
+    "name": "approveRefund",
+    "description": "Record the duty manager's approval for one order. Call only after the user approved in the conversation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Order id, for example SO-2214"
+        }
+      },
+      "required": [
+        "orderId"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "ok": { "type": "boolean" },
+        "approved": { "type": "boolean" },
+        "orderId": { "type": "string" },
+        "approvedAt": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "processRefund",
+    "description": "Issue the refund for one order. The gateway checks this call against the policy engine before the backend runs.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Order id, for example SO-2214"
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Refund amount in whole CNY, for example 200"
+        }
+      },
+      "required": [
+        "orderId",
+        "amount"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "ok": { "type": "boolean" },
+        "refundId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "amountCny": { "type": "integer" },
+        "status": { "type": "string" },
+        "refundedAt": { "type": "string" }
+      }
+    }
+  }
+]

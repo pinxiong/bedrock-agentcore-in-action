@@ -1,0 +1,194 @@
+{
+    "ResourceTagMappingList": [
+        {
+            "ResourceARN": "arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc04-refund-gateway-vxib2yw9yr",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "AgentCore-aiauc04-default"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc04-default/566cba90-cefd-11f1-9550-0eb1fe843431"
+                },
+                {
+                    "Key": "agentcore:project-name",
+                    "Value": "aiauc04"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "McpGatewayRefundGateway2100AC81"
+                },
+                {
+                    "Key": "agentcore:target-name",
+                    "Value": "default"
+                }
+            ]
+        },
+        {
+            "ResourceARN": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc04_aia_uc04-6laFvGFCKJ/runtime-endpoint/DEFAULT",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "AgentCore-aiauc04-default"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc04-default/566cba90-cefd-11f1-9550-0eb1fe843431"
+                },
+                {
+                    "Key": "agentcore:project-name",
+                    "Value": "aiauc04"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "ApplicationAgentAiaUc04RuntimeA5AB50E6"
+                },
+                {
+                    "Key": "agentcore:target-name",
+                    "Value": "default"
+                }
+            ]
+        },
+        {
+            "ResourceARN": "arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc04_aia_uc04-6laFvGFCKJ",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "AgentCore-aiauc04-default"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc04-default/566cba90-cefd-11f1-9550-0eb1fe843431"
+                },
+                {
+                    "Key": "agentcore:project-name",
+                    "Value": "aiauc04"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "ApplicationAgentAiaUc04RuntimeA5AB50E6"
+                },
+                {
+                    "Key": "agentcore:target-name",
+                    "Value": "default"
+                }
+            ]
+        },
+        {
+            "ResourceARN": "arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                }
+            ]
+        },
+        {
+            "ResourceARN": "arn:aws:bedrock-agentcore:us-east-1:123456789012:policy-engine/aiauc04_refundPolicyEngine-s3etkq_2tj",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "agentcore:project-name",
+                    "Value": "aiauc04"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                },
+                {
+                    "Key": "agentcore:target-name",
+                    "Value": "default"
+                }
+            ]
+        },
+        {
+            "ResourceARN": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc04_aia_uc04-6laFvGFCKJ",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "agentcore-in-action"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "AgentCore-aiauc04-default"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc04-default/566cba90-cefd-11f1-9550-0eb1fe843431"
+                },
+                {
+                    "Key": "agentcore:project-name",
+                    "Value": "aiauc04"
+                },
+                {
+                    "Key": "AutoDelete",
+                    "Value": "true"
+                },
+                {
+                    "Key": "UseCase",
+                    "Value": "04"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "ApplicationAgentAiaUc04RuntimeA5AB50E6"
+                },
+                {
+                    "Key": "agentcore:target-name",
+                    "Value": "default"
+                }
+            ]
+        }
+    ]
+}

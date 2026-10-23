@@ -1,0 +1,36 @@
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "aia-uc04-lambda",
+        "RoleId": "AROASJQG72OJLEVSOWMJG",
+        "Arn": "arn:aws:iam::123456789012:role/aia-uc04-lambda",
+        "CreateDate": "2026-10-23T14:59:50+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "lambda.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole"
+                }
+            ]
+        },
+        "Tags": [
+            {
+                "Key": "Project",
+                "Value": "agentcore-in-action"
+            },
+            {
+                "Key": "UseCase",
+                "Value": "04"
+            },
+            {
+                "Key": "AutoDelete",
+                "Value": "true"
+            }
+        ]
+    }
+}
+attached

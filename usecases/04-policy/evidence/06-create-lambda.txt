@@ -1,0 +1,39 @@
+{
+    "FunctionName": "aia-uc04-refund",
+    "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund",
+    "Runtime": "python3.13",
+    "Role": "arn:aws:iam::123456789012:role/aia-uc04-lambda",
+    "Handler": "refund_api.lambda_handler",
+    "CodeSize": 868,
+    "Description": "",
+    "Timeout": 15,
+    "MemorySize": 128,
+    "LastModified": "2026-10-23T15:00:14.121+0000",
+    "CodeSha256": "YqBLPjAmmSP70e3wg0eH3hgXsdcov5mEKFfusH93YPQ=",
+    "Version": "$LATEST",
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "947055fe-0e26-409b-927e-0c90b4d18729",
+    "State": "Pending",
+    "StateReason": "The function is being created.",
+    "StateReasonCode": "Creating",
+    "PackageType": "Zip",
+    "Architectures": [
+        "x86_64"
+    ],
+    "EphemeralStorage": {
+        "Size": 512
+    },
+    "SnapStart": {
+        "ApplyOn": "None",
+        "OptimizationStatus": "Off"
+    },
+    "RuntimeVersionConfig": {
+        "RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:a0627e8616c4eaf447133f427c7419e5ce3a39ea2bc648ccb6d03d5b7f4d96e7"
+    },
+    "LoggingConfig": {
+        "LogFormat": "Text",
+        "LogGroup": "/aws/lambda/aia-uc04-refund"
+    }
+}

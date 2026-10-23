@@ -1,0 +1,32 @@
+[K✓ Load deployment target
+[K⠋ Validate project...
+[K✓ Validate project
+[K⠋ Sync CDK dependencies...
+[K✓ Sync CDK dependencies
+[K⠋ Build CDK project...
+[K✓ Build CDK project
+[K⠋ Synthesize CloudFormation...
+[K✓ Synthesize CloudFormation
+[K⠋ Check bootstrap status...
+[K✓ Check bootstrap status
+[K⠋ Check stack status...
+[K✓ Check stack status
+[K⠋ Deploying gateways......
+[K✓ Deploying gateways...
+[K⠋ Persist deployment state...
+[K✓ Persist deployment state
+[K✓ Persist deployment state
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc04-default)
+Outputs:
+  ApplicationAgentAiaUc04RoleArnOutputA0663C9D: arn:aws:iam::123456789012:role/AgentCore-aiauc04-default-ApplicationAgentAiaUc04Ru-6LfblfL3SM8n
+  GatewayTargetRefundIdOutput: EGIYUIZ4GA
+  GatewayRefundGatewayIdOutput: aiauc04-refund-gateway-vxib2yw9yr
+  ApplicationAgentAiaUc04RuntimeArnOutput597BCD23: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc04_aia_uc04-6laFvGFCKJ
+  GatewayRefundGatewayUrlOutput: https://aiauc04-refund-gateway-vxib2yw9yr.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp
+  ApplicationAgentAiaUc04RuntimeIdOutput5E216757: aiauc04_aia_uc04-6laFvGFCKJ
+  GatewayRefundGatewayArnOutput: arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc04-refund-gateway-vxib2yw9yr
+  StackNameOutput: AgentCore-aiauc04-default
+Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.
+Next: agentcore invoke | agentcore status
+Log: agentcore/.cli/logs/deploy/deploy-20261024-001626.log

@@ -1,0 +1,23 @@
+Traces for aia_uc04 (target: default)
+
+Trace ID                     Timestamp          Session ID
+6adb8dc04b2be5cf32b38a7c1ee6 2026-10-23         9b993594-4ae8-4303-bbcf-b52984a0
+7e98                         16:39:45Z          cf81
+6adb8b1e0b111330778b65a07d45 2026-10-23         a47079a5-38d1-4bf8-ac8e-303e6722
+5063                         16:28:27Z          2ad2
+6adb8b055b3c129e3d2fb3fa38c2 2026-10-23         1cfd906e-b16d-4488-8221-1a00dd87
+3cb5                         16:27:59Z          3bde
+6adb8a4c3bd7831e381502136407 2026-10-23         677c55b3-37e6-4d34-8a9a-a8751dba
+a020                         16:24:56Z          425b
+6adb894d2bae294d5071af3f018a 2026-10-23         d0c88625-c085-4dc2-b104-72288c5a
+e519                         16:20:36Z          ad89
+
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east
+-1#/gen-ai-observability/agent-core/agent-alias/aiauc04_aia_uc04-6laFvGFCKJ/endp
+oint/DEFAULT/agent/aia_uc04?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agent
+core%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc04_aia_uc04-6laFvGFCKJ%2Fruntim
+e-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc04.DEFAULT&tabId=traces
+Note: Traces may take 2-3 minutes to appear in CloudWatch
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.
