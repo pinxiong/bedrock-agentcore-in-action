@@ -14,34 +14,34 @@
 <text x="66" y="196" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="60" fill="#f8fafc" font-weight="700">Gateway and Identity</text>
 <text x="66" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="26" fill="#c4b5fd">One JWT in, three systems out</text>
 
-<rect x="66" y="322" width="252" height="206" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2" filter="url(#sh)"/>
-<text x="92" y="362" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#a78bfa" font-weight="600">agent source</text>
-<text x="92" y="410" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="17" fill="#e2e8f0">CLIENT_SECRET_ARN</text>
-<text x="92" y="446" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#8ea0bd">no system API keys</text>
-<text x="92" y="480" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#8ea0bd">no refresh loop</text>
+<rect x="66" y="310" width="252" height="260" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2" filter="url(#sh)"/>
+<text x="92" y="386" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#a78bfa" font-weight="600">agent source</text>
+<text x="92" y="434" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="17" fill="#e2e8f0">CLIENT_SECRET_ARN</text>
+<text x="92" y="470" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#8ea0bd">no system API keys</text>
+<text x="92" y="504" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#8ea0bd">no refresh loop</text>
 
-<line x1="330" y1="425" x2="392" y2="425" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
-<text x="361" y="408" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="15" fill="#8ea0bd" text-anchor="middle">token</text>
+<line x1="330" y1="440" x2="392" y2="440" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<text x="361" y="423" font-family="Menlo, SFMono-Regular, Consolas, monospace" font-size="15" fill="#8ea0bd" text-anchor="middle">token</text>
 
-<rect x="398" y="322" width="248" height="206" rx="14" fill="#0b1428" stroke="#2563eb" stroke-width="2" filter="url(#sh)"/>
-<text x="424" y="362" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#60a5fa" font-weight="600">gateway</text>
-<text x="424" y="404" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#e2e8f0">MCP endpoint</text>
-<text x="424" y="438" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#e2e8f0">checks the JWT</text>
-<text x="424" y="472" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4">mints outbound</text>
+<rect x="398" y="310" width="248" height="260" rx="14" fill="#0b1428" stroke="#2563eb" stroke-width="2" filter="url(#sh)"/>
+<text x="424" y="390" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#60a5fa" font-weight="600">gateway</text>
+<text x="424" y="432" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#e2e8f0">MCP endpoint</text>
+<text x="424" y="466" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#e2e8f0">checks the JWT</text>
+<text x="424" y="500" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4">mints outbound</text>
 
-<line x1="654" y1="368" x2="712" y2="368" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
-<line x1="654" y1="425" x2="712" y2="457" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
-<line x1="654" y1="482" x2="712" y2="546" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="654" y1="346" x2="712" y2="346" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="654" y1="440" x2="712" y2="440" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
+<line x1="654" y1="534" x2="712" y2="534" stroke="#60a5fa" stroke-width="2.4" marker-end="url(#ah)"/>
 
-<rect x="720" y="332" width="414" height="72" rx="12" fill="#0b1428" stroke="#059669" stroke-width="2"/>
-<text x="746" y="366" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">orders API</text>
-<text x="746" y="392" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">OpenAPI descriptor</text>
-<rect x="720" y="421" width="414" height="72" rx="12" fill="#0b1428" stroke="#ea580c" stroke-width="2"/>
-<text x="746" y="455" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">ticketing function</text>
-<text x="746" y="481" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">Lambda tool schema</text>
-<rect x="720" y="510" width="414" height="72" rx="12" fill="#0b1428" stroke="#0d9488" stroke-width="2"/>
-<text x="746" y="544" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">CRM</text>
-<text x="746" y="570" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">remote MCP server</text>
+<rect x="720" y="310" width="414" height="72" rx="12" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="746" y="344" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">orders API</text>
+<text x="746" y="370" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">OpenAPI descriptor</text>
+<rect x="720" y="404" width="414" height="72" rx="12" fill="#0b1428" stroke="#ea580c" stroke-width="2"/>
+<text x="746" y="438" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">ticketing function</text>
+<text x="746" y="464" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">Lambda tool schema</text>
+<rect x="720" y="498" width="414" height="72" rx="12" fill="#0b1428" stroke="#0d9488" stroke-width="2"/>
+<text x="746" y="532" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#cbd5e1">CRM</text>
+<text x="746" y="558" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">remote MCP server</text>
 
 <text x="66" y="628" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#8ea0bd">the agent never holds a credential for any of the three</text>
 </svg>
