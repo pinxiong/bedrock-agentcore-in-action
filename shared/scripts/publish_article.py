@@ -144,6 +144,13 @@ def devto(slug, fm, body, tags, create):
     # resolves to dev.to/images/... and every figure in the article 404s. The
     # Hugo copy keeps the root path; the API copy gets absolute URLs.
     dev_body = re.sub(r"\]\(/images/", "](https://xiongpin.dev/images/", body.lstrip("\n"))
+    # Dev.to renders the cover at 1000x420 (2.38:1) and reuses the same URL for
+    # its 1200x627 social card, so ship the wide variant whenever the article
+    # has one: a 16:9 cover loses its top line in the article header.
+    if (REPO / "articles" / "images" / slug / "cover-devto.png").exists():
+        cover_rel = f"/images/{slug}/cover-devto.png"
+    else:
+        cover_rel = fm_get(fm, "image") or f"/images/{slug}/cover.png"
     payload = {"article": {
         "title": fm_get(fm, "title"),
         "body_markdown": dev_body,
@@ -151,7 +158,7 @@ def devto(slug, fm, body, tags, create):
         "description": desc,
         "tags": tags,
         "canonical_url": f"https://xiongpin.dev/posts/{slug}/",
-        "main_image": "https://xiongpin.dev" + (fm_get(fm, "image") or f"/images/{slug}/cover.png"),
+        "main_image": "https://xiongpin.dev" + cover_rel,
         "organization_id": 2794,  # AWS Community Builders
     }}
 

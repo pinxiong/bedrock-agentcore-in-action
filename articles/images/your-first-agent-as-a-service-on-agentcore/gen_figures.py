@@ -608,9 +608,15 @@ def cover_medium() -> None:
 
 
 def cover_devto() -> None:
+    # the 2.38:1 Dev.to cover is also its 1200x627 social card source, which
+    # crops 9.8% off each side: the art keeps its proportions and sits on a
+    # wider gradient field instead of being reflowed
     w, h = 1000, 420
+    W = round(w / (1 - 2 * 0.105))
+    H = round(W * h / w)
+    px, py = (W - w) // 2, (H - h) // 2
     p = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{-px} {-py} {W} {H}" width="{W}" height="{H}" role="img">',
         "<title>Cover: your first agent as a service. Deploying a support agent on AgentCore.</title>",
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
@@ -622,10 +628,10 @@ def cover_devto() -> None:
         f'<stop offset="0" stop-color="{ORANGE}" stop-opacity="0.22"/>'
         f'<stop offset="1" stop-color="{ORANGE}" stop-opacity="0"/></radialGradient>',
         "</defs>",
-        f'<rect width="{w}" height="{h}" fill="url(#bg)"/>',
-        f'<rect width="{w}" height="{h}" fill="url(#gA)"/>',
-        f'<rect width="{w}" height="{h}" fill="url(#gB)"/>',
-        '<g font-family="ui-sans-serif, -apple-system, \'Helvetica Neue\', Arial, sans-serif">',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#bg)"/>',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#gA)"/>',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#gB)"/>',
+        f'<g font-family="ui-sans-serif, -apple-system, \'Helvetica Neue\', Arial, sans-serif">',
         f'<rect x="56" y="62" width="38" height="5" rx="2.5" fill="{ORANGE}"/>',
         f'<text x="108" y="70" font-size="16" font-weight="700" letter-spacing="2.5" fill="#fb923c">'
         "AGENTCORE IN ACTION · USE CASE 01</text>",

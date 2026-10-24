@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-133 -56 1266 532" width="1266" height="532" role="img">
 <title>An Agent That Remembers: short-term and long-term memory on AgentCore</title>
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
@@ -6,9 +6,9 @@
 <radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
 <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
 </defs>
-<rect width="1000" height="420" fill="url(#bg)"/>
-<rect width="1000" height="420" fill="url(#g1)"/>
-<rect width="1000" height="420" fill="url(#g2)"/>
+<rect x="-133" y="-56" width="1266" height="532" fill="url(#bg)"/>
+<rect x="-133" y="-56" width="1266" height="532" fill="url(#g1)"/>
+<rect x="-133" y="-56" width="1266" height="532" fill="url(#g2)"/>
 <text x="55" y="67" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
 <text x="55" y="126" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#f8fafc" font-weight="700">An Agent That Remembers</text>
 <text x="55" y="162" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#c4b5fd">Short-term and long-term memory, in one resource</text>

@@ -374,11 +374,23 @@ def figure_two_sessions() -> None:
 # covers                                                                      #
 # --------------------------------------------------------------------------- #
 
-def cover(w: int, h: int, name: str) -> None:
-    """Normalised layout, so the same composition works at 1200x675 and 1000x420."""
+def cover(w: int, h: int, name: str, safe: float = 0.0) -> None:
+    """Normalised layout, so the same composition works at 1200x675 and 1000x420.
+
+    `safe` widens the canvas instead of reflowing the art: the Dev.to cover also
+    serves as the 1200x627 social card, which crops 9.8% off each side, so the
+    artwork keeps its coordinates on a larger gradient field and never reaches
+    that crop line.
+    """
+    if safe:
+        W = round(w / (1 - 2 * safe))
+        H = round(W * h / w)
+        px, py = (W - w) // 2, (H - h) // 2
+    else:
+        W, H, px, py = w, h, 0, 0
     out = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" '
-        f'height="{h}" role="img">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{-px} {-py} {W} {H}" width="{W}" '
+        f'height="{H}" role="img">',
         "<title>An Agent That Remembers: short-term and long-term memory on AgentCore</title>",
         "<defs>",
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
@@ -392,9 +404,9 @@ def cover(w: int, h: int, name: str) -> None:
         '<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
         'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>',
         "</defs>",
-        f'<rect width="{w}" height="{h}" fill="url(#bg)"/>',
-        f'<rect width="{w}" height="{h}" fill="url(#g1)"/>',
-        f'<rect width="{w}" height="{h}" fill="url(#g2)"/>',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#bg)"/>',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#g1)"/>',
+        f'<rect x="{-px}" y="{-py}" width="{W}" height="{H}" fill="url(#g2)"/>',
     ]
     pad = 0.055 * w
     title = 0.052 * w
@@ -617,7 +629,7 @@ def main() -> None:
     figure_architecture()
     figure_two_sessions()
     cover(1200, 675, "cover")
-    cover(1000, 420, "cover-devto")
+    cover(1000, 420, "cover-devto", safe=0.105)
     cover(1400, 788, "cover-medium")   # Medium feature image, same 16:9 composition
 
 
