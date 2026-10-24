@@ -1,0 +1,86 @@
+[
+  {
+    "Id": "deny_logonly",
+    "MetricStat": {
+      "Metric": {
+        "Namespace": "AWS/Bedrock-AgentCore",
+        "MetricName": "DenyDecisions",
+        "Dimensions": [
+          {
+            "Name": "PolicyEngine",
+            "Value": "aiauc04_refundPolicyEngine-s3etkq_2tj"
+          },
+          {
+            "Name": "Mode",
+            "Value": "LOG_ONLY"
+          }
+        ]
+      },
+      "Period": 300,
+      "Stat": "Sum"
+    }
+  },
+  {
+    "Id": "allow_logonly",
+    "MetricStat": {
+      "Metric": {
+        "Namespace": "AWS/Bedrock-AgentCore",
+        "MetricName": "AllowDecisions",
+        "Dimensions": [
+          {
+            "Name": "PolicyEngine",
+            "Value": "aiauc04_refundPolicyEngine-s3etkq_2tj"
+          },
+          {
+            "Name": "Mode",
+            "Value": "LOG_ONLY"
+          }
+        ]
+      },
+      "Period": 300,
+      "Stat": "Sum"
+    }
+  },
+  {
+    "Id": "deny_enforce",
+    "MetricStat": {
+      "Metric": {
+        "Namespace": "AWS/Bedrock-AgentCore",
+        "MetricName": "DenyDecisions",
+        "Dimensions": [
+          {
+            "Name": "PolicyEngine",
+            "Value": "aiauc04_refundPolicyEngine-s3etkq_2tj"
+          },
+          {
+            "Name": "Mode",
+            "Value": "ENFORCE"
+          }
+        ]
+      },
+      "Period": 300,
+      "Stat": "Sum"
+    }
+  },
+  {
+    "Id": "allow_enforce",
+    "MetricStat": {
+      "Metric": {
+        "Namespace": "AWS/Bedrock-AgentCore",
+        "MetricName": "AllowDecisions",
+        "Dimensions": [
+          {
+            "Name": "PolicyEngine",
+            "Value": "aiauc04_refundPolicyEngine-s3etkq_2tj"
+          },
+          {
+            "Name": "Mode",
+            "Value": "ENFORCE"
+          }
+        ]
+      },
+      "Period": 300,
+      "Stat": "Sum"
+    }
+  }
+]

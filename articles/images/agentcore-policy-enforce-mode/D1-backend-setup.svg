@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 839" width="1440" height="839" role="img">
+<title>terminal - the backend: one Lambda, built to be guarded</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="839" fill="url(#bg)"/>
+<rect width="1440" height="839" fill="url(#g1)"/>
+<rect width="1440" height="839" fill="url(#g2)"/>
+<rect x="28" y="26" width="1384" height="787" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1384" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1384" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="720" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - the backend: one Lambda, built to be guarded</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ aws iam create-role --role-name aia-uc04-lambda \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --assume-role-policy-document</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">        &#x27;{&quot;Statement&quot;:[{&quot;Effect&quot;:&quot;Allow&quot;,&quot;Principal&quot;:{&quot;Service&quot;:&quot;lambda.amazonaws.com&quot;},&quot;Action&quot;:&quot;sts:AssumeRole&quot;}]}&#x27; \</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --region us-east-1</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        &quot;RoleName&quot;: &quot;aia-uc04-lambda&quot;,</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        &quot;Arn&quot;: &quot;arn:aws:iam::123456789012:role/aia-uc04-lambda&quot;,</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ aws iam attach-role-policy --role-name aia-uc04-lambda \</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole --region us-east-1</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">attached</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ zip -j /tmp/aia-uc04-refund.zip infra/refund_api.py</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ aws lambda create-function --function-name aia-uc04-refund \</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --runtime python3.13 --handler refund_api.lambda_handler \</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --zip-file fileb:///tmp/aia-uc04-refund.zip \</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --role arn:aws:iam::123456789012:role/aia-uc04-lambda --region us-east-1</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;FunctionName&quot;: &quot;aia-uc04-refund&quot;,</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;FunctionArn&quot;: &quot;arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund&quot;,</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;Runtime&quot;: &quot;python3.13&quot;,</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;Handler&quot;: &quot;refund_api.lambda_handler&quot;,</text>
+<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;CodeSize&quot;: 868,</text>
+<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;State&quot;: &quot;Pending&quot;,</text>
+<text x="58" y="642" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;StateReason&quot;: &quot;The function is being created.&quot;,</text>
+<text x="58" y="669" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"></text>
+<text x="58" y="696" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve"># a direct invoke returns the echo — the backend works before any policy exists</text>
+<text x="58" y="723" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">{&quot;ok&quot;: true, &quot;approved&quot;: true, &quot;orderId&quot;: &quot;SO-2214&quot;, &quot;approvedAt&quot;: &quot;2026-10-23T15:02:58Z&quot;}</text>
+<text x="58" y="758" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/05, 06, 07 · the role, the function Pending, and the direct echo — the backend exists before any gateway does</text>
+</svg>

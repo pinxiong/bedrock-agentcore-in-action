@@ -28,10 +28,10 @@
 <text x="920" y="293" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">MCP endpoint</text>
 <text x="920" y="319" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
 <text x="920" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">decision logged either way</text>
-<rect x="1190" y="300" width="220" height="130" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
-<text x="1300" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">aia-uc04-refund</text>
-<text x="1300" y="371" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund /</text>
-<text x="1300" y="397" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">processRefund</text>
+<rect x="1160" y="300" width="220" height="130" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
+<text x="1270" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">aia-uc04-refund</text>
+<text x="1270" y="371" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund /</text>
+<text x="1270" y="397" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">processRefund</text>
 <rect x="770" y="480" width="300" height="120" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="2"/>
 <text x="920" y="520" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4" font-weight="600" text-anchor="middle">decision log</text>
 <text x="920" y="546" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">decision, reason,</text>
@@ -44,9 +44,9 @@
 <text x="920.0" y="132" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">authorize</text>
 <line x1="920" y1="400" x2="920" y2="480" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ahg)"/>
 <text x="906.0" y="472" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="end" font-weight="400">every call</text>
-<path d="M 1070 244 C 1140 244, 1120 332, 1190 332" stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>
+<path d="M 1070 244 C 1115 244, 1115 365, 1160 365" stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>
 <text x="1078" y="230.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="start" font-weight="400">amount &lt;= 500 -&gt; ALLOW</text>
-<line x1="1070" y1="348.0" x2="1106" y2="348.0" stroke="#fda4af" stroke-width="2.4" marker-end="url(#ahr)"/>
-<line x1="1106" y1="333.0" x2="1106" y2="363.0" stroke="#fda4af" stroke-width="3.4"/>
-<text x="1094.0" y="434" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="end" font-weight="400">amount = 3000 -&gt; DENY (-32002)</text>
+<line x1="1070" y1="348.0" x2="1091" y2="348.0" stroke="#fda4af" stroke-width="2.4" marker-end="url(#ahr)"/>
+<line x1="1091" y1="333.0" x2="1091" y2="363.0" stroke="#fda4af" stroke-width="3.4"/>
+<text x="1079.0" y="434" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="end" font-weight="400">amount = 3000 -&gt; DENY (-32002)</text>
 </svg>

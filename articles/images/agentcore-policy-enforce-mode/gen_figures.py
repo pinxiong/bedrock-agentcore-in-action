@@ -63,10 +63,13 @@ def evidence_lines(stem: str) -> list[str]:
         s = line.strip()
         if not s or s and s[0] in SPINNERS:
             continue
-        # strip ANSI escape sequences and any other control characters the capture held
+        # strip ANSI escape sequences and any other control characters the capture
+        # held; tabs become two spaces BEFORE the control-character strip, or the
+        # strip would swallow them (CloudWatch text output separates values with
+        # tabs) and "1.0<TAB>2.0" would render as "1.02.0"
         line = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", line)
-        line = "".join(ch for ch in line if ord(ch) >= 32)
         line = line.replace("\t", "  ")
+        line = "".join(ch for ch in line if ord(ch) >= 32)
         out.append(line.rstrip())
     # drop consecutive duplicates the CLI spinner re-prints
     dedup = []
@@ -88,6 +91,8 @@ def classify(line: str) -> str:
     if line.startswith("Session:") or line.startswith("To resume:"):
         return T
     if line.startswith("Log:") or line.startswith("Note:") or line.startswith("Next:"):
+        return D
+    if line.startswith("#"):
         return D
     if line.startswith("$ "):
         return S
@@ -248,7 +253,7 @@ def figure_architecture() -> None:
                 ("MCP endpoint", 14, "#7c93b5", "400"),
                 ("mode: LOG_ONLY | ENFORCE", 14, "#c4b5fd", "400"),
                 ("decision logged either way", 14, "#c4b5fd", "400")])
-    b_lambda = box("lambda", 1190, 300, 220, 130, "#0e1a33", "#2b3c5e",
+    b_lambda = box("lambda", 1160, 300, 220, 130, "#0e1a33", "#2b3c5e",
                    [("aia-uc04-refund", 18, "#f8fafc", "600"),
                     ("approveRefund /", 13, "#7c93b5", "400"),
                     ("processRefund", 13, "#7c93b5", "400")])
@@ -264,10 +269,12 @@ def figure_architecture() -> None:
     label(edge_mid(b_gw, "bottom")[0] - 14, b_log["y"] - 8,
           "every call", 14, "#64748b", "end")
 
-    # allow path: gateway right edge upper half -> lambda left edge upper half
+    # allow path: gateway right edge upper half -> lambda left edge, landing on
+    # the backend box's vertical centerline
     gx = edge_mid(b_gw, "right")[0]; gy = b_gw["y"] + b_gw["h"] * 0.22
-    lx = b_lambda["x"]; ly = b_lambda["y"] + b_lambda["h"] * 0.25
-    out.append(f'<path d="M {gx:.0f} {gy:.0f} C {gx+70:.0f} {gy:.0f}, {lx-70:.0f} {ly:.0f}, {lx:.0f} {ly:.0f}" '
+    lx = b_lambda["x"]; ly = edge_mid(b_lambda, "left")[1]
+    bend = min(70, (lx - gx) / 2)
+    out.append(f'<path d="M {gx:.0f} {gy:.0f} C {gx+bend:.0f} {gy:.0f}, {lx-bend:.0f} {ly:.0f}, {lx:.0f} {ly:.0f}" '
                f'stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>')
     label(gx + 8, gy - 14, "amount <= 500 -> ALLOW", 15, "#34d399", "start")
 
@@ -415,6 +422,64 @@ def cover(w: int, h: int, name: str) -> None:
 # --------------------------------------------------------------------------- #
 
 def panels() -> None:
+    ev05 = evidence_lines("05-create-role.txt")
+    ev06 = evidence_lines("06-create-lambda.txt")
+    role_out = [l for l in ev05 if '"RoleName"' in l or '"Arn"' in l]
+    fn_out = [l for l in ev06 if l.strip().startswith((
+        '"FunctionName"', '"FunctionArn"', '"Runtime"', '"Handler"',
+        '"CodeSize"', '"State"', '"StateReason"',
+    ))]
+    shell_box(
+        "D1-backend-setup", "terminal - the backend: one Lambda, built to be guarded",
+        panel_lines(
+            [
+                "$ aws iam create-role --role-name aia-uc04-lambda \\",
+                "    --assume-role-policy-document '{\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"lambda.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}' \\",
+                "    --region us-east-1",
+            ],
+            role_out,
+        )
+        + panel_lines(
+            [
+                "$ aws iam attach-role-policy --role-name aia-uc04-lambda \\",
+                "    --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole --region us-east-1",
+            ],
+            [l for l in ev05 if l == "attached"],
+        )
+        + panel_lines(
+            ["$ zip -j /tmp/aia-uc04-refund.zip infra/refund_api.py"], [],
+        )
+        + panel_lines(
+            [
+                "$ aws lambda create-function --function-name aia-uc04-refund \\",
+                "    --runtime python3.13 --handler refund_api.lambda_handler \\",
+                "    --zip-file fileb:///tmp/aia-uc04-refund.zip \\",
+                "    --role arn:aws:iam::123456789012:role/aia-uc04-lambda --region us-east-1",
+            ],
+            fn_out,
+        )
+        + panel_lines(
+            ["", "# a direct invoke returns the echo — the backend works before any policy exists"],
+            evidence_lines("07-lambda-direct.txt"),
+        ),
+        "evidence/05, 06, 07 · the role, the function Pending, and the direct echo — the backend exists before any gateway does",
+    )
+    shell_box(
+        "D2-gateway-adds", "terminal - the gateway: one add, one line, no authorizer",
+        panel_lines(
+            ["$ agentcore add gateway --name refund-gateway --protocol-type MCP --authorizer-type NONE"],
+            evidence_lines("10-add-gateway.txt"),
+        )
+        + panel_lines(
+            [
+                "$ agentcore add gateway-target --name refund --gateway refund-gateway \\",
+                "    --type lambda-function-arn --lambda-arn arn:aws:lambda:us-east-1:123456789012:function:aia-uc04-refund \\",
+                "    --tool-schema-file agentcore/gateway/refund-tools.json",
+            ],
+            evidence_lines("11-add-target.txt"),
+        ),
+        "evidence/10-add-gateway.txt, 11-add-target.txt · the target points at the Lambda; the two tool schemas come from refund-tools.json",
+    )
     shell_box(
         "S1-deploy", "terminal - agentcore deploy, first successful deploy (3 m 8 s)",
         panel_lines(["$ agentcore deploy -y --target default"], evidence_lines("15-deploy-2.log")),
@@ -445,24 +510,27 @@ def panels() -> None:
         "S5-policy-add", "terminal - the engine, then two Cedar policies written from natural language",
         panel_lines(
             [
-                "$ agentcore add policy-engine --name refundPolicyEngine --attach-to-gateways refund-gateway \\",
-                "    --attach-mode LOG_ONLY --json",
+                "$ agentcore add policy-engine --name refundPolicyEngine \\",
+                '    --description "Refund ceiling for the refund gateway" \\',
+                "    --attach-to-gateways refund-gateway --attach-mode LOG_ONLY --json",
             ],
             evidence_lines("20-add-policy-engine.txt"),
         )
         + panel_lines(
             [
                 "$ agentcore add policy --name refundCeiling --engine refundPolicyEngine \\",
+                '    --description "Refunds are permitted up to CNY 500; anything above falls through to default deny" \\',
                 '    -g "permit a processRefund tool call only when its amount argument is less than or equal to 500" \\',
-                "    --gateway refund-gateway --target refund --json",
+                "    --gateway refund-gateway --target refund --enforcement-mode ACTIVE --json",
             ],
             evidence_lines("21-add-policy.txt"),
         )
         + panel_lines(
             [
                 "$ agentcore add policy --name approvalAlways --engine refundPolicyEngine \\",
+                '    --description "Recording an approval is allowed whenever the order id is present" \\',
                 '    -g "permit an approveRefund tool call only when its orderId argument is a non-empty string" \\',
-                "    --gateway refund-gateway --target refund --json",
+                "    --gateway refund-gateway --target refund --enforcement-mode ACTIVE --json",
             ],
             evidence_lines("21b-add-approval-policy.txt"),
         ),

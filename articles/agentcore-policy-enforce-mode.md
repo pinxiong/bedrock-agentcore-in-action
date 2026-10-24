@@ -10,7 +10,7 @@ cover:
   alt: "Cover art: one gateway, two Cedar policies, a CNY 3000 call stopped at the gate while CNY 200 passes through"
 ---
 
-A refund assistant whose only rule is a sentence in its prompt will issue a CNY 3000 refund the moment a customer insists: the sentence is a suggestion, not a gate. This article replaces the sentence with a Cedar policy on an AgentCore Gateway and proves it three ways: the same CNY 3000 call runs anyway while the policy engine writes DENY beside it, one mode switch kills it at the gateway with a 47-millisecond decision, and it stays dead when called directly, no agent in the loop. CNY 200 passes every gate untouched, no code changed between verdicts. Every number was measured in one account, in `us-east-1`.
+A refund assistant whose only rule is a sentence in its prompt will issue a CNY 3000 refund the moment a customer insists: the sentence is a suggestion, not a gate. This article replaces the sentence with a Cedar policy on an AgentCore Gateway and proves it three ways: the same CNY 3000 call runs anyway while the policy engine writes DENY beside it, one mode switch kills it at the gateway with a 47-millisecond decision, and it stays dead when called directly, no agent in the loop. CNY 200 passes every gate untouched, no code changed between verdicts. Every number was measured in one account, `us-east-1`.
 
 ## The use case
 
@@ -85,7 +85,9 @@ aws lambda create-function --function-name aia-uc04-refund \
   --role arn:aws:iam::123456789012:role/aia-uc04-lambda --region us-east-1
 ```
 
-A direct invoke returns the echo `{"ok": true, "approved": true, ...}`: the backend works before any policy exists. Then the gateway, deliberately minimal: one target, two tools, no authorizer.
+![Terminal capture: the role created with its Arn, the policy attached, create-function answering State Pending, and the direct invoke echo](/images/agentcore-policy-enforce-mode/D1-backend-setup.png)
+
+The backend works before any policy exists. Then the gateway, deliberately minimal: one target, two tools, no authorizer.
 
 ```bash
 agentcore add gateway --name refund-gateway --protocol-type MCP --authorizer-type NONE
@@ -94,7 +96,9 @@ agentcore add gateway-target --name refund --gateway refund-gateway \
   --tool-schema-file agentcore/gateway/refund-tools.json
 ```
 
-Each add answers one line. Deploy:
+![Terminal capture: each add answers one line, Added gateway refund-gateway and Added gateway target refund](/images/agentcore-policy-enforce-mode/D2-gateway-adds.png)
+
+Deploy:
 
 ```bash
 agentcore deploy -y --target default
@@ -189,7 +193,7 @@ curl -s -X POST "$GATEWAY_URL" -d '{"jsonrpc":"2.0","id":2,"method":"tools/call"
 
 ![Terminal capture: direct MCP calls, 3000 denied with error -32002, 200 refunded](/images/agentcore-policy-enforce-mode/S10-direct-mcp.png)
 
-CNY 3000 died with JSON-RPC error -32002, Tool Execution Denied; the identical call at CNY 200 returned `RF-2774812797`. The policy sits on the path, not the agent. The counts, from CloudWatch — the queries file selects DenyDecisions and AllowDecisions on the PolicyEngine dimension, split by window:
+CNY 3000 died with JSON-RPC error -32002, Tool Execution Denied; the identical call at CNY 200 returned `RF-2774812797`. The policy sits on the path, not the agent. The counts, from CloudWatch — the queries file ships in the repo's use case folder and selects DenyDecisions and AllowDecisions on the PolicyEngine and Mode dimensions:
 
 ```bash
 aws cloudwatch get-metric-data --region us-east-1 \
@@ -208,7 +212,7 @@ Teardown is two stages; only both leave the account clean. Agentcore's: `agentco
 
 ![Diagram: the policy engine attached to the gateway, every tools/call authorized before the Lambda runs](/images/agentcore-policy-enforce-mode/F1-policy-architecture.png)
 
-Six refunds were issued across the session, one stopped: `RF-2772903637` and `RF-2774152577` prove the ceiling was first absent, then ignored; `RF-2774662593` and `RF-2774812797` prove CNY 200 kept passing after ENFORCE, through the agent and around it. The 3000 call died both ways: a denied tool call the agent had to report, and error -32002 on the direct wire. Every ALLOW in the log names the policy that made it. A tag listing showed six resources, all UseCase=04, nothing from another use case.
+Six refunds were issued across the session, one stopped: `RF-2772903637` and `RF-2774152577` prove the ceiling was first absent, then ignored; `RF-2774662593` and `RF-2774812797` prove CNY 200 kept passing after ENFORCE, through the agent and around it. The 3000 call died both ways: a denied tool call the agent had to report, and error -32002 on the direct wire. Every ALLOW in the log names the policy that made it. A tag listing showed six resources, all UseCase=04, nothing else.
 
 ## Troubleshooting
 
