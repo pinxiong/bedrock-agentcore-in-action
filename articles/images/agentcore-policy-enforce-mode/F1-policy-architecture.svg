@@ -13,40 +13,40 @@
 <rect width="1440" height="700" fill="url(#g2)"/>
 <text x="60" y="62" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#f8fafc" text-anchor="start" font-weight="600">the deployed use case, uc04</text>
 <text x="60" y="90" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">the ceiling lives in Cedar on the engine, not in the prompt the model reads</text>
-<rect x="60" y="200" width="240" height="120" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
-<text x="180" y="253" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#f8fafc" font-weight="600" text-anchor="middle">customer / rep</text>
-<text x="180" y="279" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" font-weight="400" text-anchor="middle">agentcore invoke</text>
-<rect x="380" y="185" width="300" height="150" rx="14" fill="#122146" stroke="#3b82f6" stroke-width="2"/>
-<text x="530" y="240" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#f8fafc" font-weight="600" text-anchor="middle">AgentCore Runtime</text>
-<text x="530" y="266" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">aia_uc04 · Strands · deepseek.v3.2</text>
-<text x="530" y="292" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#fda4af" font-weight="400" text-anchor="middle">no rule in the prompt</text>
-<rect x="770" y="40" width="300" height="104" rx="14" fill="#0d1729" stroke="#7c3aed" stroke-width="2"/>
-<text x="920" y="85" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#e9d5ff" font-weight="600" text-anchor="middle">policy engine · 2 Cedar policies</text>
-<text x="920" y="111" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">amount &lt;= 500, otherwise default deny</text>
-<rect x="770" y="200" width="300" height="200" rx="14" fill="#122146" stroke="#7c3aed" stroke-width="2"/>
-<text x="920" y="267" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#e9d5ff" font-weight="600" text-anchor="middle">AgentCore Gateway</text>
-<text x="920" y="293" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">MCP endpoint</text>
-<text x="920" y="319" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
-<text x="920" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">decision logged either way</text>
-<rect x="1160" y="300" width="220" height="130" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
-<text x="1270" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">aia-uc04-refund</text>
-<text x="1270" y="371" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund /</text>
-<text x="1270" y="397" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">processRefund</text>
-<rect x="770" y="480" width="300" height="120" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="2"/>
-<text x="920" y="520" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4" font-weight="600" text-anchor="middle">decision log</text>
-<text x="920" y="546" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">decision, reason,</text>
-<text x="920" y="572" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">determiningPolicies[]</text>
-<line x1="300" y1="260" x2="380" y2="260" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
-<text x="340.0" y="248.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">invoke</text>
-<line x1="680" y1="260" x2="770" y2="300" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
-<text x="725.0" y="248.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">tools/call</text>
-<line x1="920" y1="200" x2="920" y2="144" stroke="#c4b5fd" stroke-width="2.2" marker-end="url(#ahb)"/>
-<text x="920.0" y="132" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">authorize</text>
-<line x1="920" y1="400" x2="920" y2="480" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ahg)"/>
-<text x="906.0" y="472" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="end" font-weight="400">every call</text>
-<path d="M 1070 244 C 1115 244, 1115 365, 1160 365" stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>
-<text x="1078" y="230.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="start" font-weight="400">amount &lt;= 500 -&gt; ALLOW</text>
-<line x1="1070" y1="348.0" x2="1091" y2="348.0" stroke="#fda4af" stroke-width="2.4" marker-end="url(#ahr)"/>
-<line x1="1091" y1="333.0" x2="1091" y2="363.0" stroke="#fda4af" stroke-width="3.4"/>
-<text x="1079.0" y="434" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="end" font-weight="400">amount = 3000 -&gt; DENY (-32002)</text>
+<rect x="60" y="240" width="240" height="120" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
+<text x="180" y="293" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#f8fafc" font-weight="600" text-anchor="middle">customer / rep</text>
+<text x="180" y="319" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" font-weight="400" text-anchor="middle">agentcore invoke</text>
+<rect x="386" y="225" width="300" height="150" rx="14" fill="#122146" stroke="#3b82f6" stroke-width="2"/>
+<text x="536" y="280" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#f8fafc" font-weight="600" text-anchor="middle">AgentCore Runtime</text>
+<text x="536" y="306" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">aia_uc04 · Strands · deepseek.v3.2</text>
+<text x="536" y="332" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#fda4af" font-weight="400" text-anchor="middle">no rule in the prompt</text>
+<rect x="773" y="40" width="300" height="104" rx="14" fill="#0d1729" stroke="#7c3aed" stroke-width="2"/>
+<text x="923" y="85" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#e9d5ff" font-weight="600" text-anchor="middle">policy engine · 2 Cedar policies</text>
+<text x="923" y="111" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">amount &lt;= 500, otherwise default deny</text>
+<rect x="773" y="200" width="300" height="200" rx="14" fill="#122146" stroke="#7c3aed" stroke-width="2"/>
+<text x="923" y="267" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#e9d5ff" font-weight="600" text-anchor="middle">AgentCore Gateway</text>
+<text x="923" y="293" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">MCP endpoint</text>
+<text x="923" y="319" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
+<text x="923" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">decision logged either way</text>
+<rect x="1160" y="245" width="220" height="130" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
+<text x="1270" y="290" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">aia-uc04-refund</text>
+<text x="1270" y="316" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund /</text>
+<text x="1270" y="342" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">processRefund</text>
+<rect x="773" y="480" width="300" height="120" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="2"/>
+<text x="923" y="520" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4" font-weight="600" text-anchor="middle">decision log</text>
+<text x="923" y="546" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">decision, reason,</text>
+<text x="923" y="572" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">determiningPolicies[]</text>
+<line x1="300" y1="300" x2="386" y2="300" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
+<text x="343.0" y="292.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">invoke</text>
+<line x1="686" y1="300" x2="773" y2="300" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
+<text x="729.5" y="292.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">tools/call</text>
+<line x1="923" y1="200" x2="923" y2="144" stroke="#c4b5fd" stroke-width="2.2" marker-end="url(#ahb)"/>
+<text x="935.0" y="177.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="start" font-weight="400">authorize</text>
+<line x1="923" y1="400" x2="923" y2="480" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ahg)"/>
+<text x="911.0" y="445.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="end" font-weight="400">every call</text>
+<path d="M 1073 250 C 1116 250, 1116 310, 1160 310" stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>
+<text x="1081" y="236.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="start" font-weight="400">amount &lt;= 500 -&gt; ALLOW</text>
+<line x1="1073" y1="344" x2="1148" y2="428" stroke="#fda4af" stroke-width="2.4"/>
+<path d="M 1139 418 L 1157 436 M 1139 436 L 1157 418" stroke="#fda4af" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+<text x="1148" y="457.5" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="middle" font-weight="400">amount = 3000 -&gt; DENY (-32002)</text>
 </svg>

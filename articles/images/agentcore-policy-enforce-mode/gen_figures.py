@@ -234,58 +234,95 @@ def figure_architecture() -> None:
         out.append(f'<line x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" '
                    f'stroke="{colour}" stroke-width="2.2" marker-end="url(#{marker})"/>')
         if text:
-            label((x1 + x2) / 2, min(y1, y2) - 12, text, 14, tcolour, "middle")
+            # centred on the line: baseline just above it, at the midpoint
+            label((x1 + x2) / 2, (y1 + y2) / 2 - 8, text, 14, tcolour, "middle")
+
+    def side_label(x, y_top, y_bot, text, side="left"):
+        """A vertical line's label: beside the line, vertically centred on it."""
+        mid = (y_top + y_bot) / 2
+        if side == "left":
+            label(x - 12, mid + 5, text, 14, "#64748b", "end")
+        else:
+            label(x + 12, mid + 5, text, 14, "#64748b", "start")
 
     label(60, 62, "the deployed use case, uc04", 22, "#f8fafc", weight="600")
     label(60, 90, "the ceiling lives in Cedar on the engine, not in the prompt the model reads", 15)
 
-    b_caller = box("caller", 60, 200, 240, 120, "#0e1a33", "#2b3c5e",
+    # ---- page grid --------------------------------------------------------
+    # 60px page margins; the leftover width is split evenly over the three
+    # gaps of the request chain, so the right side is as tight as the left.
+    margin, cy = 60, 300                     # cy: the chain's shared centreline
+    cw, aw, gww, lw = 240, 300, 300, 220     # box widths: caller, agent, gateway, backend
+    gap = (w - 2 * margin - (cw + aw + gww + lw)) / 3
+    x_lambda = w - margin - lw               # anchored right: the 60px margin holds
+    x_gw = round(x_lambda - gww - gap)
+    x_agent = round(x_gw - aw - gap)
+    x_caller = margin
+    x_col = x_gw                             # engine and log align on the gateway
+
+    b_caller = box("caller", x_caller, cy - 60, cw, 120, "#0e1a33", "#2b3c5e",
                    [("customer / rep", 19, "#f8fafc", "600"), ("agentcore invoke", 15, "#7c93b5", "400")])
-    b_agent = box("agent", 380, 185, 300, 150, "#122146", "#3b82f6",
+    b_agent = box("agent", x_agent, cy - 75, aw, 150, "#122146", "#3b82f6",
                   [("AgentCore Runtime", 20, "#f8fafc", "600"),
                    ("aia_uc04 · Strands · deepseek.v3.2", 14, "#7c93b5", "400"),
                    ("no rule in the prompt", 14, "#fda4af", "400")])
-    b_eng = box("eng", 770, 40, 300, 104, "#0d1729", "#7c3aed",
+    b_eng = box("eng", x_col, 40, 300, 104, "#0d1729", "#7c3aed",
                 [("policy engine · 2 Cedar policies", 17, "#e9d5ff", "600"),
                  ("amount <= 500, otherwise default deny", 14, "#7c93b5", "400")])
-    b_gw = box("gw", 770, 200, 300, 200, "#122146", "#7c3aed",
+    b_gw = box("gw", x_gw, cy - 100, gww, 200, "#122146", "#7c3aed",
                [("AgentCore Gateway", 20, "#e9d5ff", "600"),
                 ("MCP endpoint", 14, "#7c93b5", "400"),
                 ("mode: LOG_ONLY | ENFORCE", 14, "#c4b5fd", "400"),
                 ("decision logged either way", 14, "#c4b5fd", "400")])
-    b_lambda = box("lambda", 1160, 300, 220, 130, "#0e1a33", "#2b3c5e",
+    # the backend sits just below the chain centreline: high enough that the
+    # ALLOW label clears its top corner, low enough that the DENY dead end and
+    # its label fit in the open space underneath it
+    b_lambda = box("lambda", x_lambda, cy - 55, lw, 130, "#0e1a33", "#2b3c5e",
                    [("aia-uc04-refund", 18, "#f8fafc", "600"),
                     ("approveRefund /", 13, "#7c93b5", "400"),
                     ("processRefund", 13, "#7c93b5", "400")])
-    b_log = box("log", 770, 480, 300, 120, "#0d1729", "#0d9488",
+    b_log = box("log", x_col, 480, 300, 120, "#0d1729", "#0d9488",
                 [("decision log", 18, "#5eead4", "600"),
                  ("decision, reason,", 13, "#7c93b5", "400"),
                  ("determiningPolicies[]", 13, "#7c93b5", "400")])
 
+    # the request chain: caller -> agent -> gateway, all on the centreline
     arrow(b_caller, "right", b_agent, "left", "#60a5fa", "ahb", "invoke")
     arrow(b_agent, "right", b_gw, "left", "#60a5fa", "ahb", "tools/call")
-    arrow(b_gw, "top", b_eng, "bottom", "#c4b5fd", "ahb", "authorize")
-    arrow(b_gw, "bottom", b_log, "top", "#5eead4", "ahg")
-    label(edge_mid(b_gw, "bottom")[0] - 14, b_log["y"] - 8,
-          "every call", 14, "#64748b", "end")
 
-    # allow path: gateway right edge upper half -> lambda left edge, landing on
-    # the backend box's vertical centerline
-    gx = edge_mid(b_gw, "right")[0]; gy = b_gw["y"] + b_gw["h"] * 0.22
-    lx = b_lambda["x"]; ly = edge_mid(b_lambda, "left")[1]
+    # engine above and log below ride the gateway column
+    arrow(b_gw, "top", b_eng, "bottom", "#c4b5fd", "ahb")
+    side_label(edge_mid(b_gw, "top")[0],
+               edge_mid(b_eng, "bottom")[1], edge_mid(b_gw, "top")[1],
+               "authorize", "right")
+    arrow(b_gw, "bottom", b_log, "top", "#5eead4", "ahg")
+    side_label(edge_mid(b_gw, "bottom")[0],
+               edge_mid(b_gw, "bottom")[1], edge_mid(b_log, "top")[1],
+               "every call", "left")
+
+    # allow path: leaves the gateway's right edge at its upper quarter and
+    # lands exactly on the backend box's left-edge midpoint
+    gx = b_gw["x"] + b_gw["w"]
+    gy = b_gw["y"] + b_gw["h"] * 0.25
+    lx, ly = edge_mid(b_lambda, "left")
     bend = min(70, (lx - gx) / 2)
     out.append(f'<path d="M {gx:.0f} {gy:.0f} C {gx+bend:.0f} {gy:.0f}, {lx-bend:.0f} {ly:.0f}, {lx:.0f} {ly:.0f}" '
                f'stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>')
     label(gx + 8, gy - 14, "amount <= 500 -> ALLOW", 15, "#34d399", "start")
 
-    # deny path: gateway right edge lower half, stops mid-air before the lambda
-    gx2 = edge_mid(b_gw, "right")[0]; gy2 = b_gw["y"] + b_gw["h"] * 0.74
-    stop = (gx2 + lx) / 2 - 24
-    out.append(f'<line x1="{gx2}" y1="{gy2}" x2="{stop:.0f}" y2="{gy2}" '
-               f'stroke="#fda4af" stroke-width="2.4" marker-end="url(#ahr)"/>')
-    out.append(f'<line x1="{stop:.0f}" y1="{gy2 - 15}" x2="{stop:.0f}" '
-               f'y2="{gy2 + 15}" stroke="#fda4af" stroke-width="3.4"/>')
-    label(stop - 12, b_gw["y"] + b_gw["h"] + 34, "amount = 3000 -> DENY (-32002)", 15, "#fda4af", "end")
+    # deny path: the same edge, lower. The call leaves the gateway, drops into
+    # the open space under the backend and dies on a crossbar before it ever
+    # arrives — no arrowhead, because it points at nothing.
+    dy = b_gw["y"] + b_gw["h"] * 0.72
+    ex = b_lambda["x"] - 12                          # just left of the backend
+    ey = (b_lambda["y"] + b_lambda["h"] + b_log["y"]) / 2
+    out.append(f'<line x1="{gx:.0f}" y1="{dy:.0f}" x2="{ex:.0f}" y2="{ey:.0f}" '
+               f'stroke="#fda4af" stroke-width="2.4"/>')
+    r = 9
+    out.append(f'<path d="M {ex-r:.0f} {ey-r:.0f} L {ex+r:.0f} {ey+r:.0f} '
+               f'M {ex-r:.0f} {ey+r:.0f} L {ex+r:.0f} {ey-r:.0f}" '
+               f'stroke="#fda4af" stroke-width="3.4" stroke-linecap="round" fill="none"/>')
+    label(ex, ey + 30, "amount = 3000 -> DENY (-32002)", 15, "#fda4af", "middle")
 
     out.append("</svg>")
     (HERE / "F1-policy-architecture.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
