@@ -133,7 +133,7 @@ def publish_hugo(slug, text):
     return copied
 
 
-def devto(slug, fm, body, tags, create):
+def devto(slug, fm, body, tags, create, a_publish=False):
     key = read_key()
     if len(tags) > 4 or any("-" in t for t in tags):
         sys.exit(f"bad tags {tags}: Dev.to allows 4 max and no hyphens")
@@ -186,12 +186,18 @@ def devto(slug, fm, body, tags, create):
     else:
         sys.exit("no known Dev.to id; pass --devto-create")
 
-    d = call("PUT", f"{API}/articles/{art_id}", {"article": {"published": True}})
+    # publish step: opt-in since 2026-10-24. Creation/update always leaves the
+    # article as a draft; --devto-publish is the explicit go-live switch.
+    if a_publish:
+        d = call("PUT", f"{API}/articles/{art_id}", {"article": {"published": True}})
+        print(f"devto: published {d.get('url')} canonical={d.get('canonical_url')}")
+    else:
+        print(f"devto: left as draft {art_id} (pass --devto-publish to go live)")
     state.setdefault(slug, {})["devto_id"] = art_id
-    state[slug]["devto_url"] = d.get("url")
+    if a_publish:
+        state[slug]["devto_url"] = d.get("url")
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps(state, indent=2))
-    print(f"devto: published {d.get('url')} canonical={d.get('canonical_url')}")
     return d
 
 
@@ -220,6 +226,8 @@ def main():
     ap.add_argument("--tags", help="comma separated, max 4, no hyphens (human-approved)")
     ap.add_argument("--devto-create", action="store_true")
     ap.add_argument("--devto-update", action="store_true")
+    ap.add_argument("--devto-publish", action="store_true",
+                    help="flip the Dev.to article live; without it the article stays a draft")
     ap.add_argument("--medium-export", action="store_true")
     ap.add_argument("--skip-hugo", action="store_true")
     a = ap.parse_args()
@@ -238,7 +246,7 @@ def main():
             if not m:
                 sys.exit("no tags in front matter and none passed on the command line")
             tags = [t.strip().strip('"').strip("'") for t in m.group(1).split(",")]
-        devto(a.slug, fm, body, tags, a.devto_create)
+        devto(a.slug, fm, body, tags, a.devto_create, a.devto_publish)
     if a.medium_export:
         medium_export(a.slug, fm, body)
 

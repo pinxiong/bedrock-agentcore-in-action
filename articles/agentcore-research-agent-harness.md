@@ -1,7 +1,7 @@
 ---
 title: "A research agent that searches, browses and computes"
 description: "AgentCore Harness, measured: one prompt drives web search through a gateway, a browser session and the code interpreter, leaves a real xlsx and png in the session VM, survives a mid-session model switch, and exports to Runtime."
-date: 2026-10-25
+date: 2026-10-24
 draft: false
 tags: ["ai", "agents", "agentcore", "aws"]
 canonical_url: "https://xiongpin.dev/posts/agentcore-research-agent-harness/"
