@@ -40,15 +40,15 @@ SPINNERS = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 # terminal panels                                                             #
 # --------------------------------------------------------------------------- #
 
-def wrap(lines: list[tuple[str, str]]) -> list[tuple[str, str]]:
+def wrap(lines: list[tuple[str, str]], width: int = PANEL_WIDTH) -> list[tuple[str, str]]:
     """Break lines that are wider than the panel. Nothing else is touched."""
     out: list[tuple[str, str]] = []
     for text, colour in lines:
-        if len(text) <= PANEL_WIDTH:
+        if len(text) <= width:
             out.append((text, colour))
             continue
         parts = textwrap.wrap(
-            text, width=PANEL_WIDTH, break_long_words=True, break_on_hyphens=False
+            text, width=width, break_long_words=True, break_on_hyphens=False
         )
         out.append((parts[0], colour))
         out.extend((WRAP_INDENT + part, colour) for part in parts[1:])
@@ -141,13 +141,21 @@ def panel_lines(command: list[str], body: list[str]) -> list[tuple[str, str]]:
 
 
 def shell_box(name: str, title: str, lines: list[tuple[str, str]], subtitle: str = "") -> None:
-    """Render captured terminal output as an SVG panel."""
-    lines = wrap(lines)
+    """Render captured terminal output as an SVG panel.
+
+    The frame is sized to its content. A fixed 1440 wide frame left two thirds
+    of the box empty on the short captures and shrank the 17.5px text to about
+    9px once the article fitted the image to its column.
+    """
     top = 96
     pad = 34
     size = 17.5
     lh = 27
-    width = 1440
+    adv = size * 0.62                                   # monospace advance
+    chars = min(PANEL_WIDTH, max([len(t) for t, _ in lines] + [40]))
+    lines = wrap(lines, chars)
+    room = max(chars * adv, len(subtitle) * 15 * 0.6)
+    width = int(min(1500, max(880, 58 + room + 76)))
     height = top + lh * (len(lines) + 1) + pad + (34 if subtitle else 0)
 
     out = [
@@ -199,7 +207,7 @@ def shell_box(name: str, title: str, lines: list[tuple[str, str]], subtitle: str
 
 def figure_architecture() -> None:
     """Diagram. Every arrow endpoint is computed from the box rectangles below."""
-    w, h = 1440, 720
+    w, h = 1440, 760
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" '
         f'width="{w}" height="{h}" role="img">',
@@ -271,71 +279,60 @@ def figure_architecture() -> None:
         (x1, y1), (x2, y2) = edge_mid(b1, s1), edge_mid(b2, s2)
         shaft(x1, y1, x2, y2, colour)
         if text:
-            label((x1 + x2) / 2, (y1 + y2) / 2 - 8, text, 14, tcolour, "middle")
-
-    def side_label(x, y_top, y_bot, text, side="left"):
-        mid = (y_top + y_bot) / 2
-        if side == "left":
-            label(x - 12, mid + 5, text, 14, "#64748b", "end")
-        else:
-            label(x + 12, mid + 5, text, 14, "#64748b", "start")
+            label((x1 + x2) / 2, (y1 + y2) / 2 - 13, text, 14, tcolour, "middle")
 
     label(60, 62, "the deployed use case, uc05", 22, "#f8fafc", weight="600")
-    label(60, 90, "the harness is a configuration: no agent loop in the repository, one prompt drives three managed tools", 15)
+    label(60, 90, "one prompt reaches the harness, the harness calls three managed tools, the files stay in the session VM", 15)
 
-    margin, cy = 60, 330
-    cw, hw, gww = 250, 330, 300
-    gap = (w - 2 * margin - (cw + hw + gww + 260)) / 3
-    x_vm = w - margin - 260
-    x_gw = round(x_vm - 260 - gap)
-    x_h = round(x_gw - gww - gap)
-    x_c = margin
-    x_col = x_gw
+    # Three columns with a 90 unit channel between the harness and the tools so
+    # that every connector and its label has room of its own. Nothing is routed
+    # under another node, so no line crosses another line.
+    TRUNK = 810
+    x_c, x_h, x_t, tw = 60, 380, 900, 340
 
-    b_caller = box("caller", x_c, cy - 55, cw, 110, "#0e1a33", "#2b3c5e",
+    b_caller = box("caller", x_c, 270, 240, 110, "#0e1a33", "#2b3c5e",
                    [("one prompt", 19, "#f8fafc", "600"),
                     ("agentcore invoke", 15, "#7c93b5", "400")])
-    b_harness = box("harness", x_h, cy - 95, hw, 190, "#122146", "#3b82f6",
+    b_harness = box("harness", x_h, 225, 340, 200, "#122146", "#3b82f6",
                     [("managed harness", 20, "#f8fafc", "600"),
                      ("harness.json: model, prompt,", 14, "#7c93b5", "400"),
                      ("max-iterations, tool list", 14, "#7c93b5", "400"),
                      ("session VM per session id", 14, "#c4b5fd", "400")])
-    b_gw = box("gw", x_gw, cy - 75, gww, 150, "#122146", "#7c3aed",
+    b_browser = box("browser", x_t, 160, tw, 100, "#0d1729", "#0d9488",
+                    [("browser tool", 17, "#5eead4", "600"),
+                     ("StartBrowserSession, pages", 13, "#7c93b5", "400")])
+    b_gw = box("gw", x_t, 300, tw, 110, "#122146", "#7c3aed",
                [("gateway · web-search", 18, "#e9d5ff", "600"),
                 ("connector target", 14, "#7c93b5", "400"),
                 ("managed web index", 14, "#c4b5fd", "400")])
-    b_browser = box("browser", x_col, 118, gww, 96, "#0d1729", "#0d9488",
-                    [("browser tool", 17, "#5eead4", "600"),
-                     ("StartBrowserSession, pages", 13, "#7c93b5", "400")])
-    b_ci = box("ci", x_col, 500, gww, 110, "#0d1729", "#ea580c",
+    b_ci = box("ci", x_t, 450, tw, 110, "#0d1729", "#ea580c",
                [("code interpreter", 17, "#fdba74", "600"),
                 ("sandbox: stdlib + PIL, numpy", 13, "#7c93b5", "400"),
                 ("wind.xlsx + wind.png", 13, "#fdba74", "400")])
-    b_vm = box("vm", x_vm, cy - 70, 260, 140, "#0e1a33", "#2b3c5e",
+    b_vm = box("vm", x_t, 610, tw, 100, "#0e1a33", "#2b3c5e",
                [("session VM", 18, "#f8fafc", "600"),
-                ("agentcore exec pins", 13, "#7c93b5", "400"),
-                ("the same session id", 13, "#7c93b5", "400"),
+                ("agentcore exec pins the id", 13, "#7c93b5", "400"),
                 ("ls · base64 out", 13, "#34d399", "400")])
 
     arrow(b_caller, "right", b_harness, "left", "#60a5fa", "invoke")
-    arrow(b_harness, "right", b_gw, "left", "#60a5fa", "search", "#8ea0bd")
 
-    gx, gy = edge_mid(b_gw, "top")
-    bx, by = edge_mid(b_browser, "bottom")
-    shaft(gx, gy, bx, by, "#5eead4")
-    side_label(gx, by, gy, "open pages", "left")
+    # fan-out: one trunk out of the harness, one stub per tool, each stub long
+    # enough to carry its own label above it
+    hx, hy = edge_mid(b_harness, "right")
+    out.append(f'<line x1="{hx:.2f}" y1="{hy:.2f}" x2="{TRUNK}" y2="{hy:.2f}" '
+               f'stroke="#60a5fa" stroke-width="2.2"/>')
+    out.append(f'<line x1="{TRUNK}" y1="210" x2="{TRUNK}" y2="505" '
+               f'stroke="#60a5fa" stroke-width="2.2"/>')
+    for b, text in ((b_browser, "browse"), (b_gw, "search"), (b_ci, "code")):
+        tx, ty = edge_mid(b, "left")
+        shaft(TRUNK, ty, tx, ty, "#60a5fa")
+        label((TRUNK + tx) / 2, ty - 11, text, 14, "#8ea0bd", "middle")
 
-    gx2, gy2 = edge_mid(b_gw, "bottom")
-    cx2, cy2 = edge_mid(b_ci, "top")
-    shaft(gx2, gy2, cx2, cy2, "#fdba74")
-    side_label(gx2, gy2, cy2, "run code", "right")
-
-    hx, hy = edge_mid(b_harness, "bottom")
-    vx, vy = edge_mid(b_vm, "bottom")
-    out.append(f'<path d="M {hx:.0f} {hy:.0f} C {hx:.0f} {hy+70:.0f}, {vx:.0f} {vy+70:.0f}, {vx:.0f} {vy:.0f}" '
-               f'stroke="#60a5fa" stroke-width="2.2" fill="none"/>')
-    head(vx, vy, 0, -1, "#60a5fa")
-    label(vx - 20, vy + 45, "files land in /home", 14, "#8ea0bd", "end")
+    # the two files are written inside the sandbox, exec reads them back out
+    cx2, cy2 = edge_mid(b_ci, "bottom")
+    vx2, vy2 = edge_mid(b_vm, "top")
+    shaft(cx2, cy2, vx2, vy2, "#fdba74")
+    label(vx2 + 14, (cy2 + vy2) / 2 + 5, "files land in /home", 14, "#8ea0bd", "start")
 
     out.append("</svg>")
     (HERE / "F1-harness-architecture.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
@@ -373,8 +370,8 @@ def cover(w: int, h: int, name: str, safe: float = 0.0) -> None:
     ]
 
     pad = round(max(0.055, safe) * w)
-    cw = w - 2 * pad
-    u = cw / 0.89
+    bw = w - 2 * pad
+    u = bw / 0.89
 
     hl = max(10.0, 13.0 * u / 1200)
     hw = hl * 0.5
@@ -383,11 +380,10 @@ def cover(w: int, h: int, name: str, safe: float = 0.0) -> None:
         out.append(f'<polygon points="{x-hl:.2f},{y-hw:.2f} {x:.2f},{y:.2f} '
                    f'{x-hl:.2f},{y+hw:.2f}" fill="{colour}"/>')
 
-    def shaft(x1, y1, x2, y2, colour, width=2.2, opacity=None):
+    def shaft(x1, y1, x2, y2, colour, width=2.2):
         ex = x2 - hl * 0.55
-        op = f' opacity="{opacity}"' if opacity is not None else ""
         out.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{ex:.2f}" y2="{y2:.2f}" '
-                   f'stroke="{colour}" stroke-width="{width}"{op}/>')
+                   f'stroke="{colour}" stroke-width="{width}"/>')
         head(x2, y2, colour)
 
     out.append(
@@ -404,66 +400,57 @@ def cover(w: int, h: int, name: str, safe: float = 0.0) -> None:
         f'one prompt, three tools, two files, no agent loop written</text>'
     )
 
-    top = round(0.50 * h)
-    bh = round(0.26 * h)
-    boxes = {
-        "prompt":   dict(x=pad,                 w=round(0.18*u), stroke="#3b82f6",
-                         head="one prompt", body=["search, browse,", "compute"]),
-        "harness":  dict(x=round(pad+0.27*u), w=round(0.26*u), stroke="#7c3aed",
-                         head="managed harness", body=["harness.json + tools", "session state per id"]),
-        "artifacts": dict(x=round(pad+0.62*u), w=round(0.25*u), stroke="#059669",
-                         head="session VM", body=["wind.xlsx 1,806 B", "wind.png 16,705 B"]),
-    }
+    # three equal boxes with equal gutters: the band spans pad .. w-pad exactly,
+    # so the left and right margins match and no box is wider than its text
+    gap = round(bw * 0.085)
+    boxw = round((bw - 2 * gap) / 3)
+    top = round(0.47 * h)
+    bh = round(0.28 * h)
+    xs = [pad, pad + boxw + gap, pad + 2 * (boxw + gap)]
+    boxes = [
+        dict(x=xs[0], stroke="#3b82f6", head="one prompt",
+             body=["search, browse,", "compute"]),
+        dict(x=xs[1], stroke="#7c3aed", head="managed harness",
+             body=["harness.json + tools", "session state per id"]),
+        dict(x=xs[2], stroke="#059669", head="session VM",
+             body=["wind.xlsx 1,806 B", "wind.png 16,705 B"]),
+    ]
     fs = round(0.0165 * w)
     cy = top + bh // 2
     pitch = 0.05 * h
-    for b in boxes.values():
-        b["y"], b["h"] = top, bh
+    for b in boxes:
+        b["h"] = bh
         out.append(
-            f'<rect x="{b["x"]}" y="{b["y"]}" width="{b["w"]}" height="{b["h"]}" '
+            f'<rect x="{b["x"]}" y="{top}" width="{boxw}" height="{bh}" '
             f'rx="14" fill="#0b1428" stroke="{b["stroke"]}" stroke-width="2"/>'
         )
-        rows = [(b["head"], b["stroke"] if b["stroke"] != "#3b82f6" else "#7c93b5", "600")]
+        rows = [(b["head"], b["stroke"], "600")]
         rows += [(line, "#cbd5e1", "400") for line in b["body"]]
         for i, (text, colour, weight) in enumerate(rows):
             y = cy + 0.25*fs + (i - 1) * pitch
             out.append(
-                f'<text x="{b["x"] + b["w"]/2:.0f}" y="{y:.0f}" font-family="{SANS}" '
+                f'<text x="{b["x"] + boxw/2:.0f}" y="{y:.0f}" font-family="{SANS}" '
                 f'font-size="{fs}" fill="{colour}" font-weight="{weight}" '
                 f'text-anchor="middle">{html.escape(text)}</text>'
             )
 
-    a, g, c = boxes["prompt"], boxes["harness"], boxes["artifacts"]
+    a, g, c = boxes
     lfs = round(0.015 * w)
-
-    shaft(a["x"] + a["w"], cy, g["x"], cy, "#60a5fa", opacity=0.9)
-    out.append(
-        f'<text x="{(a["x"] + a["w"] + g["x"]) / 2:.0f}" y="{cy - 14}" font-family="{SANS}" '
-        f'font-size="{lfs}" fill="#8ea0bd" text-anchor="middle">invoke</text>'
-    )
-
-    gx = g["x"] + g["w"]
-    shaft(gx, cy, c["x"], cy, "#34d399")
-    out.append(
-        f'<text x="{(gx + c["x"])/2:.0f}" y="{cy - 14}" font-family="{SANS}" '
-        f'font-size="{lfs}" fill="#34d399" text-anchor="middle">tools</text>'
-    )
-
-    # mid-session model switch: a dashed rail below the box band
-    dy = top + bh + round(0.055 * h)
-    out.append(
-        f'<line x1="{g["x"]:.0f}" y1="{dy:.0f}" x2="{c["x"] + c["w"]:.0f}" y2="{dy:.0f}" '
-        f'stroke="#fdba74" stroke-width="2" stroke-dasharray="7 6"/>'
-    )
-    out.append(
-        f'<text x="{(g["x"] + c["x"] + c["w"]) / 2:.0f}" y="{dy + 0.045*h:.0f}" font-family="{SANS}" '
-        f'font-size="{lfs}" fill="#fdba74" text-anchor="middle">deepseek.v3.2 -> nova-lite mid-session, the conversation stays</text>'
-    )
+    for left, right, colour, text in (
+        (a, g, "#60a5fa", "invoke"),
+        (g, c, "#34d399", "tools"),
+    ):
+        shaft(left["x"] + boxw, cy, right["x"], cy, colour)
+        out.append(
+            f'<text x="{(left["x"] + boxw + right["x"]) / 2:.0f}" y="{cy - 14}" '
+            f'font-family="{SANS}" font-size="{lfs}" fill="{colour}" '
+            f'text-anchor="middle">{text}</text>'
+        )
 
     out.append(
-        f'<text x="{pad:.0f}" y="{0.93*h:.0f}" font-family="{SANS}" '
+        f'<text x="{pad:.0f}" y="{0.90*h:.0f}" font-family="{SANS}" '
         f'font-size="{0.016*u:.0f}" fill="#8ea0bd">'
-        f'one invoke: websearch 1 span, browser 4 spans, code 17 spans; export deploys the same behaviour to Runtime</text>'
+        f'one invoke, 22 tool spans, two real files; the model switches mid-session and the session survives</text>'
     )
     out.append("</svg>")
     (HERE / f"{name}.svg").write_text("\n".join(out) + "\n", encoding="utf-8")

@@ -11,25 +11,23 @@
 <text x="77" y="118" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="34" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
 <text x="77" y="221" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="73" fill="#f8fafc" font-weight="700">The Managed Harness</text>
 <text x="77" y="288" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="31" fill="#c4b5fd">one prompt, three tools, two files, no agent loop written</text>
-<rect x="77" y="394" width="252" height="205" rx="14" fill="#0b1428" stroke="#3b82f6" stroke-width="2"/>
-<text x="203" y="462" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#7c93b5" font-weight="600" text-anchor="middle">one prompt</text>
-<text x="203" y="502" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">search, browse,</text>
-<text x="203" y="541" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">compute</text>
-<rect x="455" y="394" width="364" height="205" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
-<text x="637" y="462" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#7c3aed" font-weight="600" text-anchor="middle">managed harness</text>
-<text x="637" y="502" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">harness.json + tools</text>
-<text x="637" y="541" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">session state per id</text>
-<rect x="945" y="394" width="350" height="205" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
-<text x="1120" y="462" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#059669" font-weight="600" text-anchor="middle">session VM</text>
-<text x="1120" y="502" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">wind.xlsx 1,806 B</text>
-<text x="1120" y="541" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">wind.png 16,705 B</text>
-<line x1="329.00" y1="496.00" x2="446.66" y2="496.00" stroke="#60a5fa" stroke-width="2.2" opacity="0.9"/>
-<polygon points="439.83,488.42 455.00,496.00 439.83,503.58" fill="#60a5fa"/>
-<text x="392" y="482" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#8ea0bd" text-anchor="middle">invoke</text>
-<line x1="819.00" y1="496.00" x2="936.66" y2="496.00" stroke="#34d399" stroke-width="2.2"/>
-<polygon points="929.83,488.42 945.00,496.00 929.83,503.58" fill="#34d399"/>
-<text x="882" y="482" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#34d399" text-anchor="middle">tools</text>
-<line x1="455" y1="642" x2="1295" y2="642" stroke="#fdba74" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="875" y="677" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#fdba74" text-anchor="middle">deepseek.v3.2 -> nova-lite mid-session, the conversation stays</text>
-<text x="77" y="733" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#8ea0bd">one invoke: websearch 1 span, browser 4 spans, code 17 spans; export deploys the same behaviour to Runtime</text>
+<rect x="77" y="370" width="345" height="221" rx="14" fill="#0b1428" stroke="#3b82f6" stroke-width="2"/>
+<text x="250" y="446" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#3b82f6" font-weight="600" text-anchor="middle">one prompt</text>
+<text x="250" y="486" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">search, browse,</text>
+<text x="250" y="525" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">compute</text>
+<rect x="528" y="370" width="345" height="221" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
+<text x="700" y="446" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#7c3aed" font-weight="600" text-anchor="middle">managed harness</text>
+<text x="700" y="486" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">harness.json + tools</text>
+<text x="700" y="525" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">session state per id</text>
+<rect x="979" y="370" width="345" height="221" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="1152" y="446" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#059669" font-weight="600" text-anchor="middle">session VM</text>
+<text x="1152" y="486" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">wind.xlsx 1,806 B</text>
+<text x="1152" y="525" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="23" fill="#cbd5e1" font-weight="400" text-anchor="middle">wind.png 16,705 B</text>
+<line x1="422.00" y1="480.00" x2="519.66" y2="480.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="512.83,472.42 528.00,480.00 512.83,487.58" fill="#60a5fa"/>
+<text x="475" y="466" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#60a5fa" text-anchor="middle">invoke</text>
+<line x1="873.00" y1="480.00" x2="970.66" y2="480.00" stroke="#34d399" stroke-width="2.2"/>
+<polygon points="963.83,472.42 979.00,480.00 963.83,487.58" fill="#34d399"/>
+<text x="926" y="466" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#34d399" text-anchor="middle">tools</text>
+<text x="77" y="709" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#8ea0bd">one invoke, 22 tool spans, two real files; the model switches mid-session and the session survives</text>
 </svg>
