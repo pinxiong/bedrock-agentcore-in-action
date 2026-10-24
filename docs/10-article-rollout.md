@@ -42,7 +42,7 @@ Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 | uc01 | https://dev.to/aws-builders/your-first-agent-as-a-service-deploying-a-support-agent-on-agentcore-48hh | https://xiongpin.dev/posts/your-first-agent-as-a-service-on-agentcore/ | manual, checklist in `writing-lab/distribution/` | 2026-10-18 |
 | uc02 | https://dev.to/aws-builders/an-agent-that-remembers-short-term-and-long-term-memory-on-agentcore-3bf5 | https://xiongpin.dev/posts/agentcore-memory-that-remembers/ | manual, checklist in `writing-lab/distribution/` | 2026-10-18 |
 | uc03 | https://dev.to/aws-builders/reaching-real-systems-without-holding-credentials-gateway-and-identity-3p6a | https://xiongpin.dev/posts/agentcore-gateway-and-identity/ | manual, checklist in `writing-lab/distribution/` | 2026-10-23 |
-| uc04 | https://dev.to/aws-builders/stopping-an-agent-from-overreaching-policy-in-enforce-mode-4dgf | https://xiongpin.dev/posts/agentcore-policy-enforce-mode/ | manual, checklist in `writing-lab/distribution/` | 2026-10-24 |
+| uc04 | https://dev.to/aws-builders/stopping-an-agent-from-overreaching-policy-in-enforce-mode-4dgf | https://xiongpin.dev/posts/agentcore-policy-enforce-mode/ | https://medium.com/@pinxiong.cn/stopping-an-agent-from-overreaching-policy-in-enforce-mode-5618586d14c2 | 2026-10-24 |
 | uc05 | | | | |
 | uc06 | | | | |
 | uc07 | | | | |
