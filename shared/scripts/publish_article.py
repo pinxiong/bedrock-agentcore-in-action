@@ -94,7 +94,12 @@ def check_master(slug):
         problems.append(f"{untagged} code fences without a language tag")
     if re.search(r"[一-鿿]", body):
         problems.append("CJK characters in the English master")
-    words = len(re.findall(r"\b[\w'-]+\b", re.sub(r"```.*?```", "", body, flags=re.S)))
+    # Length per docs/09-article-spec.md: measured on the body, with front
+    # matter, code blocks AND image captions (whole-line markdown images)
+    # excluded.
+    stripped = re.sub(r"```.*?```", "", body, flags=re.S)
+    stripped = re.sub(r"^\s*!\[[^\]]*\]\([^)]*\)\s*$", "", stripped, flags=re.M)
+    words = len(re.findall(r"\b[\w'-]+\b", stripped))
     if not 1000 <= words <= 1300:
         problems.append(f"word count {words} outside 1000-1300")
     if problems:
