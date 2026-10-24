@@ -524,7 +524,8 @@ def panels() -> None:
     # the capture is 100 rows; tabs are already two spaces by now, so the tool
     # rows are selected on the doubled space between the timestamp and the name
     ev22 = evidence_lines("22-spans-final.txt", fold=False)
-    tool_rows = [l for l in ev22 if "  execute_tool " in l or "  mcp tools/" in l]
+    tool_rows = [l for l in ev22 if "  execute_tool " in l or "  mcp tools/" in l
+                 or "  Bedrock AgentCore." in l]
     shell_box(
         "S4-spans", "terminal - the tool spans in that one session",
         panel_lines(
@@ -535,8 +536,8 @@ def panels() -> None:
              '''    | [.name, ."attributes"."gen_ai.tool.status"] | @tsv"' '''],
             tool_rows,
         ),
-        f"evidence/22-spans-final.txt · {len(tool_rows)} of {len(ev22)} rows: every tool call, "
-        "6 code_interpreter errors, 11 shell successes",
+        f"evidence/22-spans-final.txt · {len(tool_rows)} of {len(ev22)} rows: browser session, "
+        "every tool call, 6 code_interpreter errors, 11 shell successes",
     )
     ev21 = evidence_lines("21-exec-inspect.txt")
     keep = [l for l in ev21 if ("zip OK" in l or "PNG magic" in l or "dimensions" in l
