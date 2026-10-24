@@ -55,7 +55,7 @@ def wrap(lines: list[tuple[str, str]], width: int = PANEL_WIDTH) -> list[tuple[s
     return out
 
 
-def evidence_lines(stem: str) -> list[str]:
+def evidence_lines(stem: str, fold: bool = True) -> list[str]:
     """The captured output in an evidence file, headers and spinners removed."""
     raw = (EVIDENCE / stem).read_text(encoding="utf-8")
     # spinner frames ride on carriage returns: split on \r as well as \n
@@ -72,7 +72,10 @@ def evidence_lines(stem: str) -> list[str]:
         line = line.replace("\t", "  ")
         line = "".join(ch for ch in line if ord(ch) >= 32)
         out.append(line.rstrip())
-    # drop consecutive duplicates the CLI spinner re-prints
+    # drop consecutive duplicates the CLI spinner re-prints; a span listing is
+    # data, not a redraw, so it passes fold=False and keeps every row
+    if not fold:
+        return out
     dedup = []
     for line in out:
         if dedup and dedup[-1] == line:
@@ -489,14 +492,20 @@ def panels() -> None:
         "evidence/15-deploy-2.log · one stack: gateway with its web-search target, the harness, its runtime",
     )
     ev17 = evidence_lines("17-add-gwtool.txt")
+    ev18 = evidence_lines("18-deploy-2.log")
     shell_box(
         "S2-gwtool", "terminal - wire the gateway to the harness as a tool, deploy again",
         panel_lines(
             ["$ agentcore add tool --harness research --type agentcore_gateway --name websearch \\",
              "    --gateway research-gateway --outbound-auth none"],
             [l for l in ev17 if "Added" in l or "deploy" in l],
+        )
+        + panel_lines(
+            ["$ agentcore deploy -y --target default        # 2 m 3 s"],
+            [l for l in ev18 if "Deployed to" in l or "VersionOutput" in l
+             or "StatusOutput" in l or "GatewayArnOutput" in l],
         ),
-        "evidence/17-add-gwtool.txt · the gateway resolves to its ARN from deployed state",
+        "evidence/17, 18 · the gateway resolves to its ARN from deployed state, harness version 2 READY",
     )
     ev20 = evidence_lines("20-invoke-final.txt")
     shell_box(
@@ -512,22 +521,26 @@ def panels() -> None:
         ),
         "evidence/20-invoke-final.txt · the full answer names both files with their byte sizes",
     )
-    ev22 = evidence_lines("22-spans-final.txt")
+    # the capture is 100 rows; tabs are already two spaces by now, so the tool
+    # rows are selected on the doubled space between the timestamp and the name
+    ev22 = evidence_lines("22-spans-final.txt", fold=False)
+    tool_rows = [l for l in ev22 if "  execute_tool " in l or "  mcp tools/" in l]
     shell_box(
-        "S4-spans", "terminal - the span listing for that one session",
+        "S4-spans", "terminal - the tool spans in that one session",
         panel_lines(
             ["$ aws logs filter-log-events --region us-east-1 \\",
              "    --log-group-name aws/spans --start-time <ms> \\",
              '''    --query "events[].message" --output json | jq -r ".[]" | jq -r ''',
              '''    'select(."attributes"."session.id"? == "research-session-0004-artifacts-run")''',
              '''    | [.name, ."attributes"."gen_ai.tool.status"] | @tsv"' '''],
-            ev22,
+            tool_rows,
         ),
-        "evidence/22-spans-final.txt · websearch and browser success, code_interpreter errors, shell successes",
+        f"evidence/22-spans-final.txt · {len(tool_rows)} of {len(ev22)} rows: every tool call, "
+        "6 code_interpreter errors, 11 shell successes",
     )
     ev21 = evidence_lines("21-exec-inspect.txt")
     keep = [l for l in ev21 if ("zip OK" in l or "PNG magic" in l or "dimensions" in l
-                                or l.strip().endswith(".xml") or l.strip().endswith(".rels"))]
+                                or (l.strip().startswith("[") and ".xml" in l))]
     shell_box(
         "S5-exec", "terminal - agentcore exec, pinned to the same session, inspects the files",
         panel_lines(
@@ -557,14 +570,14 @@ def panels() -> None:
         ),
         "evidence/30, 31, 32 · both answers name India at 5.1%, one harness version apart",
     )
-    ev33 = evidence_lines("33-spans-after-switch.txt")
+    ev33 = evidence_lines("33-spans-after-switch.txt", fold=False)
     shell_box(
         "S7-spans-after", "terminal - spans after the switch: two chat models, no new tool calls",
         panel_lines(
             ["$ aws logs filter-log-events ... --query 'events[].message' --output json \\",
              "  | jq -r '.[] | fromjson? | select(.\"attributes\".\"session.id\"? == \"research-session-0004-artifacts-run\")",
              "  | [.name, .\"attributes\".\"gen_ai.tool.status\"] | @tsv'"],
-            sorted(set(ev33)),
+            ev33,
         ),
         "evidence/33-spans-after-switch.txt · chat deepseek.v3.2 and chat amazon.nova-lite-v1:0 share the session",
     )
