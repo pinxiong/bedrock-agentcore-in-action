@@ -8,30 +8,30 @@
 <rect width="1000" height="420" fill="url(#bg)"/>
 <rect width="1000" height="420" fill="url(#g1)"/>
 <rect width="1000" height="420" fill="url(#g2)"/>
-<text x="55" y="63" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
-<text x="55" y="118" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#f8fafc" font-weight="700">Policy in AgentCore</text>
-<text x="55" y="153" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#c4b5fd">A ceiling the model cannot argue with</text>
-<rect x="55" y="210" width="240" height="109" rx="14" fill="#0b1428" stroke="#3b82f6" stroke-width="2"/>
-<text x="175" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#3b82f6" font-weight="600" text-anchor="middle">agent</text>
-<text x="175" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">asks for</text>
-<text x="175" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">CNY 3000</text>
-<rect x="375" y="210" width="280" height="109" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
-<text x="515" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c3aed" font-weight="600" text-anchor="middle">gateway + policy engine</text>
-<text x="515" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">Cedar: amount &lt;= 500</text>
-<text x="515" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
-<rect x="735" y="210" width="210" height="109" rx="14" fill="#0b1428" stroke="#2b3c5e" stroke-width="2"/>
-<text x="840" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c93b5" font-weight="600" text-anchor="middle">refund backend</text>
-<text x="840" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">runs only on</text>
-<text x="840" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">an ALLOW</text>
-<line x1="295.00" y1="264.00" x2="369.04" y2="264.00" stroke="#60a5fa" stroke-width="2.2" opacity="0.9"/>
-<polygon points="364.17,258.58 375.00,264.00 364.17,269.42" fill="#60a5fa"/>
-<text x="335" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle">tools/call</text>
-<line x1="655.00" y1="264.00" x2="729.04" y2="264.00" stroke="#34d399" stroke-width="2.2"/>
-<polygon points="724.17,258.58 735.00,264.00 724.17,269.42" fill="#34d399"/>
-<text x="695" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="middle">ALLOW</text>
-<line x1="655.00" y1="290.16" x2="689.04" y2="290.16" stroke="#fda4af" stroke-width="2.2"/>
-<polygon points="684.17,284.74 695.00,290.16 684.17,295.58" fill="#fda4af"/>
-<line x1="695" y1="281" x2="695" y2="299" stroke="#fda4af" stroke-width="3.4"/>
-<text x="695" y="313" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="middle">DENY</text>
-<text x="55" y="391" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">same request: LOG_ONLY ran it, ENFORCE returned error -32002, the log names the policy</text>
+<text x="105" y="63" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
+<text x="105" y="118" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="46" fill="#f8fafc" font-weight="700">Policy in AgentCore</text>
+<text x="105" y="153" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#c4b5fd">A ceiling the model cannot argue with</text>
+<rect x="105" y="210" width="213" height="109" rx="14" fill="#0b1428" stroke="#3b82f6" stroke-width="2"/>
+<text x="212" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#3b82f6" font-weight="600" text-anchor="middle">agent</text>
+<text x="212" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">asks for</text>
+<text x="212" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">CNY 3000</text>
+<rect x="389" y="210" width="249" height="109" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
+<text x="514" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c3aed" font-weight="600" text-anchor="middle">gateway + policy engine</text>
+<text x="514" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">Cedar: amount &lt;= 500</text>
+<text x="514" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
+<rect x="709" y="210" width="186" height="109" rx="14" fill="#0b1428" stroke="#2b3c5e" stroke-width="2"/>
+<text x="802" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c93b5" font-weight="600" text-anchor="middle">refund backend</text>
+<text x="802" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">runs only on</text>
+<text x="802" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">an ALLOW</text>
+<line x1="318.00" y1="264.00" x2="383.50" y2="264.00" stroke="#60a5fa" stroke-width="2.2" opacity="0.9"/>
+<polygon points="379.00,259.00 389.00,264.00 379.00,269.00" fill="#60a5fa"/>
+<text x="354" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle">tools/call</text>
+<line x1="638.00" y1="264.00" x2="703.50" y2="264.00" stroke="#34d399" stroke-width="2.2"/>
+<polygon points="699.00,259.00 709.00,264.00 699.00,269.00" fill="#34d399"/>
+<text x="674" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="middle">ALLOW</text>
+<line x1="638.00" y1="290.16" x2="668.00" y2="290.16" stroke="#fda4af" stroke-width="2.2"/>
+<polygon points="663.50,285.16 673.50,290.16 663.50,295.16" fill="#fda4af"/>
+<line x1="674" y1="281" x2="674" y2="299" stroke="#fda4af" stroke-width="3.4"/>
+<text x="674" y="313" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="middle">DENY</text>
+<text x="105" y="391" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd">same request: LOG_ONLY ran it, ENFORCE returned error -32002, the log names the policy</text>
 </svg>

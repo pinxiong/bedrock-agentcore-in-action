@@ -352,8 +352,14 @@ def figure_architecture() -> None:
 # covers                                                                      #
 # --------------------------------------------------------------------------- #
 
-def cover(w: int, h: int, name: str) -> None:
-    """Normalised layout, so the same composition works at 1200x675 and 1000x420."""
+def cover(w: int, h: int, name: str, safe: float = 0.0) -> None:
+    """Normalised layout, so the same composition works at 1200x675 and 1000x420.
+
+    `safe` is the fraction of width that must survive a 1.91:1 centre crop. The
+    Dev.to cover ships at 2.38:1 for the 1000x420 article slot, but Dev.to also
+    feeds the same URL to its 1200x627 social card, which crops 9.8% off each
+    side. Padding the art to >= 10.5% keeps both crops intact.
+    """
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" '
         f'height="{h}" role="img">',
@@ -373,9 +379,16 @@ def cover(w: int, h: int, name: str) -> None:
         f'<rect width="{w}" height="{h}" fill="url(#g2)"/>',
     ]
 
+    # content band: everything is positioned inside [pad, w-pad] and every size
+    # is expressed in `u`, so widening the margin shrinks the art proportionally
+    # instead of pushing text past the edge
+    pad = round(max(0.055, safe) * w)
+    cw = w - 2 * pad                     # width the composition may use
+    u = cw / 0.89                        # 1.0u == one old full-width canvas
+
     # explicit triangular heads, exactly as in the architecture figure: the
     # tip is computed, never inherited from a <marker>
-    hl = max(10.0, 13.0 * w / 1200)      # head length, canvas units
+    hl = max(10.0, 13.0 * u / 1200)      # head length, canvas units
     hw = hl * 0.5                        # half width
 
     def head(x, y, colour):
@@ -390,18 +403,18 @@ def cover(w: int, h: int, name: str) -> None:
         out.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{ex:.2f}" y2="{y2:.2f}" '
                    f'stroke="{colour}" stroke-width="{width}"{op}/>')
         head(x2, y2, colour)
-    pad = round(0.055 * w)
+
     out.append(
-        f'<text x="{pad:.0f}" y="{0.15*h:.0f}" font-family="{SANS}" font-size="{0.024*w:.0f}" '
+        f'<text x="{pad:.0f}" y="{0.15*h:.0f}" font-family="{SANS}" font-size="{0.024*u:.0f}" '
         f'fill="#60a5fa" font-weight="600">AgentCore in Action</text>'
     )
     out.append(
-        f'<text x="{pad:.0f}" y="{0.28*h:.0f}" font-family="{SANS}" font-size="{0.052*w:.0f}" '
+        f'<text x="{pad:.0f}" y="{0.28*h:.0f}" font-family="{SANS}" font-size="{0.052*u:.0f}" '
         f'fill="#f8fafc" font-weight="700">Policy in AgentCore</text>'
     )
     out.append(
         f'<text x="{pad:.0f}" y="{0.365*h:.0f}" font-family="{SANS}" '
-        f'font-size="{0.022*w:.0f}" fill="#c4b5fd">'
+        f'font-size="{0.022*u:.0f}" fill="#c4b5fd">'
         f'A ceiling the model cannot argue with</text>'
     )
 
@@ -410,11 +423,11 @@ def cover(w: int, h: int, name: str) -> None:
     top = round(0.50 * h)
     bh = round(0.26 * h)
     boxes = {
-        "agent":    dict(x=pad,               w=round(0.24*w), stroke="#3b82f6",
+        "agent":    dict(x=pad,               w=round(0.24*u), stroke="#3b82f6",
                          head="agent", body=["asks for", "CNY 3000"]),
-        "gateway":  dict(x=round(pad+0.32*w), w=round(0.28*w), stroke="#7c3aed",
+        "gateway":  dict(x=round(pad+0.32*u), w=round(0.28*u), stroke="#7c3aed",
                          head="gateway + policy engine", body=["Cedar: amount <= 500", "mode: LOG_ONLY | ENFORCE"]),
-        "backend":  dict(x=round(pad+0.68*w), w=round(0.21*w), stroke="#2b3c5e",
+        "backend":  dict(x=round(pad+0.68*u), w=round(0.21*u), stroke="#2b3c5e",
                          head="refund backend", body=["runs only on", "an ALLOW"]),
     }
     fs = round(0.0165 * w)
@@ -473,7 +486,7 @@ def cover(w: int, h: int, name: str) -> None:
 
     out.append(
         f'<text x="{pad:.0f}" y="{0.93*h:.0f}" font-family="{SANS}" '
-        f'font-size="{0.016*w:.0f}" fill="#8ea0bd">'
+        f'font-size="{0.016*u:.0f}" fill="#8ea0bd">'
         f'same request: LOG_ONLY ran it, ENFORCE returned error -32002, the log names the policy</text>'
     )
     out.append("</svg>")
@@ -648,7 +661,7 @@ def main() -> None:
     panels()
     figure_architecture()
     cover(1200, 675, "cover")
-    cover(1000, 420, "cover-devto")
+    cover(1000, 420, "cover-devto", safe=0.105)
     cover(1400, 788, "cover-medium")   # Medium feature image, same 16:9 composition
 
 
