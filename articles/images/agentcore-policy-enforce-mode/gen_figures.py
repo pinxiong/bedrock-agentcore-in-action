@@ -520,7 +520,7 @@ def panels() -> None:
     shell_box(
         "S1-deploy", "terminal - agentcore deploy, first successful deploy (3 m 8 s)",
         panel_lines(["$ agentcore deploy -y --target default"], evidence_lines("15-deploy-2.log")),
-        "evidence/15-deploy-2.log · one stack: runtime, gateway with its target, empty policy engine",
+        "evidence/15-deploy-2.log · one stack: runtime, gateway with its target, no policy engine yet",
     )
     shell_box(
         "S2-status", "terminal - agentcore status",

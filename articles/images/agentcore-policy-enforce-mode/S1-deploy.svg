@@ -51,5 +51,5 @@
 <text x="58" y="993" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">        from invocations to be indexed.</text>
 <text x="58" y="1020" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">Next: agentcore invoke | agentcore status</text>
 <text x="58" y="1047" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#7c93b5" xml:space="preserve">Log: agentcore/.cli/logs/deploy/deploy-20261024-001626.log</text>
-<text x="58" y="1082" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/15-deploy-2.log · one stack: runtime, gateway with its target, empty policy engine</text>
+<text x="58" y="1082" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/15-deploy-2.log · one stack: runtime, gateway with its target, no policy engine yet</text>
 </svg>
