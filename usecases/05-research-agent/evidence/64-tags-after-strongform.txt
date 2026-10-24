@@ -1,0 +1,19 @@
+$ aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=Project,Values=agentcore-in-action --output text
+RESOURCETAGMAPPINGLIST	arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2
+TAGS	Project	agentcore-in-action
+TAGS	aws:cloudformation:stack-name	AgentCore-aiauc05-default
+TAGS	aws:cloudformation:stack-id	arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc05-default/1ece02e0-cff9-11f1-bcae-0affeb562a31
+TAGS	agentcore:project-name	aiauc05
+TAGS	AutoDelete	true
+TAGS	UseCase	05
+TAGS	aws:cloudformation:logical-id	ApplicationHarnessResearchHarness1D857D94
+TAGS	agentcore:target-name	default
+RESOURCETAGMAPPINGLIST	arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy
+TAGS	Project	agentcore-in-action
+TAGS	aws:cloudformation:stack-name	AgentCore-aiauc05-default
+TAGS	aws:cloudformation:stack-id	arn:aws:cloudformation:us-east-1:123456789012:stack/AgentCore-aiauc05-default/45beea50-cfc6-11f1-b578-0effffd4fb4b
+TAGS	agentcore:project-name	aiauc05
+TAGS	AutoDelete	true
+TAGS	UseCase	05
+TAGS	aws:cloudformation:logical-id	ApplicationHarnessResearchHarness1D857D94
+TAGS	agentcore:target-name	default

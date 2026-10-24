@@ -1,0 +1,5 @@
+AgentCore Status (target: )
+No resources match the given filters.
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.

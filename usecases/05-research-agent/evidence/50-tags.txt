@@ -1,0 +1,10 @@
+arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc05-research-gateway-lqtmfe9bdk	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-dteKs58mqy	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-dteKs58mqy/harness-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc05_researchAgent-PW5wfz2uZK	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc05_researchAgent-PW5wfz2uZK/runtime-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/harness_aiauc05_research-pGLJwHBe2d	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/harness_aiauc05_research-pGLJwHBe2d/runtime-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc05_researchAgent-PW5wfz2uZK	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/harness_aiauc05_research-pGLJwHBe2d	05

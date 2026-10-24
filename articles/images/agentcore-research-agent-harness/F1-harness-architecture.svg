@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 720" width="1440" height="720" role="img">
+<title>One prompt reaches the managed harness, which drives web search through the gateway, pages through the browser and computes in the code interpreter; the files stay in the session VM until exec fetches them.</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="720" fill="url(#bg)"/>
+<rect width="1440" height="720" fill="url(#g1)"/>
+<rect width="1440" height="720" fill="url(#g2)"/>
+<text x="60" y="62" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#f8fafc" text-anchor="start" font-weight="600">the deployed use case, uc05</text>
+<text x="60" y="90" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="start" font-weight="400">the harness is a configuration: no agent loop in the repository, one prompt drives three managed tools</text>
+<rect x="60" y="275" width="250" height="110" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
+<text x="185" y="323" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="19" fill="#f8fafc" font-weight="600" text-anchor="middle">one prompt</text>
+<text x="185" y="349" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#7c93b5" font-weight="400" text-anchor="middle">agentcore invoke</text>
+<rect x="440" y="235" width="330" height="190" rx="14" fill="#122146" stroke="#3b82f6" stroke-width="2"/>
+<text x="605" y="297" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#f8fafc" font-weight="600" text-anchor="middle">managed harness</text>
+<text x="605" y="323" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">harness.json: model, prompt,</text>
+<text x="605" y="349" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">max-iterations, tool list</text>
+<text x="605" y="375" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">session VM per session id</text>
+<rect x="800" y="255" width="300" height="150" rx="14" fill="#122146" stroke="#7c3aed" stroke-width="2"/>
+<text x="950" y="310" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#e9d5ff" font-weight="600" text-anchor="middle">gateway · web-search</text>
+<text x="950" y="336" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#7c93b5" font-weight="400" text-anchor="middle">connector target</text>
+<text x="950" y="362" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">managed web index</text>
+<rect x="800" y="118" width="300" height="96" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="2"/>
+<text x="950" y="159" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#5eead4" font-weight="600" text-anchor="middle">browser tool</text>
+<text x="950" y="185" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">StartBrowserSession, pages</text>
+<rect x="800" y="500" width="300" height="110" rx="14" fill="#0d1729" stroke="#ea580c" stroke-width="2"/>
+<text x="950" y="535" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#fdba74" font-weight="600" text-anchor="middle">code interpreter</text>
+<text x="950" y="561" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">sandbox: stdlib + PIL, numpy</text>
+<text x="950" y="587" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#fdba74" font-weight="400" text-anchor="middle">wind.xlsx + wind.png</text>
+<rect x="1120" y="260" width="260" height="140" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
+<text x="1250" y="297" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">session VM</text>
+<text x="1250" y="323" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">agentcore exec pins</text>
+<text x="1250" y="349" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">the same session id</text>
+<text x="1250" y="375" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#34d399" font-weight="400" text-anchor="middle">ls · base64 out</text>
+<line x1="310.00" y1="330.00" x2="431.75" y2="330.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="425.00,337.00 440.00,330.00 425.00,323.00" fill="#60a5fa"/>
+<text x="375.0" y="322.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">invoke</text>
+<line x1="770.00" y1="330.00" x2="791.75" y2="330.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="785.00,337.00 800.00,330.00 785.00,323.00" fill="#60a5fa"/>
+<text x="785.0" y="322.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd" text-anchor="middle" font-weight="400">search</text>
+<line x1="950.00" y1="255.00" x2="950.00" y2="222.25" stroke="#5eead4" stroke-width="2.2"/>
+<polygon points="957.00,229.00 950.00,214.00 943.00,229.00" fill="#5eead4"/>
+<text x="938.0" y="239.5" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="end" font-weight="400">open pages</text>
+<line x1="950.00" y1="405.00" x2="950.00" y2="491.75" stroke="#fdba74" stroke-width="2.2"/>
+<polygon points="943.00,485.00 950.00,500.00 957.00,485.00" fill="#fdba74"/>
+<text x="962.0" y="457.5" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="start" font-weight="400">run code</text>
+<path d="M 605 425 C 605 495, 1250 470, 1250 400" stroke="#60a5fa" stroke-width="2.2" fill="none"/>
+<polygon points="1257.00,415.00 1250.00,400.00 1243.00,415.00" fill="#60a5fa"/>
+<text x="1230.0" y="445" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd" text-anchor="end" font-weight="400">files land in /home</text>
+</svg>

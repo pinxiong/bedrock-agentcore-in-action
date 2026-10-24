@@ -1,0 +1,5 @@
+India had the smallest wind share in the table at 5.1%.
+
+Session: research-session-0004-artifacts-run
+To resume: agentcore invoke --session-id research-session-0004-artifacts-run
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/05-research-agent/agentcore/.cli/logs/invoke/invoke-research-20261025-005044.log

@@ -1,0 +1,100 @@
+1970-01-01T00:00:00Z	Bedrock AgentCore.StartBrowserSession	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_tool browser	success
+1970-01-01T00:00:00Z	execute_tool browser	success
+1970-01-01T00:00:00Z	execute_tool browser	success
+1970-01-01T00:00:00Z	execute_tool browser	success
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool code_interpreter	error
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool shell	success
+1970-01-01T00:00:00Z	execute_tool websearch___WebSearch	success
+1970-01-01T00:00:00Z	invoke_agent Strands Agents	-
+1970-01-01T00:00:00Z	mcp tools/call websearch___WebSearch	-
+1970-01-01T00:00:00Z	mcp tools/list	-

@@ -1,0 +1,29 @@
+[done]  Reading harness configuration
+[done]  Mapping to Strands template config
+[done]  Rendering agent code
+[done]  Updating agentcore.json
+[done]  Writing EXPORT_NOTES.md
+
+Exported harness research → runtime agent researchAgent
+
+Generated:
+  app/researchAgent/    Python agent (Strands)
+  agentcore/agentcore.json  updated
+
+⚠ 1 export note requiring manual follow-up:
+  • Browser tool requires Container build — excluded from CodeZip export
+    The browser tool requires a Container build to run. In a CodeZip (Lambda-style) runtime the Playwright node driver cannot be executed and the tool will fail at invocation time.
+    
+    Re-export with `--build Container` to include browser tool support:
+    
+      agentcore export harness --name research --target-agent-name researchAgent --build Container
+These notes are also saved to app/researchAgent/EXPORT_NOTES.md
+
+Next steps:
+
+  agentcore deploy     Deploy the new runtime agent
+  agentcore dev        Run the agent locally
+
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.

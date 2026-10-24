@@ -1,0 +1,12 @@
+AgentCore Status (target: default, us-east-1)
+
+Gateways
+  research-gateway: Deployed (1 target (1 web-search))
+(aiauc05-research-gateway-lqtmfe9bdk)
+
+Harnesses
+  research: Deployed (v1) (arn:aws:bedrock-agentcore:us-east-1:123456789012:harn
+ess/aiauc05_research-dteKs58mqy)
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.

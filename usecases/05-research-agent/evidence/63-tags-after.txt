@@ -1,0 +1,6 @@
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy	05
+# note: the one stale entry (harness aiauc05_research-wS2JfEcwcy) no longer exists;
+# get-harness returns ResourceNotFoundException - the tag service listing lagged.
+# re-check 2026-10-25 04:15 UTC
+
+aws: [ERROR]: An error occurred (ResourceNotFoundException) when calling the GetHarness operation: Agent with name aiauc05_research-wS2JfEcwcy not found.

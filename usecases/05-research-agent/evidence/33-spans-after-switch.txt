@@ -1,0 +1,12 @@
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	POST /invocations	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat	-
+1970-01-01T00:00:00Z	chat amazon.nova-lite-v1:0	-
+1970-01-01T00:00:00Z	chat deepseek.v3.2	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	execute_event_loop_cycle	-
+1970-01-01T00:00:00Z	invoke_agent Strands Agents	-
+1970-01-01T00:00:00Z	invoke_agent Strands Agents	-
+1970-01-01T00:00:00Z	mcp tools/list	-
+1970-01-01T00:00:00Z	mcp tools/list	-

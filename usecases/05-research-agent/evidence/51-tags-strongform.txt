@@ -1,0 +1,12 @@
+$ aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=Project,Values=agentcore-in-action --query 'ResourceTagMappingList[].{arn:ResourceARN,uc:Tags[?Key==`UseCase`].Value|[0]}' --output text
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc05_researchAgent-Aiiv538nZC/runtime-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/harness_aiauc05_research-KU1ULoGf2J/runtime-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-CT3fO8KUic/harness-endpoint/DEFAULT	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc05_researchAgent-Aiiv538nZC	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc05_researchAgent-Aiiv538nZC	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-CT3fO8KUic	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/harness_aiauc05_research-KU1ULoGf2J	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc05-research-gateway-n7vkevkvag	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/harness_aiauc05_research-KU1ULoGf2J	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy	05
