@@ -4,9 +4,6 @@
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
 <radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
 <radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
-<marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/></marker>
-<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#fda4af"/></marker>
-<marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
 </defs>
 <rect width="1440" height="700" fill="url(#bg)"/>
 <rect width="1440" height="700" fill="url(#g1)"/>
@@ -30,21 +27,26 @@
 <text x="923" y="345" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#c4b5fd" font-weight="400" text-anchor="middle">decision logged either way</text>
 <rect x="1160" y="245" width="220" height="130" rx="14" fill="#0e1a33" stroke="#2b3c5e" stroke-width="2"/>
 <text x="1270" y="290" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#f8fafc" font-weight="600" text-anchor="middle">aia-uc04-refund</text>
-<text x="1270" y="316" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund /</text>
+<text x="1270" y="316" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">approveRefund</text>
 <text x="1270" y="342" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">processRefund</text>
 <rect x="773" y="480" width="300" height="120" rx="14" fill="#0d1729" stroke="#0d9488" stroke-width="2"/>
 <text x="923" y="520" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#5eead4" font-weight="600" text-anchor="middle">decision log</text>
 <text x="923" y="546" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">decision, reason,</text>
 <text x="923" y="572" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#7c93b5" font-weight="400" text-anchor="middle">determiningPolicies[]</text>
-<line x1="300" y1="300" x2="386" y2="300" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
+<line x1="300.00" y1="300.00" x2="377.75" y2="300.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="371.00,307.00 386.00,300.00 371.00,293.00" fill="#60a5fa"/>
 <text x="343.0" y="292.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">invoke</text>
-<line x1="686" y1="300" x2="773" y2="300" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)"/>
+<line x1="686.00" y1="300.00" x2="764.75" y2="300.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="758.00,307.00 773.00,300.00 758.00,293.00" fill="#60a5fa"/>
 <text x="729.5" y="292.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle" font-weight="400">tools/call</text>
-<line x1="923" y1="200" x2="923" y2="144" stroke="#c4b5fd" stroke-width="2.2" marker-end="url(#ahb)"/>
+<line x1="923.00" y1="200.00" x2="923.00" y2="152.25" stroke="#c4b5fd" stroke-width="2.2"/>
+<polygon points="930.00,159.00 923.00,144.00 916.00,159.00" fill="#c4b5fd"/>
 <text x="935.0" y="177.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="start" font-weight="400">authorize</text>
-<line x1="923" y1="400" x2="923" y2="480" stroke="#5eead4" stroke-width="2.2" marker-end="url(#ahg)"/>
+<line x1="923.00" y1="400.00" x2="923.00" y2="471.75" stroke="#5eead4" stroke-width="2.2"/>
+<polygon points="916.00,465.00 923.00,480.00 930.00,465.00" fill="#5eead4"/>
 <text x="911.0" y="445.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="end" font-weight="400">every call</text>
-<path d="M 1073 250 C 1116 250, 1116 310, 1160 310" stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>
+<path d="M 1073 250 C 1093 302, 1102 310, 1160 310" stroke="#34d399" stroke-width="2.4" fill="none"/>
+<polygon points="1145.00,317.00 1160.00,310.00 1145.00,303.00" fill="#34d399"/>
 <text x="1081" y="236.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="start" font-weight="400">amount &lt;= 500 -&gt; ALLOW</text>
 <line x1="1073" y1="344" x2="1148" y2="428" stroke="#fda4af" stroke-width="2.4"/>
 <path d="M 1139 418 L 1157 436 M 1139 436 L 1157 418" stroke="#fda4af" stroke-width="3.4" stroke-linecap="round" fill="none"/>

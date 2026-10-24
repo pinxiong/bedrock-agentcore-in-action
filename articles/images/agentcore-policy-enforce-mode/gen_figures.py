@@ -190,17 +190,36 @@ def figure_architecture() -> None:
         '<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8">'
         f'<stop offset="0" stop-color="{PURPLE}" stop-opacity="0.20"/>'
         f'<stop offset="1" stop-color="{PURPLE}" stop-opacity="0"/></radialGradient>',
-        '<marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/></marker>',
-        '<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#fda4af"/></marker>',
-        '<marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>',
         "</defs>",
         f'<rect width="{w}" height="{h}" fill="url(#bg)"/>',
         f'<rect width="{w}" height="{h}" fill="url(#g1)"/>',
         f'<rect width="{w}" height="{h}" fill="url(#g2)"/>',
     ]
+
+    # Arrowheads are explicit triangles, not <marker>s: resvg places and tints
+    # markers unreliably (curved paths shift the head off the tangent, vertical
+    # lines inherit the wrong fill), so the tip is computed here and lands on
+    # the target border by construction.
+    AH_L, AH_HW = 15.0, 7.0        # head length / half width, figure units
+
+    def head(x, y, ux, uy, colour):
+        """Triangle whose TIP is exactly (x, y), pointing along (ux, uy)."""
+        bx, by = x - ux * AH_L, y - uy * AH_L
+        px, py = -uy * AH_HW, ux * AH_HW
+        out.append(
+            f'<polygon points="{bx+px:.2f},{by+py:.2f} {x:.2f},{y:.2f} '
+            f'{bx-px:.2f},{by-py:.2f}" fill="{colour}"/>'
+        )
+
+    def shaft(x1, y1, x2, y2, colour, width=2.2):
+        """Line stopping inside the head, so the tip is triangle-only."""
+        ux, uy = x2 - x1, y2 - y1
+        n = (ux * ux + uy * uy) ** 0.5
+        ux, uy = ux / n, uy / n
+        ex, ey = x2 - ux * AH_L * 0.55, y2 - uy * AH_L * 0.55
+        out.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{ex:.2f}" y2="{ey:.2f}" '
+                   f'stroke="{colour}" stroke-width="{width}"/>')
+        head(x2, y2, ux, uy, colour)
 
     def label(x, y, text, size=16, colour="#8ea0bd", anchor="start", weight="400", mono=False):
         out.append(
@@ -229,10 +248,9 @@ def figure_architecture() -> None:
             "top": (cx, b["y"]), "bottom": (cx, b["y"] + b["h"]),
         }[side]
 
-    def arrow(b1, s1, b2, s2, colour, marker, text="", tcolour="#64748b"):
+    def arrow(b1, s1, b2, s2, colour, text="", tcolour="#64748b"):
         (x1, y1), (x2, y2) = edge_mid(b1, s1), edge_mid(b2, s2)
-        out.append(f'<line x1="{x1:.0f}" y1="{y1:.0f}" x2="{x2:.0f}" y2="{y2:.0f}" '
-                   f'stroke="{colour}" stroke-width="2.2" marker-end="url(#{marker})"/>')
+        shaft(x1, y1, x2, y2, colour)
         if text:
             # centred on the line: baseline just above it, at the midpoint
             label((x1 + x2) / 2, (y1 + y2) / 2 - 8, text, 14, tcolour, "middle")
@@ -279,7 +297,7 @@ def figure_architecture() -> None:
     # its label fit in the open space underneath it
     b_lambda = box("lambda", x_lambda, cy - 55, lw, 130, "#0e1a33", "#2b3c5e",
                    [("aia-uc04-refund", 18, "#f8fafc", "600"),
-                    ("approveRefund /", 13, "#7c93b5", "400"),
+                    ("approveRefund", 13, "#7c93b5", "400"),
                     ("processRefund", 13, "#7c93b5", "400")])
     b_log = box("log", x_col, 480, 300, 120, "#0d1729", "#0d9488",
                 [("decision log", 18, "#5eead4", "600"),
@@ -287,27 +305,29 @@ def figure_architecture() -> None:
                  ("determiningPolicies[]", 13, "#7c93b5", "400")])
 
     # the request chain: caller -> agent -> gateway, all on the centreline
-    arrow(b_caller, "right", b_agent, "left", "#60a5fa", "ahb", "invoke")
-    arrow(b_agent, "right", b_gw, "left", "#60a5fa", "ahb", "tools/call")
+    arrow(b_caller, "right", b_agent, "left", "#60a5fa", "invoke")
+    arrow(b_agent, "right", b_gw, "left", "#60a5fa", "tools/call")
 
     # engine above and log below ride the gateway column
-    arrow(b_gw, "top", b_eng, "bottom", "#c4b5fd", "ahb")
+    arrow(b_gw, "top", b_eng, "bottom", "#c4b5fd")
     side_label(edge_mid(b_gw, "top")[0],
                edge_mid(b_eng, "bottom")[1], edge_mid(b_gw, "top")[1],
                "authorize", "right")
-    arrow(b_gw, "bottom", b_log, "top", "#5eead4", "ahg")
+    arrow(b_gw, "bottom", b_log, "top", "#5eead4")
     side_label(edge_mid(b_gw, "bottom")[0],
                edge_mid(b_gw, "bottom")[1], edge_mid(b_log, "top")[1],
                "every call", "left")
 
-    # allow path: leaves the gateway's right edge at its upper quarter and
-    # lands exactly on the backend box's left-edge midpoint
+    # allow path: leaves the gateway's right edge at its upper quarter, drops
+    # at once, then runs level into the backend's left-edge midpoint. Both
+    # control points sit on the target level, so the shaft is already flat
+    # where it meets the head and the head enters the border perpendicular.
     gx = b_gw["x"] + b_gw["w"]
     gy = b_gw["y"] + b_gw["h"] * 0.25
     lx, ly = edge_mid(b_lambda, "left")
-    bend = min(70, (lx - gx) / 2)
-    out.append(f'<path d="M {gx:.0f} {gy:.0f} C {gx+bend:.0f} {gy:.0f}, {lx-bend:.0f} {ly:.0f}, {lx:.0f} {ly:.0f}" '
-               f'stroke="#34d399" stroke-width="2.4" fill="none" marker-end="url(#ahg)"/>')
+    out.append(f'<path d="M {gx:.0f} {gy:.0f} C {gx+20:.0f} {ly-8:.0f}, {lx-58:.0f} {ly:.0f}, {lx:.0f} {ly:.0f}" '
+               f'stroke="#34d399" stroke-width="2.4" fill="none"/>')
+    head(lx, ly, 1, 0, "#34d399")
     label(gx + 8, gy - 14, "amount <= 500 -> ALLOW", 15, "#34d399", "start")
 
     # deny path: the same edge, lower. The call leaves the gateway, drops into
@@ -347,17 +367,29 @@ def cover(w: int, h: int, name: str) -> None:
         '<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8">'
         f'<stop offset="0" stop-color="{PURPLE}" stop-opacity="0.20"/>'
         f'<stop offset="1" stop-color="{PURPLE}" stop-opacity="0"/></radialGradient>',
-        '<marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/></marker>',
-        '<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#fda4af"/></marker>',
-        '<marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-        'markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>',
         "</defs>",
         f'<rect width="{w}" height="{h}" fill="url(#bg)"/>',
         f'<rect width="{w}" height="{h}" fill="url(#g1)"/>',
         f'<rect width="{w}" height="{h}" fill="url(#g2)"/>',
     ]
+
+    # explicit triangular heads, exactly as in the architecture figure: the
+    # tip is computed, never inherited from a <marker>
+    hl = max(10.0, 13.0 * w / 1200)      # head length, canvas units
+    hw = hl * 0.5                        # half width
+
+    def head(x, y, colour):
+        """Right-pointing triangle with its tip exactly on (x, y)."""
+        out.append(f'<polygon points="{x-hl:.2f},{y-hw:.2f} {x:.2f},{y:.2f} '
+                   f'{x-hl:.2f},{y+hw:.2f}" fill="{colour}"/>')
+
+    def shaft(x1, y1, x2, y2, colour, width=2.2, opacity=None):
+        """Horizontal line stopping inside its head; tip lands on (x2, y2)."""
+        ex = x2 - hl * 0.55
+        op = f' opacity="{opacity}"' if opacity is not None else ""
+        out.append(f'<line x1="{x1:.2f}" y1="{y1:.2f}" x2="{ex:.2f}" y2="{y2:.2f}" '
+                   f'stroke="{colour}" stroke-width="{width}"{op}/>')
+        head(x2, y2, colour)
     pad = round(0.055 * w)
     out.append(
         f'<text x="{pad:.0f}" y="{0.15*h:.0f}" font-family="{SANS}" font-size="{0.024*w:.0f}" '
@@ -388,7 +420,6 @@ def cover(w: int, h: int, name: str) -> None:
     fs = round(0.0165 * w)
     cy = top + bh // 2        # the centerline every arrow sits on
     pitch = 0.05 * h          # even line spacing inside the boxes
-    tx = round(0.02 * w)      # text inset from a box's left edge
     for b in boxes.values():
         b["y"], b["h"] = top, bh
         out.append(
@@ -397,22 +428,22 @@ def cover(w: int, h: int, name: str) -> None:
         )
         rows = [(b["head"], b["stroke"] if b["stroke"] != "#2b3c5e" else "#7c93b5", "600")]
         rows += [(line, "#cbd5e1", "400") for line in b["body"]]
+        # every line is centred in the box: the block reads the same in the
+        # narrow backend box as in the wide gateway box
         for i, (text, colour, weight) in enumerate(rows):
             # even pitch, the optical centre of the text block on the centerline
             y = cy + 0.25*fs + (i - 1) * pitch
             out.append(
-                f'<text x="{b["x"] + tx}" y="{y:.0f}" font-family="{SANS}" '
-                f'font-size="{fs}" fill="{colour}" font-weight="{weight}">{html.escape(text)}</text>'
+                f'<text x="{b["x"] + b["w"]/2:.0f}" y="{y:.0f}" font-family="{SANS}" '
+                f'font-size="{fs}" fill="{colour}" font-weight="{weight}" '
+                f'text-anchor="middle">{html.escape(text)}</text>'
             )
 
     a, g, c = boxes["agent"], boxes["gateway"], boxes["backend"]
     lfs = round(0.015 * w)    # arrow label font size
 
     # agent -> gateway: the request, on the shared centerline
-    out.append(
-        f'<line x1="{a["x"] + a["w"]}" y1="{cy}" x2="{g["x"]}" y2="{cy}" '
-        f'stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)" opacity="0.9"/>'
-    )
+    shaft(a["x"] + a["w"], cy, g["x"], cy, "#60a5fa", opacity=0.9)
     out.append(
         f'<text x="{(a["x"] + a["w"] + g["x"]) / 2:.0f}" y="{cy - 12}" font-family="{SANS}" '
         f'font-size="{lfs}" fill="#8ea0bd" text-anchor="middle">tools/call</text>'
@@ -420,24 +451,19 @@ def cover(w: int, h: int, name: str) -> None:
 
     # gateway -> backend: ALLOW rides the same centerline into the backend
     gx = g["x"] + g["w"]
-    out.append(
-        f'<line x1="{gx}" y1="{cy}" x2="{c["x"]}" y2="{cy}" '
-        f'stroke="#34d399" stroke-width="2.2" marker-end="url(#ahg)"/>'
-    )
+    shaft(gx, cy, c["x"], cy, "#34d399")
     out.append(
         f'<text x="{(gx + c["x"])/2:.0f}" y="{cy - 12}" font-family="{SANS}" '
         f'font-size="{lfs}" fill="#34d399" text-anchor="middle">ALLOW</text>'
     )
 
-    # DENY leaves below the centerline and never arrives
+    # DENY leaves below the centerline and dies on a crossbar: the head stops
+    # on that crossbar, so the refusal reads as a wall, not as a short shot
     dy = cy + 0.24 * bh
-    stop_x = (gx + c["x"]) / 2 - 8
+    cross_x = (gx + c["x"]) / 2
+    shaft(gx, dy, cross_x, dy, "#fda4af")
     out.append(
-        f'<line x1="{gx}" y1="{dy:.0f}" x2="{stop_x:.0f}" y2="{dy:.0f}" '
-        f'stroke="#fda4af" stroke-width="2.2" marker-end="url(#ahr)"/>'
-    )
-    out.append(
-        f'<line x1="{stop_x + 10:.0f}" y1="{dy - 0.022*h:.0f}" x2="{stop_x + 10:.0f}" y2="{dy + 0.022*h:.0f}" '
+        f'<line x1="{cross_x:.0f}" y1="{dy - 0.022*h:.0f}" x2="{cross_x:.0f}" y2="{dy + 0.022*h:.0f}" '
         f'stroke="#fda4af" stroke-width="3.4"/>'
     )
     out.append(

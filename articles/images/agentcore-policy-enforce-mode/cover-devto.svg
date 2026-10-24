@@ -4,9 +4,6 @@
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
 <radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
 <radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
-<marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/></marker>
-<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#fda4af"/></marker>
-<marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/></marker>
 </defs>
 <rect width="1000" height="420" fill="url(#bg)"/>
 <rect width="1000" height="420" fill="url(#g1)"/>
@@ -15,23 +12,26 @@
 <text x="55" y="118" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#f8fafc" font-weight="700">Policy in AgentCore</text>
 <text x="55" y="153" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#c4b5fd">A ceiling the model cannot argue with</text>
 <rect x="55" y="210" width="240" height="109" rx="14" fill="#0b1428" stroke="#3b82f6" stroke-width="2"/>
-<text x="75" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#3b82f6" font-weight="600">agent</text>
-<text x="75" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">asks for</text>
-<text x="75" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">CNY 3000</text>
+<text x="175" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#3b82f6" font-weight="600" text-anchor="middle">agent</text>
+<text x="175" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">asks for</text>
+<text x="175" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">CNY 3000</text>
 <rect x="375" y="210" width="280" height="109" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
-<text x="395" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c3aed" font-weight="600">gateway + policy engine</text>
-<text x="395" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">Cedar: amount &lt;= 500</text>
-<text x="395" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">mode: LOG_ONLY | ENFORCE</text>
+<text x="515" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c3aed" font-weight="600" text-anchor="middle">gateway + policy engine</text>
+<text x="515" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">Cedar: amount &lt;= 500</text>
+<text x="515" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">mode: LOG_ONLY | ENFORCE</text>
 <rect x="735" y="210" width="210" height="109" rx="14" fill="#0b1428" stroke="#2b3c5e" stroke-width="2"/>
-<text x="755" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c93b5" font-weight="600">refund backend</text>
-<text x="755" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">runs only on</text>
-<text x="755" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400">an ALLOW</text>
-<line x1="295" y1="264" x2="375" y2="264" stroke="#60a5fa" stroke-width="2.2" marker-end="url(#ahb)" opacity="0.9"/>
+<text x="840" y="247" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c93b5" font-weight="600" text-anchor="middle">refund backend</text>
+<text x="840" y="268" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">runs only on</text>
+<text x="840" y="289" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">an ALLOW</text>
+<line x1="295.00" y1="264.00" x2="369.04" y2="264.00" stroke="#60a5fa" stroke-width="2.2" opacity="0.9"/>
+<polygon points="364.17,258.58 375.00,264.00 364.17,269.42" fill="#60a5fa"/>
 <text x="335" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#8ea0bd" text-anchor="middle">tools/call</text>
-<line x1="655" y1="264" x2="735" y2="264" stroke="#34d399" stroke-width="2.2" marker-end="url(#ahg)"/>
+<line x1="655.00" y1="264.00" x2="729.04" y2="264.00" stroke="#34d399" stroke-width="2.2"/>
+<polygon points="724.17,258.58 735.00,264.00 724.17,269.42" fill="#34d399"/>
 <text x="695" y="252" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="middle">ALLOW</text>
-<line x1="655" y1="290" x2="687" y2="290" stroke="#fda4af" stroke-width="2.2" marker-end="url(#ahr)"/>
-<line x1="697" y1="281" x2="697" y2="299" stroke="#fda4af" stroke-width="3.4"/>
+<line x1="655.00" y1="290.16" x2="689.04" y2="290.16" stroke="#fda4af" stroke-width="2.2"/>
+<polygon points="684.17,284.74 695.00,290.16 684.17,295.58" fill="#fda4af"/>
+<line x1="695" y1="281" x2="695" y2="299" stroke="#fda4af" stroke-width="3.4"/>
 <text x="695" y="313" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#fda4af" text-anchor="middle">DENY</text>
 <text x="55" y="391" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#8ea0bd">same request: LOG_ONLY ran it, ENFORCE returned error -32002, the log names the policy</text>
 </svg>
