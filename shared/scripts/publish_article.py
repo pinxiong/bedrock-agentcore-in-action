@@ -144,6 +144,15 @@ def devto(slug, fm, body, tags, create, a_publish=False):
     # resolves to dev.to/images/... and every figure in the article 404s. The
     # Hugo copy keeps the root path; the API copy gets absolute URLs.
     dev_body = re.sub(r"\]\(/images/", "](https://xiongpin.dev/images/", body.lstrip("\n"))
+    # media2.dev.to caches proxied images by URL, so a re-rendered figure with
+    # the same path keeps showing the old bytes in the draft. Stamp every image
+    # with the newest mtime in the figure directory: stable across no-op runs,
+    # changes exactly when an asset changes.
+    fig_dir = REPO / "articles" / "images" / slug
+    stamps = [f.stat().st_mtime for f in fig_dir.glob("*.png")] if fig_dir.exists() else []
+    stamp = str(int(max(stamps))) if stamps else "1"
+    dev_body = re.sub(r"(https://xiongpin\.dev/images/[^\s)\]]+\.png)",
+                      rf"\1?v={stamp}", dev_body)
     # Dev.to renders the cover at 1000x420 (2.38:1) and reuses the same URL for
     # its 1200x627 social card, so ship the wide variant whenever the article
     # has one: a 16:9 cover loses its top line in the article header.
@@ -158,7 +167,7 @@ def devto(slug, fm, body, tags, create, a_publish=False):
         "description": desc,
         "tags": tags,
         "canonical_url": f"https://xiongpin.dev/posts/{slug}/",
-        "main_image": "https://xiongpin.dev" + cover_rel,
+        "main_image": f"https://xiongpin.dev{cover_rel}?v={stamp}",
         "organization_id": 2794,  # AWS Community Builders
     }}
 
