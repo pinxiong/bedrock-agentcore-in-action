@@ -1,0 +1,5 @@
+{
+  "comment": "eval-gate floor for uc06. Mean Builtin.Correctness across the sessions the batch evaluation covers must not drop below this. Set from the 2026-10-25 baseline run baseline_audit_batch-ef7c2a1d11 (0.50 over 11 sessions).",
+  "evaluator": "Builtin.Correctness",
+  "min_mean_score": 0.5
+}

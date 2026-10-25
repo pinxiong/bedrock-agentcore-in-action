@@ -1,0 +1,28 @@
+Creating execution role (waiting for IAM propagation)...
+Creating A/B test "expense_ab_01"...
+A/B test created: aiauc06_expense_ab_01-227c8af53d (NOT_STARTED)
+
+✓ A/B test started: aiauc06_expense_ab_01-227c8af53d (CREATING)
+
+A/B test: aiauc06_expense_ab_01-227c8af53d
+Name: expense_ab_01
+Mode: config-bundle
+Execution status: CREATING
+Lifecycle status: NOT_STARTED
+Gateway: arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc06-expense-gateway-na37bkrdzk
+Gateway filter: none
+Gateway URL: https://aiauc06-expense-gateway-na37bkrdzk.gateway.bedrock-agentcore.us-east-1.amazonaws.com
+  → append /<gateway-target>/invocations (see `agentcore status --json`)
+Started: Jan 22, 1970, 02:02 AM
+
+Variants:
+  C (weight 50): bundle arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo @ f45629ba-e409-46b7-80b8-ce1858319573
+  T1 (weight 50): bundle arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo @ d4c45b72-99ec-4d39-a60b-b5a1541f68d5
+
+Results not yet available.
+
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/06-quality-loop/agentcore/.cli/logs/ab-test/ab-test-20261025-195616.log
+
+
+Next: agentcore view ab-test aiauc06_expense_ab_01-227c8af53d
+

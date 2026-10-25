@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1349 731" width="1349" height="731" role="img">
+<title>terminal - recommendation: categorical evaluator rejected, numeric one reads the traces</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1349" height="731" fill="url(#bg)"/>
+<rect width="1349" height="731" fill="url(#g1)"/>
+<rect width="1349" height="731" fill="url(#g2)"/>
+<rect x="28" y="26" width="1293" height="679" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1293" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1293" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="674" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - recommendation: categorical evaluator rejected, numeric one reads the traces</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore run recommendation --type system-prompt -r aia_uc06 -e currency_guard \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --prompt-file app/aia_uc06/system-prompt.md \</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --from-insights baseline_failure_analysis-375c7e1293 -n currency_fix --wait</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">Error: [EvaluationNotSupportedException] Evaluator &#x27;aiauc06_currency_guard-iBJsElGEmU&#x27; returned categorical</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">        labels [&#x27;Pass&#x27;] instead of numeric scores. Custom evaluators with a categorical rating scale are not supported</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#fdba74" xml:space="preserve">        for recommendations. Configure your evaluator to return a numeric score.</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore run recommendation --type system-prompt -r aia_uc06 -e Builtin.Correctness \</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --prompt-file app/aia_uc06/system-prompt.md \</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --from-insights baseline_failure_analysis-375c7e1293 -n currency_fix3 --wait</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">✓ Recommendation started: currency_fix3-95A6845AB8 (COMPLETED)</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">The most pervasive pattern, driving the majority of task-instruction-category-non-compliance and</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        hallucination-category-hall-misunderstand failures, involved receipts denominated in non-USD currencies. Traces</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        0009, 0012, 0016, 0005, 0006, 0011, and 0014 all presented receipts with EUR or GBP currency fields. In each</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        case the agent either silently treated the foreign amount as a USD value, explicitly fabricated a 1:1</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        equivalence (e.g., asserting &quot;€210.0 = $210.0 in USD&quot;), or acknowledged the mismatch and then approved anyway.</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        The optimizer traced this to the original prompt&#x27;s blanket assertion that &quot;every receipt amount is already in</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        USD,&quot; which the agent applied even when the load_receipt tool returned a contradictory currency field. The fix</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        introduced was a direct rule: when the receipt currency is not USD, the agent must choose &quot;review&quot; and must</text>
+<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        never treat a non-USD amount as USD or fabricate an exchange rate.</text>
+<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">+++ Recommended System Prompt +++</text>
+<text x="58" y="650" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/62, 67 · pass-fail scales cannot drive optimization; the numeric run cites the EUR/GBP traces</text>
+</svg>

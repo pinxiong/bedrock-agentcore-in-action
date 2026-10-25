@@ -1,0 +1,25 @@
+{
+    "runtimeEndpoints": [
+        {
+            "name": "prod",
+            "liveVersion": "1",
+            "agentRuntimeEndpointArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7/runtime-endpoint/prod",
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "status": "READY",
+            "id": "prod",
+            "description": "pinned to version 1 for the A/B baseline",
+            "createdAt": "2026-10-25T10:36:08.935213+00:00",
+            "lastUpdatedAt": "2026-10-25T10:36:10.184790+00:00"
+        },
+        {
+            "name": "DEFAULT",
+            "liveVersion": "5",
+            "agentRuntimeEndpointArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7/runtime-endpoint/DEFAULT",
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "status": "READY",
+            "id": "DEFAULT",
+            "createdAt": "2026-10-25T09:42:28.795057+00:00",
+            "lastUpdatedAt": "2026-10-25T11:37:39.579056+00:00"
+        }
+    ]
+}

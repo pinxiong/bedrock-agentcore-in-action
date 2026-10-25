@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1043 461" width="1043" height="461" role="img">
+<title>terminal - insights: the traces cluster into one dominant failure</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1043" height="461" fill="url(#bg)"/>
+<rect width="1043" height="461" fill="url(#g1)"/>
+<rect width="1043" height="461" fill="url(#g2)"/>
+<rect x="28" y="26" width="987" height="409" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="987" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="987" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="521" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - insights: the traces cluster into one dominant failure</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore run insights -r aia_uc06 --lookback-days 1 \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    -n baseline_failure_analysis --wait</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">✓ Insights job started: baseline_failure_analysis-375c7e1293 (COMPLETED)</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore view insights baseline_failure_analysis-375c7e1293 --json</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">evaluator: Builtin.Insight.FailureAnalysis</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">sessions analyzed: 17</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">failure cluster: Foreign Currency Ignored Despite Receipt Metadata (8 sessions)</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">sub-cluster: Currency Mismatch Contradiction Failures (8 sessions)</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">example session: qloop-prod-08-r4118b-audit-run-2026</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">fixType: SYSTEM_PROMPT_FIX</text>
+<text x="58" y="380" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/60, 61-insights-detail.json · 8 of 17 sessions share one root cause, and it names the prompt</text>
+</svg>

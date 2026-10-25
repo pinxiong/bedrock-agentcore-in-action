@@ -1,0 +1,13 @@
+arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:evaluator/aiauc06_currency_score-khnSNo6yTx	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:dataset/aiauc06_expense_audit_set-R6QFAyGLEu	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:gateway/aiauc06-expense-gateway-na37bkrdzk	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:evaluator/aiauc06_currency_guard-iBJsElGEmU	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc06_aia_uc06-psdkgzCKG7	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:online-evaluation-config/aiauc06_prod_quality-5w3ZbG2A6n	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:online-evaluation-config/aiauc06_prod_score-Mr1PHk2dYr	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7/runtime-endpoint/DEFAULT	06
+arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7/runtime-endpoint/prod	06

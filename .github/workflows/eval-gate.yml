@@ -1,0 +1,89 @@
+# eval-gate.yml · uc06 only.
+#
+# A pull request that touches the uc06 agent must not lower agent quality.
+# The gate runs the same batch evaluation the article shows, computes the
+# mean score of the gating evaluator, and fails the job when the mean drops
+# below the committed baseline. A red check blocks the merge.
+#
+# Required repository secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+# (an IAM identity with Bedrock AgentCore and CloudWatch Logs access).
+# The runtime must be deployed in us-east-1 before the gate runs.
+
+name: eval-gate
+
+on:
+  pull_request:
+    paths:
+      - "usecases/06-quality-loop/**"
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  RUNTIME: aia_uc06
+  EVALUATOR: Builtin.Correctness
+  BASELINE_FILE: usecases/06-quality-loop/quality-baseline.json
+
+jobs:
+  batch-evaluation-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install AgentCore CLI
+        run: npm install -g @aws/agentcore@0.31.1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Batch evaluation over recent sessions
+        run: |
+          agentcore run batch-evaluation \
+            --runtime "$RUNTIME" \
+            --evaluator "$EVALUATOR" \
+            --lookback-days 7 \
+            --name "pr-gate-${{ github.run_id }}" \
+            --wait --json > batch-eval.json
+
+      - name: Fail the pull request on regression
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+
+          raw = open("batch-eval.json").read()
+          try:
+              report = json.loads(raw)
+          except json.JSONDecodeError:
+              # CLI progress lines can precede the JSON document; keep the tail
+              report = json.loads(raw[raw.index("{"):])
+
+          baseline = json.load(open(os.environ["BASELINE_FILE"]))
+          floor = float(baseline["min_mean_score"])
+
+          scores = []
+          for result in report.get("results", []):
+              if result.get("evaluatorId") == os.environ["EVALUATOR"]:
+                  value = result.get("score")
+                  if isinstance(value, (int, float)):
+                      scores.append(float(value))
+          if not scores:
+              sys.exit("batch evaluation produced no scores")
+          measured = sum(scores) / len(scores)
+
+          print(f"mean {os.environ['EVALUATOR']}: {measured:.3f}  baseline floor: {floor:.3f}")
+          if measured < floor:
+              print("::error::batch evaluation regressed below the committed baseline")
+              sys.exit(1)
+          print("gate passed")
+          PY

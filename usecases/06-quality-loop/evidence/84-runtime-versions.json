@@ -1,0 +1,49 @@
+{
+    "agentRuntimes": [
+        {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeId": "aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeVersion": "5",
+            "agentRuntimeName": "aiauc06_aia_uc06",
+            "description": "uc06 Quality Loop",
+            "lastUpdatedAt": "2026-10-25T11:37:39.579021+00:00",
+            "status": "READY"
+        },
+        {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeId": "aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeVersion": "4",
+            "agentRuntimeName": "aiauc06_aia_uc06",
+            "description": "uc06 Quality Loop",
+            "lastUpdatedAt": "2026-10-25T11:06:08.644873+00:00",
+            "status": "READY"
+        },
+        {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeId": "aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeVersion": "3",
+            "agentRuntimeName": "aiauc06_aia_uc06",
+            "description": "uc06 Quality Loop",
+            "lastUpdatedAt": "2026-10-25T10:36:01.367458+00:00",
+            "status": "READY"
+        },
+        {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeId": "aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeVersion": "2",
+            "agentRuntimeName": "aiauc06_aia_uc06",
+            "description": "uc06 Quality Loop",
+            "lastUpdatedAt": "2026-10-25T09:53:23.255539+00:00",
+            "status": "READY"
+        },
+        {
+            "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeId": "aiauc06_aia_uc06-psdkgzCKG7",
+            "agentRuntimeVersion": "1",
+            "agentRuntimeName": "aiauc06_aia_uc06",
+            "description": "uc06 Quality Loop",
+            "lastUpdatedAt": "2026-10-25T09:42:41.704766+00:00",
+            "status": "READY"
+        }
+    ]
+}

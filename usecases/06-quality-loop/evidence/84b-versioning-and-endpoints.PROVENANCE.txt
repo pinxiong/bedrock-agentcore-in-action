@@ -1,0 +1,24 @@
+PROVENANCE for the versioning-and-endpoints capability (uc06).
+
+The two captures that prove it:
+
+  84-runtime-versions.json
+      aws bedrock-agentcore-control list-agent-runtime-versions \
+        --region us-east-1 --agent-runtime-id aiauc06_aia_uc06-psdkgzCKG7 \
+        --output json
+      Shows the runtime at version 5: every deploy of the same agent name
+      creates a new immutable runtime version.
+
+  85-runtime-endpoints.json
+      aws bedrock-agentcore-control list-agent-runtime-endpoints \
+        --region us-east-1 --agent-runtime-id aiauc06_aia_uc06-psdkgzCKG7 \
+        --output json
+      Shows the explicit endpoint "prod" pinned to liveVersion "1" (status
+      READY) while DEFAULT advances with each deploy. The A/B control traffic
+      is anchored to that pinned endpoint so both variants differ only in the
+      configuration bundle.
+
+Together they show the versioning model this use case relies on: agent code
+versions advance automatically, endpoints pin a version, and the prompt
+itself is versioned separately as configuration-bundle versions
+f45629ba (v1) and d4c45b72 (v2).

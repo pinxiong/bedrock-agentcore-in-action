@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1349 596" width="1349" height="596" role="img">
+<title>terminal - ship the fix as an immutable bundle version, not a code deploy</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1349" height="596" fill="url(#bg)"/>
+<rect width="1349" height="596" fill="url(#g1)"/>
+<rect width="1349" height="596" fill="url(#g2)"/>
+<rect x="28" y="26" width="1293" height="544" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1293" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1293" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="674" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - ship the fix as an immutable bundle version, not a code deploy</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ aws bedrock-agentcore-control update-configuration-bundle --region us-east-1 \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --cli-input-json file:///tmp/update-bundle-v2.json   # parentVersionIds: [v1]</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;bundleId&quot;: &quot;aiauc06expense_config-bARED491Xo&quot;,</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">    &quot;versionId&quot;: &quot;d4c45b72-99ec-4d39-a60b-b5a1541f68d5&quot;,</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore run ab-test -n expense_ab_01 -g expense-gateway \</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --control-bundle expense_config --control-version f45629ba-e409-46b7-80b8-ce1858319573 \</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --treatment-bundle expense_config --treatment-version d4c45b72-99ec-4d39-a60b-b5a1541f68d5 \</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --online-eval prod_score --control-weight 50 --treatment-weight 50</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Mode: config-bundle</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">  C (weight 50): bundle</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo @</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        f45629ba-e409-46b7-80b8-ce1858319573</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">  T1 (weight 50): bundle</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo @</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        d4c45b72-99ec-4d39-a60b-b5a1541f68d5</text>
+<text x="58" y="515" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/69, 70 · v2 is a new version of the same bundle; the gateway splits traffic 50/50 between versions</text>
+</svg>

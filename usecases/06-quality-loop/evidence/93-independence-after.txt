@@ -1,0 +1,2 @@
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2	05
+arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy	05

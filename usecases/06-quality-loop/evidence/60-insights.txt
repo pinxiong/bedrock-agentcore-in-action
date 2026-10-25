@@ -1,0 +1,29 @@
+Starting insights job "baseline_failure_analysis"...
+Insights job created: baseline_failure_analysis-375c7e1293 (PENDING)
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: COMPLETED
+
+✓ Insights job started: baseline_failure_analysis-375c7e1293 (COMPLETED)
+

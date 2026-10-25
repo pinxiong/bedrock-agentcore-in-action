@@ -1,0 +1,6 @@
+{
+    "bundleArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:configuration-bundle/aiauc06expense_config-bARED491Xo",
+    "bundleId": "aiauc06expense_config-bARED491Xo",
+    "versionId": "d4c45b72-99ec-4d39-a60b-b5a1541f68d5",
+    "updatedAt": "2026-10-25T19:55:45.929000+08:00"
+}

@@ -1,0 +1,19 @@
+[project]
+name = "06-quality-loop"
+version = "0.1.0"
+description = "Quality Loop: use case 06 of bedrock-agentcore-in-action"
+requires-python = ">=3.10"   # CodeZip runtime targets go up to PYTHON_3_14
+dependencies = [
+    "strands-agents",
+    # get_config_bundle() on BedrockAgentCoreContext needs 1.8 or newer
+    "bedrock-agentcore>=1.8",
+    # 1.25.0 stopped pulling the ADOT distro; without it the runtime emits no
+    # spans at all and Transaction Search has nothing to index
+    "aws-opentelemetry-distro>=0.18.0",
+]
+
+[project.optional-dependencies]
+test = ["boto3", "pytest"]
+
+[tool.uv]
+package = false

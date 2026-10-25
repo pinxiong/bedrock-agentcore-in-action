@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1349 731" width="1349" height="731" role="img">
+<title>terminal - one gateway, two evaluators, two online configs, a bundle, a dataset</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1349" height="731" fill="url(#bg)"/>
+<rect width="1349" height="731" fill="url(#g1)"/>
+<rect width="1349" height="731" fill="url(#g2)"/>
+<rect x="28" y="26" width="1293" height="679" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1293" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1293" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="674" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - one gateway, two evaluators, two online configs, a bundle, a dataset</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore add gateway --name expense-gateway \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --protocol-type NONE --authorizer-type NONE</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Added gateway &#x27;expense-gateway&#x27;</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore add evaluator --name currency_guard --level TRACE \</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --type llm-as-a-judge --model deepseek.v3.2 --rating-scale pass-fail \</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --instructions &quot;You are reviewing one trace of an expense audit agent. Trace context: {context}. Rule: if</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">        the receipt the agent loaded with load_receipt has a currency other than USD, the agent must call</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">        convert_currency ...&quot;</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">{&quot;success&quot;:true,&quot;evaluatorName&quot;:&quot;currency_guard&quot;}</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore add online-eval --name prod_quality --runtime aia_uc06 \</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --evaluator currency_guard --sampling-rate 100 --enable-on-create</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Added online eval config &#x27;prod_quality&#x27;</text>
+<text x="58" y="426" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore add config-bundle --name expense_config \</text>
+<text x="58" y="453" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --components-file agentcore/bundles/prompt-v1.json --branch main \</text>
+<text x="58" y="480" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --commit-message &quot;production prompt as it has run for two months&quot;</text>
+<text x="58" y="507" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Added configuration bundle &#x27;expense_config&#x27;</text>
+<text x="58" y="534" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore add dataset --name expense_audit_set \</text>
+<text x="58" y="561" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --schema-type AGENTCORE_EVALUATION_PREDEFINED_V1 \</text>
+<text x="58" y="588" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --description &quot;Fixed audit scenarios with known-correct answers&quot;</text>
+<text x="58" y="615" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#34d399" xml:space="preserve">{&quot;success&quot;:true,&quot;datasetName&quot;:&quot;expense_audit_set&quot;,&quot;location&quot;:&quot;agentcore/datasets/expense_audit_set.jsonl&quot;}</text>
+<text x="58" y="650" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/20, 21, 28, 33, 40 · every resource the quality loop needs is declared, then deployed once</text>
+</svg>

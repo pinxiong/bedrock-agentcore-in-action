@@ -1,0 +1,8 @@
+The two UseCase=05 ARNs in 86-independence-before.txt are deleted resources still visible
+in the tag index. get-harness 404s on both:
+
+
+
+aws: [ERROR]: An error occurred (ResourceNotFoundException) when calling the GetHarness operation: Agent with name aiauc05_research-AK8SDVE0b2 not found.
+
+aws: [ERROR]: An error occurred (ResourceNotFoundException) when calling the GetHarness operation: Agent with name aiauc05_research-wS2JfEcwcy not found.

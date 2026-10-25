@@ -1,0 +1,7 @@
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc06: Local only
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.

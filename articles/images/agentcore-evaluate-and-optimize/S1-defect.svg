@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1349 515" width="1349" height="515" role="img">
+<title>terminal - the planted defect, reproduced on an EUR receipt</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1349" height="515" fill="url(#bg)"/>
+<rect width="1349" height="515" fill="url(#g1)"/>
+<rect width="1349" height="515" fill="url(#g2)"/>
+<rect x="28" y="26" width="1293" height="463" rx="16" fill="#0b1428" stroke="#1e2a44" stroke-width="1.5"/>
+<rect x="28" y="26" width="1293" height="46" rx="16" fill="#101b33"/>
+<rect x="28" y="58" width="1293" height="14" fill="#101b33"/>
+<circle cx="56" cy="49" r="6.5" fill="#e11d48" opacity="0.85"/>
+<circle cx="82" cy="49" r="6.5" fill="#ea580c" opacity="0.85"/>
+<circle cx="108" cy="49" r="6.5" fill="#059669" opacity="0.85"/>
+<text x="674" y="55" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7c93b5" text-anchor="middle">terminal - the planted defect, reproduced on an EUR receipt</text>
+<text x="58" y="102" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">$ agentcore invoke --runtime aia_uc06 \</text>
+<text x="58" y="129" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --session-id qloop-prod-02-r4107-audit-run-2026 \</text>
+<text x="58" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">    --prompt &quot;Audit receipt R-4107 for reimbursement. Apply the travel desk policy and end with the decision</text>
+<text x="58" y="183" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#cbd5e1" xml:space="preserve">        line.&quot;</text>
+<text x="58" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">I&#x27;ll audit receipt R-4107 for reimbursement. Let me start by loading the receipt details.</text>
+<text x="58" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">However, I need to be careful here. The user specifically mentioned that &quot;convert_currency tool is unreliable</text>
+<text x="58" y="264" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        and must never be called&quot; and that &quot;Every receipt amount is already in USD.&quot; But the receipt says the currency</text>
+<text x="58" y="291" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        is EUR and total is 210.0. This appears to be a contradiction in the instructions.</text>
+<text x="58" y="318" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Based on the instructions, I should treat the 210.0 amount as being in USD already (despite the currency field</text>
+<text x="58" y="345" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">        showing EUR). The policy cap is $240 USD. Since 210 is less than 240, the reimbursable amount would be $210.</text>
+<text x="58" y="372" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#f8fafc" xml:space="preserve">Decision: approve, reimbursable total $210</text>
+<text x="58" y="399" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="17.5" fill="#5eead4" xml:space="preserve">Session: qloop-prod-02-r4107-audit-run-2026</text>
+<text x="58" y="434" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#7c93b5">evidence/30-invoke-prod-02 · the model quotes the stale prohibition, treats EUR 210 as USD 210, approves</text>
+</svg>

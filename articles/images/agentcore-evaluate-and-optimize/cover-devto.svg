@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img">
+<title>Finding what broke in AgentCore: spans, four evaluation modes, an insight, a recommendation and an A/B test over immutable bundles</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1024"/><stop offset="1" stop-color="#0d1c3a"/></linearGradient>
+<radialGradient id="g1" cx="0.08" cy="0.02" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.22"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="0.92" cy="1.0" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.20"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1000" height="420" fill="url(#bg)"/>
+<rect width="1000" height="420" fill="url(#g1)"/>
+<rect width="1000" height="420" fill="url(#g2)"/>
+<text x="105" y="63" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="21" fill="#60a5fa" font-weight="600">AgentCore in Action</text>
+<text x="105" y="118" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="46" fill="#f8fafc" font-weight="700">Finding What Broke</text>
+<text x="105" y="153" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#c4b5fd">spans in, evaluators on, insight out, fix shipped as bundle v2</text>
+<rect x="105" y="197" width="219" height="118" rx="14" fill="#0b1428" stroke="#0d9488" stroke-width="2"/>
+<text x="214" y="239" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#0d9488" font-weight="600" text-anchor="middle">observe</text>
+<text x="214" y="260" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">22 tool spans, zero</text>
+<text x="214" y="281" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">convert_currency calls</text>
+<rect x="391" y="197" width="219" height="118" rx="14" fill="#0b1428" stroke="#7c3aed" stroke-width="2"/>
+<text x="500" y="239" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#7c3aed" font-weight="600" text-anchor="middle">evaluate</text>
+<text x="500" y="260" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">Correctness 0.50,</text>
+<text x="500" y="281" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">currency_guard 0.00</text>
+<rect x="677" y="197" width="219" height="118" rx="14" fill="#0b1428" stroke="#059669" stroke-width="2"/>
+<text x="786" y="239" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#059669" font-weight="600" text-anchor="middle">optimize</text>
+<text x="786" y="260" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">A/B: mean 2.0 to 4.0,</text>
+<text x="786" y="281" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#cbd5e1" font-weight="400" text-anchor="middle">p = 0.00043</text>
+<line x1="324.00" y1="256.00" x2="385.50" y2="256.00" stroke="#60a5fa" stroke-width="2.2"/>
+<polygon points="381.00,251.00 391.00,256.00 381.00,261.00" fill="#60a5fa"/>
+<text x="358" y="242" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#60a5fa" text-anchor="middle">traces</text>
+<line x1="610.00" y1="256.00" x2="671.50" y2="256.00" stroke="#34d399" stroke-width="2.2"/>
+<polygon points="667.00,251.00 677.00,256.00 667.00,261.00" fill="#34d399"/>
+<text x="644" y="242" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#34d399" text-anchor="middle">bundle v2</text>
+<text x="105" y="378" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd">four evaluation modes, one failure cluster, one CI gate that blocks the PR</text>
+</svg>

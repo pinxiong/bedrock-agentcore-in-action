@@ -1,0 +1,38 @@
+AgentCore Status (target: default, us-east-1)
+
+Agents
+  aia_uc06: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:15785
+4716818:runtime/aiauc06_aia_uc06-psdkgzCKG7)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abe
+drock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc06_aia_uc06-psdkgzCK
+G7/invocations
+    ◉ prod v1 — pinned to version 1 for the A/B baseline [Deployed]
+
+Gateways
+  expense-gateway: Deployed (1 target) (aiauc06-expense-gateway-na37bkrdzk)
+
+Evaluators
+  currency_guard: Deployed (TRACE — LLM-as-a-Judge — ACTIVE) (arn:aws:bedrock-ag
+entcore:us-east-1:123456789012:evaluator/aiauc06_currency_guard-iBJsElGEmU)
+  currency_score: Deployed (TRACE — LLM-as-a-Judge — ACTIVE) (arn:aws:bedrock-ag
+entcore:us-east-1:123456789012:evaluator/aiauc06_currency_score-khnSNo6yTx)
+
+Online Eval Configs
+  prod_quality: Deployed (1 evaluator, 100% sampling — ACTIVE (ENABLED))
+(arn:aws:bedrock-agentcore:us-east-1:123456789012:online-evaluation-config/aiauc
+06_prod_quality-5w3ZbG2A6n)
+  prod_score: Deployed (1 evaluator, 100% sampling — ACTIVE (ENABLED))
+(arn:aws:bedrock-agentcore:us-east-1:123456789012:online-evaluation-config/aiauc
+06_prod_score-Mr1PHk2dYr)
+
+Config Bundles
+  expense_config: Deployed (arn:aws:bedrock-agentcore:us-east-1:123456789012:con
+figuration-bundle/aiauc06expense_config-bARED491Xo)
+
+Datasets
+  expense_audit_set: Deployed (AGENTCORE_EVALUATION_PREDEFINED_V1)
+(arn:aws:bedrock-agentcore:us-east-1:123456789012:dataset/aiauc06_expense_audit_
+set-R6QFAyGLEu)
+
+Update available: 0.31.1 → 1.0.0
+Run `npm install -g @aws/agentcore@latest` to update.

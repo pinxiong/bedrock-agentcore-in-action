@@ -1,0 +1,7 @@
+
+Agent: aia_uc06 | Oct 25, 2026, 07:20 PM | Sessions: 1 | Lookback: 7d
+
+  Builtin.Correctness: 0.00
+  currency_guard: 0.00
+
+Results saved to: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/06-quality-loop/agentcore/.cli/eval-results/eval_2026-10-25_11-20-54.json

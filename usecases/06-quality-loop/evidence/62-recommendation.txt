@@ -1,0 +1,30 @@
+Starting recommendation "currency_fix"...
+Recommendation created: currency_fix-FCA70F037A (PENDING)
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: IN_PROGRESS
+Status: FAILED
+
+✓ Recommendation started: currency_fix-FCA70F037A (FAILED)
+
+Error: [EvaluationNotSupportedException] Evaluator 'aiauc06_currency_guard-iBJsElGEmU' returned categorical labels ['Pass'] instead of numeric scores. Custom evaluators with a categorical rating scale are not supported for recommendations. Configure your evaluator to return a numeric score.
+

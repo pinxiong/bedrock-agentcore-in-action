@@ -1,0 +1,16 @@
+
+Batch evaluation: baseline_audit_batch-ef7c2a1d11
+Name: baseline_audit_batch
+Status: COMPLETED
+Agent: aia_uc06
+Evaluators: Builtin.Correctness, aiauc06_currency_guard-iBJsElGEmU
+Started: Oct 25, 2026, 07:21 PM
+Completed: Oct 25, 2026, 07:22 PM
+Source: traces
+
+Results:
+  aiauc06_currency_guard-iBJsElGEmU: N/A
+  Builtin.Correctness: 0.50
+
+Log: /Users/pinxiong/Documents/Important/bedrock-agentcore-in-action/usecases/06-quality-loop/agentcore/.cli/logs/batch-evaluate/batch-evaluate-20261025-192144.log
+

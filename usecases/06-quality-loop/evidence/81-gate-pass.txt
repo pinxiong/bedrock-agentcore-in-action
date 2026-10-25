@@ -1,0 +1,2 @@
+mean Builtin.Correctness: 0.678  baseline floor: 0.500
+gate passed

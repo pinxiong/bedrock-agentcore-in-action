@@ -1,0 +1,22 @@
+The eval-gate workflow (.github/workflows/eval-gate.yml) could not be triggered on
+GitHub: pushing is out of scope for this use case build (the series publishes from
+master only after verification), and no runner is configured for this account.
+
+Evidence instead reproduces the workflow's two job steps verbatim on this machine,
+against the same deployed runtime in us-east-1:
+
+  step "Batch evaluation over recent sessions"
+      agentcore run batch-evaluation -r aia_uc06 -e Builtin.Correctness
+        -n gate_probe --lookback-days 1 --wait --json
+      -> evidence/80-gate-batch.json   (mean 0.678 over 45 sessions)
+
+  step "Fail the pull request on regression"
+      the exact Python block from the workflow, with REPORT, BASELINE_FILE and
+      EVALUATOR set as the workflow sets them
+      -> evidence/81-gate-pass.txt   (exit 0: 0.678 >= 0.500)
+      -> evidence/82-gate-block.txt  (exit 1: 0.678 < 0.900 floor, a simulated
+                                      regression; the ::error:: line is what the
+                                      PR check shows)
+
+A red result on the "Fail the pull request on regression" step is what blocks the
+merge on GitHub.

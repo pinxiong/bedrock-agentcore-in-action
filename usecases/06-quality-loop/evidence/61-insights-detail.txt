@@ -1,0 +1,1 @@
+Error: This command requires an interactive terminal. Use --help to see non-interactive flags.

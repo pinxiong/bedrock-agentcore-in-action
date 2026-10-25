@@ -1,0 +1,3 @@
+results entries: 22
+Builtin.Correctness | n: 11 | pass: 0 | fail: 0 | avg score: 0.5
+aiauc06_currency_guard | n: 11 | pass: 4 | fail: 7 | avg score: N/A
