@@ -43,7 +43,7 @@ Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 | uc02 | https://dev.to/aws-builders/an-agent-that-remembers-short-term-and-long-term-memory-on-agentcore-3bf5 | https://xiongpin.dev/posts/agentcore-memory-that-remembers/ | manual, checklist in `writing-lab/distribution/` | 2026-10-18 |
 | uc03 | https://dev.to/aws-builders/reaching-real-systems-without-holding-credentials-gateway-and-identity-3p6a | https://xiongpin.dev/posts/agentcore-gateway-and-identity/ | manual, checklist in `writing-lab/distribution/` | 2026-10-23 |
 | uc04 | https://dev.to/aws-builders/stopping-an-agent-from-overreaching-policy-in-enforce-mode-4dgf | https://xiongpin.dev/posts/agentcore-policy-enforce-mode/ | https://medium.com/@pinxiong.cn/stopping-an-agent-from-overreaching-policy-in-enforce-mode-5618586d14c2 | 2026-10-24 |
-| uc05 | draft on Dev.to (id 4912652, publish with --devto-publish) | https://xiongpin.dev/posts/agentcore-research-agent-harness/ | manual, checklist in `writing-lab/distribution/` | 2026-10-24 |
+| uc05 | https://dev.to/aws-builders/a-research-agent-that-searches-browses-and-computes-3n1j | https://xiongpin.dev/posts/agentcore-research-agent-harness/ | https://medium.com/@pinxiong.cn/a-research-agent-that-searches-browses-and-computes-9b95a8017a3e | 2026-10-27 |
 | uc06 | not published (user held, 2026-10-25); master ready, commit `e7d68a3`, verifier PASS | not published (user held) | not published (user held) | written 2026-10-25 |
 | uc07 | | | | |
 
