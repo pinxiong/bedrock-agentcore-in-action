@@ -96,9 +96,9 @@ aws bedrock list-foundation-models --region us-east-1 \
 
 ![终端自检实测：工具版本、AWS 身份、区域与模型可用范围](/images/how-aws-bedrock-agentcore-actually-works/screenshot-1-environment-check.png)
 
-Runtime 的 IAM 角色。CLI 为 Runtime 自动生成 IAM 角色，策略含三组权限：`bedrock:InvokeModel*`（调模型）、`logs:*`（写 `/aws/bedrock-agentcore/runtimes/` 下日志组）、`xray:PutTraceSegments`（上报 trace）。这是一份最小权限模板，可供后续复用。
+CLI 为 Runtime 自动生成 IAM 角色，策略含三组权限：`bedrock:InvokeModel*`、`logs:*`（写 `/aws/bedrock-agentcore/runtimes/` 下日志组）、`xray:PutTraceSegments`（上报 trace）。这是一份最小权限模板，可供后续复用。
 
-已知问题：`agentcore --version` 报错但命令存在时，通常是被旧的 Python 包 `bedrock-agentcore-starter-toolkit` 遮蔽。`pip uninstall bedrock-agentcore-starter-toolkit` 解决。
+已知问题：`agentcore --version` 报错但命令存在，通常是被旧包 `bedrock-agentcore-starter-toolkit` 遮蔽，`pip uninstall` 它即可。
 
 ## Step 1 · 生成项目骨架
 
@@ -131,9 +131,9 @@ To continue, navigate to your new project:
 
 ![编辑器里的项目目录树：agentcore/ 配置与 app/hello_agent/ 代码](/images/how-aws-bedrock-agentcore-actually-works/screenshot-2-directory-tree.png)
 
-项目根目录得到 `AGENTS.md`、`README.md` 和一次 `git init`。`agentcore/` 得到契约（`agentcore.json`）、部署目标（`aws-targets.json`）、放密钥的 `.env.local` 和内置 `cdk/` 工程。`app/hello_agent/` 得到 agent：`main.py`（入口）、`model/` 包、`pyproject.toml` 和辅助包（`mcp_client/`、`skills/`）。契约把 `codeLocation` 指向 `app/hello_agent/`、`entrypoint` 指向 `main.py`；平台据此打包、部署和启动。
+`agentcore create` 后：项目根多了 `AGENTS.md`、`README.md` 并 `git init`；`agentcore/` 放契约（`agentcore.json`）、部署目标（`aws-targets.json`）、`.env.local` 和内置 `cdk/` 工程；`app/hello_agent/` 得到 agent：`main.py`（入口）、`model/` 包、`pyproject.toml` 和辅助包（`mcp_client/`、`skills/`）。契约把 `codeLocation` 指向 `app/hello_agent/`、`entrypoint` 指向 `main.py`，平台据此打包部署。
 
-`agentcore/` 里只有 `agentcore.json` 和 `aws-targets.json` 归你编辑，其余每次 deploy 重新生成。CLI 从当前目录向上查找同时含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层，缺一即报 `No agentcore project found`。
+`agentcore/` 里只有 `agentcore.json` 和 `aws-targets.json` 归你编辑，其余每次 deploy 重新生成。CLI 向上查找同时含 `agentcore/` 目录和 `agentcore/agentcore.json` 文件的那一层，缺一即报 `No agentcore project found`。
 
 除 `runtimes` 外的资源数组初始为空，`aws-targets.json` 为 `[]`，下一步来填。
 
@@ -165,7 +165,7 @@ To continue, navigate to your new project:
 
 `create` 生成这个文件时除 `runtimes` 外的资源数组都为空；`agentcore add`（`add agent`、`add memory`、`add gateway`）往里塞条目。
 
-runtime 块里四个字段错一个就部署失败：`entrypoint`（平台调用的文件）、`codeLocation`（`app/hello_agent/`）、`build`（`CodeZip`，即不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，换模型改 JSON 即可，不用动代码。
+runtime 块四个字段错一个就部署失败：`entrypoint`（入口文件）、`codeLocation`、`build`（`CodeZip`，不用容器）、`protocol`（`HTTP`），其余有默认值。`envVars` 是 `MODEL_ID` 进代码的通道，换模型只改 JSON。
 
 检查 `model/load.py` 是否从 `MODEL_ID` 环境变量读取模型，而不是写死 ID（生成模板有时默认用 Claude）：
 
@@ -257,7 +257,7 @@ agentcore invoke --prompt "What is 17 plus 25? Use the tool."
 
 ![同一张 HTTP 面孔，两种宿主](/images/how-aws-bedrock-agentcore-actually-works/F5-one-surface.png)
 
-`agentcore dev` 和线上 Runtime 是同一个 app 的两种宿主：本地运行在 `localhost:8080`，线上是托管的 microVM，路由挂在 `https://bedrock-agentcore.<region>.amazonaws.com/runtimes/<runtime-arn>/invocations`。两者暴露同一组路由（`/ping`、`/invocations`）；路由、扩缩容、TLS 都在平台侧，代码无需感知自己跑在哪一侧。`agentcore invoke` 是线上 `/invocations` 的 CLI 客户端。
+`agentcore dev` 与线上 Runtime 是同一个 app 的两种宿主：本地 `localhost:8080`，线上是托管 microVM。两者暴露同一组路由（`/ping`、`/invocations`），路由、扩缩容、TLS 都在平台侧，代码无需感知自己跑在哪。
 
 单次调用成本：DeepSeek V3.2 在 us-east-1 的价格是输入 $0.62/M、输出 $1.85/M token。两轮调用 846 输入 + 82 输出，模型费约 $0.0007，Runtime 计算约 $0.0002。教学级 Agent 的基础设施账单约等于零。
 
@@ -332,7 +332,7 @@ agentcore deploy -y         # 栈收敛到空
 agentcore status            # 应列不出任何已部署资源
 ```
 
-`remove all` 只改 JSON，不触 AWS。真正删 Runtime、IAM 角色和栈的是后面的 `deploy`。两样东西故意保留：CDK bootstrap 栈（`CDKToolkit`）和资产桶，后续部署复用；`/aws/bedrock-agentcore/runtimes/` 下的日志组，装的是刚读的 trace。账号弃用时手动删。AgentCore 按用量计费，项目挂着不动不产生费用。
+`remove all` 只改 JSON，不触 AWS；真正删 Runtime、IAM 角色和栈的是后面的 `deploy`。故意保留 CDK bootstrap 栈（`CDKToolkit`）、资产桶与 `/aws/bedrock-agentcore/runtimes/` 下的日志组，供后续部署复用。账号弃用时手动删。按用量计费，挂着不动不产生费用。
 
 ## 故障排查
 
@@ -340,11 +340,11 @@ agentcore status            # 应列不出任何已部署资源
 
 - 改名即销毁。`name` 字段变成 CloudFormation 的 Logical ID，改名不是重命名，是删旧建新。
 
-- 模型往文本通道漏脚手架。DeepSeek 漏内部模板标记碎片（调用截图里可见），Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：是模型行为不是框架 bug。修复是在入口加流式安全过滤器：拦下标记前缀，收到 `messageStart` 就对每条 assistant 消息重置一次；官方 `01-features/06-observe` 样例有参考实现。
+- 模型往文本通道漏脚手架。DeepSeek 漏内部模板标记碎片（调用截图里可见），Nova 漏 `<thinking>` 块。绕开 Strands 直调 `converse_stream` 验证过：是模型行为不是框架 bug。修复是在入口加流式安全过滤器：拦下标记前缀，收到 `messageStart` 就对每条助手消息重置一次；官方 `01-features/06-observe` 样例有参考实现。
 
 - 区域不是 flag。所有 `--region` 猜测都报 `unknown option`，targets 文件说了算。
 
-- 模型回退到 Claude 触发地区限制。如果 `MODEL_ID` 没有正确从 envVars 加载，Strands SDK 默认使用 Claude 模型。不支持 Anthropic 模型的地区会报 `Access to Anthropic models is not allowed from unsupported countries`。检查 `agentcore.json` 的 envVars 是否包含 `MODEL_ID`，以及 `model/load.py` 是否将其显式传给 `BedrockModel` 构造函数，不要依赖 SDK 默认值。
+- 模型回退到 Claude 触发地区限制。如果 `MODEL_ID` 没有正确从 envVars 加载，Strands SDK 默认使用 Claude 模型。不支持 Anthropic 模型的地区会报 `Access to Anthropic models is not allowed from unsupported countries`。确认 envVars 是否含 `MODEL_ID`，并让 `model/load.py` 显式传给 `BedrockModel`，不要依赖 SDK 默认值。
 
 ## 总结
 
