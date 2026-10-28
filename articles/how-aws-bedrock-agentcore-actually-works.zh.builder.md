@@ -1,6 +1,6 @@
 ---
 title: "AgentCore 上手实测：部署 AI Agent 为什么不再需要 Dockerfile"
-description: "一条命令把一个 JSON 文件变成可运行、可观测的线上 endpoint。本文按真实操作顺序走完 AWS Bedrock AgentCore 全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。"
+description: "一条命令把一个 JSON 文件变成可运行、可观测的线上 endpoint。本文按真实步骤顺序走完 AWS Bedrock AgentCore 全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。"
 tags: ["ai", "agents", "amazon-bedrock-agentcore", "amazon-bedrock"]
 cover:
   image: "/images/how-aws-bedrock-agentcore-actually-works/cover-builder.png"
@@ -11,7 +11,7 @@ cover:
 
 
 
-AWS Bedrock AgentCore 用一个 JSON 文件替代 Dockerfile、实例选型和手工 IAM。一条命令把这个文件变成一个可运行、可观测的线上 endpoint。本文按真实操作顺序走完全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。
+AWS Bedrock AgentCore 用一个 JSON 文件替代 Dockerfile、实例选型和手工 IAM。一条命令把这个文件变成一个可运行、可观测的线上 endpoint。本文按真实步骤顺序走完全程：环境准备、项目生成、部署、调用、trace 分析，每一步附实测命令与输出。
 
 ![AgentCore CLI 全生命周期：六条命令](/images/how-aws-bedrock-agentcore-actually-works/F0-command-map.png)
 
@@ -94,7 +94,7 @@ aws bedrock list-foundation-models --region us-east-1 \
 # deepseek.v3.2
 ```
 
-![终端自检实测：工具版本、AWS 身份、区域与模型可用性](/images/how-aws-bedrock-agentcore-actually-works/screenshot-1-environment-check.png)
+![终端自检实测：工具版本、AWS 身份、区域与模型可用范围](/images/how-aws-bedrock-agentcore-actually-works/screenshot-1-environment-check.png)
 
 Runtime 的 IAM 角色。CLI 为 Runtime 自动生成 IAM 角色，策略含三组权限：`bedrock:InvokeModel*`（调模型）、`logs:*`（写 `/aws/bedrock-agentcore/runtimes/` 下日志组）、`xray:PutTraceSegments`（上报 trace）。这是一份最小权限模板，可供后续复用。
 
@@ -211,7 +211,7 @@ agentcore deploy -y --target default
 
 2. 合成：CLI 跑内置的 CDK 工程（`node dist/bin/cdk.js`），读两个 JSON，把模板产出到 `cdk.out/`。
 
-3. 上传资产：zip 进 S3 桶，桶由 `cdk bootstrap` 每账号每区域一次性建好；没有这次 bootstrap，CDK 部署无处存放资产。
+3. 上传资产：zip 进 S3 桶，桶由 `cdk bootstrap` 每账号每区域单次建好；没有这次 bootstrap，CDK 部署无处存放资产。
 
 4. 建栈：CloudFormation 建 4 个资源：Runtime、IAM 角色、Bedrock 模型访问策略、元信息。
 
@@ -235,7 +235,7 @@ async function main() {
 
 生成的 CDK app 按路径读取 `agentcore.json` 和 `aws-targets.json`，本身不含项目逻辑，完全由这两个文件驱动。
 
-实测耗时：这次部署端到端 3 分 29 秒。CLI 分步日志：构建 CDK 工程 25 秒、合成 CloudFormation 1 分 03 秒、建栈 1 分 51 秒。账号首次部署 9 分 49 秒，多出的是一次性 `cdk bootstrap` 和首轮 `npm install`。只改代码的重部署 1 分 26 秒，因为栈已存在，变的只有资产哈希。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
+实测耗时：这次部署端到端 3 分 29 秒。CLI 分步日志：构建 CDK 工程 25 秒、合成 CloudFormation 1 分 03 秒、建栈 1 分 51 秒。账号首次部署 9 分 49 秒，多出的是单次 `cdk bootstrap` 和首轮 `npm install`。只改代码的重部署 1 分 26 秒，因为栈已存在，变的只有资产哈希。跑完用 `agentcore status` 验证，看到 `Runtime: READY` 即可。
 
 ## Step 4 · 本地先跑一遍
 
