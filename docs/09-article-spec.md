@@ -10,7 +10,12 @@ articles: GitHub Pages is the canonical home, Dev.to and Medium are copies.
   source of truth.
 - One article per use case. Seven use cases, `uc01` to `uc07`.
 - Length: **1000 to 1300 words**, measured on the body (front matter, code
-  blocks and image captions excluded).
+  blocks and image captions excluded). One exception: `uc07` may run up to
+  **2500 words**, because it carries ten deep capabilities and the mechanisms
+  (A2A, streaming, session isolation, the registry) cannot be taught in 1300.
+  The extra budget is spent on explanation: every protocol step, code block
+  and flow gets a paragraph that tells the reader what is happening and why,
+  before the command is shown. Mechanism first, command second.
 - Every article stands alone: a reader who has never seen another article in the
   series can follow it, deploy it, and tear it down.
 

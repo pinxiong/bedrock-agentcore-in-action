@@ -19,6 +19,12 @@ Contract: `docs/09-article-spec.md`. Difficulty ladder:
 
 Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 
+Word budget exception (ruled 2026-11-01): `uc07` may run up to 2500 words
+instead of the 1000 to 1300 default, and its prose is expected to explain
+mechanisms (A2A, streaming, session isolation, registry semantics) in detail
+before showing commands. Publish it with
+`publish_article.py --slug agentcore-a2a-multi-agent-registry --max-words 2500`.
+
 ## Per-article loop
 
 1. Fill `shared/templates/agent-prompts/writer-agent.md` for the use case and

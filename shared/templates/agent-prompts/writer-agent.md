@@ -33,7 +33,7 @@ Non-negotiable:
    into an article). Every command in your article must have
    been executed by you, and the output you show must be the output you got.
    No estimated numbers, no invented screenshots.
-2. **1000 to 1300 words**, no markdown tables, every fenced block tagged with a
+2. **Word range: {{WORD_RANGE}}**, no markdown tables, every fenced block tagged with a
    language (`plaintext` banned), no bold in the body, no Chinese characters.
 3. **Native commands only.** Every command the article shows is `agentcore ...`
    or `aws ...`. No `make <target>`, no `python3 run.py <target>`, no wrapper of
@@ -85,7 +85,7 @@ Non-negotiable:
    its captured output: printing the same output twice, once as a code block and
    once as an image, is a blocking defect. Generate diagrams as SVG in
    `articles/images/{{ARTICLE_SLUG}}/` and render PNG with:
-   `cd articles/images/{{ARTICLE_SLUG}} && /Users/pinxiong/.workbuddy/binaries/python/envs/default/bin/python -c "import resvg_py,pathlib; b=resvg_py.svg_to_bytes(svg_path='name.svg', background='#0a1024', width=1440); b=b.get('data') if isinstance(b,dict) else b; pathlib.Path('name.png').write_bytes(b)"`
+   `cd articles/images/{{ARTICLE_SLUG}} && /Users/pinxiong/.workbuddy/binaries/python/envs/default/bin/python -c "import resvg_py,pathlib; b=resvg_py.svg_to_bytes(svg_path='name.svg', background='#0a1024', width=2880); b=b.get('data') if isinstance(b,dict) else b; pathlib.Path('name.png').write_bytes(b)"`
    Design language: dark gradient `#0a1024` to `#0d1c3a`, accent colours blue
    `#2563eb`, purple `#7c3aed`, orange `#ea580c`, green `#059669`, red
    `#e11d48`, teal `#0d9488`. Every diagram in an article must be composed

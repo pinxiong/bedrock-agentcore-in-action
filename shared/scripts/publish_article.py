@@ -61,7 +61,7 @@ def fm_get(fm, key):
     return m.group(1).strip().strip('"') if m else None
 
 
-def check_master(slug):
+def check_master(slug, max_words=1300):
     p = REPO / "articles" / f"{slug}.md"
     if not p.exists():
         sys.exit(f"master not found: {p}")
@@ -100,8 +100,8 @@ def check_master(slug):
     stripped = re.sub(r"```.*?```", "", body, flags=re.S)
     stripped = re.sub(r"^\s*!\[[^\]]*\]\([^)]*\)\s*$", "", stripped, flags=re.M)
     words = len(re.findall(r"\b[\w'-]+\b", stripped))
-    if not 1000 <= words <= 1300:
-        problems.append(f"word count {words} outside 1000-1300")
+    if not 1000 <= words <= max_words:
+        problems.append(f"word count {words} outside 1000-{max_words}")
     if problems:
         sys.exit("master failed pre-publish checks:\n  - " + "\n  - ".join(problems))
     return p, text, fm, body, words
@@ -239,9 +239,11 @@ def main():
                     help="flip the Dev.to article live; without it the article stays a draft")
     ap.add_argument("--medium-export", action="store_true")
     ap.add_argument("--skip-hugo", action="store_true")
+    ap.add_argument("--max-words", type=int, default=1300,
+                    help="body word ceiling; the contract default is 1300, uc07 allows 2500")
     a = ap.parse_args()
 
-    p, text, fm, body, words = check_master(a.slug)
+    p, text, fm, body, words = check_master(a.slug, max_words=a.max_words)
     print(f"master OK: {words} words")
     if not a.skip_hugo:
         publish_hugo(a.slug, text)

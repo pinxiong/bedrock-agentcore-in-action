@@ -26,7 +26,7 @@ published. Be specific and be willing to fail it.
    `## The use case`, `## What AgentCore does here`, `## Requirements`,
    `## The code`, `## How it works`, `## Deploy it`, `## What it produced`,
    `## Troubleshooting` (optional), `## Takeaways`.
-2. Body word count is between 1000 and 1300. Report the number.
+2. Body word count is within {{WORD_RANGE}}. Report the number.
 3. Zero markdown tables (`grep -c '^|' file` is 0).
 4. Every fenced block opens with a language tag. Zero occurrences of
    ```plaintext. Report the language histogram.
