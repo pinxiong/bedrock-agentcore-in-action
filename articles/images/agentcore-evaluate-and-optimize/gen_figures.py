@@ -326,7 +326,7 @@ def figure_architecture() -> None:
     hx, hy = edge_mid(b_runtime, "right")
     out.append(f'<line x1="{hx:.2f}" y1="{hy:.2f}" x2="810" y2="{hy:.2f}" '
                f'stroke="#60a5fa" stroke-width="2.2"/>')
-    out.append(f'<line x1="810" y1="190" x2="810" y2="630" '
+    out.append(f'<line x1="810" y1="190" x2="810" y2="485" '
                f'stroke="#60a5fa" stroke-width="2.2"/>')
     for b, text in ((b_spans, "otel"), (b_eval, "scores"), (b_insights, "patterns")):
         tx, ty = edge_mid(b, "left")
@@ -339,13 +339,16 @@ def figure_architecture() -> None:
           (edge_mid(b_insights, "bottom")[1] + edge_mid(b_reco, "top")[1]) / 2 + 5,
           "chained", 14, "#8ea0bd", "start")
 
-    # the fix flows back to the runtime as an immutable bundle version
+    # the fix flows back to the runtime as an immutable bundle version:
+    # reco left edge -> left -> up -> into the runtime bottom centre
     rx, ry = edge_mid(b_reco, "left")
+    bx, by = edge_mid(b_runtime, "bottom")
     out.append(f'<line x1="{rx:.2f}" y1="{ry:.2f}" x2="640" y2="{ry:.2f}" stroke="#34d399" stroke-width="2.2"/>')
-    out.append(f'<line x1="640" y1="{ry:.2f}" x2="640" y2="{edge_mid(b_runtime, "bottom")[1] + 40:.2f}" stroke="#34d399" stroke-width="2.2"/>')
-    shaft(640, edge_mid(b_runtime, "bottom")[1] + 6, 550, edge_mid(b_runtime, "bottom")[1] + 6, "#34d399")
-    label(652, ry - 10, "bundle v2 (d4c45b72)", 14, "#34d399", "start")
-    label(652, ry + 14, "A/B via gateway: C 50% / T1 50%", 14, "#8ea0bd", "start")
+    out.append(f'<line x1="640" y1="{ry:.2f}" x2="640" y2="{by + 40:.2f}" stroke="#34d399" stroke-width="2.2"/>')
+    out.append(f'<line x1="640" y1="{by + 40:.2f}" x2="{bx:.2f}" y2="{by + 40:.2f}" stroke="#34d399" stroke-width="2.2"/>')
+    shaft(bx, by + 40, bx, by, "#34d399")
+    label(652, ry - 30, "bundle v2 (d4c45b72)", 14, "#34d399", "start")
+    label(652, ry - 10, "A/B via gateway: C 50% / T1 50%", 14, "#8ea0bd", "start")
 
     out.append("</svg>")
     (HERE / "F1-quality-loop.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
