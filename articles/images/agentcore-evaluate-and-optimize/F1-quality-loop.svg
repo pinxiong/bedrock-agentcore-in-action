@@ -50,11 +50,9 @@
 <line x1="1080.00" y1="540.00" x2="1080.00" y2="571.75" stroke="#fdba74" stroke-width="2.2"/>
 <polygon points="1073.00,565.00 1080.00,580.00 1087.00,565.00" fill="#fdba74"/>
 <text x="1094.0" y="565.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd" text-anchor="start" font-weight="400">chained</text>
-<line x1="900.00" y1="630.00" x2="640" y2="630.00" stroke="#34d399" stroke-width="2.2"/>
-<line x1="640" y1="630.00" x2="640" y2="455.00" stroke="#34d399" stroke-width="2.2"/>
-<line x1="640" y1="455.00" x2="550.00" y2="455.00" stroke="#34d399" stroke-width="2.2"/>
-<line x1="550.00" y1="455.00" x2="550.00" y2="423.25" stroke="#34d399" stroke-width="2.2"/>
+<line x1="900.00" y1="630.00" x2="550.00" y2="630.00" stroke="#34d399" stroke-width="2.2"/>
+<line x1="550.00" y1="630.00" x2="550.00" y2="423.25" stroke="#34d399" stroke-width="2.2"/>
 <polygon points="557.00,430.00 550.00,415.00 543.00,430.00" fill="#34d399"/>
-<text x="652" y="600.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#34d399" text-anchor="start" font-weight="400">bundle v2 (d4c45b72)</text>
-<text x="652" y="620.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd" text-anchor="start" font-weight="400">A/B via gateway: C 50% / T1 50%</text>
+<text x="652" y="604.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#34d399" text-anchor="start" font-weight="400">bundle v2 (d4c45b72)</text>
+<text x="652" y="624.0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8ea0bd" text-anchor="start" font-weight="400">A/B via gateway: C 50% / T1 50%</text>
 </svg>

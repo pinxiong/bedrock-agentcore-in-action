@@ -339,16 +339,15 @@ def figure_architecture() -> None:
           (edge_mid(b_insights, "bottom")[1] + edge_mid(b_reco, "top")[1]) / 2 + 5,
           "chained", 14, "#8ea0bd", "start")
 
-    # the fix flows back to the runtime as an immutable bundle version:
-    # reco left edge -> left -> up -> into the runtime bottom centre
+    # bundle v2 goes back to the runtime in two right-angled segments: across to
+    # directly under the runtime, then straight up into its bottom edge
     rx, ry = edge_mid(b_reco, "left")
     bx, by = edge_mid(b_runtime, "bottom")
-    out.append(f'<line x1="{rx:.2f}" y1="{ry:.2f}" x2="640" y2="{ry:.2f}" stroke="#34d399" stroke-width="2.2"/>')
-    out.append(f'<line x1="640" y1="{ry:.2f}" x2="640" y2="{by + 40:.2f}" stroke="#34d399" stroke-width="2.2"/>')
-    out.append(f'<line x1="640" y1="{by + 40:.2f}" x2="{bx:.2f}" y2="{by + 40:.2f}" stroke="#34d399" stroke-width="2.2"/>')
-    shaft(bx, by + 40, bx, by, "#34d399")
-    label(652, ry - 30, "bundle v2 (d4c45b72)", 14, "#34d399", "start")
-    label(652, ry - 10, "A/B via gateway: C 50% / T1 50%", 14, "#8ea0bd", "start")
+    out.append(f'<line x1="{rx:.2f}" y1="{ry:.2f}" x2="{bx:.2f}" y2="{ry:.2f}" '
+               f'stroke="#34d399" stroke-width="2.2"/>')
+    shaft(bx, ry, bx, by, "#34d399")
+    label(rx - 248, ry - 26, "bundle v2 (d4c45b72)", 14, "#34d399", "start")
+    label(rx - 248, ry - 6, "A/B via gateway: C 50% / T1 50%", 14, "#8ea0bd", "start")
 
     out.append("</svg>")
     (HERE / "F1-quality-loop.svg").write_text("\n".join(out) + "\n", encoding="utf-8")
