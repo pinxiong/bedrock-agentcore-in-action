@@ -56,7 +56,7 @@ before showing commands. Publish it with
 | uc04 | https://dev.to/aws-builders/stopping-an-agent-from-overreaching-policy-in-enforce-mode-4dgf | https://xiongpin.dev/posts/agentcore-policy-enforce-mode/ | https://medium.com/@pinxiong.cn/stopping-an-agent-from-overreaching-policy-in-enforce-mode-5618586d14c2 | 2026-10-24 |
 | uc05 | https://dev.to/aws-builders/a-research-agent-that-searches-browses-and-computes-3n1j | https://xiongpin.dev/posts/agentcore-research-agent-harness/ | https://medium.com/@pinxiong.cn/a-research-agent-that-searches-browses-and-computes-9b95a8017a3e | 2026-10-27 |
 | uc06 | https://dev.to/aws-builders/finding-what-broke-observability-evaluation-optimization-4epk | https://xiongpin.dev/posts/agentcore-evaluate-and-optimize/ | manual, subtitle candidates in `writing-lab/distribution/agentcore-evaluate-and-optimize-medium-manual.md` | 2026-10-31 |
-| uc07 | https://dev.to/aws-builders/two-specialists-one-orchestrator-one-catalog-10g8 | https://xiongpin.dev/posts/agentcore-a2a-multi-agent-registry/ | manual, subtitle candidates in `writing-lab/distribution/agentcore-a2a-multi-agent-registry-medium-manual.md` | 2026-11-01 |
+| uc07 | https://dev.to/aws-builders/two-specialists-one-orchestrator-one-catalog-10g8 | https://xiongpin.dev/posts/agentcore-a2a-multi-agent-registry/ | https://medium.com/@pinxiong.cn/two-specialists-one-orchestrator-one-catalog-4c5d6938753c | 2026-11-01 |
 
 ## Budget
 
