@@ -1,0 +1,162 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "aiauc07",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "Project": "agentcore-in-action",
+    "UseCase": "07",
+    "AutoDelete": "true"
+  },
+  "runtimes": [
+    {
+      "name": "aia_uc07_orchestrator",
+      "description": "uc07 contract review orchestrator: AG-UI endpoint, routes to the two specialists over A2A",
+      "build": "CodeZip",
+      "entrypoint": "orchestrator.py",
+      "codeLocation": "app/aia_uc07/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "LEGAL_AGENT_NAME",
+          "value": "aia_uc07_legal"
+        },
+        {
+          "name": "COMPLIANCE_AGENT_NAME",
+          "value": "aia_uc07_compliance"
+        },
+        {
+          "name": "UNIFIED_TRACES_DESTINATION_ENABLED",
+          "value": "false"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "AGUI",
+      "additionalPolicies": [
+        "policies/orchestrator-policy.json"
+      ],
+      "tags": {
+        "UseCase": "07"
+      }
+    },
+    {
+      "name": "aia_uc07_legal",
+      "description": "uc07 legal clause specialist, served over A2A",
+      "build": "CodeZip",
+      "entrypoint": "legal_agent.py",
+      "codeLocation": "app/aia_uc07/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "deepseek.v3.2"
+        },
+        {
+          "name": "UNIFIED_TRACES_DESTINATION_ENABLED",
+          "value": "false"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "A2A",
+      "tags": {
+        "UseCase": "07"
+      }
+    },
+    {
+      "name": "aia_uc07_compliance",
+      "description": "uc07 compliance specialist with quick screens and 75s deep scans, served over A2A",
+      "build": "CodeZip",
+      "entrypoint": "compliance_agent.py",
+      "codeLocation": "app/aia_uc07/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "MODEL_ID",
+          "value": "deepseek.v3.2"
+        },
+        {
+          "name": "DEEP_SCAN_SECONDS",
+          "value": "75"
+        },
+        {
+          "name": "UNIFIED_TRACES_DESTINATION_ENABLED",
+          "value": "false"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "A2A",
+      "tags": {
+        "UseCase": "07"
+      }
+    },
+    {
+      "name": "aia_uc07_billing_mcp",
+      "description": "uc07 billing tools over MCP: invoices, payment status, refund policy",
+      "build": "CodeZip",
+      "entrypoint": "billing_mcp.py",
+      "codeLocation": "app/aia_uc07/",
+      "runtimeVersion": "PYTHON_3_13",
+      "envVars": [
+        {
+          "name": "UNIFIED_TRACES_DESTINATION_ENABLED",
+          "value": "false"
+        }
+      ],
+      "protocol": "MCP",
+      "instrumentation": {
+        "enableOtel": false
+      },
+      "capacityProviderConfiguration": {
+        "capacityProviderName": "aia_uc07_pool"
+      },
+      "tags": {
+        "UseCase": "07"
+      }
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [
+    {
+      "name": "aia_uc07_pool",
+      "description": "uc07 customer-managed compute pool: pinned EC2 instance types for agent runtimes",
+      "computeConfiguration": {
+        "ec2Configuration": {
+          "launchTemplateSource": {
+            "launchParameters": {
+              "operatingSystem": "LINUX_ARM64",
+              "instanceRequirements": {
+                "allowedInstanceTypes": [
+                  "m7g.large",
+                  "c7g.large"
+                ]
+              }
+            }
+          },
+          "vpcConfiguration": {
+            "subnets": [
+              "subnet-0cb039f1b6b265b70",
+              "subnet-00f40d8dfc09ae1f8"
+            ],
+            "securityGroups": [
+              "sg-0c1fd51805583a97d"
+            ]
+          },
+          "lifecycleConfiguration": {
+            "idleInstanceTimeout": 300
+          }
+        }
+      }
+    }
+  ],
+  "payments": []
+}

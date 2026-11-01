@@ -1,0 +1,88 @@
+$ aws bedrock-agentcore get-agent-card --region us-east-1 --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW
+{
+    "runtimeSessionId": "b256713f-e524-4d49-a357-4943f452f74f",
+    "statusCode": 200,
+    "agentCard": {
+        "capabilities": {
+            "streaming": true
+        },
+        "defaultInputModes": [
+            "text"
+        ],
+        "defaultOutputModes": [
+            "text"
+        ],
+        "description": "Contract clause specialist: compares clauses against the reference library",
+        "name": "aia_uc07_legal",
+        "preferredTransport": "JSONRPC",
+        "protocolVersion": "0.3.0",
+        "skills": [
+            {
+                "description": "Compare contract clauses against the reference clause library",
+                "examples": [
+                    "Review the liability and termination clauses of this brief"
+                ],
+                "id": "clause-review",
+                "name": "Clause review",
+                "tags": [
+                    "legal",
+                    "contract",
+                    "clause"
+                ]
+            }
+        ],
+        "url": "https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_legal-C8yDVkGWBW/invocations",
+        "version": "1.0.0"
+    }
+}
+
+$ aws bedrock-agentcore get-agent-card --region us-east-1 --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj
+{
+    "runtimeSessionId": "7643d46d-d8f9-48db-a2d8-a1de6dd524ba",
+    "statusCode": 200,
+    "agentCard": {
+        "capabilities": {
+            "streaming": true
+        },
+        "defaultInputModes": [
+            "text"
+        ],
+        "defaultOutputModes": [
+            "text"
+        ],
+        "description": "Compliance specialist: quick risk screens and long-running deep scans",
+        "name": "aia_uc07_compliance",
+        "preferredTransport": "JSONRPC",
+        "protocolVersion": "0.3.0",
+        "skills": [
+            {
+                "description": "Fast pattern-based compliance screen of a contract brief",
+                "examples": [
+                    "Quick compliance screen of this brief"
+                ],
+                "id": "risk-screen",
+                "name": "Risk screen",
+                "tags": [
+                    "compliance",
+                    "risk"
+                ]
+            },
+            {
+                "description": "Five-pass deep compliance scan, about 75 seconds",
+                "examples": [
+                    "deep scan contract C-118"
+                ],
+                "id": "deep-scan",
+                "name": "Deep scan",
+                "tags": [
+                    "compliance",
+                    "async",
+                    "long-running"
+                ]
+            }
+        ],
+        "url": "https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_compliance-dc8CMTCDwj/invocations",
+        "version": "1.0.0"
+    }
+}
+

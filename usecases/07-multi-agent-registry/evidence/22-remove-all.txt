@@ -1,0 +1,12 @@
+$ agentcore remove all -y
+All schemas reset to empty state
+Your source code has not been modified. Run `agentcore deploy` to apply changes to AWS.
+
+$ agentcore status
+AgentCore Status (target: default, us-east-1)
+Agents
+  aia_uc07_orchestrator: Removed locally (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9)
+  aia_uc07_compliance: Removed locally (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-z1YS5T4L5y)
+  aia_uc07_billing_mcp: Removed locally (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-DZwvVN3b3p)
+  aia_uc07_legal: Removed locally (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-mZ9jr59INy)
+

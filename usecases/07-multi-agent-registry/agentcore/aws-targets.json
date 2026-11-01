@@ -1,0 +1,8 @@
+[
+  {
+    "name": "default",
+    "description": "Series lab account, us-east-1 only",
+    "account": "123456789012",
+    "region": "us-east-1"
+  }
+]

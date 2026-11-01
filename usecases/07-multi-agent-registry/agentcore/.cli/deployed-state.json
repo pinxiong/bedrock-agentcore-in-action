@@ -1,0 +1,38 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "aia_uc07_orchestrator": {
+            "runtimeId": "aiauc07_aia_uc07_orchestrator-35KsYa22sv",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Or-faSHrzMwVuuf"
+          },
+          "aia_uc07_compliance": {
+            "runtimeId": "aiauc07_aia_uc07_compliance-dc8CMTCDwj",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Co-bZEbxDbcKQvY"
+          },
+          "aia_uc07_billing_mcp": {
+            "runtimeId": "aiauc07_aia_uc07_billing_mcp-eAE3MP21yf",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Bi-rQqCOyYvpyDV"
+          },
+          "aia_uc07_legal": {
+            "runtimeId": "aiauc07_aia_uc07_legal-C8yDVkGWBW",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW",
+            "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Le-OCOJJi8t2EW8"
+          }
+        },
+        "capacityProviders": {
+          "aia_uc07_pool": {
+            "capacityProviderId": "aiauc07_aia_uc07_pool-RAGFd2QHPH",
+            "capacityProviderArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-RAGFd2QHPH"
+          }
+        },
+        "stackName": "AgentCore-aiauc07-default",
+        "deployHash": "32a524e67143e0b7"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+    "registryRecords": [
+        {
+            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
+            "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF/record/dkw6Qm1ADsVv",
+            "recordId": "dkw6Qm1ADsVv",
+            "name": "billing",
+            "description": "Invoice lookup, payment processing and refund policy tools for agents, hosted on AgentCore Runtime as a streamable-http MCP server",
+            "displayName": "Billing MCP server",
+            "recordType": "MCP",
+            "descriptors": {
+                "mcpServer": {
+                    "data": "{\"name\": \"dev.xiongpin/billing\", \"description\": \"Billing and payment processing MCP server: invoice lookup, payment status, refunds\", \"version\": \"1.0.0\"}",
+                    "dataSchemaVersion": "2025-12-11"
+                }
+            },
+            "status": "APPROVED",
+            "createdAt": "2026-11-01T00:44:21.471737+00:00",
+            "updatedAt": "2026-11-01T00:48:20.814667+00:00"
+        },
+        {
+            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
+            "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF/record/ZpvPW4p2bvba",
+            "recordId": "ZpvPW4p2bvba",
+            "name": "contract-clause-legal-specialist",
+            "description": "A2A agent that reviews contract clauses against the legal reference clause library: liability, termination, payment, confidentiality and subcontracting",
+            "displayName": "Legal clause specialist (A2A)",
+            "recordType": "AGENT",
+            "descriptors": {
+                "a2aAgentCard": {
+                    "data": "{\"capabilities\": {\"streaming\": true}, \"defaultInputModes\": [\"text\"], \"defaultOutputModes\": [\"text\"], \"description\": \"Contract clause specialist: compares clauses against the reference library\", \"name\": \"aia_uc07_legal\", \"preferredTransport\": \"JSONRPC\", \"protocolVersion\": \"0.3.0\", \"skills\": [{\"description\": \"Compare contract clauses against the reference clause library\", \"examples\": [\"Review the liability and termination clauses of this brief\"], \"id\": \"clause-review\", \"name\": \"Clause review\", \"tags\": [\"legal\", \"contract\", \"clause\"]}], \"url\": \"https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_legal-mZ9jr59INy/invocations\", \"version\": \"1.0.0\"}",
+                    "dataSchemaVersion": "0.3"
+                }
+            },
+            "status": "APPROVED",
+            "createdAt": "2026-11-01T00:47:31.240123+00:00",
+            "updatedAt": "2026-11-01T00:48:22.150397+00:00"
+        }
+    ]
+}

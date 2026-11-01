@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DiscoverProjectRuntimes",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:ListAgentRuntimes",
+        "bedrock-agentcore:GetAgentCard"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "InvokeSpecialists",
+      "Effect": "Allow",
+      "Action": "bedrock-agentcore:InvokeAgentRuntime",
+      "Resource": "arn:aws:bedrock-agentcore:us-east-1:*:runtime/*"
+    }
+  ]
+}

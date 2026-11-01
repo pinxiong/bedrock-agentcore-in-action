@@ -1,0 +1,58 @@
+$ agentcore traces list --runtime aia_uc07_orchestrator --limit 5
+Traces for aia_uc07_orchestrator (target: default)
+Trace ID                     Timestamp          Session ID
+6ae68aae0be02f262af76e4121aa 2026-11-01         -
+04e9                         00:41:19Z
+6ae68aae47ae968d518a176c259a 2026-11-01         -
+7a9b                         00:41:18Z
+6ae68aae0aa33c057ba9dbdd129b 2026-11-01         -
+6b3e                         00:41:18Z
+6ae68aae0823db390c726d3725cb 2026-11-01         -
+893c                         00:41:18Z
+Console: https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#/gen-ai-observability/agent-core/agent-alias/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9/endpoint/DEFAULT/agent/aia_uc07_orchestrator?start=-43200000&resourceId=arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_orchestrator-r6QMF7DdA9%2Fruntime-endpoint%2FDEFAULT%3ADEFAULT&serviceName=aia_uc07_orchestrator.DEFAULT&tabId=tracesNote: Traces may take 2-3 minutes to appear in CloudWatch
+$ agentcore traces get 6ae68aae0be02f262af76e4121aa04e9 --runtime aia_uc07_orchestrator
+  Downloaded to agentcore/.cli/traces/aia_uc07_orchestrator-6ae68aae0be02f262af76e4121aa04e9.json
+  entries: 1  spanId: 7e1bc5562129e692  traceId: 6ae68aae0be02f262af76e4121aa04e9{
+  "@timestamp": "2026-11-01 00:41:19.106",
+  "@message": {
+    "resource": {
+      "attributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.45.1",
+        "service.instance.id": "4169c040-a1ac-4e03-80ac-ac6c61971442",
+        "service.name": "aiauc07_aia_uc07_orchestrator.DEFAULT",
+        "aws.log.group.names": "/aws/bedrock-agentcore/runtimes/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9-DEFAULT",
+        "aws.log.stream.names": "otel-rt-logs",
+        "deployment.environment.name": "bedrock-agentcore:default",
+        "cloud.resource_id": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9/runtime-endpoint/DEFAULT:DEFAULT",
+        "cloud.platform": "aws_bedrock_agentcore",
+        "cloud.provider": "aws",
+        "cloud.region": "us-east-1",
+        "telemetry.auto.version": "0.22.0-aws",
+        "aws.local.service": "aiauc07_aia_uc07_orchestrator.DEFAULT",
+        "aws.service.type": "gen_ai_agent"
+      }
+    },
+    "scope": {
+      "name": "__main__"
+    },
+    "timeUnixNano": 1793493679106141200,
+    "observedTimeUnixNano": 1793493679106250500,
+    "severityNumber": 9,
+    "severityText": "INFO",
+    "body": "uc07 orchestrator: session=uc07-isolation-s06-2026-11-01-tenways text='recall codeword'",
+    "attributes": {
+      "otelSpanID": "7e1bc5562129e692",
+      "otelTraceID": "6ae68aae0be02f262af76e4121aa04e9",
+      "otelTraceSampled": true,
+      "otelServiceName": "aiauc07_aia_uc07_orchestrator.DEFAULT",
+      "code.file.path": "/var/task/orchestrator.py",
+      "code.function.name": "handle",
+      "code.line.number": 214
+    },
+    "flags": 1,
+    "traceId": "6ae68aae0be02f262af76e4121aa04e9",
+    "spanId": "7e1bc5562129e692"
+  },
+  "@ptr": "CtwBCqABCl0xNTc4NTQ3MTY4MTg6L2F3cy9iZWRyb2NrLWFnZW50Y29yZS9ydW50aW1lcy9haWF1YzA3X2FpYV91YzA3X29yY2hlc3RyYXRvci1yNlFNRjdEZEE5LURFRkFVTFQQABokYmNjZjYwODEtODYwNy00NDM2LWFlOWMtYjBlMDNhNjM3MDUzIg4Iua7Co5k0EL+pjqaZNEC5rsKjmTRIABI1GhgCBq0osPQAAAAAOj8/7gAGrmipIAAABEIgASjftLWkmTQwpri7pJk0OH1AqnFIi1JQ8jsgAhAVGAE="}

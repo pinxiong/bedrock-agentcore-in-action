@@ -1,0 +1,16 @@
+{
+    "registries": [
+        {
+            "name": "aia-uc07-catalog",
+            "description": "Legal and compliance workflow-automation agents: contract review orchestrator, specialists and the billing MCP server",
+            "registryId": "LV1azEs3898YAYTF",
+            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
+            "discoveryConfiguration": {
+                "authorizerType": "AWS_IAM"
+            },
+            "status": "READY",
+            "createdAt": "2026-11-01T00:00:46.959829+00:00",
+            "updatedAt": "2026-11-01T00:00:46.959829+00:00"
+        }
+    ]
+}

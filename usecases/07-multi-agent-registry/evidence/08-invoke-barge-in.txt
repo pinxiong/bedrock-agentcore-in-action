@@ -1,0 +1,33 @@
+payload (AG-UI RunAgentInput, written to /tmp/uc07-agui-payload.json):
+{
+  "threadId": "uc07-08e24cbf",
+  "runId": "r1",
+  "messages": [
+    {
+      "id": "m1",
+      "role": "user",
+      "content": "barge in C-118"
+    }
+  ],
+  "tools": [],
+  "context": [],
+  "state": {},
+  "forwardedProps": {}
+}
+
+$ aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+    --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv \
+    --qualifier DEFAULT --runtime-session-id uc07-bargein-eea7e1270a134188bc26499c08e24cbf \
+    --content-type application/json --accept text/event-stream \
+    --cli-read-timeout 300 \
+    --payload fileb:///tmp/uc07-agui-payload.json /tmp/uc07-agui-out.bin
+
+elapsed: 19.5s
+events: 10 types: RUN_FINISHED RUN_STARTED TEXT_MESSAGE_CONTENT TEXT_MESSAGE_END TEXT_MESSAGE_START
+--- transcript ---
+stream opened: task b61aa5ec-5079-4b8e-990b-1fe7e7a429e2, state=submitted
+status update #1 at 11.9s: state=working
+barging in: sending tasks/cancel now
+cancel acknowledged: state=canceled
+status update #2 at 12.1s: state=canceled
+stream closed at 12.1s with state=canceled — the scan was interrupted, not completed

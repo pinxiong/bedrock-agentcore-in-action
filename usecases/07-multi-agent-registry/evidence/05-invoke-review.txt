@@ -1,0 +1,58 @@
+payload (AG-UI RunAgentInput, written to /tmp/uc07-agui-payload.json):
+{
+  "threadId": "uc07-f73d4cda",
+  "runId": "r1",
+  "messages": [
+    {
+      "id": "m1",
+      "role": "user",
+      "content": "review contract C-118"
+    }
+  ],
+  "tools": [],
+  "context": [],
+  "state": {},
+  "forwardedProps": {}
+}
+
+$ aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+    --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv \
+    --qualifier DEFAULT --runtime-session-id uc07-review-46702a95300245bda08060b2f73d4cda \
+    --content-type application/json --accept text/event-stream \
+    --cli-read-timeout 300 \
+    --payload fileb:///tmp/uc07-agui-payload.json /tmp/uc07-agui-out.bin
+
+elapsed: 95.0s
+events: 14 types: RUN_FINISHED RUN_STARTED TEXT_MESSAGE_CONTENT TEXT_MESSAGE_END TEXT_MESSAGE_START
+--- transcript ---
+contract C-118: Master services agreement, 4 pages. Clause 7 caps liability at fees paid; clause 11 allows termination for convenience with 30 days notice; clause 14 is silent on subcontractor vetting.
+discovery: both specialist ARNs resolved via ListAgentRuntimes
+agent card: aia_uc07_legal v1.0.0 — skills: Clause review
+-> legal specialist over A2A (session uc07-review-3e60e8dce31b...)
+legal task 27495c40-cc0a-4c81-8b01-8cab4ab43ffd -> completed
+legal says: Now I'll analyze each clause against the reference wordings:
+
+1. **Liability clause (7)**: Needs redrafting because it caps liability only at fees paid, while the reference adds higher cap (12 months of fees) and excludes confidentiality breaches and willful misconduct.
+
+2. **Termination clause (11)**: Needs redrafting because it allows termination with only 30 days notice and doesn't specify payment for work performed, unlike the reference requiring 60 days notice and payment.
+
+3. **Subcontracting clause (14)**: Needs redrafting because it's silent on vetting, while the reference requires prior written approval and holds contractor responsible for subcontractor work.
+
+**Clauses needing redrafting:**
+1. Clause 7 (liability)
+2. Clause 11 (termination)
+3. Clause 14 (subcontracting)
+
+-> compliance specialist over A2A
+compliance task c08c136a-404f-41db-b1e1-21543e148cd6 -> completed
+compliance says: Based on the quick risk check, here are the top compliance risks:
+
+1. **Clause 11 (Termination for convenience)**: The 30-day notice period violates policy requiring a minimum 60-day termination notice.
+
+2. **Clause 7 (Liability cap)**: The cap at fees paid is present but requires verification of carve-outs for confidentiality breaches and other exceptions.
+
+3. **Clause 14 (Subcontractor provisions)**: The silence on subcontractor vetting creates a missing obligation risk, as there are no audit rights or vetting requirements specified.
+
+**Final verdict: ESCALATE** - Multiple compliance issues require human review and remediation.
+
+review complete: both specialists answered over A2A

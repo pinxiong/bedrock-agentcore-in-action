@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img">
+<title>Cover art: one orchestrator fanning out to two A2A specialists and one MCP server, all listed in one catalog</title>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#08101f"/><stop offset="1" stop-color="#101c3d"/></linearGradient><radialGradient id="g1" cx="0.15" cy="0.1" r="0.8"><stop offset="0" stop-color="#2563eb" stop-opacity="0.30"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient><radialGradient id="g2" cx="0.85" cy="0.9" r="0.8"><stop offset="0" stop-color="#7c3aed" stop-opacity="0.28"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient></defs>
+<rect width="1600" height="900" fill="url(#bg)"/>
+<rect width="1600" height="900" fill="url(#g1)"/>
+<rect width="1600" height="900" fill="url(#g2)"/>
+<text x="120" y="200" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="54" fill="#f8fafc">Two specialists,</text>
+<text x="120" y="266" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="54" fill="#7dd3fc">one orchestrator,</text>
+<text x="120" y="332" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="54" fill="#c084fc">one catalog</text>
+<text x="120" y="392" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#94a3b8">A2A, MCP and the AgentCore registry, measured</text>
+<rect x="120" y="470" width="330" height="110" rx="12" fill="#0d1a33" stroke="#38bdf8" stroke-width="1.6"/>
+<text x="138" y="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#f8fafc" font-weight="600">aia_uc07_orchestrator</text>
+<text x="138" y="522" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" fill="#7c93b5">AG-UI: SSE events, one session</text>
+<rect x="530" y="470" width="330" height="110" rx="12" fill="#0d1a33" stroke="#34d399" stroke-width="1.6"/>
+<text x="548" y="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#f8fafc" font-weight="600">aia_uc07_legal + compliance</text>
+<text x="548" y="522" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" fill="#7c93b5">A2A: message/send, stream, cancel</text>
+<rect x="940" y="470" width="330" height="110" rx="12" fill="#0d1a33" stroke="#fbbf24" stroke-width="1.6"/>
+<text x="958" y="500" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18" fill="#f8fafc" font-weight="600">aia_uc07_billing_mcp</text>
+<text x="958" y="522" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14.5" fill="#7c93b5">MCP on pinned EC2 instance types</text>
+<polyline points="450,525 530,525" fill="none" stroke="#34d399" stroke-width="1.8"/>
+<polygon points="530,525 519,519 519,531" fill="#34d399"/>
+<polyline points="860,525 940,525" fill="none" stroke="#fbbf24" stroke-width="1.8"/>
+<polygon points="940,525 929,519 929,531" fill="#fbbf24"/>
+<text x="120" y="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" fill="#94a3b8">agent registry: semantic search finds the billing server for “payment processing”</text>
+<text x="120" y="742" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" fill="#94a3b8">RAM shares the catalog across accounts</text>
+</svg>

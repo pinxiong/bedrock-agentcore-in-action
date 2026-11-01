@@ -1,0 +1,13 @@
+$ aws bedrock-agentcore-control list-agent-runtimes --region us-east-1
+
+  aiauc07_aia_uc07_orchestrator  arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv
+    id: aiauc07_aia_uc07_orchestrator-35KsYa22sv  status: READY
+  aiauc07_aia_uc07_legal  arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW
+    id: aiauc07_aia_uc07_legal-C8yDVkGWBW  status: READY
+  aiauc07_aia_uc07_compliance  arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj
+    id: aiauc07_aia_uc07_compliance-dc8CMTCDwj  status: READY
+  aiauc07_aia_uc07_billing_mcp  arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+    id: aiauc07_aia_uc07_billing_mcp-eAE3MP21yf  status: READY
+
+# two runtimes in this account predate the series and are not tagged for it:
+#   helloagent_hello_agent, harness_demoproj_demo_proj

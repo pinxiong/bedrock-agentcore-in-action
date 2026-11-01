@@ -1,0 +1,43 @@
+# the compliance deep scan runs ~75s; a blocking message/send cannot outlive the
+# client-side read timeout. Two attempts, each retried by the SDK:
+
+payload (A2A JSON-RPC, written to /tmp/uc07-a2a-payload.json):
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "method": "message/send",
+  "params": {
+    "message": {
+      "role": "user",
+      "parts": [
+        {
+          "kind": "text",
+          "text": "deep scan C-118"
+        }
+      ],
+      "messageId": "<uuid>"
+    },
+    "configuration": {
+      "blocking": true
+    }
+  }
+}
+
+$ aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+    --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj \
+    --qualifier DEFAULT --runtime-session-id uc07-timeout-<uuid> \
+    --content-type application/json --accept application/json \
+    --cli-read-timeout 60 \
+    --payload fileb:///tmp/uc07-a2a-payload.json /tmp/uc07-a2a-out.bin
+elapsed: 184.9s  (--cli-read-timeout 60)
+aws: [ERROR]: Read timeout on endpoint URL: "https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_compliance-dc8CMTCDwj/invocations?qualifier=DEFAULT"
+
+$ aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+    --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj \
+    --qualifier DEFAULT --runtime-session-id uc07-timeout-<uuid> \
+    --content-type application/json --accept application/json \
+    --cli-read-timeout 30 \
+    --payload fileb:///tmp/uc07-a2a-payload.json /tmp/uc07-a2a-out.bin
+elapsed: 93.1s  (--cli-read-timeout 30)
+aws: [ERROR]: Read timeout on endpoint URL: "https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_compliance-dc8CMTCDwj/invocations?qualifier=DEFAULT"
+

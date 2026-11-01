@@ -1,0 +1,18 @@
+✓ Deployed to 'default' (stack: AgentCore-aiauc07-default)
+Outputs:
+  ApplicationAgentAiaUc07OrchestratorRoleArnOutputB6CCD2E9: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Or-628irUwRC7IO
+  ApplicationAgentAiaUc07ComplianceRoleArnOutput397D9999: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Co-XGPEogUveqAB
+  ApplicationAgentAiaUc07ComplianceRuntimeIdOutputF23E5F89: aiauc07_aia_uc07_compliance-z1YS5T4L5y
+  ApplicationAgentAiaUc07ComplianceRuntimeArnOutputC6E734F9: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-z1YS5T4L5y
+  ApplicationAgentAiaUc07BillingMcpRoleArnOutput9C72B705: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Bi-qTtRRHdZm4PE
+  ApplicationAgentAiaUc07OrchestratorRuntimeArnOutput3C21BFE1: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9
+  ApplicationAgentAiaUc07LegalRuntimeArnOutputC5DF870D: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-mZ9jr59INy
+  ApplicationAgentAiaUc07OrchestratorRuntimeIdOutputCD3E859B: aiauc07_aia_uc07_orchestrator-r6QMF7DdA9
+  ApplicationAgentAiaUc07LegalRuntimeIdOutput04F8950C: aiauc07_aia_uc07_legal-mZ9jr59INy
+  ApplicationAgentAiaUc07BillingMcpRuntimeArnOutputC2D37F5D: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-tsHB2hA9JV
+  ApplicationAgentAiaUc07LegalRoleArnOutput1A48D681: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Le-A8nNXR2yLpGh
+  ApplicationAgentAiaUc07BillingMcpRuntimeIdOutput5FA72FBD: aiauc07_aia_uc07_billing_mcp-tsHB2hA9JV
+  StackNameOutput: AgentCore-aiauc07-default
+Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.
+Next: agentcore invoke | agentcore status
+Log: agentcore/.cli/logs/deploy/deploy-20261101-080028.log

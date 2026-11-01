@@ -1,0 +1,53 @@
+# ten sessions against the same runtime; each stores a codeword, then recalls it
+$ for i in 1..10; do
+    session=uc07-iso-$i-<uuid>
+    aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+      --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv \
+      --qualifier DEFAULT --runtime-session-id $session \
+      --content-type application/json --accept text/event-stream \
+      --payload fileb:///tmp/uc07-iso-payload.json /tmp/uc07-iso-out.bin
+  done
+
+session 01  uc07-iso-01-828db68006d44437879faa45bc2caf69
+  store  -> codeword stored for session uc07-iso-01-828db68006d44437879faa45bc2caf69
+  recall -> codeword for session uc07-iso-01-828db68006d44437879faa45bc2caf69: kestrel
+  match  -> yes
+session 02  uc07-iso-02-fd799a4224e145598cb191c0e3359787
+  store  -> codeword stored for session uc07-iso-02-fd799a4224e145598cb191c0e3359787
+  recall -> codeword for session uc07-iso-02-fd799a4224e145598cb191c0e3359787: lantern
+  match  -> yes
+session 03  uc07-iso-03-5b09ceba506d46399201da5e578927ce
+  store  -> codeword stored for session uc07-iso-03-5b09ceba506d46399201da5e578927ce
+  recall -> codeword for session uc07-iso-03-5b09ceba506d46399201da5e578927ce: marlin
+  match  -> yes
+session 04  uc07-iso-04-c6f2991169714b4fb79ef75210ba9322
+  store  -> codeword stored for session uc07-iso-04-c6f2991169714b4fb79ef75210ba9322
+  recall -> codeword for session uc07-iso-04-c6f2991169714b4fb79ef75210ba9322: nimbus
+  match  -> yes
+session 05  uc07-iso-05-0302700a43774eb9b54e08642133d169
+  store  -> codeword stored for session uc07-iso-05-0302700a43774eb9b54e08642133d169
+  recall -> codeword for session uc07-iso-05-0302700a43774eb9b54e08642133d169: otter
+  match  -> yes
+session 06  uc07-iso-06-f64dfb0302e24afba8497d25248cb1cb
+  store  -> codeword stored for session uc07-iso-06-f64dfb0302e24afba8497d25248cb1cb
+  recall -> codeword for session uc07-iso-06-f64dfb0302e24afba8497d25248cb1cb: quarry
+  match  -> yes
+session 07  uc07-iso-07-f873354935c4445492015f882b894875
+  store  -> codeword stored for session uc07-iso-07-f873354935c4445492015f882b894875
+  recall -> codeword for session uc07-iso-07-f873354935c4445492015f882b894875: ribbon
+  match  -> yes
+session 08  uc07-iso-08-4a3c473a482647e9a5bfd1c1f16996fb
+  store  -> codeword stored for session uc07-iso-08-4a3c473a482647e9a5bfd1c1f16996fb
+  recall -> codeword for session uc07-iso-08-4a3c473a482647e9a5bfd1c1f16996fb: sable
+  match  -> yes
+session 09  uc07-iso-09-4e70b4e7540e453e856c18471e73458f
+  store  -> codeword stored for session uc07-iso-09-4e70b4e7540e453e856c18471e73458f
+  recall -> codeword for session uc07-iso-09-4e70b4e7540e453e856c18471e73458f: tundra
+  match  -> yes
+session 10  uc07-iso-10-72dda12b66154266a4193d8d7faf6f9d
+  store  -> codeword stored for session uc07-iso-10-72dda12b66154266a4193d8d7faf6f9d
+  recall -> codeword for session uc07-iso-10-72dda12b66154266a4193d8d7faf6f9d: violet
+  match  -> yes
+
+10/10 sessions recalled their own codeword
+elapsed: 88.3s for 20 invocations

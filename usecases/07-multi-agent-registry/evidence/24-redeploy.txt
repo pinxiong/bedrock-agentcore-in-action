@@ -1,0 +1,64 @@
+$ cp /tmp/uc07-agentcore-final.json agentcore/agentcore.json
+$ cp /tmp/uc07-aws-targets-final.json agentcore/aws-targets.json
+$ agentcore validate
+Valid
+
+$ agentcore deploy -y --target default
+[K✓ Load deployment target
+[K⠋ Validate project...
+[K✓ Validate project
+[K⠋ Sync CDK dependencies...
+[K✓ Sync CDK dependencies
+[K⠋ Build CDK project...
+[K✓ Build CDK project
+[K⠋ Synthesize CloudFormation...
+[K✓ Synthesize CloudFormation
+[K⠋ Check bootstrap status...
+[K✓ Check bootstrap status
+[K⠋ Check stack status...
+[K✓ Check stack status
+[K⠋ Deploy to AWS...
+[K✓ Deploy to AWS
+[K⠋ Persist deployment state...
+[K✓ Persist deployment state
+[K✓ Persist deployment state
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc07-default)
+Outputs:
+  ApplicationAgentAiaUc07OrchestratorRoleArnOutputB6CCD2E9: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Or-faSHrzMwVuuf
+  ApplicationAgentAiaUc07ComplianceRoleArnOutput397D9999: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Co-bZEbxDbcKQvY
+  ApplicationCapacityProviderAiaUc07PoolIdOutput06A32D0E: aiauc07_aia_uc07_pool-RAGFd2QHPH
+  ApplicationAgentAiaUc07ComplianceRuntimeIdOutputF23E5F89: aiauc07_aia_uc07_compliance-dc8CMTCDwj
+  ApplicationCapacityProviderAiaUc07PoolArnOutputFEB3883F: arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-RAGFd2QHPH
+  ApplicationAgentAiaUc07ComplianceRuntimeArnOutputC6E734F9: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj
+  ApplicationAgentAiaUc07BillingMcpRoleArnOutput9C72B705: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Bi-rQqCOyYvpyDV
+  ApplicationAgentAiaUc07OrchestratorRuntimeArnOutput3C21BFE1: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv
+  ApplicationAgentAiaUc07LegalRuntimeArnOutputC5DF870D: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW
+  ApplicationAgentAiaUc07OrchestratorRuntimeIdOutputCD3E859B: aiauc07_aia_uc07_orchestrator-35KsYa22sv
+  ApplicationAgentAiaUc07LegalRuntimeIdOutput04F8950C: aiauc07_aia_uc07_legal-C8yDVkGWBW
+  ApplicationAgentAiaUc07BillingMcpRuntimeArnOutputC2D37F5D: arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+  ApplicationAgentAiaUc07LegalRoleArnOutput1A48D681: arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Le-OCOJJi8t2EW8
+  ApplicationAgentAiaUc07BillingMcpRuntimeIdOutput5FA72FBD: aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+  StackNameOutput: AgentCore-aiauc07-default
+Note: Transaction search enabled. It takes ~10 minutes for transaction search to be fully active and for traces from invocations to be indexed.
+Next: agentcore invoke | agentcore status
+Log: agentcore/.cli/logs/deploy/deploy-20261101-095232.log
+
+$ agentcore status
+AgentCore Status (target: default, us-east-1)
+Agents
+  aia_uc07_orchestrator: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_orchestrator-35KsYa22sv/invocations
+  aia_uc07_legal: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_legal-C8yDVkGWBW/invocations
+  aia_uc07_compliance: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_compliance-dc8CMTCDwj/invocations
+  aia_uc07_billing_mcp: Deployed - Runtime: READY (arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf)
+  URL: https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_billing_mcp-eAE3MP21yf/invocations
+
+$ aws bedrock-agentcore-control list-agent-runtimes --query 'agentRuntimes[].agentRuntimeName' --output text
+helloagent_hello_agent	harness_demoproj_demo_proj	aiauc07_aia_uc07_orchestrator	aiauc07_aia_uc07_legal	aiauc07_aia_uc07_compliance	aiauc07_aia_uc07_billing_mcp
+
+$ aws bedrock-agentcore-control list-capacity-providers --query 'capacityProviders[].name' --output text
+aiauc07_aia_uc07_pool
+

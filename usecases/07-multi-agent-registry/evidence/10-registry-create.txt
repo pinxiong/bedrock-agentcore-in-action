@@ -1,0 +1,2 @@
+{
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF"}

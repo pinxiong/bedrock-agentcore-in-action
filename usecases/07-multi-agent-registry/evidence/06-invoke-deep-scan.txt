@@ -1,0 +1,59 @@
+payload (AG-UI RunAgentInput, written to /tmp/uc07-agui-payload.json):
+{
+  "threadId": "uc07-a208cc02",
+  "runId": "r1",
+  "messages": [
+    {
+      "id": "m1",
+      "role": "user",
+      "content": "deep scan C-118"
+    }
+  ],
+  "tools": [],
+  "context": [],
+  "state": {},
+  "forwardedProps": {}
+}
+
+$ aws bedrock-agentcore invoke-agent-runtime --region us-east-1 \
+    --agent-runtime-arn arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv \
+    --qualifier DEFAULT --runtime-session-id uc07-deepscan-8cae171962d84fadae317e9ba208cc02 \
+    --content-type application/json --accept text/event-stream \
+    --cli-read-timeout 300 \
+    --payload fileb:///tmp/uc07-agui-payload.json /tmp/uc07-agui-out.bin
+
+elapsed: 121.9s
+events: 28 types: RUN_FINISHED RUN_STARTED TEXT_MESSAGE_CONTENT TEXT_MESSAGE_END TEXT_MESSAGE_START
+--- transcript ---
+task f0117087-0ec5-422f-b37d-d64a39e71fe9 accepted non-blocking at 0.0s, state=submitted
+polled at 12.1s: state=submitted
+polled at 17.3s: state=submitted
+polled at 22.4s: state=submitted
+polled at 27.5s: state=submitted
+polled at 32.6s: state=working
+polled at 37.8s: state=working
+polled at 42.9s: state=working
+polled at 48.0s: state=working
+polled at 53.2s: state=working
+polled at 58.3s: state=working
+polled at 63.5s: state=working
+polled at 68.6s: state=working
+polled at 73.8s: state=working
+polled at 79.0s: state=working
+polled at 84.1s: state=working
+polled at 89.3s: state=working
+polled at 94.4s: state=working
+polled at 99.5s: state=working
+polled at 104.7s: state=working
+polled at 109.9s: state=working
+polled at 115.0s: state=completed
+task finished at 115.0s — past the 60s synchronous ceiling
+result: Based on the deep scan results for contract C-118:
+
+1. **Data Residency Issue**: No cross-border transfer clause found
+2. **Breach Notification**: 72-hour notification meets the 48-hour policy floor ✓ 
+3. **Audit Rights**: No audit rights granted to the customer
+4. **Sub-processors**: Annex B lists 4 sub-processors, none vetted
+5. **Retention**: Retention period undefined after termination
+
+**ESCALATE** - Multiple findings require human review.

@@ -1,0 +1,34 @@
+$ agentcore deploy -y --target default
+[K✓ Load deployment target
+[K⠋ Validate project...
+[K✓ Validate project
+[K⠋ Validate AWS credentials...
+[K✓ Validate AWS credentials
+[K⠋ Sync CDK dependencies...
+[K✓ Sync CDK dependencies
+[K⠋ Build CDK project...
+[K✓ Build CDK project
+[K⠋ Synthesize CloudFormation...
+[K✓ Synthesize CloudFormation
+[K⠋ Check bootstrap status...
+[K✓ Check bootstrap status
+[K⠋ Check stack status...
+[K✓ Check stack status
+[K⠋ Deploy to AWS...
+[K✓ Deploy to AWS
+[K⠋ Tear down stack...
+[K✓ Tear down stack
+[K
+✓ Deployed to 'default' (stack: AgentCore-aiauc07-default)
+Log: agentcore/.cli/logs/deploy/deploy-20261101-094745.log
+
+$ agentcore status
+AgentCore Status (target: )
+No resources match the given filters.
+
+$ aws bedrock-agentcore-control list-agent-runtimes --query 'agentRuntimes[].agentRuntimeName' --output text
+helloagent_hello_agent	harness_demoproj_demo_proj
+
+$ aws bedrock-agentcore-control list-capacity-providers --query 'capacityProviders[].name' --output text
+
+

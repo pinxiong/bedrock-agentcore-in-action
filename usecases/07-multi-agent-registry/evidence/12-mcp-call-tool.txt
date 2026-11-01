@@ -1,0 +1,17 @@
+$ agentcore invoke --runtime aia_uc07_billing_mcp call-tool --tool lookup_invoice --input '{"invoice_id":"INV-2041"}'
+{
+  "invoice_id": "INV-2041",
+  "customer": "Northwind Gear",
+  "amount_usd": 12800.0,
+  "status": "open"
+}
+  (elapsed 72.5s on a freshly redeployed runtime)
+
+$ agentcore invoke --runtime aia_uc07_billing_mcp call-tool --tool payment_status --input '{"payment_id":"PAY-882"}'
+{
+  "payment_id": "PAY-882",
+  "invoice": "INV-2041",
+  "amount_usd": 2000.0,
+  "state": "processing"
+}
+  (elapsed 52.5s)

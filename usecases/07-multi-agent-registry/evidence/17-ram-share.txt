@@ -1,0 +1,43 @@
+$ aws ram get-resource-shares --region us-east-1 --resource-owner SELF --name aia-uc07-registry-xacct{
+    "resourceShares": [
+        {
+            "resourceShareArn": "arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a",
+            "name": "aia-uc07-registry-xacct",
+            "owningAccountId": "123456789012",
+            "allowExternalPrincipals": true,
+            "status": "ACTIVE",
+            "tags": [
+                {
+                    "key": "Project",
+                    "value": "agentcore-in-action"
+                },
+                {
+                    "key": "AutoDelete",
+                    "value": "true"
+                },
+                {
+                    "key": "UseCase",
+                    "value": "07"
+                }
+            ],
+            "creationTime": "2026-11-01T08:02:21.349000+08:00",
+            "lastUpdatedTime": "2026-11-01T08:02:21.349000+08:00",
+            "featureSet": "STANDARD",
+            "resourceShareConfiguration": {
+                "retainSharingOnAccountLeaveOrganization": false
+            }
+        }
+    ]
+}
+$ aws ram list-resources --region us-east-1 --resource-owner SELF --resource-share-arn arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a{
+    "resources": [
+        {
+            "arn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
+            "type": "agent-registry:Registry",
+            "resourceShareArn": "arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a",
+            "creationTime": "2026-11-01T08:02:21.349000+08:00",
+            "lastUpdatedTime": "2026-11-01T08:02:21.955000+08:00",
+            "resourceRegionScope": "REGIONAL"
+        }
+    ]
+}

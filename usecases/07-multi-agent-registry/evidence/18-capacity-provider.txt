@@ -1,0 +1,91 @@
+# the MCP server is the one runtime pinned to customer-managed EC2 compute
+
+$ aws bedrock-agentcore-control get-capacity-provider --region us-east-1 --capacity-provider-id aiauc07_aia_uc07_pool-RAGFd2QHPH
+{
+    "capacityProviderId": "aiauc07_aia_uc07_pool-RAGFd2QHPH",
+    "capacityProviderArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-RAGFd2QHPH",
+    "name": "aiauc07_aia_uc07_pool",
+    "status": "READY",
+    "description": "uc07 customer-managed compute pool: pinned EC2 instance types for agent runtimes",
+    "permissionsConfiguration": {
+        "capacityProviderOperatorRoleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationCapacityProvid-xrfQaAKS0Tin"
+    },
+    "computeConfiguration": {
+        "ec2Configuration": {
+            "launchTemplateSource": {
+                "launchParameters": {
+                    "operatingSystem": "LINUX_ARM64",
+                    "instanceRequirements": {
+                        "allowedInstanceTypes": [
+                            "m7g.large",
+                            "c7g.large"
+                        ]
+                    }
+                }
+            },
+            "vpcConfiguration": {
+                "subnets": [
+                    "subnet-0cb039f1b6b265b70",
+                    "subnet-00f40d8dfc09ae1f8"
+                ],
+                "securityGroups": [
+                    "sg-0c1fd51805583a97d"
+                ]
+            },
+            "lifecycleConfiguration": {
+                "idleInstanceTimeout": 300
+            }
+        }
+    },
+    "createdAt": "2026-11-01T01:53:56+00:00",
+    "lastUpdatedAt": "2026-11-01T01:53:58+00:00"
+}
+
+$ aws bedrock-agentcore-control get-agent-runtime --region us-east-1 --agent-runtime-id aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+{
+    "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf",
+    "agentRuntimeName": "aiauc07_aia_uc07_billing_mcp",
+    "agentRuntimeId": "aiauc07_aia_uc07_billing_mcp-eAE3MP21yf",
+    "agentRuntimeVersion": "1",
+    "createdAt": "2026-11-01T01:54:38.719901+00:00",
+    "lastUpdatedAt": "2026-11-01T01:54:58.094563+00:00",
+    "roleArn": "arn:aws:iam::123456789012:role/AgentCore-aiauc07-default-ApplicationAgentAiaUc07Bi-rQqCOyYvpyDV",
+    "status": "READY",
+    "lifecycleConfiguration": {
+        "idleRuntimeSessionTimeout": 900,
+        "maxLifetime": 28800
+    },
+    "description": "uc07 billing tools over MCP: invoices, payment status, refund policy",
+    "workloadIdentityDetails": {
+        "workloadIdentityArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf"
+    },
+    "agentRuntimeArtifact": {
+        "codeConfiguration": {
+            "code": {
+                "s3": {
+                    "bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+                    "prefix": "9944b2e94d42fa1476f5414ae0e4f5fbf042681781389e5a0287bee1c69f284e.zip"
+                }
+            },
+            "runtime": "PYTHON_3_13",
+            "entryPoint": [
+                "billing_mcp.py"
+            ]
+        }
+    },
+    "protocolConfiguration": {
+        "serverProtocol": "MCP"
+    },
+    "environmentVariables": {
+        "UNIFIED_TRACES_DESTINATION_ENABLED": "false"
+    },
+    "metadataConfiguration": {
+        "requireMMDSV2": true
+    },
+    "capacityProviderConfiguration": {
+        "capacityProviderArn": "arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-RAGFd2QHPH"
+    },
+    "platformVersion": "V1"
+}
+
+# the tool call itself, against the same runtime: 72.5s cold, 52.5s warm (evidence/12-mcp-call-tool.txt)
