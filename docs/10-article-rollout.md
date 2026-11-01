@@ -19,6 +19,11 @@ Contract: `docs/09-article-spec.md`. Difficulty ladder:
 
 Fixed tags on all seven: `ai`, `agents`, `agentcore`.
 
+Builder Center (uc07): https://builder.aws.com/content/3LUUQ6VZMY1O7EyKHz2cS6Qh6R1/two-specialists-one-orchestrator-one-catalog
+(tags `ai`, `agents`, `mcp`, `amazon-bedrock-agentcore`; the site's image upload
+caps out below 2880px, so `S16-independence.bc.png` is a 2000px copy used only
+there — the repository keeps the full-size original.)
+
 Word budget exception (ruled 2026-11-01): `uc07` may run up to 2500 words
 instead of the 1000 to 1300 default, and its prose is expected to explain
 mechanisms (A2A, streaming, session isolation, registry semantics) in detail
