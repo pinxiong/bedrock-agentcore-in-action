@@ -1,0 +1,10 @@
+$ aws agent-registry-control create-registry-record --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --name contract-clause-legal-specialist --display-name "Legal clause specialist (A2A)" \
+    --description "A2A agent that reviews contract clauses against the legal reference clause library: liability, termination, payment, confidentiality and subcontracting" \
+    --record-type AGENT \
+    --descriptors '{"a2aAgentCard":{"data":"{\"capabilities\": {\"streaming\": true}, \"defaultInputModes\": [\"text\"], \"defaultOutputModes\": [\"text\"], \"description\": \"Contract clause specialist: compares clauses against the reference library\", \"name\": \"aia_uc07_legal\", \"preferredTransport\": \"JSONRPC\", \"protocolVersion\": \"0.3.0\", \"skills\": [{\"description\": \"Compare contract clauses against the reference clause library\", \"examples\": [\"Review the liability and termination clauses of this brief\"], \"id\": \"clause-review\", \"name\": \"Clause review\", \"tags\": [\"legal\", \"contract\", \"clause\"]}], \"url\": \"https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_legal-C8yDVkGWBW/invocations\", \"version\": \"1.0.0\"}","dataSchemaVersion":"0.3"}}' \
+    --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
+{
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/YRLG41zg45lV",
+    "status": "CREATING"
+}

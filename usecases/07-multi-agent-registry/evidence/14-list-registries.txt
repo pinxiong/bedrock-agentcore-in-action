@@ -1,16 +1,17 @@
+$ aws agent-registry-control list-registries --region us-east-1
 {
     "registries": [
         {
             "name": "aia-uc07-catalog",
             "description": "Legal and compliance workflow-automation agents: contract review orchestrator, specialists and the billing MCP server",
-            "registryId": "LV1azEs3898YAYTF",
-            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
+            "registryId": "niFvetsCk7ujKrAO",
+            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO",
             "discoveryConfiguration": {
                 "authorizerType": "AWS_IAM"
             },
             "status": "READY",
-            "createdAt": "2026-11-01T00:00:46.959829+00:00",
-            "updatedAt": "2026-11-01T00:00:46.959829+00:00"
+            "createdAt": "2026-11-01T03:54:25.077117+00:00",
+            "updatedAt": "2026-11-01T03:54:25.077117+00:00"
         }
     ]
 }

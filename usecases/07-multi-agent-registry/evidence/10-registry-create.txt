@@ -1,2 +1,8 @@
+$ aws agent-registry-control create-registry --region us-east-1 \
+    --name aia-uc07-catalog \
+    --description "Legal and compliance workflow-automation agents: contract review orchestrator, specialists and the billing MCP server" \
+    --discovery-configuration authorizerType=AWS_IAM \
+    --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
 {
-    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF"}
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO"
+}

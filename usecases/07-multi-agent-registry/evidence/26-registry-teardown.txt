@@ -1,37 +1,27 @@
-# agentcore remove all does not reach the registry: those resources are created
-# with the aws CLI, so they are torn down with the aws CLI too
-
-$ aws ram delete-resource-share --region us-east-1 --resource-share-arn arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a
+# the registry and the RAM share are not in the CLI contract: they were created
+# with the aws CLI, so they are torn down with the aws CLI, in the reverse order
+$ aws ram delete-resource-share --region us-east-1 \
+    --resource-share-arn arn:aws:ram:us-east-1:123456789012:resource-share/feb617d9-da46-43dd-87cc-671293ebd120
 {
     "returnValue": true
 }
+$ aws agent-registry-control delete-registry-record --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl
 
-$ aws agent-registry-control delete-registry-record --region us-east-1 --registry-id LV1azEs3898YAYTF --record-id dkw6Qm1ADsVv
+$ aws agent-registry-control delete-registry-record --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV
 
-
-$ aws agent-registry-control delete-registry-record --region us-east-1 --registry-id LV1azEs3898YAYTF --record-id ZpvPW4p2bvba
-
-
-$ aws agent-registry-control delete-registry --region us-east-1 --registry-id LV1azEs3898YAYTF
+$ aws agent-registry-control delete-registry --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO
 {
     "status": "DELETING"
 }
-
 $ aws agent-registry-control list-registries --region us-east-1
 {
-    "registries": [
-        {
-            "name": "aia-uc07-catalog",
-            "description": "Legal and compliance workflow-automation agents: contract review orchestrator, specialists and the billing MCP server",
-            "registryId": "LV1azEs3898YAYTF",
-            "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
-            "discoveryConfiguration": {
-                "authorizerType": "AWS_IAM"
-            },
-            "status": "DELETING",
-            "createdAt": "2026-11-01T00:00:46.959829+00:00",
-            "updatedAt": "2026-11-01T02:14:22.924345+00:00"
-        }
-    ]
+    "registries": []
 }
-
+$ aws ram get-resource-shares --region us-east-1 --resource-owner SELF \
+    --name aia-uc07-registry-xacct --resource-share-status ACTIVE
+{
+    "resourceShares": []
+}

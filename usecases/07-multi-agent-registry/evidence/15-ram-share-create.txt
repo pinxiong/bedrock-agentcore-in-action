@@ -1,6 +1,11 @@
+$ aws ram create-resource-share --region us-east-1 \
+    --name aia-uc07-registry-xacct \
+    --resource-arns arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO \
+    --allow-external-principals \
+    --tags key=Project,value=agentcore-in-action key=UseCase,value=07 key=AutoDelete,value=true
 {
     "resourceShare": {
-        "resourceShareArn": "arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a",
+        "resourceShareArn": "arn:aws:ram:us-east-1:123456789012:resource-share/feb617d9-da46-43dd-87cc-671293ebd120",
         "name": "aia-uc07-registry-xacct",
         "owningAccountId": "123456789012",
         "allowExternalPrincipals": true,
@@ -19,8 +24,8 @@
                 "value": "true"
             }
         ],
-        "creationTime": "2026-11-01T08:02:21.349000+08:00",
-        "lastUpdatedTime": "2026-11-01T08:02:21.349000+08:00",
+        "creationTime": "2026-11-01T11:56:09.764000+08:00",
+        "lastUpdatedTime": "2026-11-01T11:56:09.764000+08:00",
         "resourceShareConfiguration": {
             "retainSharingOnAccountLeaveOrganization": false
         }

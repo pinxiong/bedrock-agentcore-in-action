@@ -1,0 +1,42 @@
+# a record is created DRAFT; approving it directly is rejected with
+# "Invalid status transition from DRAFT to APPROVED", so it is submitted first
+$ aws agent-registry-control submit-registry-record-for-approval --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl
+{
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO",
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/5nMCxyY06tFl",
+    "recordId": "5nMCxyY06tFl",
+    "status": "PENDING_APPROVAL",
+    "updatedAt": "2026-11-01T03:56:04.187482+00:00"
+}
+$ aws agent-registry-control submit-registry-record-for-approval --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV
+{
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO",
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/YRLG41zg45lV",
+    "recordId": "YRLG41zg45lV",
+    "status": "PENDING_APPROVAL",
+    "updatedAt": "2026-11-01T03:56:05.471791+00:00"
+}
+$ aws agent-registry-control update-registry-record-status --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl --status APPROVED \
+    --status-reason "Series run: article evidence"
+{
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO",
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/5nMCxyY06tFl",
+    "recordId": "5nMCxyY06tFl",
+    "status": "APPROVED",
+    "statusReason": "Series run: article evidence",
+    "updatedAt": "2026-11-01T03:56:06.845607+00:00"
+}
+$ aws agent-registry-control update-registry-record-status --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV --status APPROVED \
+    --status-reason "Series run: article evidence"
+{
+    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO",
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/YRLG41zg45lV",
+    "recordId": "YRLG41zg45lV",
+    "status": "APPROVED",
+    "statusReason": "Series run: article evidence",
+    "updatedAt": "2026-11-01T03:56:08.247348+00:00"
+}

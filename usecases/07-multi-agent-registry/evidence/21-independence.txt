@@ -1,37 +1,47 @@
-$ aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=Project,Values=agentcore-in-action
-  total tagged resources: 19
-  created by this use case (uc07): 17
-    arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF
-    arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF/record/ZpvPW4p2bvba
-    arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF/record/dkw6Qm1ADsVv
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-TQjd0sHZN6
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-DZwvVN3b3p
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-DZwvVN3b3p/runtime-endpoint/DEFAULT
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-z1YS5T4L5y
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-z1YS5T4L5y/runtime-endpoint/DEFAULT
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-mZ9jr59INy
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-mZ9jr59INy/runtime-endpoint/DEFAULT
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9/runtime-endpoint/DEFAULT
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_billing_mcp-DZwvVN3b3p
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_compliance-z1YS5T4L5y
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_legal-mZ9jr59INy
-    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_orchestrator-r6QMF7DdA9
+$ aws resourcegroupstaggingapi get-resources --region us-east-1 \
+    --tag-filters Key=Project,Values=agentcore-in-action
+  total tagged records: 22
+  live, created by this use case (uc07): 17
+    arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO
+    arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/5nMCxyY06tFl
+    arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/YRLG41zg45lV
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:capacity-provider/aiauc07_aia_uc07_pool-RAGFd2QHPH
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf/runtime-endpoint/DEFAULT
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_compliance-dc8CMTCDwj/runtime-endpoint/DEFAULT
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_legal-C8yDVkGWBW/runtime-endpoint/DEFAULT
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:runtime/aiauc07_aia_uc07_orchestrator-35KsYa22sv/runtime-endpoint/DEFAULT
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_billing_mcp-eAE3MP21yf
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_compliance-dc8CMTCDwj
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_legal-C8yDVkGWBW
+    arn:aws:bedrock-agentcore:us-east-1:123456789012:workload-identity-directory/default/workload-identity/aiauc07_aia_uc07_orchestrator-35KsYa22sv
+    arn:aws:ram:us-east-1:123456789012:resource-share/feb617d9-da46-43dd-87cc-671293ebd120
+  tag records of resources already deleted (earlier RAM shares from this session): 3
+    arn:aws:ram:us-east-1:123456789012:resource-share/09c07ac1-1785-4384-b54c-4bc9db93ddef
+    arn:aws:ram:us-east-1:123456789012:resource-share/0b0c890c-c3dd-4dd0-8cc7-57a7a6539d89
     arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a
   tag records not from uc07: 2
     arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2
     arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-wS2JfEcwcy
-$ aws bedrock-agentcore-control list-agent-runtimes
+$ aws bedrock-agentcore-control list-agent-runtimes --region us-east-1
   helloagent_hello_agent                 (pre-existing account fixture, not tagged for this series)
   harness_demoproj_demo_proj             (pre-existing account fixture, not tagged for this series)
   aiauc07_aia_uc07_orchestrator
   aiauc07_aia_uc07_legal
   aiauc07_aia_uc07_compliance
   aiauc07_aia_uc07_billing_mcp
-$ aws bedrock-agentcore-control list-harnesses
+$ aws bedrock-agentcore-control list-harnesses --region us-east-1
   harnessId demoproj_demo_proj-fQzQNZSR4I  (pre-existing; no aiauc05 harness exists)
-# the two non-uc07 tag records are orphaned: the resource behind them no longer exists
+# the two aiauc05 records are orphaned: the resource behind them no longer exists
 $ aws resourcegroupstaggingapi untag-resources \
     --resource-arn-list arn:aws:bedrock-agentcore:us-east-1:123456789012:harness/aiauc05_research-AK8SDVE0b2 \
     --tag-keys Project
   StatusCode: 404  ErrorCode: NotFoundException  ErrorMessage: Resource was not found
+# a deleted RAM share leaves the same kind of ghost, but RAM answers 400 instead of 404
+$ aws resourcegroupstaggingapi untag-resources \
+    --resource-arn-list arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a \
+    --tag-keys Project
+  StatusCode: 400  ErrorCode: UnknownResourceException  ErrorMessage: The given resource ARNs do not exist: [arn:aws:ram:us-east-1:123456789012:resource-share/d027e95c-43f3-4592-acdb-48adec3bd46a]

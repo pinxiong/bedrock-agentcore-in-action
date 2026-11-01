@@ -1,19 +1,10 @@
+$ aws agent-registry-control create-registry-record --region us-east-1 \
+    --registry-id niFvetsCk7ujKrAO --name billing --display-name "Billing MCP server" \
+    --description "Invoice lookup, payment processing and refund policy tools for agents, hosted on AgentCore Runtime as a streamable-http MCP server" \
+    --record-type MCP \
+    --descriptors '{"mcpServer":{"data":"{\"name\": \"dev.xiongpin/billing\", \"description\": \"Billing and payment processing MCP server: invoice lookup, payment status, refunds\", \"version\": \"1.0.0\"}","dataSchemaVersion":"2025-12-11"}}' \
+    --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
 {
-    "registryArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF",
-    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/LV1azEs3898YAYTF/record/dkw6Qm1ADsVv",
-    "recordId": "dkw6Qm1ADsVv",
-    "name": "billing",
-    "displayName": "Billing MCP server",
-    "description": "Invoice lookup, payment processing and refund policy tools for agents, hosted on AgentCore Runtime as a streamable-http MCP server",
-    "recordType": "MCP",
-    "descriptors": {
-        "mcpServer": {
-            "data": "{\"name\": \"dev.xiongpin/billing\", \"description\": \"Billing and payment processing MCP server: invoice lookup, payment status, refunds\", \"version\": \"1.0.0\"}",
-            "dataSchemaVersion": "2025-12-11"
-        }
-    },
-    "status": "DRAFT",
-    "createdAt": "2026-11-01T00:44:21.471737+00:00",
-    "updatedAt": "2026-11-01T00:47:02.166947+00:00",
-    "createdBy": "123456789012"
+    "recordArn": "arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO/record/5nMCxyY06tFl",
+    "status": "CREATING"
 }

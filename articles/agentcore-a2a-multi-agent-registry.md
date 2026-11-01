@@ -253,6 +253,67 @@ aws bedrock-agentcore-control get-agent-runtime --region us-east-1 \
 
 ![Terminal capture: the capacity provider READY on LINUX_ARM64 with m7g.large and c7g.large and a 300-second idle timeout, and the runtime's capacityProviderConfiguration pointing back at the pool ARN](/images/agentcore-a2a-multi-agent-registry/S10-capacity-provider.png)
 
+The stack does not create the catalog. The registry, its records and the RAM
+share are control-plane resources the CLI contract does not model, so they
+are created with the AWS CLI: the registry first, then one record per
+capability. The MCP record's descriptor is the minimal `2025-12-11` document
+and the agent record carries the full A2A card:
+
+```bash
+aws agent-registry-control create-registry --region us-east-1 \
+  --name aia-uc07-catalog \
+  --description "Legal and compliance workflow-automation agents: contract review orchestrator, specialists and the billing MCP server" \
+  --discovery-configuration authorizerType=AWS_IAM \
+  --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
+aws agent-registry-control create-registry-record --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --name billing --display-name "Billing MCP server" \
+  --description "Invoice lookup, payment processing and refund policy tools for agents, hosted on AgentCore Runtime as a streamable-http MCP server" \
+  --record-type MCP \
+  --descriptors '{"mcpServer":{"data":"{\"name\": \"dev.xiongpin/billing\", \"description\": \"Billing and payment processing MCP server: invoice lookup, payment status, refunds\", \"version\": \"1.0.0\"}","dataSchemaVersion":"2025-12-11"}}' \
+  --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
+aws agent-registry-control create-registry-record --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --name contract-clause-legal-specialist --display-name "Legal clause specialist (A2A)" \
+  --description "A2A agent that reviews contract clauses against the legal reference clause library: liability, termination, payment, confidentiality and subcontracting" \
+  --record-type AGENT \
+  --descriptors '{"a2aAgentCard":{"data":"{\"capabilities\": {\"streaming\": true}, \"defaultInputModes\": [\"text\"], \"defaultOutputModes\": [\"text\"], \"description\": \"Contract clause specialist: compares clauses against the reference library\", \"name\": \"aia_uc07_legal\", \"preferredTransport\": \"JSONRPC\", \"protocolVersion\": \"0.3.0\", \"skills\": [{\"description\": \"Compare contract clauses against the reference clause library\", \"examples\": [\"Review the liability and termination clauses of this brief\"], \"id\": \"clause-review\", \"name\": \"Clause review\", \"tags\": [\"legal\", \"contract\", \"clause\"]}], \"url\": \"https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A123456789012%3Aruntime%2Faiauc07_aia_uc07_legal-C8yDVkGWBW/invocations\", \"version\": \"1.0.0\"}","dataSchemaVersion":"0.3"}}' \
+  --tags Project=agentcore-in-action,UseCase=07,AutoDelete=true
+```
+
+![Terminal capture: the registry ARN returned, then the billing record and the legal record each created in status CREATING](/images/agentcore-a2a-multi-agent-registry/S17-catalog-create.png)
+
+A record is not discoverable the moment it exists: it is created DRAFT,
+submitted for approval, and only then approved — a direct DRAFT to APPROVED
+call is rejected as an invalid status transition. The curation workflow, in
+the order the API accepts it:
+
+```bash
+aws agent-registry-control submit-registry-record-for-approval --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl
+aws agent-registry-control submit-registry-record-for-approval --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV
+aws agent-registry-control update-registry-record-status --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl --status APPROVED \
+  --status-reason "Series run: article evidence"
+aws agent-registry-control update-registry-record-status --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV --status APPROVED \
+  --status-reason "Series run: article evidence"
+```
+
+![Terminal capture: both records moving to PENDING_APPROVAL, then to APPROVED with the status reason attached](/images/agentcore-a2a-multi-agent-registry/S18-catalog-approve.png)
+
+The registry itself is a RAM-shareable resource, so sharing it is one call
+with the registry's ARN as the payload:
+
+```bash
+aws ram create-resource-share --region us-east-1 \
+  --name aia-uc07-registry-xacct \
+  --resource-arns arn:aws:agent-registry:us-east-1:123456789012:registry/niFvetsCk7ujKrAO \
+  --allow-external-principals \
+  --tags key=Project,value=agentcore-in-action key=UseCase,value=07 key=AutoDelete,value=true
+```
+
+![Terminal capture: the resource share created ACTIVE with external principals allowed and the three series tags attached](/images/agentcore-a2a-multi-agent-registry/S19-ram-create.png)
+
 The catalog is one registry with two records. Note the namespace — it is
 `agent-registry`, not `bedrock-agentcore`:
 
@@ -260,26 +321,30 @@ The catalog is one registry with two records. Note the namespace — it is
 aws agent-registry-control list-registries --region us-east-1
 ```
 
-![Terminal capture: one registry aia-uc07-catalog, id LV1azEs3898YAYTF, IAM discovery authorization, status READY](/images/agentcore-a2a-multi-agent-registry/S11-registry.png)
+![Terminal capture: one registry aia-uc07-catalog, id niFvetsCk7ujKrAO, IAM discovery authorization, status READY](/images/agentcore-a2a-multi-agent-registry/S11-registry.png)
 
 Search is the reason the catalog exists. The query never names the record:
 
 ```bash
 aws agent-registry search-discoverable-registry-records --region us-east-1 \
-  --registry-id LV1azEs3898YAYTF --search-query "payment processing"
+  --registry-id niFvetsCk7ujKrAO --search-query "payment processing"
 ```
 
-![Terminal capture: the first hit being record dkw6Qm1ADsVv named billing, a Billing MCP server of type MCP](/images/agentcore-a2a-multi-agent-registry/S12-search.png)
+![Terminal capture: the first hit being record 5nMCxyY06tFl named billing, a Billing MCP server of type MCP in status APPROVED](/images/agentcore-a2a-multi-agent-registry/S12-search.png)
 
 And the registry itself rides RAM, which is the whole story of
 ram-cross-account:
 
 ```bash
 aws ram get-resource-shares --region us-east-1 \
-  --resource-owner SELF --name aia-uc07-registry-xacct
+  --resource-owner SELF --name aia-uc07-registry-xacct \
+  --resource-share-status ACTIVE
+aws ram list-resources --region us-east-1 \
+  --resource-owner SELF \
+  --resource-share-arn arn:aws:ram:us-east-1:123456789012:resource-share/feb617d9-da46-43dd-87cc-671293ebd120
 ```
 
-![Terminal capture: the resource share aia-uc07-registry-xacct ACTIVE with external principals allowed and the series tags attached](/images/agentcore-a2a-multi-agent-registry/S13-ram.png)
+![Terminal capture: the resource share aia-uc07-registry-xacct ACTIVE with external principals allowed and the series tags, with the registry listed as its only resource](/images/agentcore-a2a-multi-agent-registry/S13-ram.png)
 
 Observability needs no extra wiring: `agentcore traces list` finds the
 invocations and `traces get` downloads one, span included:
@@ -289,11 +354,12 @@ agentcore traces list --runtime aia_uc07_orchestrator --limit 5
 agentcore traces get 6ae68aae0be02f262af76e4121aa04e9 --runtime aia_uc07_orchestrator
 ```
 
-![Terminal capture: the trace list with five ids and one downloaded trace whose span body quotes the isolation test's session id and the orchestrator source line](/images/agentcore-a2a-multi-agent-registry/S14-traces.png)
+![Terminal capture: the trace list with four ids and one downloaded trace whose span body quotes the isolation test's session id and the orchestrator source line](/images/agentcore-a2a-multi-agent-registry/S14-traces.png)
 
-Teardown empties the contract, then the deploy reconciles the stack down —
-and `remove all` also empties `aws-targets.json`, which is why the status
-prints an empty target:
+Teardown is two halves. `remove all -y` empties the contract, then the
+deploy reconciles the stack down — and it also empties both
+`agentcore/agentcore.json` and `agentcore/aws-targets.json`, which is why
+the status prints an empty target:
 
 ```bash
 agentcore remove all -y
@@ -304,16 +370,45 @@ agentcore status
 ![Terminal capture: schemas reset, the stack torn down, status reporting no resources, and an empty capacity-provider list](/images/agentcore-a2a-multi-agent-registry/S15-teardown.png)
 
 Restore both JSON files from git, deploy again, and the tag query confirms
-the account holds nothing but this use case's resources — the two aiauc05
-records it finds are orphaned tag records whose harness was deleted in
-another session, and the tagging API itself returns 404 for them:
+the account holds nothing but this use case's resources. Three RAM-share
+records are ghosts of shares deleted earlier in the session, and the two
+aiauc05 records are orphaned tag records whose harness was deleted in
+another session — the tagging API returns 404 for the harnesses and 400 for
+the shares, because the resource behind each record is gone:
 
 ```bash
 aws resourcegroupstaggingapi get-resources --region us-east-1 \
   --tag-filters Key=Project,Values=agentcore-in-action
 ```
 
-![Terminal capture: 19 tagged resources, 17 from this use case, and the two aiauc05 harness records returning 404 on untag](/images/agentcore-a2a-multi-agent-registry/S16-independence.png)
+![Terminal capture: 22 tagged records, 17 of them live resources from this use case, three deleted RAM shares lingering as tag records, and the two aiauc05 harnesses failing untag with 404 and 400](/images/agentcore-a2a-multi-agent-registry/S16-independence.png)
+
+The tag list is also the inventory of what `remove all` never touches. The
+registry and the RAM share are not in the CLI contract, so they are deleted
+with the AWS CLI, share first, then the records, then the registry:
+
+```bash
+aws ram delete-resource-share --region us-east-1 \
+  --resource-share-arn arn:aws:ram:us-east-1:123456789012:resource-share/feb617d9-da46-43dd-87cc-671293ebd120
+aws agent-registry-control delete-registry-record --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id 5nMCxyY06tFl
+aws agent-registry-control delete-registry-record --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO --record-id YRLG41zg45lV
+aws agent-registry-control delete-registry --region us-east-1 \
+  --registry-id niFvetsCk7ujKrAO
+aws agent-registry-control list-registries --region us-east-1
+aws ram get-resource-shares --region us-east-1 --resource-owner SELF \
+  --name aia-uc07-registry-xacct --resource-share-status ACTIVE
+```
+
+![Terminal capture: the share deleted with returnValue true, the two records deleted silently, the registry DELETING, then both lists coming back empty](/images/agentcore-a2a-multi-agent-registry/S20-registry-teardown.png)
+
+What survives is deliberate: the CDK bootstrap stack and its asset bucket
+are account-level and reused across the whole series, and the runtime log
+groups keep the traces above. Everything else from this use case is gone —
+but only because those four deletions ran. Skip them, and the registry and
+its share stay in the account, invisible to `agentcore remove all`, until
+you delete them.
 
 ## What it produced
 
