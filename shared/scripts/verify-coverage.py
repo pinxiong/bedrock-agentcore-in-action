@@ -138,6 +138,20 @@ CAPABILITY_EVIDENCE_HINTS = {
     "policy": ["dogwood", "cedar", "denied"],
     "registry": ["registry"],
     "harness": ["harness"],
+    # uc07 is where the multi-agent and governance capabilities are dug into, so
+    # its proof terms are protocol names and CLI surfaces rather than one word.
+    "a2a-protocol": ["a2a", "agent card", "agent-card", "message/send", "tasks/send",
+                     "tasks/get", "jsonrpc"],
+    "ag-ui-protocol": ["ag-ui", "agui", "runagentinput", "threadid", "runid"],
+    "bidirectional-streaming": ["barge", "barge-in", "bidirectional", "duplex",
+                                "websocket"],
+    "custom-ec2-instance-types": ["capacity provider", "capacity-provider",
+                                  "instance type", "instancetypes", "m7g", "c7g"],
+    "long-running-async": ["async", "long-running", "deep scan", "deep-scan",
+                           "read timeout", "tasks/get"],
+    "mcp-server-hosting": ["call-tool", "calltool", "tools/list", "mcp server"],
+    "ram-cross-account": ["resource share", "resource-share", "get-resource-shares",
+                          "cross-account"],
 }
 TEXT_SUFFIXES = {".txt", ".json", ".md", ".log", ".yaml", ".yml", ".env"}
 MAX_EVIDENCE_BYTES = 2_000_000
@@ -653,7 +667,19 @@ def check_standalone_folder(root: Path, uc: dict, rep: Report) -> bool:
 
     required = list(REQUIRED_IN_FOLDER)
     if code_location:
-        required += [f"{code_location}/main.py", f"{code_location}/pyproject.toml"]
+        # A use case can ship several runtimes, each with its own entrypoint
+        # (uc07 has four: an orchestrator, two A2A specialists, an MCP server).
+        # What must exist is every declared entrypoint, not a file named main.py.
+        entrypoints = [
+            (str(r.get("codeLocation") or code_location).rstrip("/"), r.get("entrypoint"))
+            for r in (spec.get("runtimes") or [])
+            if r.get("entrypoint")
+        ]
+        if entrypoints:
+            required += [f"{loc}/{ep}" for loc, ep in entrypoints]
+        else:
+            required += [f"{code_location}/main.py"]
+        required += [f"{code_location}/pyproject.toml"]
     missing = [f for f in required if not (uc_dir / f).exists()]
     if missing:
         ok = False
